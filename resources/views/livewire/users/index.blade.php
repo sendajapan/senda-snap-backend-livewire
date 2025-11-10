@@ -1,7 +1,11 @@
-<div class="flex h-full w-full flex-1 flex-col gap-6 p-6">
+<div class="flex h-full w-full flex-1 flex-col gap-6 p-6" x-data="{
+    openModal(userId = null) {
+        $wire.$dispatch('open-user-modal', { userId: userId })
+    }
+}">
     <!-- Header Section -->
-    <x-page-header 
-        :title="__('Users Management')" 
+    <x-page-header
+        :title="__('Users Management')"
         :description="__('Manage all system users and their roles')"
         variant="blue">
         <x-slot:icon>
@@ -10,8 +14,8 @@
             </svg>
         </x-slot:icon>
         <x-slot:actions>
-            <flux:button :href="route('users.create')" icon="plus" wire:navigate variant="primary">
-                {{ __('Add User') }}
+            <flux:button @click="openModal()" icon="plus" variant="outline" class="cursor-pointer">
+                {{ __('Add New User') }}
             </flux:button>
         </x-slot:actions>
     </x-page-header>
@@ -91,4 +95,7 @@
             {{ $users->links() }}
         </div>
     </x-table-card>
+
+    <!-- User Modal -->
+    <livewire:users.user-modal />
 </div>

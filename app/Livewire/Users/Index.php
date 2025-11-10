@@ -3,6 +3,7 @@
 namespace App\Livewire\Users;
 
 use App\Models\User;
+use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -22,6 +23,12 @@ class Index extends Component
     public function updatedRoleFilter(): void
     {
         $this->resetPage();
+    }
+
+    #[On('user-saved')]
+    public function refreshUsers(): void
+    {
+        // This will trigger a re-render and refresh the users list
     }
 
     public function render()

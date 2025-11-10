@@ -133,6 +133,9 @@
 
         {{ $slot }}
 
+        <!-- Toast Notifications -->
+        <x-toast-notification />
+
         @fluxScripts
         @stack('scripts')
     </body>

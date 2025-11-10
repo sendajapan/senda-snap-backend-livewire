@@ -57,7 +57,7 @@
     </td>
     <td class="whitespace-nowrap px-6 py-5">
         <div class="flex items-center gap-2">
-            <flux:button size="sm" variant="ghost" :href="route('users.edit', $user)" icon="pencil" wire:navigate class="opacity-0 transition-opacity group-hover:opacity-100">
+            <flux:button size="sm" variant="ghost" @click="openModal({{ $user->id }})" icon="pencil" class="opacity-0 transition-opacity group-hover:opacity-100">
                 {{ __('Edit') }}
             </flux:button>
         </div>

@@ -1,18 +1,27 @@
 <div class="flex h-full w-full flex-1 flex-col gap-6 p-6">
-    <div class="flex items-center justify-between">
-            <div>
-                <flux:heading size="xl">{{ __('Users') }}</flux:heading>
-                <flux:text>{{ __('Manage all system users') }}</flux:text>
-            </div>
-            <flux:button :href="route('users.create')" icon="plus" wire:navigate>
+    <!-- Header Section -->
+    <x-page-header 
+        :title="__('Users Management')" 
+        :description="__('Manage all system users and their roles')"
+        variant="blue">
+        <x-slot:icon>
+            <svg class="h-7 w-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+            </svg>
+        </x-slot:icon>
+        <x-slot:actions>
+            <flux:button :href="route('users.create')" icon="plus" wire:navigate variant="primary">
                 {{ __('Add User') }}
             </flux:button>
-        </div>
+        </x-slot:actions>
+    </x-page-header>
 
-        <div class="rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-900">
+    <!-- Table Card -->
+    <x-table-card variant="emerald">
             <div class="mb-4 flex gap-4">
                 <div class="flex-1">
-                    <flux:input wire:model.live.debounce.300ms="search" placeholder="{{ __('Search by name or email...') }}" icon="magnifying-glass" />
+                    <flux:input wire:model.live.debounce.300ms="search"
+                        placeholder="{{ __('Search by name or email...') }}" icon="magnifying-glass" />
                 </div>
                 <div class="w-48">
                     <flux:select wire:model.live="roleFilter">
@@ -25,72 +34,52 @@
                 </div>
             </div>
 
-            <div class="overflow-x-auto">
+            <div class="overflow-x-auto rounded-xl bg-white/50 backdrop-blur-sm dark:bg-gray-800/50">
                 <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                    <thead class="bg-gray-50 dark:bg-gray-800">
-                        <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                    <thead>
+                        <tr class="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900">
+                            <th
+                                class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">
                                 {{ __('Name') }}
                             </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                            <th
+                                class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">
                                 {{ __('Email') }}
                             </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                            <th
+                                class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">
                                 {{ __('Role') }}
                             </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                            <th
+                                class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">
                                 {{ __('Phone') }}
                             </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                            <th
+                                class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">
                                 {{ __('Actions') }}
                             </th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900">
+                    <tbody class="divide-y divide-gray-200/50 dark:divide-gray-700/50">
                         @forelse($users as $user)
-                            <tr class="hover:bg-gray-50 dark:hover:bg-gray-800">
-                                <td class="whitespace-nowrap px-6 py-4">
-                                    <div class="flex items-center">
-                                        <div class="size-10 flex-shrink-0">
-                                            <div class="flex size-10 items-center justify-center rounded-full bg-gray-200 dark:bg-gray-700">
-                                                <span class="text-sm font-medium text-gray-600 dark:text-gray-300">
-                                                    {{ $user->initials() }}
-                                                </span>
-                                            </div>
-                                        </div>
-                                        <div class="ml-4">
-                                            <div class="text-sm font-medium text-gray-900 dark:text-white">
-                                                {{ $user->name }}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="whitespace-nowrap px-6 py-4">
-                                    <div class="text-sm text-gray-900 dark:text-white">{{ $user->email }}</div>
-                                </td>
-                                <td class="whitespace-nowrap px-6 py-4">
-                                    <flux:badge :color="match($user->role) {
-                                        'admin' => 'red',
-                                        'manager' => 'blue',
-                                        'employee' => 'green',
-                                        default => 'gray',
-                                    }">
-                                        {{ ucfirst($user->role) }}
-                                    </flux:badge>
-                                </td>
-                                <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:text-white">
-                                    {{ $user->phone ?? '-' }}
-                                </td>
-                                <td class="whitespace-nowrap px-6 py-4 text-sm font-medium">
-                                    <flux:button size="sm" variant="ghost" :href="route('users.edit', $user)" icon="pencil" wire:navigate>
-                                        {{ __('Edit') }}
-                                    </flux:button>
-                                </td>
-                            </tr>
+                            <x-user-table-row :user="$user" />
                         @empty
                             <tr>
-                                <td colspan="5" class="px-6 py-4 text-center text-sm text-gray-500 dark:text-gray-400">
-                                    {{ __('No users found.') }}
+                                <td colspan="5" class="px-6 py-12 text-center">
+                                    <div class="flex flex-col items-center gap-3">
+                                        <div
+                                            class="flex h-16 w-16 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800">
+                                            <svg class="h-8 w-8 text-gray-400" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                                            </svg>
+                                        </div>
+                                        <p class="text-sm font-medium text-gray-900 dark:text-white">
+                                            {{ __('No users found') }}</p>
+                                        <p class="text-xs text-gray-500 dark:text-gray-400">
+                                            {{ __('Try adjusting your search or filters') }}</p>
+                                    </div>
                                 </td>
                             </tr>
                         @endforelse
@@ -98,8 +87,8 @@
                 </table>
             </div>
 
-            <div class="mt-4">
-                {{ $users->links() }}
-            </div>
+        <div class="mt-4">
+            {{ $users->links() }}
         </div>
+    </x-table-card>
 </div>

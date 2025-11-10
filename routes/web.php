@@ -19,6 +19,9 @@ Route::view('dashboard', 'dashboard')
     ->name('dashboard');
 
 Route::middleware(['auth'])->group(function () {
+    // API Documentation
+    Route::view('api-docs', 'api-documentation')->name('api.docs');
+
     // Users Management
     Route::get('users', UsersIndex::class)->name('users.index');
     Route::get('users/create', fn () => view('livewire.users.create'))->name('users.create');

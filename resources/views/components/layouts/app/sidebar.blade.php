@@ -26,12 +26,8 @@
             <flux:spacer />
 
             <flux:navlist variant="outline">
-                <flux:navlist.item icon="folder-git-2" href="#" target="_blank">
-                {{ __('API') }}
-                </flux:navlist.item>
-
-                <flux:navlist.item icon="book-open-text" href="#" target="_blank">
-                {{ __('Documentation') }}
+                <flux:navlist.item icon="folder-git-2" :href="route('api.docs')" wire:navigate>
+                {{ __('API Documentation') }}
                 </flux:navlist.item>
             </flux:navlist>
 

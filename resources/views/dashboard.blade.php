@@ -21,7 +21,7 @@
                 <div>
                     <h1 class="text-2xl font-bold">
                         {{ __('Welcome back, :name!', ['name' => auth()->user()->name]) }}</h1>
-                    <p class="mt-2 text-gray-700">
+                    <p class="mt-2 text-gray-700 dark:text-gray-200">
                         {{ 'Today is ' . now()->format('jS, F, Y.') }}
                     </p>
                 </div>

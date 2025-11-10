@@ -25,16 +25,16 @@
                  x-transition:leave-end="translate-x-full"
                  class="w-screen max-w-xl bg-white/90">
 
-                <div class="flex h-full flex-col overflow-y-auto border-l border-emerald-200 bg-gradient-to-br from-white via-emerald-50/30 to-teal-50/30 shadow-2xl dark:border-emerald-900/50 dark:from-gray-900 dark:via-emerald-900/20 dark:to-teal-900/20">
+                <div class="flex h-full flex-col overflow-y-auto border-l border-blue-200 bg-gradient-to-br from-white via-blue-50/30 to-cyan-50/30 shadow-2xl dark:border-blue-900/50 dark:from-gray-900 dark:via-blue-900/20 dark:to-cyan-900/20">
                     <!-- Decorative Elements -->
-                    <div class="pointer-events-none absolute -right-8 -top-8 h-64 w-64 rounded-full bg-gradient-to-br from-emerald-400/20 to-teal-400/20 blur-3xl"></div>
-                    <div class="pointer-events-none absolute -bottom-8 -left-8 h-64 w-64 rounded-full bg-gradient-to-br from-teal-400/20 to-emerald-400/20 blur-3xl"></div>
+                    <div class="pointer-events-none absolute -right-8 -top-8 h-64 w-64 rounded-full bg-gradient-to-br from-blue-400/20 to-cyan-400/20 blur-3xl"></div>
+                    <div class="pointer-events-none absolute -bottom-8 -left-8 h-64 w-64 rounded-full bg-gradient-to-br from-cyan-400/20 to-blue-400/20 blur-3xl"></div>
 
                     <!-- Header -->
                     <div class="relative border-b border-gray-200/50 bg-white/50 px-6 py-6 backdrop-blur-sm dark:border-gray-700/50 dark:bg-gray-900/50">
                         <div class="flex items-center justify-between">
                             <div class="flex items-center gap-3">
-                                <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 shadow-lg">
+                                <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-cyan-600 shadow-lg">
                                     <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                                     </svg>
@@ -67,11 +67,11 @@
                                 <div class="mt-2 flex items-center gap-4">
                                     <div class="relative">
                                         @if ($avatar)
-                                            <img src="{{ $avatar->temporaryUrl() }}" alt="Avatar preview" class="h-24 w-24 rounded-xl object-cover ring-4 ring-emerald-200 dark:ring-emerald-800">
+                                            <img src="{{ $avatar->temporaryUrl() }}" alt="Avatar preview" class="h-24 w-24 rounded-xl object-cover ring-4 ring-blue-200 dark:ring-blue-800">
                                         @elseif ($existing_avatar)
-                                            <img src="{{ Storage::url($existing_avatar) }}" alt="Current avatar" class="h-24 w-24 rounded-xl object-cover ring-4 ring-emerald-200 dark:ring-emerald-800">
+                                            <img src="{{ Storage::url($existing_avatar) }}" alt="Current avatar" class="h-24 w-24 rounded-xl object-cover ring-4 ring-blue-200 dark:ring-blue-800">
                                         @else
-                                            <div class="flex h-24 w-24 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 ring-4 ring-emerald-200 dark:ring-emerald-800">
+                                            <div class="flex h-24 w-24 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-cyan-600 ring-4 ring-blue-200 dark:ring-blue-800">
                                                 <svg class="h-12 w-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                                                 </svg>
@@ -79,7 +79,7 @@
                                         @endif
                                     </div>
                                     <div class="flex flex-col gap-2">
-                                        <label for="avatar" class="cursor-pointer rounded-lg border-2 border-dashed border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:border-emerald-500 hover:bg-emerald-50 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:hover:border-emerald-500 dark:hover:bg-emerald-900/20">
+                                        <label for="avatar" class="cursor-pointer rounded-lg border-2 border-dashed border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:border-blue-500 hover:bg-blue-50 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:hover:border-blue-500 dark:hover:bg-blue-900/20">
                                             {{ __('Choose Image') }}
                                         </label>
                                         <input type="file" id="avatar" wire:model="avatar" accept="image/*" class="hidden">
@@ -94,7 +94,7 @@
                                 @error('avatar')
                                     <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                                 @enderror
-                                <div wire:loading wire:target="avatar" class="mt-2 text-sm text-emerald-600">
+                                <div wire:loading wire:target="avatar" class="mt-2 text-sm text-blue-600">
                                     {{ __('Uploading...') }}
                                 </div>
                             </div>

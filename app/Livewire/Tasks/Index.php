@@ -3,6 +3,7 @@
 namespace App\Livewire\Tasks;
 
 use App\Models\Task;
+use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -29,6 +30,12 @@ class Index extends Component
     public function updatedPriorityFilter(): void
     {
         $this->resetPage();
+    }
+
+    #[On('task-saved')]
+    public function refreshTasks(): void
+    {
+        // This will trigger a re-render and refresh the tasks list
     }
 
     public function render()

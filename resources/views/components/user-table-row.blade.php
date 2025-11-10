@@ -1,14 +1,14 @@
 @props(['user'])
 
-<tr class="group transition-all duration-200 hover:bg-gradient-to-r hover:from-emerald-50/50 hover:to-teal-50/50 dark:hover:from-emerald-900/10 dark:hover:to-teal-900/10">
+<tr class="group transition-all duration-200 hover:bg-gradient-to-r hover:from-blue-50/50 hover:to-teal-50/50 dark:hover:from-blue-900/10 dark:hover:to-teal-900/10">
     <td class="whitespace-nowrap px-6 py-5">
         <div class="flex items-center">
             <div class="relative size-12 flex-shrink-0">
                 @if($user->avatar)
-                    <img src="{{ $user->avatar_url }}" alt="{{ $user->name }}" class="size-12 rounded-xl object-cover ring-2 ring-emerald-200 dark:ring-emerald-800">
+                    <img src="{{ $user->avatar_url }}" alt="{{ $user->name }}" class="size-12 rounded-xl object-cover ring-2 ring-blue-200 dark:ring-blue-800">
                 @else
-                    <div class="flex size-12 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 shadow-lg ring-2 ring-emerald-200 dark:ring-emerald-800">
-                        <span class="text-base font-bold text-white">
+                    <div class="flex size-12 items-center justify-center rounded-xl bg-blue-400/20 shadow-lg ring-2 ring-blue-300 dark:ring-blue-800">
+                        <span class="text-base font-bold text-blue-900">
                             {{ $user->initials() }}
                         </span>
                     </div>

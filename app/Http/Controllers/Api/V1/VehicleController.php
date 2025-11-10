@@ -6,8 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreVehicleRequest;
 use App\Http\Requests\UpdateVehicleRequest;
 use App\Models\Vehicle;
+use App\Services\ExternalVehicleService;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Throwable;
 
 class VehicleController extends Controller
 {
@@ -93,5 +97,108 @@ class VehicleController extends Controller
         $vehicle->delete();
 
         return $this->successResponse('Vehicle deleted successfully');
+    }
+
+    public function search(Request $request): JsonResponse
+    {
+        // Accept only query parameters for input
+        $input = [
+            'search_type' => $request->query('search_type'),
+            'search_query' => $request->query('search_query'),
+        ];
+
+        $validator = Validator::make($input, [
+            'search_type' => 'required|string|in:vehicle_id,veh_chassis_number',
+            'search_query' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->errorResponse('Validation failed', $validator->errors()->toArray(), 422);
+        }
+
+        // Get the user infor
+        $user = $request->user();
+
+        $service = new ExternalVehicleService;
+
+        try {
+            $results = $service->getVehicleDetails(
+                (string)$input['search_type'],
+                (string)$input['search_query']
+            );
+
+            return $this->successResponse('Search completed', [
+                'vehicles' => $results,
+            ]);
+        } catch (QueryException $e) {
+
+            return $this->errorResponse('External database query failed', [
+                'sql' => method_exists($e, 'getSql') ? $e->getSql() : null,
+                'bindings' => method_exists($e, 'getBindings') ? $e->getBindings() : [],
+                'error' => $e->getMessage(),
+            ], 502);
+
+        } catch (\Throwable $e) {
+
+            return $this->errorResponse('External database error', [
+                'error' => $e->getMessage(),
+                'exception' => get_class($e),
+            ], 502);
+        }
+    }
+
+    public function uploadImages(Request $request): JsonResponse
+    {
+        $validator = Validator::make($request->all(), [
+            'vehicle_id' => 'required|integer',
+            'images' => 'required|array|min:1',
+            'images.*' => 'required|file|image|max:2048', // max 2MB per image
+        ]);
+
+        if ($validator->fails()) {
+            return $this->errorResponse('Validation failed', $validator->errors()->toArray(), 422);
+        }
+
+        $user = $request->user();
+
+        $service = new ExternalVehicleService;
+
+        try {
+            $results = $service->getVehicleDetails('vehicle_id', (string)$request->vehicle_id);
+
+            if (empty($results)) {
+                return $this->errorResponse('Vehicle not found', [], 404);
+            }
+
+            $vehicle = $results[0];
+
+            $uploadedImages = [];
+            $uploadedFiles = $request->file('images', []);
+
+            foreach ($uploadedFiles as $index => $file) {
+                $dummyFileName = 'uploaded_' . $request->vehicle_id . '_' . time() . '_' . ($index + 1) . '.' . $file->getClientOriginalExtension();
+                $dummyUrl = 'https://senda.us/autocraft/avisnew/images/veh_images/uploaded/' . $dummyFileName;
+                $uploadedImages[] = $dummyUrl;
+            }
+
+            $existingImages = $vehicle['images'] ?? [];
+            $vehicle['images'] = array_merge($existingImages, $uploadedImages);
+
+            return $this->successResponse('Images uploaded successfully', [
+                'vehicle' => $vehicle,
+            ]);
+
+        } catch (QueryException $e) {
+
+            return $this->errorResponse('External database query failed', [
+                'error' => $e->getMessage(),
+            ], 502);
+
+        } catch (Throwable $e) {
+
+            return $this->errorResponse('Failed to upload images', [
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
 }

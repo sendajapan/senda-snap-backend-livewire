@@ -38,7 +38,7 @@
                 </div>
             </div>
 
-            <div class="overflow-x-auto rounded-xl bg-white/50 backdrop-blur-sm dark:bg-gray-800/50">
+            <div class="overflow-x-auto border rounded-xl bg-white/50 backdrop-blur-sm dark:bg-gray-800/50">
                 <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                     <thead>
                         <tr class="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900">
@@ -57,6 +57,14 @@
                             <th
                                 class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">
                                 {{ __('Phone') }}
+                            </th>
+                            <th
+                                class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">
+                                {{ __('Created At') }}
+                            </th>
+                            <th
+                                class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">
+                                {{ __('Updated At') }}
                             </th>
                             <th
                                 class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">

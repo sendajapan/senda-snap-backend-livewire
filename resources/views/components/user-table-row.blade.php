@@ -56,8 +56,14 @@
         @endif
     </td>
     <td class="whitespace-nowrap px-6 py-5">
+        <span class="text-sm text-gray-900 dark:text-gray-500">{{ $user->created_at->format('Y-m-d') }}</span>
+    </td>
+    <td class="whitespace-nowrap px-6 py-5">
+        <span class="text-sm text-gray-900 dark:text-gray-500">{{ $user->updated_at->format('Y-m-d') }}</span>
+    </td>
+    <td class="whitespace-nowrap px-6 py-5">
         <div class="flex items-center gap-2">
-            <flux:button size="sm" variant="ghost" @click="openModal({{ $user->id }})" icon="pencil" class="opacity-0 transition-opacity group-hover:opacity-100">
+            <flux:button size="sm" variant="ghost" @click="openModal({{ $user->id }})" icon="pencil" class="opacity-50 transition-opacity group-hover:opacity-100">
                 {{ __('Edit') }}
             </flux:button>
         </div>

@@ -16,11 +16,11 @@ The design system uses 4 primary color variants:
 - Decorative: `blue-400/20` → `cyan-400/20`
 - Use for: User management, authentication pages
 
-### **Violet** (Tasks)
-- Primary: `violet-500` → `purple-500`
-- Light: `violet-50/30` → `purple-50/30`
-- Border: `violet-200`
-- Decorative: `violet-400/20` → `purple-400/20`
+### **Emerald** (Tasks)
+- Primary: `emerald-500` → `teal-500`
+- Light: `emerald-50/30` → `teal-50/30`
+- Border: `emerald-200`
+- Decorative: `emerald-400/20` → `teal-400/20`
 - Use for: Task management, assignments
 
 ### **Amber** (Vehicles)
@@ -30,11 +30,11 @@ The design system uses 4 primary color variants:
 - Decorative: `amber-400/20` → `orange-400/20`
 - Use for: Vehicle inventory, tracking
 
-### **Emerald** (General & API)
-- Primary: `emerald-500` → `teal-500`
-- Light: `emerald-50/30` → `teal-50/30`
-- Border: `emerald-200`
-- Decorative: `emerald-400/20` → `teal-400/20`
+### **Violet** (General & API)
+- Primary: `violet-500` → `purple-500`
+- Light: `violet-50/30` → `purple-50/30`
+- Border: `violet-200`
+- Decorative: `violet-400/20` → `purple-400/20`
 - Use for: Data tables, analytics, documentation
 
 ---
@@ -933,9 +933,9 @@ When creating a new page, ensure:
 | Feature | Variant | Example Usage |
 |---------|---------|---------------|
 | Users | Blue | User management, profiles, authentication |
-| Tasks | Violet | Task management, assignments |
+| Tasks | Emerald | Task management, assignments |
 | Vehicles | Amber | Vehicle inventory, tracking |
-| API Docs | Emerald | Documentation, general data |
+| API Docs | Violet | Documentation, general data |
 | Dashboard | Mixed | Use all variants as needed |
 | Settings | Gray | Configuration pages |
 

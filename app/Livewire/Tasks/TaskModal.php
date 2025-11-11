@@ -4,7 +4,6 @@ namespace App\Livewire\Tasks;
 
 use App\Models\Task;
 use App\Models\User;
-use App\Models\Vehicle;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
@@ -29,9 +28,7 @@ class TaskModal extends Component
 
     public string $priority = 'medium';
 
-    public ?int $vehicle_id = null;
-
-    public ?int $assigned_to = null;
+    public array $assigned_to = [];
 
     public string $due_date = '';
 
@@ -44,8 +41,8 @@ class TaskModal extends Component
             'work_time' => ['nullable', 'string'],
             'status' => ['required', 'in:pending,running,completed,cancelled'],
             'priority' => ['required', 'in:low,medium,high,urgent'],
-            'vehicle_id' => ['nullable', 'exists:vehicles,id'],
-            'assigned_to' => ['nullable', 'exists:users,id'],
+            'assigned_to' => ['nullable', 'array'],
+            'assigned_to.*' => ['exists:users,id'],
             'due_date' => ['nullable', 'date'],
         ];
     }
@@ -56,8 +53,7 @@ class TaskModal extends Component
             'title.required' => 'Task title is required.',
             'status.required' => 'Status is required.',
             'priority.required' => 'Priority is required.',
-            'vehicle_id.exists' => 'Selected vehicle does not exist.',
-            'assigned_to.exists' => 'Selected user does not exist.',
+            'assigned_to.*.exists' => 'One or more selected users do not exist.',
         ];
     }
 
@@ -67,7 +63,7 @@ class TaskModal extends Component
         $this->resetForm();
 
         if ($taskId) {
-            $this->task = Task::findOrFail($taskId);
+            $this->task = Task::with('assignedUsers')->findOrFail($taskId);
             $this->isEditing = true;
             $this->title = $this->task->title;
             $this->description = $this->task->description ?? '';
@@ -75,8 +71,7 @@ class TaskModal extends Component
             $this->work_time = $this->task->work_time ?? '';
             $this->status = $this->task->status;
             $this->priority = $this->task->priority;
-            $this->vehicle_id = $this->task->vehicle_id;
-            $this->assigned_to = $this->task->assigned_to;
+            $this->assigned_to = $this->task->assignedUsers->pluck('id')->toArray();
             $this->due_date = $this->task->due_date?->format('Y-m-d') ?? '';
         } else {
             $this->isEditing = false;
@@ -101,8 +96,7 @@ class TaskModal extends Component
         $this->work_time = '';
         $this->status = 'pending';
         $this->priority = 'medium';
-        $this->vehicle_id = null;
-        $this->assigned_to = null;
+        $this->assigned_to = [];
         $this->due_date = '';
         $this->resetValidation();
     }
@@ -119,17 +113,17 @@ class TaskModal extends Component
                 'work_time' => $this->work_time ?: null,
                 'status' => $this->status,
                 'priority' => $this->priority,
-                'vehicle_id' => $this->vehicle_id,
-                'assigned_to' => $this->assigned_to,
                 'due_date' => $this->due_date ?: null,
             ];
 
             if ($this->isEditing) {
                 $this->task->update($data);
+                $this->task->assignedUsers()->sync($this->assigned_to);
                 $message = 'Task updated successfully.';
             } else {
                 $data['created_by'] = auth()->id();
-                Task::create($data);
+                $task = Task::create($data);
+                $task->assignedUsers()->sync($this->assigned_to);
                 $message = 'Task created successfully.';
             }
 
@@ -143,11 +137,9 @@ class TaskModal extends Component
 
     public function render()
     {
-        $vehicles = Vehicle::orderBy('serial_number')->get();
         $users = User::orderBy('name')->get();
 
         return view('livewire.tasks.task-modal', [
-            'vehicles' => $vehicles,
             'users' => $users,
         ]);
     }

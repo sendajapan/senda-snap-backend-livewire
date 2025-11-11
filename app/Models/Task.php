@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Task extends Model
@@ -18,8 +19,6 @@ class Task extends Model
         'work_time',
         'status',
         'priority',
-        'vehicle_id',
-        'assigned_to',
         'created_by',
         'due_date',
         'completed_at',
@@ -34,14 +33,9 @@ class Task extends Model
         ];
     }
 
-    public function vehicle(): BelongsTo
+    public function assignedUsers(): BelongsToMany
     {
-        return $this->belongsTo(Vehicle::class);
-    }
-
-    public function assignedUser(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'assigned_to');
+        return $this->belongsToMany(User::class, 'task_user')->withTimestamps();
     }
 
     public function creator(): BelongsTo

@@ -19,16 +19,16 @@
         </x-page-header>
 
         <!-- Quick Start Card -->
-        <x-table-card variant="emerald">
+        <x-table-card variant="violet">
             <div class="prose prose-sm max-w-none dark:prose-invert">
                 <h3 class="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                    <svg class="h-5 w-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="h-5 w-5 text-violet-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
                     </svg>
                     Quick Start Guide
                 </h3>
                 <div class="mt-4 space-y-4">
-                    <div class="rounded-lg bg-gradient-to-r from-emerald-50 to-teal-50 p-4 dark:from-emerald-900/20 dark:to-teal-900/20">
+                    <div class="rounded-lg bg-gradient-to-r from-violet-50 to-purple-50 p-4 dark:from-violet-900/20 dark:to-purple-900/20">
                         <p class="text-sm font-medium text-gray-700 dark:text-gray-300">
                             <strong>Step 1:</strong> Register or login to get your authentication token
                         </p>
@@ -181,10 +181,10 @@
         </x-table-card>
 
         <!-- Tasks Section -->
-        <x-table-card variant="violet">
+        <x-table-card variant="emerald">
             <div class="space-y-6">
                 <div class="flex items-center gap-3">
-                    <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 shadow-lg">
+                    <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 shadow-lg">
                         <svg class="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
                         </svg>
@@ -193,7 +193,7 @@
                 </div>
 
                 <!-- Get All Tasks -->
-                <div class="space-y-3 rounded-xl border border-violet-200 bg-white/50 p-6 dark:border-violet-900/50 dark:bg-gray-800/50">
+                <div class="space-y-3 rounded-xl border border-emerald-200 bg-white/50 p-6 dark:border-emerald-900/50 dark:bg-gray-800/50">
                     <div class="flex items-center justify-between">
                         <h4 class="text-lg font-semibold text-gray-900 dark:text-white">Get All Tasks</h4>
                         <span class="rounded-lg bg-blue-100 px-3 py-1 text-xs font-bold text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">GET</span>
@@ -201,14 +201,57 @@
                     <code class="block rounded-lg bg-gray-900 px-4 py-2 text-sm text-emerald-400 dark:bg-gray-950">/tasks</code>
                     
                     <div class="space-y-2">
+                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Headers:</p>
+                        <pre class="overflow-x-auto rounded-lg bg-gray-900 p-4 text-xs text-gray-100 dark:bg-gray-950"><code>Authorization: Bearer {token}</code></pre>
+                    </div>
+
+                    <div class="space-y-2">
                         <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Query Parameters (Optional):</p>
-                        <pre class="overflow-x-auto rounded-lg bg-gray-900 p-4 text-xs text-gray-100 dark:bg-gray-950"><code>status: pending, running, completed, cancelled
-priority: low, medium, high, urgent</code></pre>
+                        <pre class="overflow-x-auto rounded-lg bg-gray-900 p-4 text-xs text-gray-100 dark:bg-gray-950"><code>search: string (search in title/description)
+status: pending, running, completed, cancelled
+priority: low, medium, high, urgent
+assigned_to: user_id (filter by assigned user)
+date_from: YYYY-MM-DD (filter by work date)
+date_to: YYYY-MM-DD (filter by work date)
+per_page: number (default: 15)</code></pre>
+                    </div>
+
+                    <div class="space-y-2">
+                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Response (200):</p>
+                        <pre class="overflow-x-auto rounded-lg bg-gray-900 p-4 text-xs text-gray-100 dark:bg-gray-950"><code>{
+    "success": true,
+    "message": "Tasks retrieved successfully",
+    "data": {
+        "tasks": [
+            {
+                "id": 1,
+                "title": "Complete inspection",
+                "description": "Full vehicle inspection",
+                "work_date": "2024-12-20",
+                "work_time": "10:00",
+                "status": "pending",
+                "priority": "high",
+                "due_date": "2024-12-31",
+                "assigned_users": [
+                    { "id": 2, "name": "John Doe", "role": "employee" },
+                    { "id": 3, "name": "Jane Smith", "role": "employee" }
+                ],
+                "creator": { "id": 1, "name": "Admin User", "role": "admin" }
+            }
+        ],
+        "pagination": {
+            "current_page": 1,
+            "last_page": 5,
+            "per_page": 15,
+            "total": 75
+        }
+    }
+}</code></pre>
                     </div>
                 </div>
 
                 <!-- Create Task -->
-                <div class="space-y-3 rounded-xl border border-violet-200 bg-white/50 p-6 dark:border-violet-900/50 dark:bg-gray-800/50">
+                <div class="space-y-3 rounded-xl border border-emerald-200 bg-white/50 p-6 dark:border-emerald-900/50 dark:bg-gray-800/50">
                     <div class="flex items-center justify-between">
                         <h4 class="text-lg font-semibold text-gray-900 dark:text-white">Create Task</h4>
                         <span class="rounded-lg bg-green-100 px-3 py-1 text-xs font-bold text-green-800 dark:bg-green-900/30 dark:text-green-400">POST</span>
@@ -216,21 +259,117 @@ priority: low, medium, high, urgent</code></pre>
                     <code class="block rounded-lg bg-gray-900 px-4 py-2 text-sm text-emerald-400 dark:bg-gray-950">/tasks</code>
                     
                     <div class="space-y-2">
+                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Headers:</p>
+                        <pre class="overflow-x-auto rounded-lg bg-gray-900 p-4 text-xs text-gray-100 dark:bg-gray-950"><code>Authorization: Bearer {token}
+Content-Type: application/json</code></pre>
+                    </div>
+
+                    <div class="space-y-2">
                         <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Request Body:</p>
                         <pre class="overflow-x-auto rounded-lg bg-gray-900 p-4 text-xs text-gray-100 dark:bg-gray-950"><code>{
-    "title": "Vehicle Inspection",
-    "description": "Complete vehicle inspection",
-    "status": "pending",
+    "title": "Complete inspection",
+    "description": "Full vehicle inspection required",
+    "work_date": "2024-12-20",
+    "work_time": "10:00",
     "priority": "high",
-    "vehicle_id": 1,
-    "assigned_to": 2,
+    "assigned_to": [2, 3, 5],
+    "due_date": "2024-12-31"
+}</code></pre>
+                    </div>
+
+                    <div class="space-y-2">
+                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Field Descriptions:</p>
+                        <div class="rounded-lg bg-gray-900 p-4 dark:bg-gray-950">
+                            <ul class="space-y-1 text-xs text-gray-100">
+                                <li>• <code class="text-emerald-400">title</code> (required): Task title</li>
+                                <li>• <code class="text-emerald-400">description</code> (required): Task description</li>
+                                <li>• <code class="text-emerald-400">work_date</code> (required): Date for task (YYYY-MM-DD)</li>
+                                <li>• <code class="text-emerald-400">work_time</code> (required): Time for task (HH:MM)</li>
+                                <li>• <code class="text-emerald-400">priority</code> (required): low, medium, high, urgent</li>
+                                <li>• <code class="text-emerald-400">assigned_to</code> (optional): Array of user IDs</li>
+                                <li>• <code class="text-emerald-400">due_date</code> (optional): Due date (YYYY-MM-DD)</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Response (201):</p>
+                        <pre class="overflow-x-auto rounded-lg bg-gray-900 p-4 text-xs text-gray-100 dark:bg-gray-950"><code>{
+    "success": true,
+    "message": "Task created successfully",
+    "data": {
+        "task": {
+            "id": 1,
+            "title": "Complete inspection",
+            "assigned_users": [
+                { "id": 2, "name": "John Doe" },
+                { "id": 3, "name": "Jane Smith" }
+            ],
+            "creator": { "id": 1, "name": "Admin User" }
+        }
+    }
+}</code></pre>
+                    </div>
+                </div>
+
+                <!-- Update Task -->
+                <div class="space-y-3 rounded-xl border border-emerald-200 bg-white/50 p-6 dark:border-emerald-900/50 dark:bg-gray-800/50">
+                    <div class="flex items-center justify-between">
+                        <h4 class="text-lg font-semibold text-gray-900 dark:text-white">Update Task</h4>
+                        <span class="rounded-lg bg-amber-100 px-3 py-1 text-xs font-bold text-amber-800 dark:bg-amber-900/30 dark:text-amber-400">PUT</span>
+                    </div>
+                    <code class="block rounded-lg bg-gray-900 px-4 py-2 text-sm text-emerald-400 dark:bg-gray-950">/tasks/{id}</code>
+                    
+                    <div class="space-y-2">
+                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Headers:</p>
+                        <pre class="overflow-x-auto rounded-lg bg-gray-900 p-4 text-xs text-gray-100 dark:bg-gray-950"><code>Authorization: Bearer {token}
+Content-Type: application/json</code></pre>
+                    </div>
+
+                    <div class="space-y-2">
+                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Request Body (all fields optional):</p>
+                        <pre class="overflow-x-auto rounded-lg bg-gray-900 p-4 text-xs text-gray-100 dark:bg-gray-950"><code>{
+    "title": "Updated task title",
+    "description": "Updated description",
+    "work_date": "2024-12-25",
+    "work_time": "14:00",
+    "priority": "urgent",
+    "assigned_to": [2, 5],
     "due_date": "2024-12-31"
 }</code></pre>
                     </div>
                 </div>
 
+                <!-- Assign Users to Task -->
+                <div class="space-y-3 rounded-xl border border-emerald-200 bg-white/50 p-6 dark:border-emerald-900/50 dark:bg-gray-800/50">
+                    <div class="flex items-center justify-between">
+                        <h4 class="text-lg font-semibold text-gray-900 dark:text-white">Assign Users to Task</h4>
+                        <span class="rounded-lg bg-green-100 px-3 py-1 text-xs font-bold text-green-800 dark:bg-green-900/30 dark:text-green-400">POST</span>
+                    </div>
+                    <code class="block rounded-lg bg-gray-900 px-4 py-2 text-sm text-emerald-400 dark:bg-gray-950">/tasks/{id}/assign</code>
+                    
+                    <div class="space-y-2">
+                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Headers:</p>
+                        <pre class="overflow-x-auto rounded-lg bg-gray-900 p-4 text-xs text-gray-100 dark:bg-gray-950"><code>Authorization: Bearer {token}
+Content-Type: application/json</code></pre>
+                    </div>
+
+                    <div class="space-y-2">
+                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Request Body:</p>
+                        <pre class="overflow-x-auto rounded-lg bg-gray-900 p-4 text-xs text-gray-100 dark:bg-gray-950"><code>{
+    "assigned_to": [2, 3, 5]
+}</code></pre>
+                    </div>
+
+                    <div class="space-y-2">
+                        <p class="text-sm text-gray-600 dark:text-gray-400">
+                            <strong>Note:</strong> This will replace all existing assignments with the new user list.
+                        </p>
+                    </div>
+                </div>
+
                 <!-- Update Task Status -->
-                <div class="space-y-3 rounded-xl border border-violet-200 bg-white/50 p-6 dark:border-violet-900/50 dark:bg-gray-800/50">
+                <div class="space-y-3 rounded-xl border border-emerald-200 bg-white/50 p-6 dark:border-emerald-900/50 dark:bg-gray-800/50">
                     <div class="flex items-center justify-between">
                         <h4 class="text-lg font-semibold text-gray-900 dark:text-white">Update Task Status</h4>
                         <span class="rounded-lg bg-green-100 px-3 py-1 text-xs font-bold text-green-800 dark:bg-green-900/30 dark:text-green-400">POST</span>
@@ -238,10 +377,54 @@ priority: low, medium, high, urgent</code></pre>
                     <code class="block rounded-lg bg-gray-900 px-4 py-2 text-sm text-emerald-400 dark:bg-gray-950">/tasks/{id}/status</code>
                     
                     <div class="space-y-2">
+                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Headers:</p>
+                        <pre class="overflow-x-auto rounded-lg bg-gray-900 p-4 text-xs text-gray-100 dark:bg-gray-950"><code>Authorization: Bearer {token}
+Content-Type: application/json</code></pre>
+                    </div>
+
+                    <div class="space-y-2">
                         <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Request Body:</p>
                         <pre class="overflow-x-auto rounded-lg bg-gray-900 p-4 text-xs text-gray-100 dark:bg-gray-950"><code>{
     "status": "completed"
 }</code></pre>
+                    </div>
+
+                    <div class="space-y-2">
+                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Status Options:</p>
+                        <div class="rounded-lg bg-gray-900 p-4 dark:bg-gray-950">
+                            <ul class="space-y-1 text-xs text-gray-100">
+                                <li>• <code class="text-emerald-400">pending</code> - Task is pending</li>
+                                <li>• <code class="text-emerald-400">running</code> - Task is in progress</li>
+                                <li>• <code class="text-emerald-400">completed</code> - Task is completed</li>
+                                <li>• <code class="text-emerald-400">cancelled</code> - Task is cancelled</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Get My Tasks -->
+                <div class="space-y-3 rounded-xl border border-emerald-200 bg-white/50 p-6 dark:border-emerald-900/50 dark:bg-gray-800/50">
+                    <div class="flex items-center justify-between">
+                        <h4 class="text-lg font-semibold text-gray-900 dark:text-white">Get My Created Tasks</h4>
+                        <span class="rounded-lg bg-blue-100 px-3 py-1 text-xs font-bold text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">GET</span>
+                    </div>
+                    <code class="block rounded-lg bg-gray-900 px-4 py-2 text-sm text-emerald-400 dark:bg-gray-950">/tasks/my-tasks</code>
+                    
+                    <div class="space-y-2">
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Returns all tasks created by the authenticated user.</p>
+                    </div>
+                </div>
+
+                <!-- Get Tasks Assigned to Me -->
+                <div class="space-y-3 rounded-xl border border-emerald-200 bg-white/50 p-6 dark:border-emerald-900/50 dark:bg-gray-800/50">
+                    <div class="flex items-center justify-between">
+                        <h4 class="text-lg font-semibold text-gray-900 dark:text-white">Get Tasks Assigned to Me</h4>
+                        <span class="rounded-lg bg-blue-100 px-3 py-1 text-xs font-bold text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">GET</span>
+                    </div>
+                    <code class="block rounded-lg bg-gray-900 px-4 py-2 text-sm text-emerald-400 dark:bg-gray-950">/tasks/assigned-to-me</code>
+                    
+                    <div class="space-y-2">
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Returns all tasks where the authenticated user is one of the assignees.</p>
                     </div>
                 </div>
             </div>
@@ -292,7 +475,7 @@ priority: low, medium, high, urgent</code></pre>
         </x-table-card>
 
         <!-- Error Responses -->
-        <x-table-card variant="emerald">
+        <x-table-card variant="violet">
             <div class="space-y-6">
                 <div class="flex items-center gap-3">
                     <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-red-500 to-pink-600 shadow-lg">
@@ -357,10 +540,10 @@ priority: low, medium, high, urgent</code></pre>
         </x-table-card>
 
         <!-- Postman Testing Guide -->
-        <x-table-card variant="emerald">
+        <x-table-card variant="violet">
             <div class="space-y-4">
                 <div class="flex items-center gap-3">
-                    <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 shadow-lg">
+                    <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 shadow-lg">
                         <svg class="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                         </svg>
@@ -369,8 +552,8 @@ priority: low, medium, high, urgent</code></pre>
                 </div>
 
                 <div class="grid gap-4 md:grid-cols-3">
-                    <div class="rounded-xl bg-gradient-to-br from-emerald-50 to-teal-50 p-6 dark:from-emerald-900/20 dark:to-teal-900/20">
-                        <div class="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-emerald-500 text-white">
+                    <div class="rounded-xl bg-gradient-to-br from-violet-50 to-purple-50 p-6 dark:from-violet-900/20 dark:to-purple-900/20">
+                        <div class="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-violet-500 text-white">
                             <span class="text-xl font-bold">1</span>
                         </div>
                         <h4 class="mb-2 font-bold text-gray-900 dark:text-white">Login First</h4>

@@ -14,7 +14,7 @@ class TaskController extends Controller
 {
     public function index(Request $request): JsonResponse
     {
-        $query = Task::with(['vehicle', 'assignedUser', 'creator', 'attachments']);
+        $query = Task::with(['assignedUsers', 'creator', 'attachments']);
 
         // Search functionality
         if ($request->has('search')) {
@@ -37,12 +37,9 @@ class TaskController extends Controller
 
         // Filter by assigned user
         if ($request->has('assigned_to')) {
-            $query->where('assigned_to', $request->get('assigned_to'));
-        }
-
-        // Filter by vehicle
-        if ($request->has('vehicle_id')) {
-            $query->where('vehicle_id', $request->get('vehicle_id'));
+            $query->whereHas('assignedUsers', function ($q) use ($request) {
+                $q->where('users.id', $request->get('assigned_to'));
+            });
         }
 
         // Filter by date range
@@ -74,8 +71,8 @@ class TaskController extends Controller
             'work_date' => 'required|date',
             'work_time' => 'required|date_format:H:i',
             'priority' => 'required|in:low,medium,high,urgent',
-            'vehicle_id' => 'required|exists:vehicles,id',
-            'assigned_to' => 'required|exists:users,id',
+            'assigned_to' => 'nullable|array',
+            'assigned_to.*' => 'exists:users,id',
             'due_date' => 'nullable|date|after_or_equal:work_date',
         ]);
 
@@ -89,13 +86,16 @@ class TaskController extends Controller
             'work_date' => $request->work_date,
             'work_time' => $request->work_time,
             'priority' => $request->priority,
-            'vehicle_id' => $request->vehicle_id,
-            'assigned_to' => $request->assigned_to,
             'created_by' => auth()->id(),
             'due_date' => $request->due_date,
         ]);
 
-        $task->load(['vehicle', 'assignedUser', 'creator', 'attachments']);
+        // Assign users to task
+        if ($request->has('assigned_to') && is_array($request->assigned_to)) {
+            $task->assignedUsers()->sync($request->assigned_to);
+        }
+
+        $task->load(['assignedUsers', 'creator', 'attachments']);
 
         return $this->successResponse('Task created successfully', [
             'task' => $task,
@@ -104,7 +104,7 @@ class TaskController extends Controller
 
     public function show(Task $task): JsonResponse
     {
-        $task->load(['vehicle', 'assignedUser', 'creator', 'attachments']);
+        $task->load(['assignedUsers', 'creator', 'attachments']);
 
         return $this->successResponse('Task retrieved successfully', [
             'task' => $task,
@@ -119,8 +119,8 @@ class TaskController extends Controller
             'work_date' => 'sometimes|date',
             'work_time' => 'sometimes|date_format:H:i',
             'priority' => 'sometimes|in:low,medium,high,urgent',
-            'vehicle_id' => 'sometimes|exists:vehicles,id',
-            'assigned_to' => 'sometimes|exists:users,id',
+            'assigned_to' => 'sometimes|array',
+            'assigned_to.*' => 'exists:users,id',
             'due_date' => 'nullable|date|after_or_equal:work_date',
         ]);
 
@@ -134,12 +134,15 @@ class TaskController extends Controller
             'work_date',
             'work_time',
             'priority',
-            'vehicle_id',
-            'assigned_to',
             'due_date',
         ]));
 
-        $task->load(['vehicle', 'assignedUser', 'creator', 'attachments']);
+        // Update assigned users if provided
+        if ($request->has('assigned_to') && is_array($request->assigned_to)) {
+            $task->assignedUsers()->sync($request->assigned_to);
+        }
+
+        $task->load(['assignedUsers', 'creator', 'attachments']);
 
         return $this->successResponse('Task updated successfully', [
             'task' => $task,
@@ -161,16 +164,17 @@ class TaskController extends Controller
     public function assign(Request $request, Task $task): JsonResponse
     {
         $validator = Validator::make($request->all(), [
-            'assigned_to' => 'required|exists:users,id',
+            'assigned_to' => 'required|array',
+            'assigned_to.*' => 'exists:users,id',
         ]);
 
         if ($validator->fails()) {
             return $this->errorResponse('Validation failed', $validator->errors()->toArray(), 422);
         }
 
-        $task->update(['assigned_to' => $request->assigned_to]);
+        $task->assignedUsers()->sync($request->assigned_to);
 
-        $task->load(['vehicle', 'assignedUser', 'creator', 'attachments']);
+        $task->load(['assignedUsers', 'creator', 'attachments']);
 
         return $this->successResponse('Task assigned successfully', [
             'task' => $task,
@@ -197,7 +201,7 @@ class TaskController extends Controller
 
         $task->update($updateData);
 
-        $task->load(['vehicle', 'assignedUser', 'creator', 'attachments']);
+        $task->load(['assignedUsers', 'creator', 'attachments']);
 
         return $this->successResponse('Task status updated successfully', [
             'task' => $task,
@@ -246,7 +250,7 @@ class TaskController extends Controller
 
     public function myTasks(Request $request): JsonResponse
     {
-        $query = Task::with(['vehicle', 'assignedUser', 'creator', 'attachments'])
+        $query = Task::with(['assignedUsers', 'creator', 'attachments'])
             ->where('created_by', auth()->id());
 
         // Apply filters
@@ -272,8 +276,10 @@ class TaskController extends Controller
 
     public function assignedToMe(Request $request): JsonResponse
     {
-        $query = Task::with(['vehicle', 'assignedUser', 'creator', 'attachments'])
-            ->where('assigned_to', auth()->id());
+        $query = Task::with(['assignedUsers', 'creator', 'attachments'])
+            ->whereHas('assignedUsers', function ($q) {
+                $q->where('users.id', auth()->id());
+            });
 
         // Apply filters
         if ($request->has('status')) {

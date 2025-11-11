@@ -75,28 +75,39 @@
                                 @enderror
                             </div>
 
-                            <!-- Vehicle -->
+                            <!-- Assigned To (Multiple) -->
                             <div>
-                                <flux:select wire:model="vehicle_id" label="{{ __('Vehicle') }}">
-                                    <option value="">{{ __('Select Vehicle (Optional)') }}</option>
-                                    @foreach($vehicles as $vehicle)
-                                        <option value="{{ $vehicle->id }}">{{ $vehicle->serial_number }} - {{ $vehicle->brand }} {{ $vehicle->model }}</option>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    {{ __('Assign To (Multiple)') }}
+                                </label>
+                                <div class="space-y-2 max-h-48 overflow-y-auto rounded-lg border border-gray-300 bg-white p-3 dark:border-gray-600 dark:bg-gray-800">
+                                    @foreach($users as $user)
+                                        <label class="flex items-center gap-2 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 rounded p-2 transition-colors">
+                                            <input 
+                                                type="checkbox" 
+                                                wire:model="assigned_to" 
+                                                value="{{ $user->id }}"
+                                                class="rounded border-gray-300 text-emerald-600 focus:ring-emerald-500 dark:border-gray-600 dark:bg-gray-700">
+                                            <div class="flex items-center gap-2 flex-1">
+                                                @if($user->avatar)
+                                                    <img src="{{ $user->avatar_url }}" alt="{{ $user->name }}" class="h-6 w-6 rounded-lg object-cover ring-2 ring-emerald-200 dark:ring-emerald-800">
+                                                @else
+                                                    <div class="flex h-6 w-6 items-center justify-center rounded-lg bg-emerald-400/20 ring-2 ring-emerald-300 dark:ring-emerald-800">
+                                                        <span class="text-xs font-bold text-emerald-900 dark:text-emerald-200">
+                                                            {{ $user->initials() }}
+                                                        </span>
+                                                    </div>
+                                                @endif
+                                                <span class="text-sm text-gray-900 dark:text-white">{{ $user->name }}</span>
+                                                <span class="text-xs text-gray-500 dark:text-gray-400">({{ ucfirst($user->role) }})</span>
+                                            </div>
+                                        </label>
                                     @endforeach
-                                </flux:select>
-                                @error('vehicle_id')
+                                </div>
+                                @error('assigned_to')
                                     <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                                 @enderror
-                            </div>
-
-                            <!-- Assigned To -->
-                            <div>
-                                <flux:select wire:model="assigned_to" label="{{ __('Assign To') }}">
-                                    <option value="">{{ __('Select User (Optional)') }}</option>
-                                    @foreach($users as $user)
-                                        <option value="{{ $user->id }}">{{ $user->name }} ({{ $user->role }})</option>
-                                    @endforeach
-                                </flux:select>
-                                @error('assigned_to')
+                                @error('assigned_to.*')
                                     <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                                 @enderror
                             </div>

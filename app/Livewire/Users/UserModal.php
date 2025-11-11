@@ -34,7 +34,7 @@ class UserModal extends Component
 
     public string $avis_id = '';
 
-    public $avatar;
+    public $avatar = null;
 
     public ?string $existing_avatar = null;
 
@@ -145,7 +145,7 @@ class UserModal extends Component
             }
 
             // Handle avatar upload
-            if ($this->avatar) {
+            if ($this->avatar && is_object($this->avatar) && method_exists($this->avatar, 'store')) {
                 // Delete old avatar if editing
                 if ($this->isEditing && $this->user && $this->user->avatar) {
                     Storage::disk('public')->delete($this->user->avatar);
@@ -166,6 +166,7 @@ class UserModal extends Component
             $this->dispatch('notify', message: $message, type: 'success');
             $this->closeModal();
         } catch (\Exception $e) {
+            \Log::error('User save error: '.$e->getMessage());
             $this->dispatch('notify', message: 'An error occurred. Please try again.', type: 'error');
         }
     }

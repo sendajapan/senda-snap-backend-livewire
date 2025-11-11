@@ -35,8 +35,16 @@
                 <div class="flex -space-x-2">
                     @foreach($task->assignedUsers->take(3) as $user)
                         <div class="relative h-8 w-8 flex-shrink-0" title="{{ $user->name }}">
-                            @if($user->avatar)
-                                <img src="{{ $user->avatar_url }}" alt="{{ $user->name }}" class="h-8 w-8 rounded-lg object-cover ring-2 ring-white dark:ring-gray-900">
+                            @if($user->avatar && $user->avatar_url)
+                                <img src="{{ $user->avatar_url }}"
+                                     alt="{{ $user->name }}"
+                                     class="h-8 w-8 rounded-lg object-cover ring-2 ring-white dark:ring-gray-900"
+                                     onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                <div class="hidden h-8 w-8 items-center justify-center rounded-lg bg-emerald-400/20 ring-2 ring-white dark:ring-gray-900">
+                                    <span class="text-xs font-bold text-emerald-900 dark:text-emerald-200">
+                                        {{ $user->initials() }}
+                                    </span>
+                                </div>
                             @else
                                 <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-400/20 ring-2 ring-white dark:ring-gray-900">
                                     <span class="text-xs font-bold text-emerald-900 dark:text-emerald-200">
@@ -69,8 +77,16 @@
         @if($task->creator)
             <div class="flex items-center gap-2">
                 <div class="relative h-8 w-8 flex-shrink-0">
-                    @if($task->creator->avatar)
-                        <img src="{{ $task->creator->avatar_url }}" alt="{{ $task->creator->name }}" class="h-8 w-8 rounded-lg object-cover ring-2 ring-emerald-200 dark:ring-emerald-800">
+                    @if($task->creator->avatar && $task->creator->avatar_url)
+                        <img src="{{ $task->creator->avatar_url }}"
+                             alt="{{ $task->creator->name }}"
+                             class="h-8 w-8 rounded-lg object-cover ring-2 ring-emerald-200 dark:ring-emerald-800"
+                             onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <div class="hidden h-8 w-8 items-center justify-center rounded-lg bg-emerald-400/20 ring-2 ring-emerald-300 dark:ring-emerald-800">
+                            <span class="text-xs font-bold text-emerald-900 dark:text-emerald-200">
+                                {{ $task->creator->initials() }}
+                            </span>
+                        </div>
                     @else
                         <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-400/20 ring-2 ring-emerald-300 dark:ring-emerald-800">
                             <span class="text-xs font-bold text-emerald-900 dark:text-emerald-200">

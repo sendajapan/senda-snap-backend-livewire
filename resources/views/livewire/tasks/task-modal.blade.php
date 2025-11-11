@@ -2,17 +2,19 @@
     <!-- Backdrop -->
     <div x-data="{ open: @entangle('open') }"
          x-show="open"
-         x-transition:enter="transition ease-out duration-300"
-         x-transition:enter-start="opacity-0"
-         x-transition:enter-end="opacity-100"
-         x-transition:leave="transition ease-in duration-200"
-         x-transition:leave-start="opacity-100"
-         x-transition:leave-end="opacity-0"
+         x-cloak
          class="fixed inset-0 z-50 overflow-hidden"
          style="display: none;">
 
         <!-- Background overlay -->
-        <div class="absolute inset-0 bg-gray-900/50 backdrop-blur-sm"></div>
+        <div x-show="open"
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="transition ease-in duration-500"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"
+             class="absolute inset-0 bg-gray-900/50 backdrop-blur-sm"></div>
 
         <!-- Modal Panel -->
         <div class="fixed inset-y-0 right-0 flex max-w-full pl-10">
@@ -82,17 +84,13 @@
                                 </label>
                                 <div class="space-y-2 max-h-48 overflow-y-auto rounded-lg border border-gray-300 bg-white p-3 dark:border-gray-600 dark:bg-gray-800">
                                     @foreach($users as $user)
-                                        <label class="flex items-center gap-2 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 rounded p-2 transition-colors">
-                                            <input 
-                                                type="checkbox" 
-                                                wire:model="assigned_to" 
-                                                value="{{ $user->id }}"
-                                                class="rounded border-gray-300 text-emerald-600 focus:ring-emerald-500 dark:border-gray-600 dark:bg-gray-700">
+                                        <label class="flex items-center gap-2 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 rounded transition-colors">
+                                            <input type="checkbox" wire:model="assigned_to" value="{{ $user->id }}" class="rounded border-gray-300 text-emerald-600 focus:ring-emerald-500 dark:border-gray-600 dark:bg-gray-700">
                                             <div class="flex items-center gap-2 flex-1">
                                                 @if($user->avatar)
-                                                    <img src="{{ $user->avatar_url }}" alt="{{ $user->name }}" class="h-6 w-6 rounded-lg object-cover ring-2 ring-emerald-200 dark:ring-emerald-800">
+                                                    <img src="{{ $user->avatar_url }}" alt="{{ $user->name }}" class="h-5 w-5 rounded-lg object-cover ring-2 ring-emerald-200 dark:ring-emerald-800">
                                                 @else
-                                                    <div class="flex h-6 w-6 items-center justify-center rounded-lg bg-emerald-400/20 ring-2 ring-emerald-300 dark:ring-emerald-800">
+                                                    <div class="flex h-5 w-5 items-center justify-center rounded-lg bg-emerald-400/20 ring-2 ring-emerald-300 dark:ring-emerald-800">
                                                         <span class="text-xs font-bold text-emerald-900 dark:text-emerald-200">
                                                             {{ $user->initials() }}
                                                         </span>

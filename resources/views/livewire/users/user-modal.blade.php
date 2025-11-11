@@ -2,17 +2,19 @@
     <!-- Backdrop -->
     <div x-data="{ open: @entangle('open') }"
          x-show="open"
-         x-transition:enter="transition ease-out duration-300"
-         x-transition:enter-start="opacity-0"
-         x-transition:enter-end="opacity-100"
-         x-transition:leave="transition ease-in duration-200"
-         x-transition:leave-start="opacity-100"
-         x-transition:leave-end="opacity-0"
+         x-cloak
          class="fixed inset-0 z-50 overflow-hidden"
          style="display: none;">
 
         <!-- Background overlay -->
-        <div class="absolute inset-0 bg-gray-900/50 backdrop-blur-sm"></div>
+        <div x-show="open"
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="transition ease-in duration-500"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"
+             class="absolute inset-0 bg-gray-900/50 backdrop-blur-sm"></div>
 
         <!-- Modal Panel -->
         <div class="fixed inset-y-0 right-0 flex max-w-full pl-10">
@@ -66,8 +68,23 @@
                                 </label>
                                 <div class="mt-2 flex items-center gap-4">
                                     <div class="relative">
-                                        @if ($avatar)
-                                            <img src="{{ $avatar->temporaryUrl() }}" alt="Avatar preview" class="h-24 w-24 rounded-xl object-cover ring-4 ring-blue-200 dark:ring-blue-800">
+                                        @if ($avatar && is_object($avatar))
+                                            @php
+                                                try {
+                                                    $avatarUrl = $avatar->temporaryUrl();
+                                                } catch (\Exception $e) {
+                                                    $avatarUrl = null;
+                                                }
+                                            @endphp
+                                            @if($avatarUrl)
+                                                <img src="{{ $avatarUrl }}" alt="Avatar preview" class="h-24 w-24 rounded-xl object-cover ring-4 ring-blue-200 dark:ring-blue-800">
+                                            @else
+                                                <div class="flex h-24 w-24 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-cyan-600 ring-4 ring-blue-200 dark:ring-blue-800">
+                                                    <svg class="h-12 w-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                                    </svg>
+                                                </div>
+                                            @endif
                                         @elseif ($existing_avatar)
                                             <img src="{{ Storage::url($existing_avatar) }}" alt="Current avatar" class="h-24 w-24 rounded-xl object-cover ring-4 ring-blue-200 dark:ring-blue-800">
                                         @else

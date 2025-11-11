@@ -1,5 +1,5 @@
 @props(['user'])
-
+@php \Barryvdh\Debugbar\Facades\Debugbar::info($user) @endphp
 <tr class="group transition-all duration-200 hover:bg-gradient-to-r hover:from-blue-50/50 hover:to-teal-50/50 dark:hover:from-blue-900/10 dark:hover:to-teal-900/10">
     <td class="whitespace-nowrap px-6 py-5">
         <div class="flex items-center">

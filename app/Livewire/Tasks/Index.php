@@ -3,6 +3,7 @@
 namespace App\Livewire\Tasks;
 
 use App\Models\Task;
+use Illuminate\View\View;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -52,7 +53,7 @@ class Index extends Component
         // This will trigger a re-render and refresh the tasks list
     }
 
-    public function render()
+    public function render(): View
     {
         // Today's tasks - sorted by work_time ascending (earliest first)
         $todayTasks = Task::with(['assignedUsers', 'creator'])

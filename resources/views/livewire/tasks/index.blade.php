@@ -22,13 +22,43 @@
 
     <!-- Today's Tasks Table Card -->
     <x-table-card variant="emerald">
-        <div class="mb-4 flex items-center justify-between">
-            <h3 class="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
+        <div class="mb-4">
+            <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
                 <svg class="h-5 w-5 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
                 {{ __("Today's Tasks") }} ({{ $todayTasks->count() }})
             </h3>
+
+            <!-- Filters for Today's Tasks -->
+            <div class="flex gap-4">
+                <div class="w-40">
+                    <flux:select wire:model.live="todayStatusFilter">
+                        <option value="">{{ __('All Status') }}</option>
+                        <option value="pending">{{ __('Pending') }}</option>
+                        <option value="running">{{ __('Running') }}</option>
+                        <option value="completed">{{ __('Completed') }}</option>
+                        <option value="cancelled">{{ __('Cancelled') }}</option>
+                    </flux:select>
+                </div>
+                <div class="w-40">
+                    <flux:select wire:model.live="todayPriorityFilter">
+                        <option value="">{{ __('All Priorities') }}</option>
+                        <option value="low">{{ __('Low') }}</option>
+                        <option value="medium">{{ __('Medium') }}</option>
+                        <option value="high">{{ __('High') }}</option>
+                        <option value="urgent">{{ __('Urgent') }}</option>
+                    </flux:select>
+                </div>
+                <div class="w-48">
+                    <flux:select wire:model.live="todayAssignedToFilter">
+                        <option value="">{{ __('All Assigned') }}</option>
+                        @foreach($users as $user)
+                            <option value="{{ $user->id }}">{{ $user->name }} ({{ ucfirst($user->role) }})</option>
+                        @endforeach
+                    </flux:select>
+                </div>
+            </div>
         </div>
 
         <div class="overflow-x-auto border rounded-xl bg-white/50 backdrop-blur-sm dark:bg-gray-800/50">
@@ -81,6 +111,11 @@
                 </tbody>
             </table>
         </div>
+
+        <!-- Pagination for Today's Tasks -->
+        <div class="mt-4">
+            {{ $todayTasks->links() }}
+        </div>
     </x-table-card>
 
     <!-- All Tasks Table Card -->
@@ -92,8 +127,8 @@
                 </svg>
                 {{ __('All Tasks') }}
             </h3>
-            <div class="flex gap-4">
-                <div class="flex-1">
+            <div class="flex flex-wrap gap-4">
+                <div class="flex-1 min-w-64">
                     <flux:input wire:model.live.debounce.300ms="search"
                         placeholder="{{ __('Search by title or description...') }}" icon="magnifying-glass" />
                 </div>
@@ -119,6 +154,14 @@
                         <option value="medium">{{ __('Medium') }}</option>
                         <option value="high">{{ __('High') }}</option>
                         <option value="urgent">{{ __('Urgent') }}</option>
+                    </flux:select>
+                </div>
+                <div class="w-48">
+                    <flux:select wire:model.live="assignedToFilter">
+                        <option value="">{{ __('All Assigned') }}</option>
+                        @foreach($users as $user)
+                            <option value="{{ $user->id }}">{{ $user->name }} ({{ ucfirst($user->role) }})</option>
+                        @endforeach
                     </flux:select>
                 </div>
             </div>

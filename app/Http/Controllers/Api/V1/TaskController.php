@@ -67,13 +67,13 @@ class TaskController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|max:255',
-            'description' => 'required|string',
-            'work_date' => 'required|date',
-            'work_time' => 'required|date_format:H:i',
+            'description' => 'nullable|string',
+            'work_date' => 'nullable|date',
+            'work_time' => 'nullable',
             'priority' => 'required|in:low,medium,high,urgent',
             'assigned_to' => 'nullable|array',
             'assigned_to.*' => 'exists:users,id',
-            'due_date' => 'nullable|date|after_or_equal:work_date',
+            'due_date' => 'nullable|date',
         ]);
 
         if ($validator->fails()) {
@@ -115,13 +115,13 @@ class TaskController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'title' => 'sometimes|string|max:255',
-            'description' => 'sometimes|string',
+            'description' => 'nullable|string',
             'work_date' => 'sometimes|date',
-            'work_time' => 'sometimes|date_format:H:i',
+            'work_time' => 'nullable',
             'priority' => 'sometimes|in:low,medium,high,urgent',
             'assigned_to' => 'sometimes|array',
             'assigned_to.*' => 'exists:users,id',
-            'due_date' => 'nullable|date|after_or_equal:work_date',
+            'due_date' => 'nullable|date',
         ]);
 
         if ($validator->fails()) {

@@ -3,12 +3,17 @@
 namespace App\Livewire\Tasks;
 
 use App\Models\Task;
+use App\Models\TaskAttachment;
 use App\Models\User;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\On;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 
 class TaskModal extends Component
 {
+    use WithFileUploads;
+
     public bool $open = false;
 
     public ?Task $task = null;
@@ -32,6 +37,10 @@ class TaskModal extends Component
 
     public string $due_date = '';
 
+    public array $attachments = [];
+
+    public array $existingAttachments = [];
+
     protected function rules(): array
     {
         return [
@@ -44,6 +53,7 @@ class TaskModal extends Component
             'assigned_to' => ['nullable', 'array'],
             'assigned_to.*' => ['exists:users,id'],
             'due_date' => ['nullable', 'date'],
+            'attachments.*' => ['nullable', 'file', 'max:10240'], // 10MB max per file
         ];
     }
 
@@ -63,7 +73,7 @@ class TaskModal extends Component
         $this->resetForm();
 
         if ($taskId) {
-            $this->task = Task::with('assignedUsers')->findOrFail($taskId);
+            $this->task = Task::with(['assignedUsers', 'attachments.uploader'])->findOrFail($taskId);
             $this->isEditing = true;
             $this->title = $this->task->title;
             $this->description = $this->task->description ?? '';
@@ -73,6 +83,7 @@ class TaskModal extends Component
             $this->priority = $this->task->priority;
             $this->assigned_to = $this->task->assignedUsers->pluck('id')->toArray();
             $this->due_date = $this->task->due_date?->format('Y-m-d') ?? '';
+            $this->existingAttachments = $this->task->attachments->toArray();
         } else {
             $this->isEditing = false;
         }
@@ -98,6 +109,8 @@ class TaskModal extends Component
         $this->priority = 'medium';
         $this->assigned_to = [];
         $this->due_date = '';
+        $this->attachments = [];
+        $this->existingAttachments = [];
         $this->resetValidation();
     }
 
@@ -119,6 +132,7 @@ class TaskModal extends Component
             if ($this->isEditing) {
                 $this->task->update($data);
                 $this->task->assignedUsers()->sync($this->assigned_to);
+                $task = $this->task;
                 $message = 'Task updated successfully.';
             } else {
                 $data['created_by'] = auth()->id();
@@ -127,12 +141,66 @@ class TaskModal extends Component
                 $message = 'Task created successfully.';
             }
 
+            // Handle file uploads
+            if (! empty($this->attachments)) {
+                foreach ($this->attachments as $file) {
+                    if (is_object($file) && method_exists($file, 'store')) {
+                        $path = $file->store('task-attachments', 'public');
+                        $task->attachments()->create([
+                            'file_path' => $path,
+                            'file_name' => $file->getClientOriginalName(),
+                            'file_type' => $file->getMimeType(),
+                            'uploaded_by' => auth()->id(),
+                        ]);
+                    }
+                }
+            }
+
             $this->dispatch('task-saved');
             $this->dispatch('notify', message: $message, type: 'success');
             $this->closeModal();
         } catch (\Exception $e) {
+            \Log::error('Task save error: '.$e->getMessage());
             $this->dispatch('notify', message: 'An error occurred. Please try again.', type: 'error');
         }
+    }
+
+    public function deleteAttachment(int $attachmentId): void
+    {
+        try {
+            $attachment = TaskAttachment::findOrFail($attachmentId);
+
+            // Check if user has permission to delete
+            if ($attachment->uploaded_by !== auth()->id() && ! in_array(auth()->user()->role, ['admin', 'manager'])) {
+                $this->dispatch('notify', message: 'You do not have permission to delete this attachment.', type: 'error');
+
+                return;
+            }
+
+            // Delete file from storage
+            if (Storage::disk('public')->exists($attachment->file_path)) {
+                Storage::disk('public')->delete($attachment->file_path);
+            }
+
+            // Delete record
+            $attachment->delete();
+
+            // Refresh existing attachments
+            if ($this->task) {
+                $this->existingAttachments = $this->task->fresh()->attachments->toArray();
+            }
+
+            $this->dispatch('notify', message: 'Attachment deleted successfully.', type: 'success');
+        } catch (\Exception $e) {
+            \Log::error('Attachment delete error: '.$e->getMessage());
+            $this->dispatch('notify', message: 'An error occurred while deleting attachment.', type: 'error');
+        }
+    }
+
+    public function removeNewAttachment(int $index): void
+    {
+        unset($this->attachments[$index]);
+        $this->attachments = array_values($this->attachments);
     }
 
     public function render()

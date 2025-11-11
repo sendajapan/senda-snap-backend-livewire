@@ -5,7 +5,7 @@
     @if($showTimeFirst)
         <td class="whitespace-nowrap px-6 py-5">
             @if($task->work_time)
-                <div class="inline-flex items-center gap-2 rounded-sm bg-accent px-2 py-1 shadow-sm">
+                <div class="inline-flex items-center gap-2 rounded-sm bg-accent/90 px-2 py-1 shadow-sm">
                     <svg class="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
@@ -24,7 +24,17 @@
 
     <td class="whitespace-nowrap px-6 py-5">
         <div class="flex flex-col">
-            <span class="text-sm font-bold text-gray-900 dark:text-white">{{ $task->title }}</span>
+            <div class="flex items-center gap-2">
+                <span class="text-sm font-bold text-gray-900 dark:text-white">{{ $task->title }}</span>
+                @if($task->attachments && $task->attachments->count() > 0)
+                    <div class="flex items-center gap-1 rounded-md bg-emerald-100 px-2 py-0.5 dark:bg-emerald-900/30" title="{{ $task->attachments->count() }} {{ __('attachment(s)') }}">
+                        <svg class="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+                        </svg>
+                        <span class="text-xs font-semibold text-emerald-700 dark:text-emerald-300">{{ $task->attachments->count() }}</span>
+                    </div>
+                @endif
+            </div>
             @if($task->description)
                 <span class="mt-1 text-xs text-gray-500 dark:text-gray-400 line-clamp-1">{{ $task->description }}</span>
             @endif

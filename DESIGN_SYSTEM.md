@@ -989,6 +989,14 @@ When creating a new page, ensure:
 - Added Created At and Updated At columns
 - Improved date formatting
 
+### File Attachments
+- Multiple file upload support
+- 10MB max per file
+- Preview for new uploads before saving
+- Display existing attachments with download/delete actions
+- Permission-based deletion (only uploader or admin/manager)
+- Emerald-themed UI matching parent component
+
 ---
 
 **Version**: 2.0  

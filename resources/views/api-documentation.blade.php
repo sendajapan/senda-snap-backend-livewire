@@ -282,9 +282,9 @@ Content-Type: application/json</code></pre>
                         <div class="rounded-lg bg-gray-900 p-4 dark:bg-gray-950">
                             <ul class="space-y-1 text-xs text-gray-100">
                                 <li>• <code class="text-emerald-400">title</code> (required): Task title</li>
-                                <li>• <code class="text-emerald-400">description</code> (required): Task description</li>
-                                <li>• <code class="text-emerald-400">work_date</code> (required): Date for task (YYYY-MM-DD)</li>
-                                <li>• <code class="text-emerald-400">work_time</code> (required): Time for task (HH:MM)</li>
+                                <li>• <code class="text-emerald-400">description</code> (optional): Task description</li>
+                                <li>• <code class="text-emerald-400">work_date</code> (optional): Date for task (YYYY-MM-DD)</li>
+                                <li>• <code class="text-emerald-400">work_time</code> (optional): Time for task (HH:MM or HH:MM:SS)</li>
                                 <li>• <code class="text-emerald-400">priority</code> (required): low, medium, high, urgent</li>
                                 <li>• <code class="text-emerald-400">assigned_to</code> (optional): Array of user IDs</li>
                                 <li>• <code class="text-emerald-400">due_date</code> (optional): Due date (YYYY-MM-DD)</li>
@@ -399,6 +399,79 @@ Content-Type: application/json</code></pre>
                                 <li>• <code class="text-emerald-400">cancelled</code> - Task is cancelled</li>
                             </ul>
                         </div>
+                    </div>
+                </div>
+
+                <!-- Upload Task Attachment -->
+                <div class="space-y-3 rounded-xl border border-emerald-200 bg-white/50 p-6 dark:border-emerald-900/50 dark:bg-gray-800/50">
+                    <div class="flex items-center justify-between">
+                        <h4 class="text-lg font-semibold text-gray-900 dark:text-white">Upload Task Attachment</h4>
+                        <span class="rounded-lg bg-green-100 px-3 py-1 text-xs font-bold text-green-800 dark:bg-green-900/30 dark:text-green-400">POST</span>
+                    </div>
+                    <code class="block rounded-lg bg-gray-900 px-4 py-2 text-sm text-emerald-400 dark:bg-gray-950">/tasks/{id}/attachments</code>
+                    
+                    <div class="space-y-2">
+                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Headers:</p>
+                        <pre class="overflow-x-auto rounded-lg bg-gray-900 p-4 text-xs text-gray-100 dark:bg-gray-950"><code>Authorization: Bearer {token}
+Content-Type: multipart/form-data</code></pre>
+                    </div>
+
+                    <div class="space-y-2">
+                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Request Body (Form Data):</p>
+                        <div class="rounded-lg bg-gray-900 p-4 dark:bg-gray-950">
+                            <ul class="space-y-1 text-xs text-gray-100">
+                                <li>• <code class="text-emerald-400">file</code> (required): File to upload (max 10MB)</li>
+                                <li>• <code class="text-emerald-400">file_name</code> (optional): Custom file name</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Response (201):</p>
+                        <pre class="overflow-x-auto rounded-lg bg-gray-900 p-4 text-xs text-gray-100 dark:bg-gray-950"><code>{
+    "success": true,
+    "message": "Attachment uploaded successfully",
+    "data": {
+        "attachment": {
+            "id": 1,
+            "task_id": 5,
+            "file_name": "document.pdf",
+            "file_path": "task-attachments/xyz.pdf",
+            "file_type": "application/pdf",
+            "uploaded_by": 1,
+            "created_at": "2024-12-20T10:00:00.000000Z"
+        }
+    }
+}</code></pre>
+                    </div>
+                </div>
+
+                <!-- Delete Task Attachment -->
+                <div class="space-y-3 rounded-xl border border-emerald-200 bg-white/50 p-6 dark:border-emerald-900/50 dark:bg-gray-800/50">
+                    <div class="flex items-center justify-between">
+                        <h4 class="text-lg font-semibold text-gray-900 dark:text-white">Delete Task Attachment</h4>
+                        <span class="rounded-lg bg-red-100 px-3 py-1 text-xs font-bold text-red-800 dark:bg-red-900/30 dark:text-red-400">DELETE</span>
+                    </div>
+                    <code class="block rounded-lg bg-gray-900 px-4 py-2 text-sm text-emerald-400 dark:bg-gray-950">/tasks/{task_id}/attachments/{attachment_id}</code>
+                    
+                    <div class="space-y-2">
+                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Headers:</p>
+                        <pre class="overflow-x-auto rounded-lg bg-gray-900 p-4 text-xs text-gray-100 dark:bg-gray-950"><code>Authorization: Bearer {token}</code></pre>
+                    </div>
+
+                    <div class="space-y-2">
+                        <p class="text-sm text-gray-600 dark:text-gray-400">
+                            <strong>Note:</strong> Only the uploader, admin, or manager can delete an attachment.
+                        </p>
+                    </div>
+
+                    <div class="space-y-2">
+                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Response (200):</p>
+                        <pre class="overflow-x-auto rounded-lg bg-gray-900 p-4 text-xs text-gray-100 dark:bg-gray-950"><code>{
+    "success": true,
+    "message": "Attachment deleted successfully",
+    "data": []
+}</code></pre>
                     </div>
                 </div>
 

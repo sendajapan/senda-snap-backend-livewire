@@ -145,7 +145,7 @@
                                     @enderror
                                 </div>
                                 <div>
-                                    <flux:input type="time" wire:model="work_time" label="{{ __('Work Time') }}" />
+                                    <flux:input type="time" wire:model="work_time" label="{{ __('Work Time') }}" step="1" />
                                     @error('work_time')
                                         <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                                     @enderror
@@ -158,6 +158,109 @@
                                 @error('due_date')
                                     <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                                 @enderror
+                            </div>
+
+                            <!-- File Attachments -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    {{ __('Attachments') }}
+                                </label>
+
+                                <!-- Existing Attachments -->
+                                @if(!empty($existingAttachments))
+                                    <div class="space-y-2 mb-3">
+                                        <p class="text-xs text-gray-500 dark:text-gray-400">{{ __('Uploaded Files') }}</p>
+                                        @foreach($existingAttachments as $attachment)
+                                            <div class="flex items-center justify-between rounded-lg border border-emerald-200 bg-emerald-50/50 p-3 dark:border-emerald-900/50 dark:bg-emerald-900/20">
+                                                <div class="flex items-center gap-3 flex-1 min-w-0">
+                                                    <div class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-emerald-500">
+                                                        <svg class="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                                        </svg>
+                                                    </div>
+                                                    <div class="flex-1 min-w-0">
+                                                        <p class="text-sm font-medium text-gray-900 dark:text-white truncate">{{ $attachment['file_name'] }}</p>
+                                                        <p class="text-xs text-gray-500 dark:text-gray-400">
+                                                            {{ __('Uploaded by') }} {{ $attachment['uploader']['name'] ?? 'Unknown' }} • {{ \Carbon\Carbon::parse($attachment['created_at'])->format('M d, Y') }}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <div class="flex items-center gap-2 flex-shrink-0">
+                                                    <a href="{{ Storage::disk('public')->url($attachment['file_path']) }}" 
+                                                       target="_blank" 
+                                                       class="rounded-lg p-2 text-emerald-600 hover:bg-emerald-100 dark:text-emerald-400 dark:hover:bg-emerald-900/20">
+                                                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                                        </svg>
+                                                    </a>
+                                                    <button type="button" 
+                                                            wire:click="deleteAttachment({{ $attachment['id'] }})"
+                                                            class="rounded-lg p-2 text-red-600 hover:bg-red-100 dark:text-red-400 dark:hover:bg-red-900/20">
+                                                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                        </svg>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                @endif
+
+                                <!-- Upload New Files -->
+                                <div class="space-y-2">
+                                    <div class="flex items-center gap-2">
+                                        <input type="file" 
+                                               wire:model="attachments" 
+                                               multiple 
+                                               id="file-upload" 
+                                               class="hidden">
+                                        <label for="file-upload" 
+                                               class="inline-flex cursor-pointer items-center gap-2 rounded-lg border-2 border-dashed border-emerald-300 bg-emerald-50/50 px-4 py-3 text-sm font-medium text-emerald-700 transition-colors hover:bg-emerald-100 dark:border-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-400 dark:hover:bg-emerald-900/30">
+                                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                                            </svg>
+                                            {{ __('Choose Files') }}
+                                        </label>
+                                        <span class="text-xs text-gray-500 dark:text-gray-400">{{ __('Max 10MB per file') }}</span>
+                                    </div>
+
+                                    <!-- New Files Preview -->
+                                    @if(!empty($attachments))
+                                        <div class="space-y-2">
+                                            @foreach($attachments as $index => $file)
+                                                <div class="flex items-center justify-between rounded-lg border border-gray-200 bg-gray-50 p-2 dark:border-gray-700 dark:bg-gray-800" wire:key="attachment-{{ $index }}">
+                                                    <div class="flex items-center gap-2 flex-1 min-w-0">
+                                                        <svg class="h-5 w-5 flex-shrink-0 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                                        </svg>
+                                                        <span class="text-sm text-gray-700 dark:text-gray-300 truncate">
+                                                            @if(is_object($file) && method_exists($file, 'getClientOriginalName'))
+                                                                {{ $file->getClientOriginalName() }}
+                                                            @else
+                                                                {{ __('File') }} {{ $index + 1 }}
+                                                            @endif
+                                                        </span>
+                                                    </div>
+                                                    <button type="button" 
+                                                            wire:click="removeNewAttachment({{ $index }})"
+                                                            class="flex-shrink-0 text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300">
+                                                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                                        </svg>
+                                                    </button>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    @endif
+
+                                    <div wire:loading wire:target="attachments" class="text-sm text-emerald-600 dark:text-emerald-400">
+                                        {{ __('Uploading files...') }}
+                                    </div>
+
+                                    @error('attachments.*')
+                                        <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                                    @enderror
+                                </div>
                             </div>
                         </div>
 

@@ -1,21 +1,22 @@
+@php use Carbon\Carbon; @endphp
 @props(['task', 'showWorkDate' => false, 'showTimeFirst' => false])
 
 <tr class="group transition-all duration-200 hover:bg-gradient-to-r hover:from-emerald-50/50 hover:to-teal-50/50 dark:hover:from-emerald-900/10 dark:hover:to-teal-900/10">
     @if($showTimeFirst)
         <td class="whitespace-nowrap px-6 py-5">
             @if($task->work_time)
-                <div class="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-emerald-500 to-teal-600 px-4 py-2 shadow-md">
+                <div class="inline-flex items-center gap-2 rounded-sm bg-accent px-2 py-1 shadow-sm">
                     <svg class="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
-                    <span class="text-base font-bold text-white">{{ \Carbon\Carbon::parse($task->work_time)->format('h:i A') }}</span>
+                    <span class="text-sm font-semibold text-white">{{ Carbon::parse($task->work_time)->format('h:i A') }}</span>
                 </div>
             @else
-                <div class="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-gray-400 to-gray-500 px-4 py-2 shadow-md">
+                <div class="inline-flex items-center gap-2 rounded-sm bg-zinc-400 px-2 py-1 shadow-sm">
                     <svg class="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
-                    <span class="text-base font-bold text-white">{{ __('No Time') }}</span>
+                    <span class="text-sm font-semibold text-white">{{ __('No Time') }}</span>
                 </div>
             @endif
         </td>
@@ -40,13 +41,15 @@
                                      alt="{{ $user->name }}"
                                      class="h-8 w-8 rounded-lg object-cover ring-2 ring-white dark:ring-gray-900"
                                      onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                                <div class="hidden h-8 w-8 items-center justify-center rounded-lg bg-emerald-400/20 ring-2 ring-white dark:ring-gray-900">
+                                <div
+                                    class="hidden h-8 w-8 items-center justify-center rounded-lg bg-emerald-400/20 ring-2 ring-white dark:ring-gray-900">
                                     <span class="text-xs font-bold text-emerald-900 dark:text-emerald-200">
                                         {{ $user->initials() }}
                                     </span>
                                 </div>
                             @else
-                                <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-400/20 ring-2 ring-white dark:ring-gray-900">
+                                <div
+                                    class="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-400/20 ring-2 ring-white dark:ring-gray-900">
                                     <span class="text-xs font-bold text-emerald-900 dark:text-emerald-200">
                                         {{ $user->initials() }}
                                     </span>
@@ -55,7 +58,8 @@
                         </div>
                     @endforeach
                     @if($task->assignedUsers->count() > 3)
-                        <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500 ring-2 ring-white dark:ring-gray-900">
+                        <div
+                            class="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500 ring-2 ring-white dark:ring-gray-900">
                             <span class="text-xs font-bold text-white">
                                 +{{ $task->assignedUsers->count() - 3 }}
                             </span>
@@ -63,9 +67,11 @@
                     @endif
                 </div>
                 <div class="flex flex-col">
-                    <span class="text-sm text-gray-900 dark:text-white">{{ $task->assignedUsers->pluck('name')->take(2)->implode(', ') }}</span>
+                    <span
+                        class="text-sm text-gray-900 dark:text-white">{{ $task->assignedUsers->pluck('name')->take(2)->implode(', ') }}</span>
                     @if($task->assignedUsers->count() > 2)
-                        <span class="text-xs text-gray-500 dark:text-gray-400">+{{ $task->assignedUsers->count() - 2 }} {{ __('more') }}</span>
+                        <span
+                            class="text-xs text-gray-500 dark:text-gray-400">+{{ $task->assignedUsers->count() - 2 }} {{ __('more') }}</span>
                     @endif
                 </div>
             </div>
@@ -82,13 +88,15 @@
                              alt="{{ $task->creator->name }}"
                              class="h-8 w-8 rounded-lg object-cover ring-2 ring-emerald-200 dark:ring-emerald-800"
                              onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                        <div class="hidden h-8 w-8 items-center justify-center rounded-lg bg-emerald-400/20 ring-2 ring-emerald-300 dark:ring-emerald-800">
+                        <div
+                            class="hidden h-8 w-8 items-center justify-center rounded-lg bg-emerald-400/20 ring-2 ring-emerald-300 dark:ring-emerald-800">
                             <span class="text-xs font-bold text-emerald-900 dark:text-emerald-200">
                                 {{ $task->creator->initials() }}
                             </span>
                         </div>
                     @else
-                        <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-400/20 ring-2 ring-emerald-300 dark:ring-emerald-800">
+                        <div
+                            class="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-400/20 ring-2 ring-emerald-300 dark:ring-emerald-800">
                             <span class="text-xs font-bold text-emerald-900 dark:text-emerald-200">
                                 {{ $task->creator->initials() }}
                             </span>
@@ -127,9 +135,11 @@
                 @if($task->work_date)
                     <div class="flex items-center gap-2">
                         <svg class="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                         </svg>
-                        <span class="text-sm text-gray-900 dark:text-white">{{ $task->work_date->format('M d, Y') }}</span>
+                        <span
+                            class="text-sm text-gray-900 dark:text-white">{{ $task->work_date->format('M d, Y') }}</span>
                     </div>
                 @else
                     <span class="text-sm text-gray-400 dark:text-gray-500">-</span>
@@ -138,9 +148,11 @@
                 @if($task->work_time)
                     <div class="flex items-center gap-2">
                         <svg class="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                         </svg>
-                        <span class="text-sm text-gray-900 dark:text-white">{{ \Carbon\Carbon::parse($task->work_time)->format('h:i A') }}</span>
+                        <span
+                            class="text-sm text-gray-900 dark:text-white">{{ Carbon::parse($task->work_time)->format('h:i A') }}</span>
                     </div>
                 @else
                     <span class="text-sm text-gray-400 dark:text-gray-500">-</span>
@@ -150,7 +162,8 @@
     @endif
     <td class="whitespace-nowrap px-6 py-5">
         <div class="flex items-center gap-2">
-            <flux:button size="sm" variant="ghost" @click="openModal({{ $task->id }})" icon="pencil" class="opacity-50 transition-opacity group-hover:opacity-100">
+            <flux:button size="sm" variant="ghost" @click="openModal({{ $task->id }})" icon="pencil"
+                         class="opacity-50 transition-opacity group-hover:opacity-100">
                 {{ __('Edit') }}
             </flux:button>
         </div>

@@ -17,7 +17,7 @@ class TaskFactory extends Factory
      */
     public function definition(): array
     {
-        $workDate = fake()->dateTimeBetween('-1 month', '+1 month');
+        $workDate = fake()->dateTimeBetween('-2 days', '+1 month');
 
         return [
             'title' => fake()->sentence(4),

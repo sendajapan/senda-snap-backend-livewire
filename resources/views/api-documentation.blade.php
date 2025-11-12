@@ -4,50 +4,65 @@
         <x-page-header
             :title="__('API Documentation')"
             :description="__('Complete REST API reference for your Android application')"
-            variant="emerald">
+            variant="violet">
             <x-slot:icon>
                 <svg class="h-7 w-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
             </x-slot:icon>
             <x-slot:actions>
-                <div class="flex items-center gap-2 rounded-lg bg-white/20 px-4 py-2 backdrop-blur-sm">
-                    <span class="text-sm font-medium text-white">Base URL:</span>
-                    <code class="rounded bg-white/30 px-2 py-1 text-xs font-mono text-white">{{ config('app.url') }}/api/v1</code>
+                <div class="flex items-center gap-2 rounded-lg bg-gray-900/80 px-3 py-2 backdrop-blur-sm border border-white/30 shadow-lg">
+                    <span class="text-sm font-semibold text-white">Base URL:</span>
+                    <code class="rounded-md bg-gray-800 px-3 py-1.5 text-sm font-mono font-bold text-emerald-300 shadow-sm border border-emerald-500/30">{{ config('app.url') }}/api/v1</code>
                 </div>
             </x-slot:actions>
         </x-page-header>
 
         <!-- Quick Start Card -->
         <x-table-card variant="violet">
-            <div class="prose prose-sm max-w-none dark:prose-invert">
-                <h3 class="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                    <svg class="h-5 w-5 text-violet-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                    </svg>
-                    Quick Start Guide
-                </h3>
-                <div class="mt-4 space-y-4">
-                    <div class="rounded-lg bg-gradient-to-r from-violet-50 to-purple-50 p-4 dark:from-violet-900/20 dark:to-purple-900/20">
-                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">
-                            <strong>Step 1:</strong> Register or login to get your authentication token
-                        </p>
-                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mt-2">
-                            <strong>Step 2:</strong> Include the token in the Authorization header for all protected endpoints
-                        </p>
-                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mt-2">
-                            <strong>Step 3:</strong> All requests and responses use JSON format
-                        </p>
+            <div class="space-y-4">
+                <div class="flex items-center gap-3">
+                    <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 shadow-lg">
+                        <svg class="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 dark:text-white">Quick Start Guide</h3>
+                </div>
+
+                <div class="grid gap-4 md:grid-cols-3">
+                    <div class="rounded-xl bg-gradient-to-br from-violet-50 to-purple-50 p-6 dark:from-violet-900/20 dark:to-purple-900/20">
+                        <div class="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-violet-500 text-white">
+                            <span class="text-xl font-bold">1</span>
+                        </div>
+                        <h4 class="mb-2 font-bold text-gray-900 dark:text-white">Register/Login</h4>
+                        <p class="text-sm text-gray-700 dark:text-gray-300">Register or login to get your authentication token</p>
+                    </div>
+
+                    <div class="rounded-xl bg-gradient-to-br from-blue-50 to-cyan-50 p-6 dark:from-blue-900/20 dark:to-cyan-900/20">
+                        <div class="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-blue-500 text-white">
+                            <span class="text-xl font-bold">2</span>
+                        </div>
+                        <h4 class="mb-2 font-bold text-gray-900 dark:text-white">Add Token</h4>
+                        <p class="text-sm text-gray-700 dark:text-gray-300">Include the token in the Authorization header for all protected endpoints</p>
+                    </div>
+
+                    <div class="rounded-xl bg-gradient-to-br from-violet-50 to-purple-50 p-6 dark:from-violet-900/20 dark:to-purple-900/20">
+                        <div class="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-violet-500 text-white">
+                            <span class="text-xl font-bold">3</span>
+                        </div>
+                        <h4 class="mb-2 font-bold text-gray-900 dark:text-white">Use JSON</h4>
+                        <p class="text-sm text-gray-700 dark:text-gray-300">All requests and responses use JSON format</p>
                     </div>
                 </div>
             </div>
         </x-table-card>
 
         <!-- Authentication Section -->
-        <x-table-card variant="blue">
+        <x-table-card variant="violet">
             <div class="space-y-6">
                 <div class="flex items-center gap-3">
-                    <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-cyan-600 shadow-lg">
+                    <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 shadow-lg">
                         <svg class="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                         </svg>
@@ -56,12 +71,12 @@
                 </div>
 
                 <!-- Register -->
-                <div class="space-y-3 rounded-xl border border-blue-200 bg-white/50 p-6 dark:border-blue-900/50 dark:bg-gray-800/50">
+                <div class="space-y-3 rounded-xl border border-violet-200 bg-white/50 p-6 dark:border-violet-900/50 dark:bg-gray-800/50">
                     <div class="flex items-center justify-between">
                         <h4 class="text-lg font-semibold text-gray-900 dark:text-white">Register</h4>
                         <span class="rounded-lg bg-green-100 px-3 py-1 text-xs font-bold text-green-800 dark:bg-green-900/30 dark:text-green-400">POST</span>
                     </div>
-                    <code class="block rounded-lg bg-gray-900 px-4 py-2 text-sm text-emerald-400 dark:bg-gray-950">/auth/register</code>
+                    <code class="block rounded-lg bg-gray-900 px-4 py-2 text-sm text-emerald-400 dark:bg-gray-950">/api/v1/auth/register</code>
                     
                     <div class="space-y-2">
                         <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Request Body:</p>
@@ -89,12 +104,12 @@
                 </div>
 
                 <!-- Login -->
-                <div class="space-y-3 rounded-xl border border-blue-200 bg-white/50 p-6 dark:border-blue-900/50 dark:bg-gray-800/50">
+                <div class="space-y-3 rounded-xl border border-violet-200 bg-white/50 p-6 dark:border-violet-900/50 dark:bg-gray-800/50">
                     <div class="flex items-center justify-between">
                         <h4 class="text-lg font-semibold text-gray-900 dark:text-white">Login</h4>
                         <span class="rounded-lg bg-green-100 px-3 py-1 text-xs font-bold text-green-800 dark:bg-green-900/30 dark:text-green-400">POST</span>
                     </div>
-                    <code class="block rounded-lg bg-gray-900 px-4 py-2 text-sm text-emerald-400 dark:bg-gray-950">/auth/login</code>
+                    <code class="block rounded-lg bg-gray-900 px-4 py-2 text-sm text-emerald-400 dark:bg-gray-950">/api/v1/auth/login</code>
                     
                     <div class="space-y-2">
                         <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Request Body:</p>
@@ -118,12 +133,12 @@
                 </div>
 
                 <!-- Logout -->
-                <div class="space-y-3 rounded-xl border border-blue-200 bg-white/50 p-6 dark:border-blue-900/50 dark:bg-gray-800/50">
+                <div class="space-y-3 rounded-xl border border-violet-200 bg-white/50 p-6 dark:border-violet-900/50 dark:bg-gray-800/50">
                     <div class="flex items-center justify-between">
                         <h4 class="text-lg font-semibold text-gray-900 dark:text-white">Logout</h4>
                         <span class="rounded-lg bg-green-100 px-3 py-1 text-xs font-bold text-green-800 dark:bg-green-900/30 dark:text-green-400">POST</span>
                     </div>
-                    <code class="block rounded-lg bg-gray-900 px-4 py-2 text-sm text-emerald-400 dark:bg-gray-950">/auth/logout</code>
+                    <code class="block rounded-lg bg-gray-900 px-4 py-2 text-sm text-emerald-400 dark:bg-gray-950">/api/v1/auth/logout</code>
                     
                     <div class="space-y-2">
                         <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Headers:</p>
@@ -134,10 +149,10 @@
         </x-table-card>
 
         <!-- Users Section -->
-        <x-table-card variant="blue">
+        <x-table-card variant="violet">
             <div class="space-y-6">
                 <div class="flex items-center gap-3">
-                    <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-cyan-600 shadow-lg">
+                    <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 shadow-lg">
                         <svg class="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                         </svg>
@@ -146,12 +161,12 @@
                 </div>
 
                 <!-- Get All Users -->
-                <div class="space-y-3 rounded-xl border border-blue-200 bg-white/50 p-6 dark:border-blue-900/50 dark:bg-gray-800/50">
+                <div class="space-y-3 rounded-xl border border-violet-200 bg-white/50 p-6 dark:border-violet-900/50 dark:bg-gray-800/50">
                     <div class="flex items-center justify-between">
                         <h4 class="text-lg font-semibold text-gray-900 dark:text-white">Get All Users</h4>
                         <span class="rounded-lg bg-blue-100 px-3 py-1 text-xs font-bold text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">GET</span>
                     </div>
-                    <code class="block rounded-lg bg-gray-900 px-4 py-2 text-sm text-emerald-400 dark:bg-gray-950">/users</code>
+                    <code class="block rounded-lg bg-gray-900 px-4 py-2 text-sm text-emerald-400 dark:bg-gray-950">/api/v1/users</code>
                     
                     <div class="space-y-2">
                         <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Headers:</p>
@@ -181,10 +196,10 @@
         </x-table-card>
 
         <!-- Tasks Section -->
-        <x-table-card variant="emerald">
+        <x-table-card variant="violet">
             <div class="space-y-6">
                 <div class="flex items-center gap-3">
-                    <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 shadow-lg">
+                    <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 shadow-lg">
                         <svg class="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
                         </svg>
@@ -193,12 +208,12 @@
                 </div>
 
                 <!-- Get All Tasks -->
-                <div class="space-y-3 rounded-xl border border-emerald-200 bg-white/50 p-6 dark:border-emerald-900/50 dark:bg-gray-800/50">
+                <div class="space-y-3 rounded-xl border border-violet-200 bg-white/50 p-6 dark:border-violet-900/50 dark:bg-gray-800/50">
                     <div class="flex items-center justify-between">
                         <h4 class="text-lg font-semibold text-gray-900 dark:text-white">Get All Tasks</h4>
                         <span class="rounded-lg bg-blue-100 px-3 py-1 text-xs font-bold text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">GET</span>
                     </div>
-                    <code class="block rounded-lg bg-gray-900 px-4 py-2 text-sm text-emerald-400 dark:bg-gray-950">/tasks</code>
+                    <code class="block rounded-lg bg-gray-900 px-4 py-2 text-sm text-emerald-400 dark:bg-gray-950">/api/v1/tasks</code>
                     
                     <div class="space-y-2">
                         <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Headers:</p>
@@ -247,12 +262,12 @@ per_page:  number (default: 15)</code></pre>
                 </div>
 
                 <!-- Create Task -->
-                <div class="space-y-3 rounded-xl border border-emerald-200 bg-white/50 p-6 dark:border-emerald-900/50 dark:bg-gray-800/50">
+                <div class="space-y-3 rounded-xl border border-violet-200 bg-white/50 p-6 dark:border-violet-900/50 dark:bg-gray-800/50">
                     <div class="flex items-center justify-between">
                         <h4 class="text-lg font-semibold text-gray-900 dark:text-white">Create Task</h4>
                         <span class="rounded-lg bg-green-100 px-3 py-1 text-xs font-bold text-green-800 dark:bg-green-900/30 dark:text-green-400">POST</span>
                     </div>
-                    <code class="block rounded-lg bg-gray-900 px-4 py-2 text-sm text-emerald-400 dark:bg-gray-950">/tasks</code>
+                    <code class="block rounded-lg bg-gray-900 px-4 py-2 text-sm text-emerald-400 dark:bg-gray-950">/api/v1/tasks</code>
                     
                     <div class="space-y-2">
                         <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Headers:</p>
@@ -311,12 +326,12 @@ attachments[]: (file)</code></pre>
                 </div>
 
                 <!-- Update Task -->
-                <div class="space-y-3 rounded-xl border border-emerald-200 bg-white/50 p-6 dark:border-emerald-900/50 dark:bg-gray-800/50">
+                <div class="space-y-3 rounded-xl border border-violet-200 bg-white/50 p-6 dark:border-violet-900/50 dark:bg-gray-800/50">
                     <div class="flex items-center justify-between">
                         <h4 class="text-lg font-semibold text-gray-900 dark:text-white">Update Task</h4>
                         <span class="rounded-lg bg-amber-100 px-3 py-1 text-xs font-bold text-amber-800 dark:bg-amber-900/30 dark:text-amber-400">PUT</span>
                     </div>
-                    <code class="block rounded-lg bg-gray-900 px-4 py-2 text-sm text-emerald-400 dark:bg-gray-950">/tasks/{id}</code>
+                    <code class="block rounded-lg bg-gray-900 px-4 py-2 text-sm text-emerald-400 dark:bg-gray-950">/api/v1/tasks/{id}</code>
                     
                     <div class="space-y-2">
                         <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Headers:</p>
@@ -338,18 +353,20 @@ due_date:            2024-12-31
 attachments_update:  true | false
 attachments[]:       (file)
 attachments[]:       (file)</code></pre>
+                    </div>
+
                     <div class="space-y-2">
                         <p class="text-xs text-gray-600 dark:text-gray-400">If <code class="text-emerald-400">attachments_update</code> is true and no files are sent, all existing attachments will be removed. If files are sent, existing attachments are replaced with the new set.</p>
                     </div>
                 </div>
 
                 <!-- Assign Users to Task -->
-                <div class="space-y-3 rounded-xl border border-emerald-200 bg-white/50 p-6 dark:border-emerald-900/50 dark:bg-gray-800/50">
+                <div class="space-y-3 rounded-xl border border-violet-200 bg-white/50 p-6 dark:border-violet-900/50 dark:bg-gray-800/50">
                     <div class="flex items-center justify-between">
                         <h4 class="text-lg font-semibold text-gray-900 dark:text-white">Assign Users to Task</h4>
                         <span class="rounded-lg bg-green-100 px-3 py-1 text-xs font-bold text-green-800 dark:bg-green-900/30 dark:text-green-400">POST</span>
                     </div>
-                    <code class="block rounded-lg bg-gray-900 px-4 py-2 text-sm text-emerald-400 dark:bg-gray-950">/tasks/{id}/assign</code>
+                    <code class="block rounded-lg bg-gray-900 px-4 py-2 text-sm text-emerald-400 dark:bg-gray-950">/api/v1/tasks/{id}/assign</code>
                     
                     <div class="space-y-2">
                         <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Headers:</p>
@@ -372,12 +389,12 @@ Content-Type: application/json</code></pre>
                 </div>
 
                 <!-- Update Task Status -->
-                <div class="space-y-3 rounded-xl border border-emerald-200 bg-white/50 p-6 dark:border-emerald-900/50 dark:bg-gray-800/50">
+                <div class="space-y-3 rounded-xl border border-violet-200 bg-white/50 p-6 dark:border-violet-900/50 dark:bg-gray-800/50">
                     <div class="flex items-center justify-between">
                         <h4 class="text-lg font-semibold text-gray-900 dark:text-white">Update Task Status</h4>
                         <span class="rounded-lg bg-green-100 px-3 py-1 text-xs font-bold text-green-800 dark:bg-green-900/30 dark:text-green-400">POST</span>
                     </div>
-                    <code class="block rounded-lg bg-gray-900 px-4 py-2 text-sm text-emerald-400 dark:bg-gray-950">/tasks/{id}/status</code>
+                    <code class="block rounded-lg bg-gray-900 px-4 py-2 text-sm text-emerald-400 dark:bg-gray-950">/api/v1/tasks/{id}/status</code>
                     
                     <div class="space-y-2">
                         <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Headers:</p>
@@ -406,12 +423,12 @@ Content-Type: application/json</code></pre>
                 </div>
 
                 <!-- Upload Task Attachment -->
-                <div class="space-y-3 rounded-xl border border-emerald-200 bg-white/50 p-6 dark:border-emerald-900/50 dark:bg-gray-800/50">
+                <div class="space-y-3 rounded-xl border border-violet-200 bg-white/50 p-6 dark:border-violet-900/50 dark:bg-gray-800/50">
                     <div class="flex items-center justify-between">
                         <h4 class="text-lg font-semibold text-gray-900 dark:text-white">Upload Task Attachment</h4>
                         <span class="rounded-lg bg-green-100 px-3 py-1 text-xs font-bold text-green-800 dark:bg-green-900/30 dark:text-green-400">POST</span>
                     </div>
-                    <code class="block rounded-lg bg-gray-900 px-4 py-2 text-sm text-emerald-400 dark:bg-gray-950">/tasks/{id}/attachments</code>
+                    <code class="block rounded-lg bg-gray-900 px-4 py-2 text-sm text-emerald-400 dark:bg-gray-950">/api/v1/tasks/{id}/attachments</code>
                     
                     <div class="space-y-2">
                         <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Headers:</p>
@@ -450,12 +467,12 @@ Content-Type: multipart/form-data</code></pre>
                 </div>
 
                 <!-- Delete Task Attachment -->
-                <div class="space-y-3 rounded-xl border border-emerald-200 bg-white/50 p-6 dark:border-emerald-900/50 dark:bg-gray-800/50">
+                <div class="space-y-3 rounded-xl border border-violet-200 bg-white/50 p-6 dark:border-violet-900/50 dark:bg-gray-800/50">
                     <div class="flex items-center justify-between">
                         <h4 class="text-lg font-semibold text-gray-900 dark:text-white">Delete Task Attachment</h4>
                         <span class="rounded-lg bg-red-100 px-3 py-1 text-xs font-bold text-red-800 dark:bg-red-900/30 dark:text-red-400">DELETE</span>
                     </div>
-                    <code class="block rounded-lg bg-gray-900 px-4 py-2 text-sm text-emerald-400 dark:bg-gray-950">/tasks/{task_id}/attachments/{attachment_id}</code>
+                    <code class="block rounded-lg bg-gray-900 px-4 py-2 text-sm text-emerald-400 dark:bg-gray-950">/api/v1/tasks/{task_id}/attachments/{attachment_id}</code>
                     
                     <div class="space-y-2">
                         <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Headers:</p>
@@ -479,12 +496,12 @@ Content-Type: multipart/form-data</code></pre>
                 </div>
 
                 <!-- Get My Tasks -->
-                <div class="space-y-3 rounded-xl border border-emerald-200 bg-white/50 p-6 dark:border-emerald-900/50 dark:bg-gray-800/50">
+                <div class="space-y-3 rounded-xl border border-violet-200 bg-white/50 p-6 dark:border-violet-900/50 dark:bg-gray-800/50">
                     <div class="flex items-center justify-between">
                         <h4 class="text-lg font-semibold text-gray-900 dark:text-white">Get My Created Tasks</h4>
                         <span class="rounded-lg bg-blue-100 px-3 py-1 text-xs font-bold text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">GET</span>
                     </div>
-                    <code class="block rounded-lg bg-gray-900 px-4 py-2 text-sm text-emerald-400 dark:bg-gray-950">/tasks/my-tasks</code>
+                    <code class="block rounded-lg bg-gray-900 px-4 py-2 text-sm text-emerald-400 dark:bg-gray-950">/api/v1/tasks/my-tasks</code>
                     
                     <div class="space-y-2">
                         <p class="text-sm text-gray-600 dark:text-gray-400">Returns all tasks created by the authenticated user.</p>
@@ -492,12 +509,12 @@ Content-Type: multipart/form-data</code></pre>
                 </div>
 
                 <!-- Get Tasks Assigned to Me -->
-                <div class="space-y-3 rounded-xl border border-emerald-200 bg-white/50 p-6 dark:border-emerald-900/50 dark:bg-gray-800/50">
+                <div class="space-y-3 rounded-xl border border-violet-200 bg-white/50 p-6 dark:border-violet-900/50 dark:bg-gray-800/50">
                     <div class="flex items-center justify-between">
                         <h4 class="text-lg font-semibold text-gray-900 dark:text-white">Get Tasks Assigned to Me</h4>
                         <span class="rounded-lg bg-blue-100 px-3 py-1 text-xs font-bold text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">GET</span>
                     </div>
-                    <code class="block rounded-lg bg-gray-900 px-4 py-2 text-sm text-emerald-400 dark:bg-gray-950">/tasks/assigned-to-me</code>
+                    <code class="block rounded-lg bg-gray-900 px-4 py-2 text-sm text-emerald-400 dark:bg-gray-950">/api/v1/tasks/assigned-to-me</code>
                     
                     <div class="space-y-2">
                         <p class="text-sm text-gray-600 dark:text-gray-400">Returns all tasks where the authenticated user is one of the assignees.</p>
@@ -507,10 +524,10 @@ Content-Type: multipart/form-data</code></pre>
         </x-table-card>
 
         <!-- Vehicles Section -->
-        <x-table-card variant="amber">
+        <x-table-card variant="violet">
             <div class="space-y-6">
                 <div class="flex items-center gap-3">
-                    <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 shadow-lg">
+                    <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 shadow-lg">
                         <svg class="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                         </svg>
@@ -519,21 +536,21 @@ Content-Type: multipart/form-data</code></pre>
                 </div>
 
                 <!-- Get All Vehicles -->
-                <div class="space-y-3 rounded-xl border border-amber-200 bg-white/50 p-6 dark:border-amber-900/50 dark:bg-gray-800/50">
+                <div class="space-y-3 rounded-xl border border-violet-200 bg-white/50 p-6 dark:border-violet-900/50 dark:bg-gray-800/50">
                     <div class="flex items-center justify-between">
                         <h4 class="text-lg font-semibold text-gray-900 dark:text-white">Get All Vehicles</h4>
                         <span class="rounded-lg bg-blue-100 px-3 py-1 text-xs font-bold text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">GET</span>
                     </div>
-                    <code class="block rounded-lg bg-gray-900 px-4 py-2 text-sm text-emerald-400 dark:bg-gray-950">/vehicles</code>
+                    <code class="block rounded-lg bg-gray-900 px-4 py-2 text-sm text-emerald-400 dark:bg-gray-950">/api/v1/vehicles</code>
                 </div>
 
                 <!-- Create Vehicle -->
-                <div class="space-y-3 rounded-xl border border-amber-200 bg-white/50 p-6 dark:border-amber-900/50 dark:bg-gray-800/50">
+                <div class="space-y-3 rounded-xl border border-violet-200 bg-white/50 p-6 dark:border-violet-900/50 dark:bg-gray-800/50">
                     <div class="flex items-center justify-between">
                         <h4 class="text-lg font-semibold text-gray-900 dark:text-white">Create Vehicle</h4>
                         <span class="rounded-lg bg-green-100 px-3 py-1 text-xs font-bold text-green-800 dark:bg-green-900/30 dark:text-green-400">POST</span>
                     </div>
-                    <code class="block rounded-lg bg-gray-900 px-4 py-2 text-sm text-emerald-400 dark:bg-gray-950">/vehicles</code>
+                    <code class="block rounded-lg bg-gray-900 px-4 py-2 text-sm text-emerald-400 dark:bg-gray-950">/api/v1/vehicles</code>
                     
                     <div class="space-y-2">
                         <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Request Body:</p>
@@ -633,7 +650,7 @@ Content-Type: multipart/form-data</code></pre>
                             <span class="text-xl font-bold">1</span>
                         </div>
                         <h4 class="mb-2 font-bold text-gray-900 dark:text-white">Login First</h4>
-                        <p class="text-sm text-gray-700 dark:text-gray-300">Make a POST request to <code class="rounded bg-white/50 px-1 dark:bg-gray-800">/auth/login</code> with your credentials</p>
+                        <p class="text-sm text-gray-700 dark:text-gray-300">Make a POST request to <code class="rounded bg-white/50 px-1 dark:bg-gray-800">/api/v1/auth/login</code> with your credentials</p>
                     </div>
 
                     <div class="rounded-xl bg-gradient-to-br from-blue-50 to-cyan-50 p-6 dark:from-blue-900/20 dark:to-cyan-900/20">

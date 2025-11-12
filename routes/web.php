@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ApiDocsController;
 use App\Livewire\Settings\Appearance;
 use App\Livewire\Settings\Password;
 use App\Livewire\Settings\Profile;
@@ -21,7 +22,7 @@ Route::view('dashboard', 'dashboard')
 
 Route::middleware(['auth'])->group(function () {
     // API Documentation
-    Route::view('api-docs', 'api-documentation')->name('api.docs');
+    Route::get('api-docs', [ApiDocsController::class, 'index'])->name('api.docs');
 
     // Users Management
     Route::get('users', UsersIndex::class)->name('users.index');

@@ -35,7 +35,15 @@ The design system uses 4 primary color variants:
 - Light: `violet-50/30` → `purple-50/30`
 - Border: `violet-200`
 - Decorative: `violet-400/20` → `purple-400/20`
-- Use for: Data tables, analytics, documentation
+- Use for: Data tables, analytics, API documentation
+
+**Base URL Badge (API Docs Header):**
+```blade
+<div class="flex items-center gap-2 rounded-lg bg-gray-900/80 px-3 py-2 backdrop-blur-sm border border-white/30 shadow-lg">
+    <span class="text-sm font-semibold text-white">Base URL:</span>
+    <code class="rounded-md bg-gray-800 px-3 py-1.5 text-sm font-mono font-bold text-emerald-300 shadow-sm border border-emerald-500/30">{{ config('app.url') }}/api/v1</code>
+</div>
+```
 
 ---
 
@@ -342,6 +350,8 @@ $this->dispatch('notify', message: 'Operation successful!', type: 'success');
 
 ### **Standard Page Layout**
 
+**CRITICAL SPACING RULE**: The container uses `gap-6` which automatically provides consistent 1.5rem (24px) spacing between all direct children. **NEVER** add extra empty lines or manual spacing (like `<div class="h-6"></div>`) between sections - the gap utility handles this automatically.
+
 ```blade
 <div class="flex h-full w-full flex-1 flex-col gap-6 p-6" x-data="{
     openModal(itemId = null) {
@@ -423,17 +433,17 @@ $this->dispatch('notify', message: 'Operation successful!', type: 'success');
 ```blade
 <div class="flex h-full w-full flex-1 flex-col gap-6 p-6">
     <!-- Header with Base URL display -->
-    <x-page-header variant="emerald">
+    <x-page-header variant="violet">
         <x-slot:actions>
-            <div class="flex items-center gap-2 rounded-lg bg-white/20 px-4 py-2 backdrop-blur-sm">
-                <span class="text-sm font-medium text-white">Base URL:</span>
-                <code class="rounded bg-white/30 px-2 py-1 text-xs font-mono text-white">{{ config('app.url') }}/api/v1</code>
+            <div class="flex items-center gap-2 rounded-lg bg-gray-900/80 px-3 py-2 backdrop-blur-sm border border-white/30 shadow-lg">
+                <span class="text-sm font-semibold text-white">Base URL:</span>
+                <code class="rounded-md bg-gray-800 px-3 py-1.5 text-sm font-mono font-bold text-emerald-300 shadow-sm border border-emerald-500/30">{{ config('app.url') }}/api/v1</code>
             </div>
         </x-slot:actions>
     </x-page-header>
 
     <!-- Documentation Sections -->
-    <x-table-card variant="blue">
+    <x-table-card variant="violet">
         <!-- Section content -->
     </x-table-card>
 </div>
@@ -854,9 +864,12 @@ class="rounded-lg bg-gray-900 p-4 text-xs text-gray-100 dark:bg-gray-950"
 - Modal Header/Footer: `px-6 py-4` or `px-6 py-6`
 
 ### **Gaps**
-- Vertical Sections: `gap-6`
+- Vertical Sections: `gap-6` (NEVER add manual spacing between cards - the container's gap-6 handles this automatically)
 - Horizontal Items: `gap-4` or `gap-3` or `gap-2`
 - Grid: `gap-6` or `gap-4`
+
+### **Critical Spacing Rule**
+**NEVER** add extra empty lines, divs, or manual margins between direct children of a `flex flex-col gap-6` container. The `gap-6` utility automatically provides consistent 1.5rem (24px) spacing. Adding manual spacing breaks the design system consistency.
 
 ### **Rounded Corners**
 - Cards/Containers: `rounded-2xl`

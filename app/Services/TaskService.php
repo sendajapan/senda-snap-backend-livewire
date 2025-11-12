@@ -140,6 +140,44 @@ class TaskService
         return $task;
     }
 
+    /**
+     * Attach multiple files to a task.
+     *
+     * @param  array<int, UploadedFile>  $files
+     */
+    public function addAttachments(Task $task, array $files, int $uploadedBy): void
+    {
+        foreach ($files as $file) {
+            $this->uploadAttachment($task, $file, $uploadedBy);
+        }
+        $task->load(['attachments']);
+    }
+
+    /**
+     * Delete all existing attachments for the task.
+     */
+    public function clearAttachments(Task $task): void
+    {
+        foreach ($task->attachments as $attachment) {
+            $this->deleteAttachment($attachment);
+        }
+        $task->load(['attachments']);
+    }
+
+    /**
+     * Replace all attachments for the task with the provided files.
+     * If files array is empty, this effectively clears all attachments.
+     *
+     * @param  array<int, UploadedFile>  $files
+     */
+    public function replaceAttachments(Task $task, array $files, int $uploadedBy): void
+    {
+        $this->clearAttachments($task);
+        if (! empty($files)) {
+            $this->addAttachments($task, $files, $uploadedBy);
+        }
+    }
+
     public function uploadAttachment(
         Task $task,
         UploadedFile $file,

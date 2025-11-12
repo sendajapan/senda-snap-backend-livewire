@@ -22,13 +22,10 @@ class TaskController extends Controller
 
     public function index(Request $request): JsonResponse
     {
+        // Only support from_date/to_date as requested
         $filters = [
-            'search' => $request->get('search'),
-            'status' => $request->get('status'),
-            'priority' => $request->get('priority'),
-            'assigned_to' => $request->get('assigned_to'),
-            'date_from' => $request->get('date_from'),
-            'date_to' => $request->get('date_to'),
+            'date_from' => $request->get('from_date'),
+            'date_to' => $request->get('to_date'),
         ];
 
         $tasks = $this->taskService->list($filters, $request->get('per_page', 15));
@@ -53,8 +50,13 @@ class TaskController extends Controller
 
         $task = $this->taskService->create($data, $assignedUserIds);
 
+        // Handle attachments (multipart form-data: attachments[])
+        if ($request->hasFile('attachments')) {
+            $this->taskService->addAttachments($task, $request->file('attachments'), auth()->id());
+        }
+
         return $this->successResponse('Task created successfully', [
-            'task' => new TaskResource($task),
+            'task' => new TaskResource($task->fresh(['assignedUsers', 'creator', 'attachments'])),
         ], 201);
     }
 
@@ -74,8 +76,14 @@ class TaskController extends Controller
 
         $task = $this->taskService->update($task, $data, $assignedUserIds);
 
+        // If attachments_update flag is present, replace/clear attachments accordingly
+        if ($request->boolean('attachments_update')) {
+            $files = $request->hasFile('attachments') ? $request->file('attachments') : [];
+            $this->taskService->replaceAttachments($task, $files, auth()->id());
+        }
+
         return $this->successResponse('Task updated successfully', [
-            'task' => new TaskResource($task),
+            'task' => new TaskResource($task->fresh(['assignedUsers', 'creator', 'attachments'])),
         ]);
     }
 

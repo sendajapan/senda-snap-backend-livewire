@@ -30,6 +30,10 @@ class UpdateTaskRequest extends FormRequest
             'assigned_to' => 'sometimes|array',
             'assigned_to.*' => 'exists:users,id',
             'due_date' => 'nullable|date',
+            // attachments
+            'attachments_update' => 'sometimes|boolean',
+            'attachments' => 'sometimes|array',
+            'attachments.*' => 'file|max:10240',
         ];
     }
 
@@ -46,6 +50,9 @@ class UpdateTaskRequest extends FormRequest
             'assigned_to.*.exists' => 'One or more selected users do not exist.',
             'work_date.date' => 'Work date must be a valid date.',
             'due_date.date' => 'Due date must be a valid date.',
+            'attachments.array' => 'Attachments must be an array of files.',
+            'attachments.*.file' => 'Each attachment must be a file.',
+            'attachments.*.max' => 'Each attachment must not be larger than 10MB.',
         ];
     }
 }

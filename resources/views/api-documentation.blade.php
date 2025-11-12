@@ -207,13 +207,9 @@
 
                     <div class="space-y-2">
                         <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Query Parameters (Optional):</p>
-                        <pre class="overflow-x-auto rounded-lg bg-gray-900 p-4 text-xs text-gray-100 dark:bg-gray-950"><code>search: string (search in title/description)
-status: pending, running, completed, cancelled
-priority: low, medium, high, urgent
-assigned_to: user_id (filter by assigned user)
-date_from: YYYY-MM-DD (filter by work date)
-date_to: YYYY-MM-DD (filter by work date)
-per_page: number (default: 15)</code></pre>
+                        <pre class="overflow-x-auto rounded-lg bg-gray-900 p-4 text-xs text-gray-100 dark:bg-gray-950"><code>from_date: YYYY-MM-DD (filter by work date)
+to_date:   YYYY-MM-DD (filter by work date)
+per_page:  number (default: 15)</code></pre>
                     </div>
 
                     <div class="space-y-2">
@@ -261,20 +257,21 @@ per_page: number (default: 15)</code></pre>
                     <div class="space-y-2">
                         <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Headers:</p>
                         <pre class="overflow-x-auto rounded-lg bg-gray-900 p-4 text-xs text-gray-100 dark:bg-gray-950"><code>Authorization: Bearer {token}
-Content-Type: application/json</code></pre>
+Content-Type: multipart/form-data</code></pre>
                     </div>
 
                     <div class="space-y-2">
-                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Request Body:</p>
-                        <pre class="overflow-x-auto rounded-lg bg-gray-900 p-4 text-xs text-gray-100 dark:bg-gray-950"><code>{
-    "title": "Complete inspection",
-    "description": "Full vehicle inspection required",
-    "work_date": "2024-12-20",
-    "work_time": "10:00",
-    "priority": "high",
-    "assigned_to": [2, 3, 5],
-    "due_date": "2024-12-31"
-}</code></pre>
+                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Request (multipart/form-data):</p>
+                        <pre class="overflow-x-auto rounded-lg bg-gray-900 p-4 text-xs text-gray-100 dark:bg-gray-950"><code>title:         Complete inspection
+description:   Full vehicle inspection required
+work_date:     2024-12-20
+work_time:     10:00
+priority:      high
+assigned_to[]: 2
+assigned_to[]: 3
+due_date:      2024-12-31
+attachments[]: (file)
+attachments[]: (file)</code></pre>
                     </div>
 
                     <div class="space-y-2">
@@ -287,6 +284,7 @@ Content-Type: application/json</code></pre>
                                 <li>• <code class="text-emerald-400">work_time</code> (optional): Time for task (HH:MM or HH:MM:SS)</li>
                                 <li>• <code class="text-emerald-400">priority</code> (required): low, medium, high, urgent</li>
                                 <li>• <code class="text-emerald-400">assigned_to</code> (optional): Array of user IDs</li>
+                                <li>• <code class="text-emerald-400">attachments[]</code> (optional, files): Multiple attachments (max 10MB each)</li>
                                 <li>• <code class="text-emerald-400">due_date</code> (optional): Due date (YYYY-MM-DD)</li>
                             </ul>
                         </div>
@@ -323,20 +321,25 @@ Content-Type: application/json</code></pre>
                     <div class="space-y-2">
                         <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Headers:</p>
                         <pre class="overflow-x-auto rounded-lg bg-gray-900 p-4 text-xs text-gray-100 dark:bg-gray-950"><code>Authorization: Bearer {token}
-Content-Type: application/json</code></pre>
+Content-Type: multipart/form-data</code></pre>
                     </div>
 
                     <div class="space-y-2">
-                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Request Body (all fields optional):</p>
-                        <pre class="overflow-x-auto rounded-lg bg-gray-900 p-4 text-xs text-gray-100 dark:bg-gray-950"><code>{
-    "title": "Updated task title",
-    "description": "Updated description",
-    "work_date": "2024-12-25",
-    "work_time": "14:00",
-    "priority": "urgent",
-    "assigned_to": [2, 5],
-    "due_date": "2024-12-31"
-}</code></pre>
+                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Request (multipart/form-data, all fields optional):</p>
+                        <pre class="overflow-x-auto rounded-lg bg-gray-900 p-4 text-xs text-gray-100 dark:bg-gray-950"><code>title:               Updated task title
+description:         Updated description
+work_date:           2024-12-25
+work_time:           14:00
+priority:            urgent
+assigned_to[]:       2
+assigned_to[]:       5
+due_date:            2024-12-31
+
+attachments_update:  true | false
+attachments[]:       (file)
+attachments[]:       (file)</code></pre>
+                    <div class="space-y-2">
+                        <p class="text-xs text-gray-600 dark:text-gray-400">If <code class="text-emerald-400">attachments_update</code> is true and no files are sent, all existing attachments will be removed. If files are sent, existing attachments are replaced with the new set.</p>
                     </div>
                 </div>
 

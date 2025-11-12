@@ -60,7 +60,12 @@
                         </div>
                     </div>
                     
-                    <flux:navlist.item icon="cube" :href="route('vehicles.index')" :current="request()->routeIs('vehicles.*')" wire:navigate>{{ __('Vehicles') }}</flux:navlist.item>
+                    <flux:navlist.item 
+                        icon="view-columns" 
+                        disabled
+                        class="opacity-50 cursor-not-allowed">
+                        {{ __('Vehicles') }} <span class="text-xs">({{ __('Coming Soon') }})</span>
+                    </flux:navlist.item>
                 </flux:navlist.group>
             </flux:navlist>
 

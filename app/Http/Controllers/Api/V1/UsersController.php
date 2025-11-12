@@ -16,7 +16,7 @@ class UsersController extends Controller
     public function index(): JsonResponse
     {
         $filters = [
-            'select' => ['id', 'name', 'email', 'phone', 'role', 'avis_id', 'avatar', 'created_at'],
+            'select' => ['id', 'name', 'email', 'phone', 'role', 'avis_id', 'avatar', 'email_verified_at', 'created_at', 'updated_at'],
         ];
 
         $users = $this->userService->list($filters);

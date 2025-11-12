@@ -74,7 +74,14 @@
                 <div class="space-y-3 rounded-xl border border-violet-200 bg-white/50 p-6 dark:border-violet-900/50 dark:bg-gray-800/50">
                     <div class="flex items-center justify-between">
                         <h4 class="text-lg font-semibold text-gray-900 dark:text-white">Register</h4>
-                        <span class="rounded-lg bg-green-100 px-3 py-1 text-xs font-bold text-green-800 dark:bg-green-900/30 dark:text-green-400">POST</span>
+                        <div class="flex items-center gap-2">
+                            <button onclick="downloadEndpoint('register', 'POST', '/api/v1/auth/register', { name: 'John Doe', email: 'john@example.com', password: 'password123', password_confirmation: 'password123', phone: '1234567890', role: 'client' }, { success: true, message: 'User registered successfully', data: { user: { id: 1, name: 'John Doe', email: 'john@example.com' }, token: '1|abc123...' } })" class="rounded-lg bg-violet-100 px-2 py-1 text-xs font-semibold text-violet-800 transition-colors hover:bg-violet-200 dark:bg-violet-900/30 dark:text-violet-400 dark:hover:bg-violet-900/50">
+                                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                </svg>
+                            </button>
+                            <span class="rounded-lg bg-green-100 px-3 py-1 text-xs font-bold text-green-800 dark:bg-green-900/30 dark:text-green-400">POST</span>
+                        </div>
                     </div>
                     <code class="block rounded-lg bg-gray-900 px-4 py-2 text-sm text-emerald-400 dark:bg-gray-950">/api/v1/auth/register</code>
                     
@@ -96,7 +103,19 @@
     "success": true,
     "message": "User registered successfully",
     "data": {
-        "user": { "id": 1, "name": "John Doe", "email": "john@example.com" },
+        "user": {
+            "id": 1,
+            "name": "John Doe",
+            "email": "john@example.com",
+            "phone": "1234567890",
+            "role": "client",
+            "avis_id": null,
+            "avatar": null,
+            "avatar_url": null,
+            "email_verified_at": null,
+            "created_at": "2024-01-01T08:00:00.000000Z",
+            "updated_at": "2024-01-01T08:00:00.000000Z"
+        },
         "token": "1|abc123..."
     }
 }</code></pre>
@@ -107,7 +126,14 @@
                 <div class="space-y-3 rounded-xl border border-violet-200 bg-white/50 p-6 dark:border-violet-900/50 dark:bg-gray-800/50">
                     <div class="flex items-center justify-between">
                         <h4 class="text-lg font-semibold text-gray-900 dark:text-white">Login</h4>
-                        <span class="rounded-lg bg-green-100 px-3 py-1 text-xs font-bold text-green-800 dark:bg-green-900/30 dark:text-green-400">POST</span>
+                        <div class="flex items-center gap-2">
+                            <button onclick="downloadEndpoint('login', 'POST', '/api/v1/auth/login', { email: 'john@example.com', password: 'password123' }, { success: true, message: 'Login successful', data: { user: { id: 1, name: 'John Doe', email: 'john@example.com' }, token: '2|xyz789...' } })" class="rounded-lg bg-violet-100 px-2 py-1 text-xs font-semibold text-violet-800 transition-colors hover:bg-violet-200 dark:bg-violet-900/30 dark:text-violet-400 dark:hover:bg-violet-900/50">
+                                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                </svg>
+                            </button>
+                            <span class="rounded-lg bg-green-100 px-3 py-1 text-xs font-bold text-green-800 dark:bg-green-900/30 dark:text-green-400">POST</span>
+                        </div>
                     </div>
                     <code class="block rounded-lg bg-gray-900 px-4 py-2 text-sm text-emerald-400 dark:bg-gray-950">/api/v1/auth/login</code>
                     
@@ -125,7 +151,19 @@
     "success": true,
     "message": "Login successful",
     "data": {
-        "user": { "id": 1, "name": "John Doe", "email": "john@example.com" },
+        "user": {
+            "id": 1,
+            "name": "John Doe",
+            "email": "john@example.com",
+            "phone": "1234567890",
+            "role": "admin",
+            "avis_id": "AV123456",
+            "avatar": "avatars/user1.jpg",
+            "avatar_url": "http://your-app.test/storage/avatars/user1.jpg",
+            "email_verified_at": "2024-01-15T10:30:00.000000Z",
+            "created_at": "2024-01-01T08:00:00.000000Z",
+            "updated_at": "2024-01-15T10:30:00.000000Z"
+        },
         "token": "2|xyz789..."
     }
 }</code></pre>
@@ -136,7 +174,14 @@
                 <div class="space-y-3 rounded-xl border border-violet-200 bg-white/50 p-6 dark:border-violet-900/50 dark:bg-gray-800/50">
                     <div class="flex items-center justify-between">
                         <h4 class="text-lg font-semibold text-gray-900 dark:text-white">Logout</h4>
-                        <span class="rounded-lg bg-green-100 px-3 py-1 text-xs font-bold text-green-800 dark:bg-green-900/30 dark:text-green-400">POST</span>
+                        <div class="flex items-center gap-2">
+                            <button onclick="downloadEndpoint('logout', 'POST', '/api/v1/auth/logout', null, { success: true, message: 'Logged out successfully' })" class="rounded-lg bg-violet-100 px-2 py-1 text-xs font-semibold text-violet-800 transition-colors hover:bg-violet-200 dark:bg-violet-900/30 dark:text-violet-400 dark:hover:bg-violet-900/50">
+                                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                </svg>
+                            </button>
+                            <span class="rounded-lg bg-green-100 px-3 py-1 text-xs font-bold text-green-800 dark:bg-green-900/30 dark:text-green-400">POST</span>
+                        </div>
                     </div>
                     <code class="block rounded-lg bg-gray-900 px-4 py-2 text-sm text-emerald-400 dark:bg-gray-950">/api/v1/auth/logout</code>
                     
@@ -164,7 +209,14 @@
                 <div class="space-y-3 rounded-xl border border-violet-200 bg-white/50 p-6 dark:border-violet-900/50 dark:bg-gray-800/50">
                     <div class="flex items-center justify-between">
                         <h4 class="text-lg font-semibold text-gray-900 dark:text-white">Get All Users</h4>
-                        <span class="rounded-lg bg-blue-100 px-3 py-1 text-xs font-bold text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">GET</span>
+                        <div class="flex items-center gap-2">
+                            <button onclick="downloadEndpoint('get-all-users', 'GET', '/api/v1/users', null, { success: true, message: 'Users retrieved successfully', data: { users: [{ id: 1, name: 'John Doe', email: 'john@example.com', role: 'admin', phone: '1234567890' }] } })" class="rounded-lg bg-violet-100 px-2 py-1 text-xs font-semibold text-violet-800 transition-colors hover:bg-violet-200 dark:bg-violet-900/30 dark:text-violet-400 dark:hover:bg-violet-900/50">
+                                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                </svg>
+                            </button>
+                            <span class="rounded-lg bg-blue-100 px-3 py-1 text-xs font-bold text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">GET</span>
+                        </div>
                     </div>
                     <code class="block rounded-lg bg-gray-900 px-4 py-2 text-sm text-emerald-400 dark:bg-gray-950">/api/v1/users</code>
                     
@@ -184,8 +236,14 @@
                 "id": 1,
                 "name": "John Doe",
                 "email": "john@example.com",
+                "phone": "1234567890",
                 "role": "admin",
-                "phone": "1234567890"
+                "avis_id": "AV123456",
+                "avatar": "avatars/user1.jpg",
+                "avatar_url": "http://your-app.test/storage/avatars/user1.jpg",
+                "email_verified_at": "2024-01-15T10:30:00.000000Z",
+                "created_at": "2024-01-01T08:00:00.000000Z",
+                "updated_at": "2024-01-15T10:30:00.000000Z"
             }
         ]
     }
@@ -211,7 +269,14 @@
                 <div class="space-y-3 rounded-xl border border-violet-200 bg-white/50 p-6 dark:border-violet-900/50 dark:bg-gray-800/50">
                     <div class="flex items-center justify-between">
                         <h4 class="text-lg font-semibold text-gray-900 dark:text-white">Get All Tasks</h4>
-                        <span class="rounded-lg bg-blue-100 px-3 py-1 text-xs font-bold text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">GET</span>
+                        <div class="flex items-center gap-2">
+                            <button onclick="downloadEndpoint('get-all-tasks', 'GET', '/api/v1/tasks')" class="rounded-lg bg-violet-100 px-2 py-1 text-xs font-semibold text-violet-800 transition-colors hover:bg-violet-200 dark:bg-violet-900/30 dark:text-violet-400 dark:hover:bg-violet-900/50">
+                                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                </svg>
+                            </button>
+                            <span class="rounded-lg bg-blue-100 px-3 py-1 text-xs font-bold text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">GET</span>
+                        </div>
                     </div>
                     <code class="block rounded-lg bg-gray-900 px-4 py-2 text-sm text-emerald-400 dark:bg-gray-950">/api/v1/tasks</code>
                     
@@ -244,10 +309,46 @@ per_page:  number (default: 15)</code></pre>
                 "priority": "high",
                 "due_date": "2024-12-31",
                 "assigned_users": [
-                    { "id": 2, "name": "John Doe", "role": "employee" },
-                    { "id": 3, "name": "Jane Smith", "role": "employee" }
+                    {
+                        "id": 2,
+                        "name": "John Doe",
+                        "email": "john@example.com",
+                        "phone": "1234567890",
+                        "role": "employee",
+                        "avis_id": "AV789012",
+                        "avatar": "avatars/user2.jpg",
+                        "avatar_url": "http://your-app.test/storage/avatars/user2.jpg",
+                        "email_verified_at": "2024-01-10T09:00:00.000000Z",
+                        "created_at": "2024-01-05T08:00:00.000000Z",
+                        "updated_at": "2024-01-10T09:00:00.000000Z"
+                    },
+                    {
+                        "id": 3,
+                        "name": "Jane Smith",
+                        "email": "jane@example.com",
+                        "phone": "0987654321",
+                        "role": "employee",
+                        "avis_id": "AV345678",
+                        "avatar": "avatars/user3.jpg",
+                        "avatar_url": "http://your-app.test/storage/avatars/user3.jpg",
+                        "email_verified_at": "2024-01-12T11:00:00.000000Z",
+                        "created_at": "2024-01-08T08:00:00.000000Z",
+                        "updated_at": "2024-01-12T11:00:00.000000Z"
+                    }
                 ],
-                "creator": { "id": 1, "name": "Admin User", "role": "admin" }
+                "creator": {
+                    "id": 1,
+                    "name": "Admin User",
+                    "email": "admin@example.com",
+                    "phone": "5551234567",
+                    "role": "admin",
+                    "avis_id": "AV123456",
+                    "avatar": "avatars/admin.jpg",
+                    "avatar_url": "http://your-app.test/storage/avatars/admin.jpg",
+                    "email_verified_at": "2024-01-01T08:00:00.000000Z",
+                    "created_at": "2024-01-01T08:00:00.000000Z",
+                    "updated_at": "2024-01-15T10:30:00.000000Z"
+                }
             }
         ],
         "pagination": {
@@ -265,7 +366,14 @@ per_page:  number (default: 15)</code></pre>
                 <div class="space-y-3 rounded-xl border border-violet-200 bg-white/50 p-6 dark:border-violet-900/50 dark:bg-gray-800/50">
                     <div class="flex items-center justify-between">
                         <h4 class="text-lg font-semibold text-gray-900 dark:text-white">Create Task</h4>
-                        <span class="rounded-lg bg-green-100 px-3 py-1 text-xs font-bold text-green-800 dark:bg-green-900/30 dark:text-green-400">POST</span>
+                        <div class="flex items-center gap-2">
+                            <button onclick="downloadEndpoint('create-task', 'POST', '/api/v1/tasks')" class="rounded-lg bg-violet-100 px-2 py-1 text-xs font-semibold text-violet-800 transition-colors hover:bg-violet-200 dark:bg-violet-900/30 dark:text-violet-400 dark:hover:bg-violet-900/50">
+                                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                </svg>
+                            </button>
+                            <span class="rounded-lg bg-green-100 px-3 py-1 text-xs font-bold text-green-800 dark:bg-green-900/30 dark:text-green-400">POST</span>
+                        </div>
                     </div>
                     <code class="block rounded-lg bg-gray-900 px-4 py-2 text-sm text-emerald-400 dark:bg-gray-950">/api/v1/tasks</code>
                     
@@ -314,11 +422,55 @@ attachments[]: (file)</code></pre>
         "task": {
             "id": 1,
             "title": "Complete inspection",
+            "description": "Full vehicle inspection required",
+            "work_date": "2024-12-20",
+            "work_time": "10:00",
+            "status": "pending",
+            "priority": "high",
+            "due_date": "2024-12-31",
             "assigned_users": [
-                { "id": 2, "name": "John Doe" },
-                { "id": 3, "name": "Jane Smith" }
+                {
+                    "id": 2,
+                    "name": "John Doe",
+                    "email": "john@example.com",
+                    "phone": "1234567890",
+                    "role": "employee",
+                    "avis_id": "AV789012",
+                    "avatar": "avatars/user2.jpg",
+                    "avatar_url": "http://your-app.test/storage/avatars/user2.jpg",
+                    "email_verified_at": "2024-01-10T09:00:00.000000Z",
+                    "created_at": "2024-01-05T08:00:00.000000Z",
+                    "updated_at": "2024-01-10T09:00:00.000000Z"
+                },
+                {
+                    "id": 3,
+                    "name": "Jane Smith",
+                    "email": "jane@example.com",
+                    "phone": "0987654321",
+                    "role": "employee",
+                    "avis_id": "AV345678",
+                    "avatar": "avatars/user3.jpg",
+                    "avatar_url": "http://your-app.test/storage/avatars/user3.jpg",
+                    "email_verified_at": "2024-01-12T11:00:00.000000Z",
+                    "created_at": "2024-01-08T08:00:00.000000Z",
+                    "updated_at": "2024-01-12T11:00:00.000000Z"
+                }
             ],
-            "creator": { "id": 1, "name": "Admin User" }
+            "creator": {
+                "id": 1,
+                "name": "Admin User",
+                "email": "admin@example.com",
+                "phone": "5551234567",
+                "role": "admin",
+                "avis_id": "AV123456",
+                "avatar": "avatars/admin.jpg",
+                "avatar_url": "http://your-app.test/storage/avatars/admin.jpg",
+                "email_verified_at": "2024-01-01T08:00:00.000000Z",
+                "created_at": "2024-01-01T08:00:00.000000Z",
+                "updated_at": "2024-01-15T10:30:00.000000Z"
+            },
+            "created_at": "2024-12-20T08:00:00.000000Z",
+            "updated_at": "2024-12-20T08:00:00.000000Z"
         }
     }
 }</code></pre>
@@ -539,7 +691,14 @@ Content-Type: multipart/form-data</code></pre>
                 <div class="space-y-3 rounded-xl border border-violet-200 bg-white/50 p-6 dark:border-violet-900/50 dark:bg-gray-800/50">
                     <div class="flex items-center justify-between">
                         <h4 class="text-lg font-semibold text-gray-900 dark:text-white">Get All Vehicles</h4>
-                        <span class="rounded-lg bg-blue-100 px-3 py-1 text-xs font-bold text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">GET</span>
+                        <div class="flex items-center gap-2">
+                            <button onclick="downloadEndpoint('get-all-vehicles', 'GET', '/api/v1/vehicles')" class="rounded-lg bg-violet-100 px-2 py-1 text-xs font-semibold text-violet-800 transition-colors hover:bg-violet-200 dark:bg-violet-900/30 dark:text-violet-400 dark:hover:bg-violet-900/50">
+                                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                </svg>
+                            </button>
+                            <span class="rounded-lg bg-blue-100 px-3 py-1 text-xs font-bold text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">GET</span>
+                        </div>
                     </div>
                     <code class="block rounded-lg bg-gray-900 px-4 py-2 text-sm text-emerald-400 dark:bg-gray-950">/api/v1/vehicles</code>
                 </div>
@@ -548,7 +707,14 @@ Content-Type: multipart/form-data</code></pre>
                 <div class="space-y-3 rounded-xl border border-violet-200 bg-white/50 p-6 dark:border-violet-900/50 dark:bg-gray-800/50">
                     <div class="flex items-center justify-between">
                         <h4 class="text-lg font-semibold text-gray-900 dark:text-white">Create Vehicle</h4>
-                        <span class="rounded-lg bg-green-100 px-3 py-1 text-xs font-bold text-green-800 dark:bg-green-900/30 dark:text-green-400">POST</span>
+                        <div class="flex items-center gap-2">
+                            <button onclick="downloadEndpoint('create-vehicle', 'POST', '/api/v1/vehicles')" class="rounded-lg bg-violet-100 px-2 py-1 text-xs font-semibold text-violet-800 transition-colors hover:bg-violet-200 dark:bg-violet-900/30 dark:text-violet-400 dark:hover:bg-violet-900/50">
+                                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                </svg>
+                            </button>
+                            <span class="rounded-lg bg-green-100 px-3 py-1 text-xs font-bold text-green-800 dark:bg-green-900/30 dark:text-green-400">POST</span>
+                        </div>
                     </div>
                     <code class="block rounded-lg bg-gray-900 px-4 py-2 text-sm text-emerald-400 dark:bg-gray-950">/api/v1/vehicles</code>
                     
@@ -672,5 +838,41 @@ Content-Type: multipart/form-data</code></pre>
             </div>
         </x-table-card>
     </div>
+
+    <script>
+        function downloadEndpoint(name, method, endpoint, requestBody = null, responseBody = null) {
+            const data = {
+                name: name,
+                method: method,
+                endpoint: endpoint,
+                baseUrl: "{{ config('app.url') }}/api/v1",
+                fullUrl: "{{ config('app.url') }}" + endpoint,
+                headers: {
+                    "Content-Type": "application/json",
+                    "Accept": "application/json",
+                    "Authorization": "Bearer {your_token_here}"
+                }
+            };
+
+            if (requestBody) {
+                data.requestBody = requestBody;
+            }
+
+            if (responseBody) {
+                data.exampleResponse = responseBody;
+            }
+
+            const jsonString = JSON.stringify(data, null, 2);
+            const blob = new Blob([jsonString], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${name.toLowerCase().replace(/\s+/g, '-')}-endpoint.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+    </script>
 </x-layouts.app>
 

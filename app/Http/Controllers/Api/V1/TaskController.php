@@ -22,7 +22,7 @@ class TaskController extends Controller
 
     public function index(Request $request): JsonResponse
     {
-        // Only support from_date/to_date as requested
+        // we only use from_date and to_date for filtering tasks
         $filters = [
             'date_from' => $request->get('from_date'),
             'date_to' => $request->get('to_date'),
@@ -50,7 +50,7 @@ class TaskController extends Controller
 
         $task = $this->taskService->create($data, $assignedUserIds);
 
-        // Handle attachments (multipart form-data: attachments[])
+        // if got files then upload them also
         if ($request->hasFile('attachments')) {
             $this->taskService->addAttachments($task, $request->file('attachments'), auth()->id());
         }
@@ -76,7 +76,7 @@ class TaskController extends Controller
 
         $task = $this->taskService->update($task, $data, $assignedUserIds);
 
-        // If attachments_update flag is present, replace/clear attachments accordingly
+        // if want to update attachments, check the flag first
         if ($request->boolean('attachments_update')) {
             $files = $request->hasFile('attachments') ? $request->file('attachments') : [];
             $this->taskService->replaceAttachments($task, $files, auth()->id());

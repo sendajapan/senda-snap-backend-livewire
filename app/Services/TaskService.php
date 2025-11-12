@@ -15,8 +15,8 @@ class TaskService
     {
         $query = Task::with(['assignedUsers', 'creator', 'attachments']);
 
-        // Search functionality
-        if (! empty($filters['search'])) {
+        // if got search keyword then search in title or description
+        if (!empty($filters['search'])) {
             $search = $filters['search'];
             $query->where(function ($q) use ($search) {
                 $q->where('title', 'like', "%{$search}%")
@@ -24,33 +24,33 @@ class TaskService
             });
         }
 
-        // Filter by status
-        if (! empty($filters['status'])) {
+        // filter by status if needed
+        if (!empty($filters['status'])) {
             $query->where('status', $filters['status']);
         }
 
-        // Filter by priority
-        if (! empty($filters['priority'])) {
+        // filter by priority also can
+        if (!empty($filters['priority'])) {
             $query->where('priority', $filters['priority']);
         }
 
-        // Filter by assigned user
-        if (! empty($filters['assigned_to'])) {
+        // filter by which user assigned to
+        if (!empty($filters['assigned_to'])) {
             $query->whereHas('assignedUsers', function ($q) use ($filters) {
                 $q->where('users.id', $filters['assigned_to']);
             });
         }
 
-        // Filter by date range
-        if (! empty($filters['date_from'])) {
+        // filter by date from and to
+        if (!empty($filters['date_from'])) {
             $query->where('work_date', '>=', $filters['date_from']);
         }
-        if (! empty($filters['date_to'])) {
+        if (!empty($filters['date_to'])) {
             $query->where('work_date', '<=', $filters['date_to']);
         }
 
-        // Sorting
-        if (! empty($filters['sort_by']) && ! empty($filters['sort_direction'])) {
+        // sorting, default is newest first
+        if (!empty($filters['sort_by']) && !empty($filters['sort_direction'])) {
             $query->orderBy($filters['sort_by'], $filters['sort_direction']);
         } else {
             $query->orderBy('created_at', 'desc');
@@ -72,8 +72,8 @@ class TaskService
             'due_date' => $data['due_date'] ?? null,
         ]);
 
-        // Assign users to task
-        if (! empty($assignedUserIds)) {
+        // assign users to this task if got any
+        if (!empty($assignedUserIds)) {
             $task->assignedUsers()->sync($assignedUserIds);
         }
 
@@ -92,9 +92,9 @@ class TaskService
             'priority' => $data['priority'] ?? null,
             'status' => $data['status'] ?? null,
             'due_date' => $data['due_date'] ?? null,
-        ], fn ($value) => $value !== null));
+        ], fn($value) => $value !== null));
 
-        // Update assigned users if provided
+        // update who assigned to this task also if got changes
         if ($assignedUserIds !== null) {
             $task->assignedUsers()->sync($assignedUserIds);
         }
@@ -106,7 +106,7 @@ class TaskService
 
     public function delete(Task $task): bool
     {
-        // Delete associated attachments
+        // need to delete all files first before deleting task
         foreach ($task->attachments as $attachment) {
             if (Storage::disk('public')->exists($attachment->file_path)) {
                 Storage::disk('public')->delete($attachment->file_path);
@@ -141,7 +141,7 @@ class TaskService
     }
 
     /**
-     * Attach multiple files to a task.
+     * Add multiple files to task one by one
      *
      * @param  array<int, UploadedFile>  $files
      */
@@ -154,7 +154,7 @@ class TaskService
     }
 
     /**
-     * Delete all existing attachments for the task.
+     * Remove all files from this task
      */
     public function clearAttachments(Task $task): void
     {
@@ -165,15 +165,15 @@ class TaskService
     }
 
     /**
-     * Replace all attachments for the task with the provided files.
-     * If files array is empty, this effectively clears all attachments.
+     * Replace all old files with new ones
+     * If no files given, then just clear all files only
      *
      * @param  array<int, UploadedFile>  $files
      */
     public function replaceAttachments(Task $task, array $files, int $uploadedBy): void
     {
         $this->clearAttachments($task);
-        if (! empty($files)) {
+        if (!empty($files)) {
             $this->addAttachments($task, $files, $uploadedBy);
         }
     }
@@ -211,10 +211,10 @@ class TaskService
             ->where('created_by', $userId);
 
         // Apply filters
-        if (! empty($filters['status'])) {
+        if (!empty($filters['status'])) {
             $query->where('status', $filters['status']);
         }
-        if (! empty($filters['priority'])) {
+        if (!empty($filters['priority'])) {
             $query->where('priority', $filters['priority']);
         }
 
@@ -229,10 +229,10 @@ class TaskService
             });
 
         // Apply filters
-        if (! empty($filters['status'])) {
+        if (!empty($filters['status'])) {
             $query->where('status', $filters['status']);
         }
-        if (! empty($filters['priority'])) {
+        if (!empty($filters['priority'])) {
             $query->where('priority', $filters['priority']);
         }
 
@@ -244,15 +244,15 @@ class TaskService
         $query = Task::with(['assignedUsers', 'creator', 'attachments'])
             ->whereDate('work_date', today());
 
-        if (! empty($filters['status'])) {
+        if (!empty($filters['status'])) {
             $query->where('status', $filters['status']);
         }
 
-        if (! empty($filters['priority'])) {
+        if (!empty($filters['priority'])) {
             $query->where('priority', $filters['priority']);
         }
 
-        if (! empty($filters['assigned_to'])) {
+        if (!empty($filters['assigned_to'])) {
             $query->whereHas('assignedUsers', function ($q) use ($filters) {
                 $q->where('users.id', $filters['assigned_to']);
             });
@@ -267,32 +267,32 @@ class TaskService
     {
         $query = Task::with(['assignedUsers', 'creator', 'attachments']);
 
-        if (! empty($filters['search'])) {
+        if (!empty($filters['search'])) {
             $query->where(function ($q) use ($filters) {
                 $q->where('title', 'like', "%{$filters['search']}%")
                     ->orWhere('description', 'like', "%{$filters['search']}%");
             });
         }
 
-        if (! empty($filters['status'])) {
+        if (!empty($filters['status'])) {
             $query->where('status', $filters['status']);
         }
 
-        if (! empty($filters['priority'])) {
+        if (!empty($filters['priority'])) {
             $query->where('priority', $filters['priority']);
         }
 
-        if (! empty($filters['assigned_to'])) {
+        if (!empty($filters['assigned_to'])) {
             $query->whereHas('assignedUsers', function ($q) use ($filters) {
                 $q->where('users.id', $filters['assigned_to']);
             });
         }
 
-        if (! empty($filters['from_date'])) {
+        if (!empty($filters['from_date'])) {
             $query->whereDate('work_date', '>=', $filters['from_date']);
         }
 
-        if (! empty($filters['to_date'])) {
+        if (!empty($filters['to_date'])) {
             $query->whereDate('work_date', '<=', $filters['to_date']);
         }
 

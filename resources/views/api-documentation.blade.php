@@ -676,10 +676,10 @@ Content-Type: multipart/form-data</code></pre>
         </x-table-card>
 
         <!-- Vehicles Section -->
-        <x-table-card variant="violet">
+        <x-table-card variant="amber">
             <div class="space-y-6">
                 <div class="flex items-center gap-3">
-                    <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 shadow-lg">
+                    <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 shadow-lg">
                         <svg class="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                         </svg>
@@ -687,12 +687,12 @@ Content-Type: multipart/form-data</code></pre>
                     <h3 class="text-xl font-bold text-gray-900 dark:text-white">Vehicles</h3>
                 </div>
 
-                <!-- Get All Vehicles -->
-                <div class="space-y-3 rounded-xl border border-violet-200 bg-white/50 p-6 dark:border-violet-900/50 dark:bg-gray-800/50">
+                <!-- Search Vehicles -->
+                <div class="space-y-3 rounded-xl border border-amber-200 bg-white/50 p-6 dark:border-amber-900/50 dark:bg-gray-800/50">
                     <div class="flex items-center justify-between">
-                        <h4 class="text-lg font-semibold text-gray-900 dark:text-white">Get All Vehicles</h4>
+                        <h4 class="text-lg font-semibold text-gray-900 dark:text-white">Search Vehicles</h4>
                         <div class="flex items-center gap-2">
-                            <button onclick="downloadEndpoint('get-all-vehicles', 'GET', '/api/v1/vehicles')" class="rounded-lg bg-violet-100 px-2 py-1 text-xs font-semibold text-violet-800 transition-colors hover:bg-violet-200 dark:bg-violet-900/30 dark:text-violet-400 dark:hover:bg-violet-900/50">
+                            <button onclick="downloadEndpoint('search-vehicles', 'GET', '/api/v1/vehicles/search', null, { success: true, message: 'Search completed', data: { vehicles: [{ vehicle_id: 'V12345', veh_chassis_number: 'CH123456789', make: 'Toyota', model: 'Camry', year: 2023, color: 'White' }] } })" class="rounded-lg bg-amber-100 px-2 py-1 text-xs font-semibold text-amber-800 transition-colors hover:bg-amber-200 dark:bg-amber-900/30 dark:text-amber-400 dark:hover:bg-amber-900/50">
                                 <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                                 </svg>
@@ -700,15 +700,84 @@ Content-Type: multipart/form-data</code></pre>
                             <span class="rounded-lg bg-blue-100 px-3 py-1 text-xs font-bold text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">GET</span>
                         </div>
                     </div>
-                    <code class="block rounded-lg bg-gray-900 px-4 py-2 text-sm text-emerald-400 dark:bg-gray-950">/api/v1/vehicles</code>
+                    <code class="block rounded-lg bg-gray-900 px-4 py-2 text-sm text-emerald-400 dark:bg-gray-950">/api/v1/vehicles/search</code>
+
+                    <div class="space-y-2">
+                        <p class="text-sm text-gray-600 dark:text-gray-400">
+                            Search for vehicles in external database by vehicle ID or chassis number.
+                        </p>
+                    </div>
+                    
+                    <div class="space-y-2">
+                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Headers:</p>
+                        <pre class="overflow-x-auto rounded-lg bg-gray-900 p-4 text-xs text-gray-100 dark:bg-gray-950"><code>Authorization: Bearer {token}</code></pre>
+                    </div>
+
+                    <div class="space-y-2">
+                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Query Parameters:</p>
+                        <div class="rounded-lg bg-gray-900 p-4 dark:bg-gray-950">
+                            <ul class="space-y-1 text-xs text-gray-100">
+                                <li>• <code class="text-emerald-400">search_type</code> (required): Type of search - <code class="text-amber-400">vehicle_id</code> or <code class="text-amber-400">veh_chassis_number</code></li>
+                                <li>• <code class="text-emerald-400">search_query</code> (required): Search value (vehicle ID or chassis number)</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Example Request:</p>
+                        <code class="block rounded-lg bg-gray-900 px-4 py-2 text-sm text-emerald-400 dark:bg-gray-950">/api/v1/vehicles/search?search_type=vehicle_id&search_query=V12345</code>
+                    </div>
+
+                    <div class="space-y-2">
+                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Response (200):</p>
+                        <pre class="overflow-x-auto rounded-lg bg-gray-900 p-4 text-xs text-gray-100 dark:bg-gray-950"><code>{
+    "success": true,
+    "message": "Search completed",
+    "data": {
+        "vehicles": [
+            {
+                "vehicle_id": "V12345",
+                "veh_chassis_number": "CH123456789",
+                "make": "Toyota",
+                "model": "Camry",
+                "year": 2023,
+                "color": "White"
+            }
+        ]
+    }
+}</code></pre>
+                    </div>
+
+                    <div class="space-y-2">
+                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Error Response (422):</p>
+                        <pre class="overflow-x-auto rounded-lg bg-gray-900 p-4 text-xs text-gray-100 dark:bg-gray-950"><code>{
+    "success": false,
+    "message": "Validation failed",
+    "errors": {
+        "search_type": ["The search type field is required."],
+        "search_query": ["The search query field is required."]
+    }
+}</code></pre>
+                    </div>
+
+                    <div class="space-y-2">
+                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Error Response (502):</p>
+                        <pre class="overflow-x-auto rounded-lg bg-gray-900 p-4 text-xs text-gray-100 dark:bg-gray-950"><code>{
+    "success": false,
+    "message": "External database query failed",
+    "errors": {
+        "error": "Database connection error"
+    }
+}</code></pre>
+                    </div>
                 </div>
 
-                <!-- Create Vehicle -->
-                <div class="space-y-3 rounded-xl border border-violet-200 bg-white/50 p-6 dark:border-violet-900/50 dark:bg-gray-800/50">
+                <!-- Upload Vehicle Images -->
+                <div class="space-y-3 rounded-xl border border-amber-200 bg-white/50 p-6 dark:border-amber-900/50 dark:bg-gray-800/50">
                     <div class="flex items-center justify-between">
-                        <h4 class="text-lg font-semibold text-gray-900 dark:text-white">Create Vehicle</h4>
+                        <h4 class="text-lg font-semibold text-gray-900 dark:text-white">Upload Vehicle Images</h4>
                         <div class="flex items-center gap-2">
-                            <button onclick="downloadEndpoint('create-vehicle', 'POST', '/api/v1/vehicles')" class="rounded-lg bg-violet-100 px-2 py-1 text-xs font-semibold text-violet-800 transition-colors hover:bg-violet-200 dark:bg-violet-900/30 dark:text-violet-400 dark:hover:bg-violet-900/50">
+                            <button onclick="downloadEndpoint('upload-vehicle-images', 'POST', '/api/v1/vehicles/upload-images', { vehicle_id: 123, images: ['file1', 'file2'] }, { success: true, message: 'Images uploaded successfully', data: { vehicle: { id: 123, vehicle_id: 'V12345', images: ['uploads/vehicle1.jpg', 'uploads/vehicle2.jpg'] } } })" class="rounded-lg bg-amber-100 px-2 py-1 text-xs font-semibold text-amber-800 transition-colors hover:bg-amber-200 dark:bg-amber-900/30 dark:text-amber-400 dark:hover:bg-amber-900/50">
                                 <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                                 </svg>
@@ -716,17 +785,92 @@ Content-Type: multipart/form-data</code></pre>
                             <span class="rounded-lg bg-green-100 px-3 py-1 text-xs font-bold text-green-800 dark:bg-green-900/30 dark:text-green-400">POST</span>
                         </div>
                     </div>
-                    <code class="block rounded-lg bg-gray-900 px-4 py-2 text-sm text-emerald-400 dark:bg-gray-950">/api/v1/vehicles</code>
+                    <code class="block rounded-lg bg-gray-900 px-4 py-2 text-sm text-emerald-400 dark:bg-gray-950">/api/v1/vehicles/upload-images</code>
+
+                    <div class="space-y-2">
+                        <p class="text-sm text-gray-600 dark:text-gray-400">
+                            Upload multiple images for a vehicle to external database.
+                        </p>
+                    </div>
                     
                     <div class="space-y-2">
-                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Request Body:</p>
+                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Headers:</p>
+                        <pre class="overflow-x-auto rounded-lg bg-gray-900 p-4 text-xs text-gray-100 dark:bg-gray-950"><code>Authorization: Bearer {token}
+Content-Type: multipart/form-data</code></pre>
+                    </div>
+
+                    <div class="space-y-2">
+                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Request Body (Form Data):</p>
+                        <div class="rounded-lg bg-gray-900 p-4 dark:bg-gray-950">
+                            <ul class="space-y-1 text-xs text-gray-100">
+                                <li>• <code class="text-emerald-400">vehicle_id</code> (required): Vehicle ID (integer) from external database</li>
+                                <li>• <code class="text-emerald-400">images</code> (required): Array of image files (min: 1 image)</li>
+                                <li>• <code class="text-emerald-400">images.*</code>: Each image must be a valid image file, max 2MB per file</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Accepted Image Formats:</p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="rounded-lg bg-amber-100 px-3 py-1 text-xs font-bold text-amber-800 dark:bg-amber-900/30 dark:text-amber-400">JPEG</span>
+                            <span class="rounded-lg bg-amber-100 px-3 py-1 text-xs font-bold text-amber-800 dark:bg-amber-900/30 dark:text-amber-400">JPG</span>
+                            <span class="rounded-lg bg-amber-100 px-3 py-1 text-xs font-bold text-amber-800 dark:bg-amber-900/30 dark:text-amber-400">PNG</span>
+                            <span class="rounded-lg bg-amber-100 px-3 py-1 text-xs font-bold text-amber-800 dark:bg-amber-900/30 dark:text-amber-400">GIF</span>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Response (200):</p>
                         <pre class="overflow-x-auto rounded-lg bg-gray-900 p-4 text-xs text-gray-100 dark:bg-gray-950"><code>{
-    "serial_number": "SN12345",
-    "brand": "Toyota",
-    "model": "Camry",
-    "year": 2023,
-    "color": "White",
-    "status": "available"
+    "success": true,
+    "message": "Images uploaded successfully",
+    "data": {
+        "vehicle": {
+            "id": 123,
+            "vehicle_id": "V12345",
+            "make": "Toyota",
+            "model": "Camry",
+            "images": [
+                "uploads/vehicle_123_image1.jpg",
+                "uploads/vehicle_123_image2.jpg"
+            ],
+            "uploaded_at": "2024-12-20T10:30:00.000000Z"
+        }
+    }
+}</code></pre>
+                    </div>
+
+                    <div class="space-y-2">
+                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Error Response (422):</p>
+                        <pre class="overflow-x-auto rounded-lg bg-gray-900 p-4 text-xs text-gray-100 dark:bg-gray-950"><code>{
+    "success": false,
+    "message": "Validation failed",
+    "errors": {
+        "vehicle_id": ["The vehicle id field is required."],
+        "images": ["The images field is required."],
+        "images.0": ["The images.0 must be an image.", "The images.0 must not be greater than 2048 kilobytes."]
+    }
+}</code></pre>
+                    </div>
+
+                    <div class="space-y-2">
+                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Error Response (404):</p>
+                        <pre class="overflow-x-auto rounded-lg bg-gray-900 p-4 text-xs text-gray-100 dark:bg-gray-950"><code>{
+    "success": false,
+    "message": "Vehicle not found in external database",
+    "errors": []
+}</code></pre>
+                    </div>
+
+                    <div class="space-y-2">
+                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Error Response (502):</p>
+                        <pre class="overflow-x-auto rounded-lg bg-gray-900 p-4 text-xs text-gray-100 dark:bg-gray-950"><code>{
+    "success": false,
+    "message": "External database query failed",
+    "errors": {
+        "error": "Database connection error"
+    }
 }</code></pre>
                     </div>
                 </div>

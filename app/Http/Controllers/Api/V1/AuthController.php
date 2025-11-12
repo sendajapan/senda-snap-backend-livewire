@@ -41,7 +41,7 @@ class AuthController extends Controller
 
     public function login(Request $request): JsonResponse
     {
-        // Quick guard for missing fields to avoid unexpected exceptions
+        // check first if got email and password or not, don't want error suddenly
         $missing = [];
         if (! $request->filled('email')) {
             $missing[] = 'email';
@@ -78,7 +78,7 @@ class AuthController extends Controller
         } catch (\InvalidArgumentException $e) {
             return $this->errorResponse('Invalid credentials', [], 401);
         } catch (\Throwable $e) {
-            // Always return JSON error payloads
+            // always return json response, don't show html error page
             return $this->errorResponse('Unable to process login request.', [
                 'exception' => [$e->getMessage()],
             ], 500);

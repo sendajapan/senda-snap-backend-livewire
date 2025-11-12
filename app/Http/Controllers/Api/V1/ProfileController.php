@@ -26,7 +26,7 @@ class ProfileController extends Controller
     {
         $data = $request->validated();
 
-        // Handle avatar upload
+        // if got avatar file, then add to data
         if ($request->hasFile('avatar')) {
             $data['avatar'] = $request->file('avatar');
         }

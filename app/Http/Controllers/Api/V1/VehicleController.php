@@ -3,10 +3,6 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreVehicleRequest;
-use App\Http\Requests\UpdateVehicleRequest;
-use App\Http\Resources\VehicleResource;
-use App\Models\Vehicle;
 use App\Services\VehicleService;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
@@ -20,65 +16,9 @@ class VehicleController extends Controller
         protected VehicleService $vehicleService
     ) {}
 
-    public function index(Request $request): JsonResponse
-    {
-        $filters = [
-            'search' => $request->get('search'),
-            'status' => $request->get('status'),
-            'make' => $request->get('make'),
-            'year' => $request->get('year'),
-        ];
-
-        $vehicles = $this->vehicleService->list($filters, $request->get('per_page', 15));
-
-        return $this->successResponse('Vehicles retrieved successfully', [
-            'vehicles' => VehicleResource::collection($vehicles->items()),
-            'pagination' => [
-                'current_page' => $vehicles->currentPage(),
-                'last_page' => $vehicles->lastPage(),
-                'per_page' => $vehicles->perPage(),
-                'total' => $vehicles->total(),
-            ],
-        ]);
-    }
-
-    public function store(StoreVehicleRequest $request): JsonResponse
-    {
-        $vehicle = $this->vehicleService->create($request->validated(), auth()->id());
-
-        return $this->successResponse('Vehicle created successfully', [
-            'vehicle' => new VehicleResource($vehicle),
-        ], 201);
-    }
-
-    public function show(Vehicle $vehicle): JsonResponse
-    {
-        $vehicle->load(['creator', 'photos', 'consignee', 'tasks']);
-
-        return $this->successResponse('Vehicle retrieved successfully', [
-            'vehicle' => new VehicleResource($vehicle),
-        ]);
-    }
-
-    public function update(UpdateVehicleRequest $request, Vehicle $vehicle): JsonResponse
-    {
-        $vehicle = $this->vehicleService->update($vehicle, $request->validated());
-
-        return $this->successResponse('Vehicle updated successfully', [
-            'vehicle' => new VehicleResource($vehicle),
-        ]);
-    }
-
-    public function destroy(Vehicle $vehicle): JsonResponse
-    {
-        $this->vehicleService->delete($vehicle);
-
-        return $this->successResponse('Vehicle deleted successfully');
-    }
-
     public function search(Request $request): JsonResponse
     {
-        // Accept only query parameters for input
+        // just take the query params only, no body needed here
         $input = [
             'search_type' => $request->query('search_type'),
             'search_query' => $request->query('search_query'),
@@ -124,7 +64,7 @@ class VehicleController extends Controller
         $validator = Validator::make($request->all(), [
             'vehicle_id' => 'required|integer',
             'images' => 'required|array|min:1',
-            'images.*' => 'required|file|image|max:2048', // max 2MB per image
+            'images.*' => 'required|file|image|max:2048', // each image can be max 2MB la
         ]);
 
         if ($validator->fails()) {

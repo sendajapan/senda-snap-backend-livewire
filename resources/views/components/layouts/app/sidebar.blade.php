@@ -18,7 +18,48 @@
 
                 <flux:navlist.group :heading="__('Management')" class="grid">
                     <flux:navlist.item icon="users" :href="route('users.index')" :current="request()->routeIs('users.*')" wire:navigate>{{ __('Users') }}</flux:navlist.item>
-                    <flux:navlist.item icon="clipboard" :href="route('tasks.index')" :current="request()->routeIs('tasks.*')" wire:navigate>{{ __('Tasks') }}</flux:navlist.item>
+                    
+                    <!-- Tasks with Submenu -->
+                    <div x-data="{ open: {{ request()->routeIs('tasks.*') ? 'true' : 'false' }} }">
+                        <flux:navlist.item 
+                            icon="clipboard" 
+                            @click="open = !open"
+                            :current="request()->routeIs('tasks.*')"
+                            class="cursor-pointer">
+                            <div class="flex items-center justify-between w-full">
+                                <span>{{ __('Tasks') }}</span>
+                                <svg x-show="!open" class="h-4 w-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                </svg>
+                                <svg x-show="open" class="h-4 w-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+                                </svg>
+                            </div>
+                        </flux:navlist.item>
+                        
+                        <div x-show="open" x-collapse class="ml-8 mt-1 space-y-1">
+                            <flux:navlist.item 
+                                :href="route('tasks.today')" 
+                                :current="request()->routeIs('tasks.today')"
+                                wire:navigate
+                                class="text-sm">
+                                {{ __("Today's Tasks") }}
+                            </flux:navlist.item>
+                            <flux:navlist.item 
+                                :href="route('tasks.all')" 
+                                :current="request()->routeIs('tasks.all')"
+                                wire:navigate
+                                class="text-sm">
+                                {{ __('All Tasks') }}
+                            </flux:navlist.item>
+                            <flux:navlist.item 
+                                disabled
+                                class="text-sm opacity-50 cursor-not-allowed">
+                                {{ __('Kanban Board') }} <span class="text-xs">({{ __('Coming Soon') }})</span>
+                            </flux:navlist.item>
+                        </div>
+                    </div>
+                    
                     <flux:navlist.item icon="cube" :href="route('vehicles.index')" :current="request()->routeIs('vehicles.*')" wire:navigate>{{ __('Vehicles') }}</flux:navlist.item>
                 </flux:navlist.group>
             </flux:navlist>

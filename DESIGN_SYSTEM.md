@@ -1036,3 +1036,182 @@ $this->dispatch('user-saved');
 $this->dispatch('task-saved');
 $this->dispatch('vehicle-saved');
 ```
+
+---
+
+## 🧩 Livewire Tables & Filters Pattern (Authoritative)
+
+Use this pattern for any new data table to ensure correct filtering, rendering, and UX.
+
+### Livewire Component (Controller logic)
+
+```php
+declare(strict_types=1);
+
+use App\Services\SomeService;
+use Illuminate\View\View;
+use Livewire\Component;
+
+class ItemsIndex extends Component
+{
+    public ?string $search = null;
+    public ?string $statusFilter = null; // e.g. pending|running|completed|cancelled
+    public ?string $fromDate = null;     // Y-m-d
+    public ?string $toDate = null;       // Y-m-d
+
+    public function updatedSearch($value): void
+    {
+        $this->search = trim((string) $value) === '' ? null : trim((string) $value);
+    }
+
+    public function updatedStatusFilter($value): void
+    {
+        $this->statusFilter = ($value === '' || $value === null) ? null : $value;
+    }
+
+    public function updatedFromDate($value): void
+    {
+        $this->fromDate = ($value === '' || $value === null) ? null : $value;
+    }
+
+    public function updatedToDate($value): void
+    {
+        $this->toDate = ($value === '' || $value === null) ? null : $value;
+    }
+
+    public function clearFilters(): void
+    {
+        $this->search = $this->statusFilter = $this->fromDate = $this->toDate = null;
+    }
+
+    public function render(SomeService $service): View
+    {
+        $filters = [];
+        if ($this->search !== null && $this->search !== '') { $filters['search'] = $this->search; }
+        if ($this->statusFilter !== null && $this->statusFilter !== '') { $filters['status'] = $this->statusFilter; }
+        if ($this->fromDate !== null && $this->fromDate !== '') { $filters['from_date'] = $this->fromDate; }
+        if ($this->toDate !== null && $this->toDate !== '') { $filters['to_date'] = $this->toDate; }
+
+        $items = $service->listAll($filters); // returns Collection (or paginator if needed)
+
+        return view('livewire.items.index', compact('items'))
+            ->layout('components.layouts.app', ['title' => __('Items')]);
+    }
+}
+```
+
+### Blade View (UI + rendering rules)
+
+```blade
+<x-table-card variant="emerald">
+    <!-- Filters Row -->
+    <div class="mb-4 flex flex-wrap gap-4">
+        <div class="flex-1 min-w-64">
+            <flux:input
+                wire:model.live.debounce.300ms="search"
+                placeholder="{{ __('Search...') }}"
+                icon="magnifying-glass" />
+        </div>
+        <div class="w-44">
+            <flux:input type="date" wire:model.live="fromDate" placeholder="{{ __('From Date') }}" />
+        </div>
+        <div class="w-44">
+            <flux:input type="date" wire:model.live="toDate" placeholder="{{ __('To Date') }}" />
+        </div>
+        <div class="w-48">
+            <flux:select wire:model.live="statusFilter" placeholder="{{ __('All Status') }}">
+                <option value="">{{ __('All Status') }}</option>
+                <option value="pending">{{ __('Pending') }}</option>
+                <option value="running">{{ __('Running') }}</option>
+                <option value="completed">{{ __('Completed') }}</option>
+                <option value="cancelled">{{ __('Cancelled') }}</option>
+            </flux:select>
+        </div>
+
+        @if($search || $statusFilter || $fromDate || $toDate)
+            <div class="flex items-center">
+                <flux:button wire:click="clearFilters" variant="ghost" size="sm" icon="x-mark">
+                    {{ __('Clear Filters') }}
+                </flux:button>
+            </div>
+        @endif
+    </div>
+
+    <!-- Active Filters Badges -->
+    @if($search || $statusFilter || $fromDate || $toDate)
+        <div class="mt-3 flex flex-wrap gap-2">
+            <span class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ __('Active Filters:') }}</span>
+            @if($search)
+                <flux:badge color="violet" size="sm">{{ __('Search:') }} "{{ $search }}"</flux:badge>
+            @endif
+            @if($statusFilter)
+                <flux:badge color="blue" size="sm">{{ __('Status:') }} {{ ucfirst($statusFilter) }}</flux:badge>
+            @endif
+            @if($fromDate)
+                <flux:badge color="gray" size="sm">{{ __('From:') }} {{ $fromDate }}</flux:badge>
+            @endif
+            @if($toDate)
+                <flux:badge color="gray" size="sm">{{ __('To:') }} {{ $toDate }}</flux:badge>
+            @endif
+        </div>
+    @endif
+
+    <!-- Table -->
+    <div class="overflow-x-auto border rounded-xl bg-white/50 backdrop-blur-sm dark:bg-gray-800/50"
+         wire:key="table-{{ md5(($search ?? '').'|'.($statusFilter ?? '').'|'.($fromDate ?? '').'|'.($toDate ?? '')) }}">
+        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+            <thead>...</thead>
+            <tbody class="divide-y divide-gray-200/50 dark:divide-gray-700/50">
+                @forelse($items as $item)
+                    <x-item-row :item="$item" wire:key="item-{{ $item->id }}" />
+                @empty
+                    <!-- Empty state -->
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+</x-table-card>
+```
+
+### Service Method (Filtering semantics)
+
+```php
+public function listAll(array $filters = []): \Illuminate\Database\Eloquent\Collection
+{
+    $query = Model::with(['relations...']);
+
+    if (isset($filters['search']) && $filters['search'] !== '') {
+        $query->where(function ($q) use ($filters) {
+            $q->where('title', 'like', "%{$filters['search']}%")
+              ->orWhere('description', 'like', "%{$filters['search']}%");
+        });
+    }
+
+    if (isset($filters['status']) && $filters['status'] !== '') {
+        $query->where('status', $filters['status']);
+    }
+
+    if (isset($filters['from_date']) && $filters['from_date'] !== '') {
+        $query->whereDate('work_date', '>=', $filters['from_date']);
+    }
+
+    if (isset($filters['to_date']) && $filters['to_date'] !== '') {
+        $query->whereDate('work_date', '<=', $filters['to_date']);
+    }
+
+    return $query->latest('work_date')->latest('work_time')->get();
+}
+```
+
+### Non-Negotiables (Always follow)
+
+- Use nullable public properties (e.g., `?string $statusFilter = null`).
+- Normalize empty inputs to `null` in `updatedXxx()` handlers.
+- Build `$filters` explicitly; do not pass raw `$this` properties directly.
+- Add `wire:key` to:
+  - Each row: `wire:key="item-{{ $item->id }}"`
+  - Table wrapper keyed by all active filters.
+- Provide a Clear Filters button and Active Filters badges.
+- Keep UI within `<x-table-card>` and follow spacing, borders, and dark mode rules above.
+
+This is the canonical table pattern. Reuse as-is and adapt field names only.

@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Task;
 use App\Models\TaskAttachment;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 
@@ -265,5 +266,81 @@ class TaskService
     public function getTaskById(int $taskId): Task
     {
         return Task::with(['assignedUsers', 'creator', 'attachments'])->findOrFail($taskId);
+    }
+
+    /**
+     * Get today's tasks without pagination
+     */
+    public function getTodayTasksAll(array $filters = []): Collection
+    {
+        $query = Task::with(['assignedUsers', 'creator', 'attachments'])
+            ->whereDate('work_date', today());
+
+        // Apply status filter
+        if (isset($filters['status']) && $filters['status'] !== '' && $filters['status'] !== null) {
+            $query->where('status', $filters['status']);
+        }
+
+        // Apply priority filter
+        if (isset($filters['priority']) && $filters['priority'] !== '' && $filters['priority'] !== null) {
+            $query->where('priority', $filters['priority']);
+        }
+
+        // Apply assigned user filter
+        if (isset($filters['assigned_to']) && $filters['assigned_to'] !== '' && $filters['assigned_to'] !== null) {
+            $query->whereHas('assignedUsers', function ($q) use ($filters) {
+                $q->where('users.id', $filters['assigned_to']);
+            });
+        }
+
+        return $query->orderByRaw('CASE WHEN work_time IS NULL THEN 1 ELSE 0 END')
+            ->orderBy('work_time', 'asc')
+            ->get();
+    }
+
+    /**
+     * Get all tasks with filters without pagination
+     */
+    public function getAllTasksFilteredAll(array $filters = []): Collection
+    {
+        $query = Task::with(['assignedUsers', 'creator', 'attachments']);
+
+        // Apply search filter
+        if (isset($filters['search']) && $filters['search'] !== '' && $filters['search'] !== null) {
+            $query->where(function ($q) use ($filters) {
+                $q->where('title', 'like', "%{$filters['search']}%")
+                    ->orWhere('description', 'like', "%{$filters['search']}%");
+            });
+        }
+
+        // Apply status filter
+        if (isset($filters['status']) && $filters['status'] !== '' && $filters['status'] !== null) {
+            $query->where('status', $filters['status']);
+        }
+
+        // Apply priority filter
+        if (isset($filters['priority']) && $filters['priority'] !== '' && $filters['priority'] !== null) {
+            $query->where('priority', $filters['priority']);
+        }
+
+        // Apply assigned user filter
+        if (isset($filters['assigned_to']) && $filters['assigned_to'] !== '' && $filters['assigned_to'] !== null) {
+            $query->whereHas('assignedUsers', function ($q) use ($filters) {
+                $q->where('users.id', $filters['assigned_to']);
+            });
+        }
+
+        // Apply date range filters
+        if (isset($filters['from_date']) && $filters['from_date'] !== '' && $filters['from_date'] !== null) {
+            $query->whereDate('work_date', '>=', $filters['from_date']);
+        }
+
+        if (isset($filters['to_date']) && $filters['to_date'] !== '' && $filters['to_date'] !== null) {
+            $query->whereDate('work_date', '<=', $filters['to_date']);
+        }
+
+        return $query->orderBy('work_date', 'desc')
+            ->orderBy('work_time', 'desc')
+            ->get();
     }
 }

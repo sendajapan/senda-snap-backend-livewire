@@ -4,7 +4,8 @@ use App\Livewire\Settings\Appearance;
 use App\Livewire\Settings\Password;
 use App\Livewire\Settings\Profile;
 use App\Livewire\Settings\TwoFactor;
-use App\Livewire\Tasks\Index as TasksIndex;
+use App\Livewire\Tasks\AllTasks;
+use App\Livewire\Tasks\TodayTasks;
 use App\Livewire\Users\Index as UsersIndex;
 use App\Livewire\Vehicles\Index as VehiclesIndex;
 use Illuminate\Support\Facades\Route;
@@ -28,7 +29,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('users/{user}/edit', fn ($user) => view('livewire.users.edit', ['user' => $user]))->name('users.edit');
 
     // Tasks Management
-    Route::get('tasks', TasksIndex::class)->name('tasks.index');
+    Route::redirect('tasks', 'tasks/today')->name('tasks.index');
+    Route::get('tasks/today', TodayTasks::class)->name('tasks.today');
+    Route::get('tasks/all', AllTasks::class)->name('tasks.all');
     Route::get('tasks/create', fn () => view('livewire.tasks.create'))->name('tasks.create');
     Route::get('tasks/{task}/edit', fn ($task) => view('livewire.tasks.edit', ['task' => $task]))->name('tasks.edit');
     Route::get('tasks/{task}', fn ($task) => view('livewire.tasks.show', ['task' => $task]))->name('tasks.show');

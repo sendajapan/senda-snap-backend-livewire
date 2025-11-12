@@ -35,7 +35,28 @@ class Task extends Model
 
     public function assignedUsers(): BelongsToMany
     {
+        //here task_user table is pivot table holds the foreign keys of both related tables. [ex: task_id, user_id]
         return $this->belongsToMany(User::class, 'task_user')->withTimestamps();
+
+        /* Code snippets for future
+        // Get all users assigned to a task
+        $task = Task::find(1);
+        $users = $task->users;
+
+        // Get all tasks assigned to a user
+        $user = User::find(2);
+        $tasks = $user->tasks;
+
+        // Attach a user to a task
+        $task->users()->attach($userId);
+
+        // Detach a user from a task
+        $task->users()->detach($userId);
+
+        // Sync users (replace all existing ones)
+        $task->users()->sync([1, 2, 3]);
+        */
+
     }
 
     public function creator(): BelongsTo

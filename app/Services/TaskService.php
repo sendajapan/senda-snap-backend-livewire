@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Storage;
 
 class TaskService
 {
-    public function list(array $filters = [], int $perPage = 15): LengthAwarePaginator
+    public function list(array $filters = [], int $perPage = 100): LengthAwarePaginator
     {
         $query = Task::with(['assignedUsers', 'creator', 'attachments']);
 

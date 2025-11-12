@@ -28,7 +28,7 @@ class TaskController extends Controller
             'date_to' => $request->get('to_date'),
         ];
 
-        $tasks = $this->taskService->list($filters, $request->get('per_page', 15));
+        $tasks = $this->taskService->list($filters, $request->get('per_page', 100));
 
         return $this->successResponse('Tasks retrieved successfully', [
             'tasks' => TaskResource::collection($tasks->items()),
@@ -50,7 +50,7 @@ class TaskController extends Controller
 
         $task = $this->taskService->create($data, $assignedUserIds);
 
-        // if got files then upload them also
+        // if got files then upload them too
         if ($request->hasFile('attachments')) {
             $this->taskService->addAttachments($task, $request->file('attachments'), auth()->id());
         }

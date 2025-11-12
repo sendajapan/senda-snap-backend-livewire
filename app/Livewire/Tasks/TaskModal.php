@@ -5,7 +5,7 @@ namespace App\Livewire\Tasks;
 use App\Models\Task;
 use App\Models\TaskAttachment;
 use App\Models\User;
-use Illuminate\Support\Facades\Storage;
+use App\Services\TaskService;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -68,12 +68,12 @@ class TaskModal extends Component
     }
 
     #[On('open-task-modal')]
-    public function openModal(?int $taskId = null): void
+    public function openModal(?int $taskId, TaskService $taskService): void
     {
         $this->resetForm();
 
         if ($taskId) {
-            $this->task = Task::with(['assignedUsers', 'attachments.uploader'])->findOrFail($taskId);
+            $this->task = $taskService->getTaskById($taskId);
             $this->isEditing = true;
             $this->title = $this->task->title;
             $this->description = $this->task->description ?? '';
@@ -114,7 +114,7 @@ class TaskModal extends Component
         $this->resetValidation();
     }
 
-    public function save(): void
+    public function save(TaskService $taskService): void
     {
         $this->validate();
 
@@ -130,14 +130,11 @@ class TaskModal extends Component
             ];
 
             if ($this->isEditing) {
-                $this->task->update($data);
-                $this->task->assignedUsers()->sync($this->assigned_to);
-                $task = $this->task;
+                $task = $taskService->update($this->task, $data, $this->assigned_to);
                 $message = 'Task updated successfully.';
             } else {
                 $data['created_by'] = auth()->id();
-                $task = Task::create($data);
-                $task->assignedUsers()->sync($this->assigned_to);
+                $task = $taskService->create($data, $this->assigned_to);
                 $message = 'Task created successfully.';
             }
 
@@ -145,13 +142,7 @@ class TaskModal extends Component
             if (! empty($this->attachments)) {
                 foreach ($this->attachments as $file) {
                     if (is_object($file) && method_exists($file, 'store')) {
-                        $path = $file->store('task-attachments', 'public');
-                        $task->attachments()->create([
-                            'file_path' => $path,
-                            'file_name' => $file->getClientOriginalName(),
-                            'file_type' => $file->getMimeType(),
-                            'uploaded_by' => auth()->id(),
-                        ]);
+                        $taskService->uploadAttachment($task, $file, auth()->id());
                     }
                 }
             }
@@ -165,7 +156,7 @@ class TaskModal extends Component
         }
     }
 
-    public function deleteAttachment(int $attachmentId): void
+    public function deleteAttachment(int $attachmentId, TaskService $taskService): void
     {
         try {
             $attachment = TaskAttachment::findOrFail($attachmentId);
@@ -177,13 +168,8 @@ class TaskModal extends Component
                 return;
             }
 
-            // Delete file from storage
-            if (Storage::disk('public')->exists($attachment->file_path)) {
-                Storage::disk('public')->delete($attachment->file_path);
-            }
-
-            // Delete record
-            $attachment->delete();
+            // Delete attachment using service
+            $taskService->deleteAttachment($attachment);
 
             // Refresh existing attachments
             if ($this->task) {

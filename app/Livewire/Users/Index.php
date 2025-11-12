@@ -2,7 +2,7 @@
 
 namespace App\Livewire\Users;
 
-use App\Models\User;
+use App\Services\UserService;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -31,20 +31,14 @@ class Index extends Component
         // This will trigger a re-render and refresh the users list
     }
 
-    public function render()
+    public function render(UserService $userService)
     {
-        $users = User::query()
-            ->when($this->search, function ($query) {
-                $query->where(function ($q) {
-                    $q->where('name', 'like', "%{$this->search}%")
-                        ->orWhere('email', 'like', "%{$this->search}%");
-                });
-            })
-            ->when($this->roleFilter, function ($query) {
-                $query->where('role', $this->roleFilter);
-            })
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
+        $filters = [
+            'search' => $this->search,
+            'role' => $this->roleFilter,
+        ];
+
+        $users = $userService->getPaginated($filters, 10);
 
         return view('livewire.users.index', [
             'users' => $users,

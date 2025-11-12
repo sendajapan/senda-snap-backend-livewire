@@ -5,8 +5,9 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreVehicleRequest;
 use App\Http\Requests\UpdateVehicleRequest;
+use App\Http\Resources\VehicleResource;
 use App\Models\Vehicle;
-use App\Services\ExternalVehicleService;
+use App\Services\VehicleService;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -15,40 +16,23 @@ use Throwable;
 
 class VehicleController extends Controller
 {
+    public function __construct(
+        protected VehicleService $vehicleService
+    ) {}
+
     public function index(Request $request): JsonResponse
     {
-        $query = Vehicle::with(['creator', 'photos', 'consignee', 'tasks']);
+        $filters = [
+            'search' => $request->get('search'),
+            'status' => $request->get('status'),
+            'make' => $request->get('make'),
+            'year' => $request->get('year'),
+        ];
 
-        // Search functionality
-        if ($request->has('search')) {
-            $search = $request->get('search');
-            $query->where(function ($q) use ($search) {
-                $q->where('serial_number', 'like', "%{$search}%")
-                    ->orWhere('make', 'like', "%{$search}%")
-                    ->orWhere('model', 'like', "%{$search}%")
-                    ->orWhere('chassis_model', 'like', "%{$search}%");
-            });
-        }
-
-        // Filter by status
-        if ($request->has('status')) {
-            $query->where('status', $request->get('status'));
-        }
-
-        // Filter by make
-        if ($request->has('make')) {
-            $query->where('make', 'like', "%{$request->get('make')}%");
-        }
-
-        // Filter by year
-        if ($request->has('year')) {
-            $query->where('year', $request->get('year'));
-        }
-
-        $vehicles = $query->orderBy('created_at', 'desc')->paginate($request->get('per_page', 15));
+        $vehicles = $this->vehicleService->list($filters, $request->get('per_page', 15));
 
         return $this->successResponse('Vehicles retrieved successfully', [
-            'vehicles' => $vehicles->items(),
+            'vehicles' => VehicleResource::collection($vehicles->items()),
             'pagination' => [
                 'current_page' => $vehicles->currentPage(),
                 'last_page' => $vehicles->lastPage(),
@@ -60,15 +44,10 @@ class VehicleController extends Controller
 
     public function store(StoreVehicleRequest $request): JsonResponse
     {
-        $vehicle = Vehicle::create([
-            ...$request->validated(),
-            'created_by' => auth()->id(),
-        ]);
-
-        $vehicle->load(['creator', 'photos', 'consignee', 'tasks']);
+        $vehicle = $this->vehicleService->create($request->validated(), auth()->id());
 
         return $this->successResponse('Vehicle created successfully', [
-            'vehicle' => $vehicle,
+            'vehicle' => new VehicleResource($vehicle),
         ], 201);
     }
 
@@ -77,24 +56,22 @@ class VehicleController extends Controller
         $vehicle->load(['creator', 'photos', 'consignee', 'tasks']);
 
         return $this->successResponse('Vehicle retrieved successfully', [
-            'vehicle' => $vehicle,
+            'vehicle' => new VehicleResource($vehicle),
         ]);
     }
 
     public function update(UpdateVehicleRequest $request, Vehicle $vehicle): JsonResponse
     {
-        $vehicle->update($request->validated());
-
-        $vehicle->load(['creator', 'photos', 'consignee', 'tasks']);
+        $vehicle = $this->vehicleService->update($vehicle, $request->validated());
 
         return $this->successResponse('Vehicle updated successfully', [
-            'vehicle' => $vehicle,
+            'vehicle' => new VehicleResource($vehicle),
         ]);
     }
 
     public function destroy(Vehicle $vehicle): JsonResponse
     {
-        $vehicle->delete();
+        $this->vehicleService->delete($vehicle);
 
         return $this->successResponse('Vehicle deleted successfully');
     }
@@ -116,15 +93,10 @@ class VehicleController extends Controller
             return $this->errorResponse('Validation failed', $validator->errors()->toArray(), 422);
         }
 
-        // Get the user infor
-        $user = $request->user();
-
-        $service = new ExternalVehicleService;
-
         try {
-            $results = $service->getVehicleDetails(
-                (string)$input['search_type'],
-                (string)$input['search_query']
+            $results = $this->vehicleService->search(
+                (string) $input['search_type'],
+                (string) $input['search_query']
             );
 
             return $this->successResponse('Search completed', [
@@ -159,34 +131,19 @@ class VehicleController extends Controller
             return $this->errorResponse('Validation failed', $validator->errors()->toArray(), 422);
         }
 
-        $user = $request->user();
-
-        $service = new ExternalVehicleService;
-
         try {
-            $results = $service->getVehicleDetails('vehicle_id', (string)$request->vehicle_id);
-
-            if (empty($results)) {
-                return $this->errorResponse('Vehicle not found', [], 404);
-            }
-
-            $vehicle = $results[0];
-
-            $uploadedImages = [];
-            $uploadedFiles = $request->file('images', []);
-
-            foreach ($uploadedFiles as $index => $file) {
-                $dummyFileName = 'uploaded_' . $request->vehicle_id . '_' . time() . '_' . ($index + 1) . '.' . $file->getClientOriginalExtension();
-                $dummyUrl = 'https://senda.us/autocraft/avisnew/images/veh_images/uploaded/' . $dummyFileName;
-                $uploadedImages[] = $dummyUrl;
-            }
-
-            $existingImages = $vehicle['images'] ?? [];
-            $vehicle['images'] = array_merge($existingImages, $uploadedImages);
+            $vehicle = $this->vehicleService->uploadImages(
+                $request->vehicle_id,
+                $request->file('images', [])
+            );
 
             return $this->successResponse('Images uploaded successfully', [
                 'vehicle' => $vehicle,
             ]);
+
+        } catch (\RuntimeException $e) {
+
+            return $this->errorResponse($e->getMessage(), [], 404);
 
         } catch (QueryException $e) {
 

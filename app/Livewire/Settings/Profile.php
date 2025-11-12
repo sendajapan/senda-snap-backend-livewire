@@ -3,6 +3,7 @@
 namespace App\Livewire\Settings;
 
 use App\Models\User;
+use App\Services\ProfileService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Validation\Rule;
@@ -26,7 +27,7 @@ class Profile extends Component
     /**
      * Update the profile information for the currently authenticated user.
      */
-    public function updateProfileInformation(): void
+    public function updateProfileInformation(ProfileService $profileService): void
     {
         $user = Auth::user();
 
@@ -43,15 +44,9 @@ class Profile extends Component
             ],
         ]);
 
-        $user->fill($validated);
+        $profileService->updateProfile($user, $validated);
 
-        if ($user->isDirty('email')) {
-            $user->email_verified_at = null;
-        }
-
-        $user->save();
-
-        $this->dispatch('profile-updated', name: $user->name);
+        $this->dispatch('profile-updated', name: $user->fresh()->name);
     }
 
     /**

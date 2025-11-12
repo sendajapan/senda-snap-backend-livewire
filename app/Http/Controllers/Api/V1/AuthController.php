@@ -3,16 +3,18 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
+use App\Http\Resources\UserResource;
+use App\Services\AuthService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
+    public function __construct(
+        protected AuthService $authService
+    ) {}
+
     public function register(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
@@ -29,19 +31,11 @@ class AuthController extends Controller
             return $this->errorResponse($messages ?: 'Validation failed', $validator->errors()->toArray(), 422);
         }
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'role' => $request->role ?? 'client',
-            'phone' => $request->phone,
-        ]);
-
-        $token = $user->createToken('auth_token')->plainTextToken;
+        $result = $this->authService->register($request->only(['name', 'email', 'password', 'role', 'phone']));
 
         return $this->successResponse('User registered successfully', [
-            'user' => $user,
-            'token' => $token,
+            'user' => new UserResource($result['user']),
+            'token' => $result['token'],
         ]);
     }
 
@@ -75,17 +69,14 @@ class AuthController extends Controller
         }
 
         try {
-            if (! Auth::attempt($request->only('email', 'password'))) {
-                return $this->errorResponse('Invalid credentials', [], 401);
-            }
-
-            $user = Auth::user();
-            $token = $user->createToken('auth_token')->plainTextToken;
+            $result = $this->authService->login($request->only('email', 'password'));
 
             return $this->successResponse('Login successful', [
-                'user' => $user,
-                'token' => $token,
+                'user' => new UserResource($result['user']),
+                'token' => $result['token'],
             ]);
+        } catch (\InvalidArgumentException $e) {
+            return $this->errorResponse('Invalid credentials', [], 401);
         } catch (\Throwable $e) {
             // Always return JSON error payloads
             return $this->errorResponse('Unable to process login request.', [
@@ -96,16 +87,14 @@ class AuthController extends Controller
 
     public function logout(Request $request): JsonResponse
     {
-        $request->user()->currentAccessToken()->delete();
+        $this->authService->logout($request->user());
 
         return $this->successResponse('Logout successful');
     }
 
     public function refresh(Request $request): JsonResponse
     {
-        $user = $request->user();
-        $user->currentAccessToken()->delete();
-        $token = $user->createToken('auth_token')->plainTextToken;
+        $token = $this->authService->refreshToken($request->user());
 
         return $this->successResponse('Token refreshed successfully', [
             'token' => $token,
@@ -115,7 +104,7 @@ class AuthController extends Controller
     public function me(Request $request): JsonResponse
     {
         return $this->successResponse('User retrieved successfully', [
-            'user' => $request->user(),
+            'user' => new UserResource($request->user()),
         ]);
     }
 
@@ -131,17 +120,15 @@ class AuthController extends Controller
             return $this->errorResponse('Validation failed', $validator->errors()->toArray(), 422);
         }
 
-        $user = $request->user();
-
+        $data = $request->only(['name', 'phone']);
         if ($request->hasFile('avatar')) {
-            $avatarPath = $request->file('avatar')->store('avatars', 'public');
-            $user->avatar = $avatarPath;
+            $data['avatar'] = $request->file('avatar');
         }
 
-        $user->update($request->only(['name', 'phone']));
+        $user = $this->authService->updateProfile($request->user(), $data);
 
         return $this->successResponse('Profile updated successfully', [
-            'user' => $user,
+            'user' => new UserResource($user),
         ]);
     }
 
@@ -156,17 +143,17 @@ class AuthController extends Controller
             return $this->errorResponse('Validation failed', $validator->errors()->toArray(), 422);
         }
 
-        $user = $request->user();
+        try {
+            $this->authService->changePassword(
+                $request->user(),
+                $request->current_password,
+                $request->password
+            );
 
-        if (! Hash::check($request->current_password, $user->password)) {
+            return $this->successResponse('Password changed successfully');
+        } catch (\InvalidArgumentException $e) {
             return $this->errorResponse('Current password is incorrect', [], 400);
         }
-
-        $user->update([
-            'password' => Hash::make($request->password),
-        ]);
-
-        return $this->successResponse('Password changed successfully');
     }
 
     public function forgotPassword(Request $request): JsonResponse
@@ -179,13 +166,13 @@ class AuthController extends Controller
             return $this->errorResponse('Validation failed', $validator->errors()->toArray(), 422);
         }
 
-        $status = Password::sendResetLink($request->only('email'));
+        try {
+            $this->authService->sendResetLink($request->email);
 
-        if ($status === Password::RESET_LINK_SENT) {
             return $this->successResponse('Password reset link sent to your email');
+        } catch (\RuntimeException $e) {
+            return $this->errorResponse('Unable to send password reset link', [], 400);
         }
-
-        return $this->errorResponse('Unable to send password reset link', [], 400);
     }
 
     public function resetPassword(Request $request): JsonResponse
@@ -200,19 +187,16 @@ class AuthController extends Controller
             return $this->errorResponse('Validation failed', $validator->errors(), 422);
         }
 
-        $status = Password::reset(
-            $request->only('email', 'password', 'password_confirmation', 'token'),
-            function ($user, $password) {
-                $user->forceFill([
-                    'password' => Hash::make($password),
-                ])->save();
-            }
-        );
+        try {
+            $this->authService->resetPassword(
+                $request->token,
+                $request->email,
+                $request->password
+            );
 
-        if ($status === Password::PASSWORD_RESET) {
             return $this->successResponse('Password reset successfully');
+        } catch (\RuntimeException $e) {
+            return $this->errorResponse('Unable to reset password', [], 400);
         }
-
-        return $this->errorResponse('Unable to reset password', [], 400);
     }
 }

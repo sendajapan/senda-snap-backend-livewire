@@ -2,7 +2,7 @@
 
 namespace App\Livewire\Vehicles;
 
-use App\Models\Vehicle;
+use App\Services\VehicleService;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -24,19 +24,14 @@ class Index extends Component
         $this->resetPage();
     }
 
-    public function render()
+    public function render(VehicleService $vehicleService)
     {
-        $vehicles = Vehicle::with(['creator'])
-            ->when($this->search, function ($query) {
-                $query->where(function ($q) {
-                    $q->where('serial_number', 'like', "%{$this->search}%")
-                        ->orWhere('make', 'like', "%{$this->search}%")
-                        ->orWhere('model', 'like', "%{$this->search}%");
-                });
-            })
-            ->when($this->statusFilter, fn ($q) => $q->where('status', $this->statusFilter))
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
+        $filters = [
+            'search' => $this->search,
+            'status' => $this->statusFilter,
+        ];
+
+        $vehicles = $vehicleService->getPaginated($filters, 10);
 
         return view('livewire.vehicles.index', [
             'vehicles' => $vehicles,

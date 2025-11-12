@@ -28,7 +28,7 @@ class ExternalVehicleService
         ];
 
         $key = strtolower($searchType);
-        if (!array_key_exists($key, $allowed)) {
+        if (! array_key_exists($key, $allowed)) {
             $key = 'veh_chassis_number';
         }
 
@@ -78,14 +78,14 @@ class ExternalVehicleService
             $connection = $this->getConnection();
             $rows = $connection->select($sql, $bindings);
 
-            $vehicles = array_map(fn($r) => (array) $r, $rows);
+            $vehicles = array_map(fn ($r) => (array) $r, $rows);
 
             // Fetch images for each vehicle
             foreach ($vehicles as &$vehicle) {
                 $vehicleId = $vehicle['vehicle_id'] ?? null;
                 if ($vehicleId) {
                     $images = $connection->select('SELECT veh_image FROM tbl_vehicle_images WHERE vehicle_id = ?', [$vehicleId]);
-                    $vehicle['images'] = array_map(fn($img) => 'https://senda.us/autocraft/avisnew/images/veh_images/' . $img->veh_image, $images);
+                    $vehicle['images'] = array_map(fn ($img) => 'https://senda.us/autocraft/avisnew/images/veh_images/'.$img->veh_image, $images);
                 } else {
                     $vehicle['images'] = [];
                 }

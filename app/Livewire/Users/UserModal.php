@@ -3,8 +3,7 @@
 namespace App\Livewire\Users;
 
 use App\Models\User;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Storage;
+use App\Services\UserService;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -117,17 +116,16 @@ class UserModal extends Component
         $this->resetValidation();
     }
 
-    public function removeAvatar(): void
+    public function removeAvatar(UserService $userService): void
     {
         if ($this->isEditing && $this->user && $this->user->avatar) {
-            Storage::disk('public')->delete($this->user->avatar);
-            $this->user->update(['avatar' => null]);
+            $userService->removeAvatar($this->user);
             $this->existing_avatar = null;
         }
         $this->avatar = null;
     }
 
-    public function save(): void
+    public function save(UserService $userService): void
     {
         $this->validate();
 
@@ -141,24 +139,19 @@ class UserModal extends Component
             ];
 
             if (! $this->isEditing || ! empty($this->password)) {
-                $data['password'] = Hash::make($this->password);
+                $data['password'] = $this->password;
             }
 
             // Handle avatar upload
             if ($this->avatar && is_object($this->avatar) && method_exists($this->avatar, 'store')) {
-                // Delete old avatar if editing
-                if ($this->isEditing && $this->user && $this->user->avatar) {
-                    Storage::disk('public')->delete($this->user->avatar);
-                }
-
-                $data['avatar'] = $this->avatar->store('avatars', 'public');
+                $data['avatar'] = $this->avatar;
             }
 
             if ($this->isEditing) {
-                $this->user->update($data);
+                $userService->update($this->user, $data);
                 $message = 'User updated successfully.';
             } else {
-                User::create($data);
+                $userService->create($data);
                 $message = 'User created successfully.';
             }
 

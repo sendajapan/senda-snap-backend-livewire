@@ -2,7 +2,7 @@
 
 namespace App\Livewire\Tasks;
 
-use App\Models\Task;
+use App\Services\TaskService;
 use Illuminate\View\View;
 use Livewire\Attributes\On;
 use Livewire\Component;
@@ -82,43 +82,26 @@ class Index extends Component
         // This will trigger a re-render and refresh the tasks list
     }
 
-    public function render(): View
+    public function render(TaskService $taskService): View
     {
         // Today's tasks - sorted by work_time ascending (earliest first)
-        $todayTasks = Task::with(['assignedUsers', 'creator', 'attachments'])
-            ->whereDate('work_date', today())
-            ->when($this->todayStatusFilter !== '', fn ($q) => $q->where('status', $this->todayStatusFilter))
-            ->when($this->todayPriorityFilter !== '', fn ($q) => $q->where('priority', $this->todayPriorityFilter))
-            ->when($this->todayAssignedToFilter !== '', function ($q) {
-                $q->whereHas('assignedUsers', function ($query) {
-                    $query->where('users.id', $this->todayAssignedToFilter);
-                });
-            })
-            ->orderByRaw('CASE WHEN work_time IS NULL THEN 1 ELSE 0 END')
-            ->orderBy('work_time', 'asc')
-            ->paginate(5, ['*'], 'todayTasksPage');
+        $todayFilters = [
+            'status' => $this->todayStatusFilter !== '' ? $this->todayStatusFilter : null,
+            'priority' => $this->todayPriorityFilter !== '' ? $this->todayPriorityFilter : null,
+            'assigned_to' => $this->todayAssignedToFilter !== '' ? $this->todayAssignedToFilter : null,
+        ];
+        $todayTasks = $taskService->getTodayTasks($todayFilters, 5);
 
         // All tasks with date range filter
-        $allTasksQuery = Task::with(['assignedUsers', 'creator', 'attachments'])
-            ->when($this->search, function ($query) {
-                $query->where(function ($q) {
-                    $q->where('title', 'like', "%{$this->search}%")
-                        ->orWhere('description', 'like', "%{$this->search}%");
-                });
-            })
-            ->when($this->statusFilter !== '', fn ($q) => $q->where('status', $this->statusFilter))
-            ->when($this->priorityFilter !== '', fn ($q) => $q->where('priority', $this->priorityFilter))
-            ->when($this->assignedToFilter !== '', function ($q) {
-                $q->whereHas('assignedUsers', function ($query) {
-                    $query->where('users.id', $this->assignedToFilter);
-                });
-            })
-            ->when($this->fromDate, fn ($q) => $q->whereDate('work_date', '>=', $this->fromDate))
-            ->when($this->toDate, fn ($q) => $q->whereDate('work_date', '<=', $this->toDate))
-            ->orderBy('work_date', 'desc')
-            ->orderBy('work_time', 'desc');
-
-        $allTasks = $allTasksQuery->paginate(50, ['*'], 'allTasksPage');
+        $allTasksFilters = [
+            'search' => $this->search,
+            'status' => $this->statusFilter !== '' ? $this->statusFilter : null,
+            'priority' => $this->priorityFilter !== '' ? $this->priorityFilter : null,
+            'assigned_to' => $this->assignedToFilter !== '' ? $this->assignedToFilter : null,
+            'from_date' => $this->fromDate,
+            'to_date' => $this->toDate,
+        ];
+        $allTasks = $taskService->getAllTasksFiltered($allTasksFilters, 50, 'allTasksPage');
 
         // Get all users for the filter dropdowns
         $users = \App\Models\User::orderBy('name')->get();

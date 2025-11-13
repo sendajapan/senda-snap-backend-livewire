@@ -22,7 +22,7 @@
         </td>
     @endif
 
-    <td class="whitespace-nowrap px-6 py-5">
+    <td class="whitespace-normal px-6 py-5 w-1/4">
         <div class="flex flex-col">
             <div class="flex items-center gap-2">
                 <span class="text-sm font-bold text-gray-900 dark:text-white">{{ $task->title }}</span>
@@ -36,7 +36,7 @@
                 @endif
             </div>
             @if($task->description)
-                <span class="mt-1 text-xs text-gray-500 dark:text-gray-400 line-clamp-1">{{ $task->description }}</span>
+                <span class="mt-1 text-xs text-gray-500 dark:text-gray-400 line-clamp-3">{{ $task->description }}</span>
             @endif
         </div>
     </td>

@@ -18,7 +18,6 @@ class VehicleController extends Controller
 
     public function search(Request $request): JsonResponse
     {
-        // just take the query params only, no body needed here
         $input = [
             'search_type' => $request->query('search_type'),
             'search_query' => $request->query('search_query'),
@@ -40,7 +39,7 @@ class VehicleController extends Controller
             );
 
             return $this->successResponse('Search completed', [
-                'vehicles' => $results,
+                'vehicles' => $results['vehicles'],
             ]);
         } catch (QueryException $e) {
 

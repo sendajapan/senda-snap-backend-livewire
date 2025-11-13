@@ -67,7 +67,7 @@ return [
         'external_mysql' => [
             'driver' => 'mariadb',
             'url' => env('REMOTE_DB_URL'),
-            'host' => env('REMOTE_DB_HOST', '192.168.0.99'),
+            'host' => env('REMOTE_DB_HOST', 'senda.us'),
             'port' => env('REMOTE_DB_PORT', '3306'),
             'database' => env('REMOTE_DB_DATABASE', 'avis_03oct'),
             'username' => env('REMOTE_DB_USERNAME', 'sendajapan1'),

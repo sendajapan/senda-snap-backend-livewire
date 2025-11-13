@@ -54,7 +54,7 @@ class UserSeeder extends Seeder
 
         $employee2 = User::create([
             'name' => 'Akunova Alisa',
-            'email' => 'acjl.infomation@gmail.com',
+            'email' => 'acjl.information@gmail.com',
             'password' => Hash::make('password'),
             'role' => 'employee',
             'phone' => '+1234567893',

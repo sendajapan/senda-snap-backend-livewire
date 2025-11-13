@@ -6,7 +6,7 @@
 
     @php
         $backgroundImages = [
-            'https://images.unsplash.com/photo-1762112800005-a61bacb1d15c?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1286'
+            'https://images.unsplash.com/photo-1691795680289-98cf16bb34dd?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
         ]
     @endphp
 
@@ -31,8 +31,10 @@
 
                 <div class="relative z-20 mt-auto">
                     <blockquote class="space-y-2">
-                        <flux:heading size="lg">&ldquo;{{ trim($message) }}&rdquo;</flux:heading>
-                        <footer><flux:heading>{{ trim($author) }}</flux:heading></footer>
+                        <flux:heading class="text-white" size="lg">&ldquo;{{ trim($message) }}&rdquo;</flux:heading>
+                        <footer>
+                            <flux:heading class="text-white">{{ trim($author) }}</flux:heading>
+                        </footer>
                     </blockquote>
                 </div>
             </div>

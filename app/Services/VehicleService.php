@@ -132,11 +132,11 @@ class VehicleService
         $vehicle['images'] = array_merge($existingImages, $uploadedImages);
 
         // Add debug information to response
-        $vehicle['debug'] = [
-            'uploaded_paths' => $uploadedPaths,
-            'full_paths' => $fullPaths ?? [],
-            'db_result' => $dbResult,
-        ];
+//        $vehicle['debug'] = [
+//            'uploaded_paths' => $uploadedPaths,
+//            'full_paths' => $fullPaths ?? [],
+//            'db_result' => $dbResult,
+//        ];
 
         return $vehicle;
     }

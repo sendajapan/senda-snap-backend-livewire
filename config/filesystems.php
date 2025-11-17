@@ -60,6 +60,21 @@ return [
             'report' => false,
         ],
 
+        'sftp' => [
+            'driver' => 'sftp',
+            'host' => env('SFTP_HOST', 'senda.us'),
+            'port' => env('SFTP_PORT', 1453),
+            'username' => env('SFTP_USERNAME', 'root'),
+            'password' => env('SFTP_PASSWORD', 'g@r@msh@'),
+            'root' => env('SFTP_ROOT', '/'),
+            'image_path' => env('SFTP_IMAGE_PATH', '/home/kono/public_html/autocraft/avisnew/images/veh_images/'),
+            'url' => env('SFTP_URL', 'https://senda.us/autocraft/avisnew/images/veh_images/'),
+            'timeout' => 30,
+            'directoryPerm' => 0777,
+            'throw' => false,
+            'report' => false,
+        ],
+
     ],
 
     /*

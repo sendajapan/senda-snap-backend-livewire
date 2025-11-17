@@ -8,15 +8,17 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 class VehicleService
 {
     public function __construct(
-        protected ExternalVehicleService $externalVehicleService
-    ) {}
+        protected ExternalVehicleService $externalVehicleService,
+        protected SftpService $sftpService
+    ) {
+    }
 
     public function list(array $filters = [], int $perPage = 15): LengthAwarePaginator
     {
         $query = Vehicle::with(['creator', 'photos', 'consignee', 'tasks']);
 
         // Search functionality
-        if (! empty($filters['search'])) {
+        if (!empty($filters['search'])) {
             $search = $filters['search'];
             $query->where(function ($q) use ($search) {
                 $q->where('serial_number', 'like', "%{$search}%")
@@ -27,17 +29,17 @@ class VehicleService
         }
 
         // Filter by status
-        if (! empty($filters['status'])) {
+        if (!empty($filters['status'])) {
             $query->where('status', $filters['status']);
         }
 
         // Filter by make
-        if (! empty($filters['make'])) {
+        if (!empty($filters['make'])) {
             $query->where('make', 'like', "%{$filters['make']}%");
         }
 
         // Filter by year
-        if (! empty($filters['year'])) {
+        if (!empty($filters['year'])) {
             $query->where('year', $filters['year']);
         }
 
@@ -48,7 +50,7 @@ class VehicleService
     {
         $query = Vehicle::with(['creator']);
 
-        if (! empty($filters['search'])) {
+        if (!empty($filters['search'])) {
             $query->where(function ($q) use ($filters) {
                 $q->where('serial_number', 'like', "%{$filters['search']}%")
                     ->orWhere('make', 'like', "%{$filters['search']}%")
@@ -56,7 +58,7 @@ class VehicleService
             });
         }
 
-        if (! empty($filters['status'])) {
+        if (!empty($filters['status'])) {
             $query->where('status', $filters['status']);
         }
 
@@ -91,25 +93,50 @@ class VehicleService
         return $this->externalVehicleService->getVehicleDetails($searchType, $searchQuery);
     }
 
-    public function uploadImages(int $vehicleId, array $images): array
+    public function uploadImages(int $vehicleId, array $images, ?int $createdBy = null): array
     {
         $results = $this->externalVehicleService->getVehicleDetails('vehicle_id', (string) $vehicleId);
 
-        if (empty($results)) {
+        if (empty($results['vehicles']) || !isset($results['vehicles'][0])) {
             throw new \RuntimeException('Vehicle not found');
         }
 
-        $vehicle = $results[0];
-        $uploadedImages = [];
+        $vehicle = $results['vehicles'][0];
 
-        foreach ($images as $index => $file) {
-            $dummyFileName = 'uploaded_'.$vehicleId.'_'.time().'_'.($index + 1).'.'.$file->getClientOriginalExtension();
-            $dummyUrl = 'https://senda.us/autocraft/avisnew/images/veh_images/uploaded/'.$dummyFileName;
-            $uploadedImages[] = $dummyUrl;
+        // Upload files to remote server via SFTP
+        $imagePath = config('filesystems.disks.sftp.image_path', '/home/kono/public_html/autocraft/avisnew/images/veh_images/');
+
+
+        $imagePath = ltrim($imagePath, '/');
+        $uploadedPaths = $this->sftpService->uploadMultipleFiles($images, $imagePath);
+
+        // Store image records in database
+        $dbResult = null;
+        if ($createdBy !== null) {
+            $fullPaths = array_map(function ($fileName) use ($imagePath) {
+                return rtrim($imagePath, '/') . '/' . ltrim($fileName, '/');
+            }, $uploadedPaths);
+
+            $dbResult = $this->externalVehicleService->storeVehicleImages($vehicleId, $fullPaths, $createdBy);
+        }
+
+        // Generate URLs for uploaded images
+        $uploadedImages = [];
+        $baseUrl = config('filesystems.disks.sftp.url', 'https://senda.us/autocraft/avisnew/images/veh_images/');
+
+        foreach ($uploadedPaths as $path) {
+            $uploadedImages[] = rtrim($baseUrl, '/') . '/' . ltrim($path, '/');
         }
 
         $existingImages = $vehicle['images'] ?? [];
         $vehicle['images'] = array_merge($existingImages, $uploadedImages);
+
+        // Add debug information to response
+        $vehicle['debug'] = [
+            'uploaded_paths' => $uploadedPaths,
+            'full_paths' => $fullPaths ?? [],
+            'db_result' => $dbResult,
+        ];
 
         return $vehicle;
     }

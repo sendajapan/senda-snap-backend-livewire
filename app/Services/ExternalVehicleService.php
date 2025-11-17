@@ -28,7 +28,7 @@ class ExternalVehicleService
         ];
 
         $key = strtolower($searchType);
-        if (!array_key_exists($key, $allowed)) {
+        if (! array_key_exists($key, $allowed)) {
             $key = 'veh_chassis_number';
         }
 
@@ -78,13 +78,13 @@ class ExternalVehicleService
             $connection = $this->getConnection();
             $rows = $connection->select($sql, $bindings);
 
-            $vehicles = array_map(fn($r) => (array)$r, $rows);
+            $vehicles = array_map(fn ($r) => (array) $r, $rows);
 
             foreach ($vehicles as &$vehicle) {
                 $vehicleId = $vehicle['vehicle_id'] ?? null;
                 if ($vehicleId) {
                     $images = $connection->select('SELECT veh_image FROM tbl_vehicle_images WHERE vehicle_id = ?', [$vehicleId]);
-                    $vehicle['images'] = array_map(fn($img) => 'https://senda.us/autocraft/avisnew/images/veh_images/' . $img->veh_image, $images);
+                    $vehicle['images'] = array_map(fn ($img) => 'https://senda.us/autocraft/avisnew/images/veh_images/'.$img->veh_image, $images);
                 } else {
                     $vehicle['images'] = [];
                 }
@@ -100,6 +100,84 @@ class ExternalVehicleService
                 'message' => $e->getMessage(),
             ]);
             throw $e;
+        }
+    }
+
+    public function storeVehicleImages(int $vehicleId, array $imagePaths, int $createdBy = 0): array
+    {
+        $connection = $this->getConnection();
+        $now = now();
+        $insertedImages = [];
+        $queries = [];
+
+        try {
+            foreach ($imagePaths as $index => $imagePath) {
+                // Extract filename from path (get last part after /)
+                $fileName = basename($imagePath);
+
+                // Truncate to 100 characters if needed (varchar(100) limit)
+                if (strlen($fileName) > 100) {
+                    $extension = pathinfo($fileName, PATHINFO_EXTENSION);
+                    $nameWithoutExt = pathinfo($fileName, PATHINFO_FILENAME);
+                    $fileName = substr($nameWithoutExt, 0, 100 - strlen($extension) - 1).'.'.$extension;
+                }
+
+                $data = [
+                    'vehicle_id' => $vehicleId,
+                    'veh_image' => $fileName,
+                    'ordering' => 0,
+                    'web_show' => 1,
+                    'email_by' => null,
+                    'created_by' => $createdBy,
+                    'created_on' => $now->format('Y-m-d H:i:s'),
+                    'updated_by' => $createdBy,
+                    'updated_on' => $now->format('Y-m-d H:i:s'),
+                    'aleado_images' => null,
+                ];
+
+                // Build the SQL query for debugging
+                $columns = implode(', ', array_keys($data));
+                $placeholders = implode(', ', array_fill(0, count($data), '?'));
+                $sql = "INSERT INTO tbl_vehicle_images ({$columns}) VALUES ({$placeholders})";
+                $bindings = array_values($data);
+
+                // Build full query with bindings for debugging
+                $fullQuery = $sql;
+                foreach ($bindings as $binding) {
+                    $value = is_null($binding) ? 'NULL' : (is_string($binding) ? "'".addslashes($binding)."'" : $binding);
+                    $fullQuery = preg_replace('/\?/', $value, $fullQuery, 1);
+                }
+
+                $queries[] = [
+                    'sql' => $sql,
+                    'bindings' => $bindings,
+                    'full_query' => $fullQuery,
+                    'data' => $data,
+                ];
+
+                $imageId = $connection->table('tbl_vehicle_images')->insertGetId($data);
+
+                $insertedImages[] = [
+                    'image_id' => $imageId,
+                    'vehicle_id' => $vehicleId,
+                    'veh_image' => $fileName,
+                    'ordering' => 0,
+                ];
+            }
+
+            return [
+                'inserted' => $insertedImages,
+                'queries' => $queries,
+            ];
+        } catch (QueryException $e) {
+            Log::error('ExternalVehicleService storeVehicleImages failed', [
+                'vehicle_id' => $vehicleId,
+                'message' => $e->getMessage(),
+                'sql' => $e->getSql() ?? null,
+                'bindings' => $e->getBindings() ?? [],
+            ]);
+
+            throw new \RuntimeException('Failed to store vehicle images: '.$e->getMessage(), 0, $e);
         }
     }
 }

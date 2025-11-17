@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Services\VehicleService;
+use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -14,7 +15,8 @@ class VehicleController extends Controller
 {
     public function __construct(
         protected VehicleService $vehicleService
-    ) {}
+    ) {
+    }
 
     public function search(Request $request): JsonResponse
     {
@@ -63,7 +65,7 @@ class VehicleController extends Controller
         $validator = Validator::make($request->all(), [
             'vehicle_id' => 'required|integer',
             'images' => 'required|array|min:1',
-            'images.*' => 'required|file|image|max:2048', // each image can be max 2MB la
+            'images.*' => 'required|file|image|max:2048',
         ]);
 
         if ($validator->fails()) {
@@ -71,24 +73,22 @@ class VehicleController extends Controller
         }
 
         try {
+            $createdBy = auth()->id() ?? 0;
             $vehicle = $this->vehicleService->uploadImages(
                 $request->vehicle_id,
-                $request->file('images', [])
+                $request->file('images', []),
+                $createdBy
             );
 
             return $this->successResponse('Images uploaded successfully', [
                 'vehicle' => $vehicle,
             ]);
 
-        } catch (\RuntimeException $e) {
+        } catch (Exception $e) {
 
-            return $this->errorResponse($e->getMessage(), [], 404);
-
-        } catch (QueryException $e) {
-
-            return $this->errorResponse('External database query failed', [
+            return $this->errorResponse($e->getMessage(), [
                 'error' => $e->getMessage(),
-            ], 502);
+            ], 404);
 
         } catch (Throwable $e) {
 

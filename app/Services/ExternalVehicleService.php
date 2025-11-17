@@ -125,7 +125,7 @@ class ExternalVehicleService
                 $data = [
                     'vehicle_id' => $vehicleId,
                     'veh_image' => $fileName,
-                    'ordering' => 0,
+                    'ordering' => 99,
                     'web_show' => 1,
                     'email_by' => null,
                     'created_by' => $createdBy,

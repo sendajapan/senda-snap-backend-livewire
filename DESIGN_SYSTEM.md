@@ -829,6 +829,91 @@ document.addEventListener('DOMContentLoaded', initializeCharts);
 document.addEventListener('livewire:navigated', initializeCharts);
 ```
 
+### **Chart Card with Embedded Table** (Dashboard Pattern)
+For dashboard charts that need to display related data below the chart, embed a table directly inside the chart card. This pattern uses the empty space at the bottom of the chart canvas efficiently.
+
+**Structure**:
+```blade
+<div class="group relative overflow-hidden rounded-2xl border border-emerald-200 bg-gradient-to-br from-white via-emerald-50/30 to-teal-50/30 p-6 shadow-xl transition-all duration-300 hover:shadow-2xl dark:border-emerald-900/50 dark:from-gray-900 dark:via-emerald-900/20 dark:to-teal-900/20">
+    <!-- Decorative Elements -->
+    <div class="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-gradient-to-br from-emerald-400/20 to-teal-400/20 blur-2xl"></div>
+    <div class="absolute -bottom-8 -left-8 h-32 w-32 rounded-full bg-gradient-to-br from-teal-400/20 to-emerald-400/20 blur-2xl"></div>
+
+    <div class="relative">
+        <!-- Header -->
+        <div class="mb-6 flex items-center justify-between">
+            <div>
+                <div class="flex items-center gap-2">
+                    <div class="h-1 w-8 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500"></div>
+                    <h3 class="text-xl font-bold text-gray-900 dark:text-white">{{ __('Chart Title') }}</h3>
+                </div>
+                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                    {{ __('Chart description') }}
+                </p>
+            </div>
+            <div class="animate-pulse rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-500 p-4 shadow-lg shadow-emerald-500/50">
+                <svg class="h-6 w-6 text-white">...</svg>
+            </div>
+        </div>
+
+        <!-- Chart and Status List: Vertical on md/small, Horizontal on lg+ -->
+        <div class="flex flex-col gap-6 lg:flex-row lg:items-start">
+            <!-- Chart Canvas -->
+            <div class="relative flex flex-1 items-center justify-center rounded-xl bg-white/50 p-6 backdrop-blur-sm dark:bg-gray-800/50">
+                <canvas id="chartId" class="max-h-64"></canvas>
+            </div>
+
+            <!-- Status List -->
+            <div class="flex-1 space-y-3">
+                <!-- Status items -->
+            </div>
+        </div>
+
+        <!-- Embedded Table Section -->
+        @if($items->count() > 0)
+            <div class="mt-6">
+                <h4 class="mb-4 text-sm font-semibold text-gray-700 dark:text-gray-300">{{ __('Section Title') }}</h4>
+                <div class="overflow-x-auto border rounded-xl bg-white/50 backdrop-blur-sm dark:bg-gray-800/50">
+                    <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                        <thead>
+                            <tr class="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900">
+                                <th class="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">
+                                    {{ __('Column') }}
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200/50 dark:divide-gray-700/50">
+                            @foreach($items as $item)
+                                <tr class="group transition-all duration-200 hover:bg-gradient-to-r hover:from-emerald-50/50 hover:to-teal-50/50 dark:hover:from-emerald-900/10 dark:hover:to-teal-900/10">
+                                    <td class="px-4 py-3">
+                                        <!-- Table row content -->
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        @endif
+    </div>
+</div>
+```
+
+**Key Features**:
+- Chart card uses variant-specific gradient (emerald for tasks, violet for vehicles, etc.)
+- Chart and status list are responsive: vertical on md/small, horizontal on lg+
+- Embedded table appears below chart/status section using `mt-6` spacing
+- Table uses compact padding (`px-4 py-3` instead of `px-6 py-5`) for dashboard context
+- Table container has border and frosted glass effect (`bg-white/50 backdrop-blur-sm`)
+- Hover effects on table rows match the chart card's variant color
+- Only displays if items exist (`@if($items->count() > 0)`)
+
+**Use Cases**:
+- Dashboard charts showing summary data with related items
+- Task status chart with upcoming tasks table
+- Vehicle status chart with recent vehicles
+- Any chart that needs to display related data in a compact format
+
 ---
 
 ## 🌓 Dark Mode
@@ -1010,10 +1095,122 @@ When creating a new page, ensure:
 - Permission-based deletion (only uploader or admin/manager)
 - Emerald-themed UI matching parent component
 
+### Dashboard Chart Cards with Embedded Tables
+- Chart cards can now include embedded tables below the chart/status section
+- Responsive layout: chart and status list horizontal on lg+, vertical on md/small
+- Tables use compact padding (`px-4 py-3`) for dashboard context
+- Efficient use of empty space at bottom of chart canvas
+- Hover effects on table rows match chart card variant colors
+- Example: Task Status chart with upcoming tasks table
+
+### Role Counts Section
+- Role counts displayed above Members table in dashboard
+- Grid layout: 2 columns on small screens, 4 columns on md+ screens
+- Color-coded cards: Admin (red), Manager (blue), Employee (emerald), Client (gray)
+- Each card shows role name, count, and icon with hover effects
+
+### Upcoming Tasks Query Pattern
+- Dashboard upcoming tasks show only future tasks (work_date >= today)
+- Sorted by work_date (ASC) then work_time (ASC)
+- Displays "Work Date & Time" instead of "Due Date"
+- Date and time shown with icons in vertical stack layout
+
+### Role Counts Section (Dashboard Pattern)
+For dashboard cards displaying user/member data, show role counts above the main table. This provides a quick overview of team composition.
+
+**Structure**:
+```blade
+<!-- Role Counts Section -->
+<div class="mb-6 grid grid-cols-2 gap-4 md:grid-cols-4">
+    <!-- Admin Count -->
+    <div class="group relative overflow-hidden rounded-xl border border-red-200 bg-gradient-to-br from-red-50 to-red-100/50 p-4 shadow-sm transition-all duration-200 hover:scale-105 hover:shadow-md dark:border-red-800/50 dark:from-red-900/20 dark:to-red-800/10">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-xs font-medium text-red-700 dark:text-red-400">{{ __('Admin') }}</p>
+                <p class="mt-1 text-2xl font-bold text-red-900 dark:text-red-200">{{ $adminCount }}</p>
+            </div>
+            <div class="rounded-lg bg-red-200/50 p-2 dark:bg-red-900/30">
+                <svg class="h-5 w-5 text-red-600 dark:text-red-400">...</svg>
+            </div>
+        </div>
+    </div>
+    <!-- Repeat for Manager, Employee, Client with appropriate colors -->
+</div>
+```
+
+**Key Features**:
+- Grid layout: 2 columns on small screens, 4 columns on md+ screens
+- Color-coded by role: Admin (red), Manager (blue), Employee (emerald), Client (gray)
+- Each card shows role name, count, and icon
+- Hover effects: scale and shadow on hover
+- Dark mode support
+- Positioned above the main data table
+
+**Use Cases**:
+- Members card showing team composition
+- User management pages
+- Any dashboard section displaying role-based statistics
+
+### Upcoming Tasks Query Pattern
+For displaying upcoming tasks in dashboard tables, use this query pattern to show only future tasks sorted by work date and time.
+
+**Query Pattern**:
+```php
+$upcomingTasks = \App\Models\Task::whereNotIn('status', ['completed', 'cancelled'])
+    ->whereNotNull('work_date')
+    ->where('work_date', '>=', now()->toDateString())
+    ->with(['assignedUsers', 'creator'])
+    ->orderBy('work_date', 'ASC')
+    ->orderBy('work_time', 'ASC')
+    ->limit(3)
+    ->get();
+```
+
+**Key Features**:
+- Filters out completed and cancelled tasks
+- Only shows tasks with `work_date` set
+- Only shows tasks with `work_date >= today` (future dates only)
+- Sorted by `work_date` (ASC) then `work_time` (ASC)
+- Eager loads relationships to prevent N+1 queries
+- Limits results (typically 3-5 for dashboard display)
+
+**Display Pattern**:
+```blade
+<td class="whitespace-nowrap px-4 py-3">
+    @if($task->work_date)
+        <div class="flex flex-col gap-1">
+            <div class="flex items-center gap-2">
+                <svg class="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                <span class="text-sm text-gray-900 dark:text-white">{{ $task->work_date->format('M d, Y') }}</span>
+            </div>
+            @if($task->work_time)
+                <div class="flex items-center gap-2">
+                    <svg class="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span class="text-xs text-gray-600 dark:text-gray-400">{{ \Carbon\Carbon::parse($task->work_time)->format('h:i A') }}</span>
+                </div>
+            @endif
+        </div>
+    @else
+        <span class="text-sm text-gray-400 dark:text-gray-500">-</span>
+    @endif
+</td>
+```
+
+**Display Features**:
+- Shows "Work Date & Time" instead of "Due Date"
+- Date displayed with calendar icon on first line
+- Time displayed with clock icon on second line (if available)
+- Time formatted as "h:i A" (e.g., "02:30 PM")
+- Vertical flex layout for date and time stacking
+
 ---
 
-**Version**: 2.0  
-**Last Updated**: November 10, 2025  
+**Version**: 2.2  
+**Last Updated**: November 12, 2025  
 **Project**: Laravel Livewire Dashboard - Senda Snap
 
 ---

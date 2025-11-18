@@ -1296,6 +1296,46 @@ $table->index(['status', 'priority']);
 
 ---
 
+## 📊 Dashboard Query Patterns
+
+### Role Counts Query
+For displaying user counts by role in dashboard cards:
+
+```php
+$adminCount = \App\Models\User::where('role', 'admin')->count();
+$managerCount = \App\Models\User::where('role', 'manager')->count();
+$employeeCount = \App\Models\User::where('role', 'employee')->count();
+$clientCount = \App\Models\User::where('role', 'client')->count();
+```
+
+**Usage**: Display role counts above member/user tables in dashboard cards.
+
+### Upcoming Tasks Query
+For displaying upcoming tasks in dashboard tables:
+
+```php
+$upcomingTasks = \App\Models\Task::whereNotIn('status', ['completed', 'cancelled'])
+    ->whereNotNull('work_date')
+    ->where('work_date', '>=', now()->toDateString())
+    ->with(['assignedUsers', 'creator'])
+    ->orderBy('work_date', 'ASC')
+    ->orderBy('work_time', 'ASC')
+    ->limit(3)
+    ->get();
+```
+
+**Key Points**:
+- Excludes completed and cancelled tasks
+- Only shows tasks with `work_date` set
+- Filters to future dates only (`work_date >= today`)
+- Sorted by work date then work time (both ascending)
+- Eager loads relationships to prevent N+1 queries
+- Limits results for dashboard display (typically 3-5)
+
+**Display**: Shows "Work Date & Time" with date and time displayed separately with icons.
+
+---
+
 ## 🔍 Debugging Tips
 
 ### Service Layer Debugging
@@ -1341,13 +1381,19 @@ public function render()
 
 ---
 
-**Version**: 1.0  
+**Version**: 1.1  
 **Last Updated**: November 12, 2025  
 **Project**: Senda Snap Backend - Service-Oriented Architecture  
 
 ---
 
 ## 📝 Changelog
+
+### Version 1.1 (November 12, 2025)
+- Added dashboard query patterns section
+- Documented role counts query pattern
+- Documented upcoming tasks query pattern with future date filtering
+- Added work date and time sorting guidelines
 
 ### Version 1.0 (November 12, 2025)
 - Initial architecture documentation

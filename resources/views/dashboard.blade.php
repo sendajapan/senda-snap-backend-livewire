@@ -281,11 +281,12 @@
                     @if($upcomingTasks->count() > 0)
                         <div class="mt-6">
                             <h4 class="mb-4 text-sm font-semibold text-gray-700 dark:text-gray-300">{{ __('Upcoming Tasks') }}</h4>
-                            <div class="overflow-x-auto border rounded-xl bg-white/50 backdrop-blur-sm dark:bg-gray-800/50">
+                            <!-- Table View: Large screens only -->
+                            <div class="hidden lg:block overflow-x-auto border rounded-xl bg-white/50 backdrop-blur-sm dark:bg-gray-800/50">
                                 <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                                     <thead>
                                         <tr class="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900">
-                                            <th class="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">{{ __('Title') }}</th>
+                                            <th class="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 w-1/2">{{ __('Title') }}</th>
                                             <th class="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">{{ __('Priority') }}</th>
                                             <th class="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">{{ __('Status') }}</th>
                                             <th class="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">{{ __('Work Date & Time') }}</th>
@@ -295,11 +296,11 @@
                                     <tbody class="divide-y divide-gray-200/50 dark:divide-gray-700/50">
                                         @foreach($upcomingTasks as $task)
                                             <tr class="group transition-all duration-200 hover:bg-gradient-to-r hover:from-emerald-50/50 hover:to-teal-50/50 dark:hover:from-emerald-900/10 dark:hover:to-teal-900/10">
-                                                <td class="whitespace-normal px-4 py-3">
+                                                <td class="whitespace-normal px-4 py-3 w-1/2">
                                                     <div class="flex flex-col">
                                                         <span class="text-sm font-bold text-gray-900 dark:text-white">{{ $task->title }}</span>
                                                         @if($task->description)
-                                                            <span class="mt-1 text-xs text-gray-500 dark:text-gray-400 line-clamp-1">{{ $task->description }}</span>
+                                                            <span class="mt-1 text-xs text-gray-500 dark:text-gray-400 line-clamp-4">{{ $task->description }}</span>
                                                         @endif
                                                     </div>
                                                 </td>
@@ -374,6 +375,60 @@
                                         @endforeach
                                     </tbody>
                                 </table>
+                            </div>
+                            <!-- Vertical Stacked View: Medium screens and below -->
+                            <div class="lg:hidden border rounded-xl bg-white/50 backdrop-blur-sm dark:bg-gray-800/50">
+                                <div class="divide-y divide-gray-200/50 dark:divide-gray-700/50">
+                                    @foreach($upcomingTasks as $task)
+                                        <div class="p-3 group transition-all duration-200 hover:bg-gradient-to-r hover:from-emerald-50/50 hover:to-teal-50/50 dark:hover:from-emerald-900/10 dark:hover:to-teal-900/10">
+                                            <!-- Title and Description -->
+                                            <div class="mb-2">
+                                                <h5 class="text-sm font-bold text-gray-900 dark:text-white">{{ $task->title }}</h5>
+                                                @if($task->description)
+                                                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400 line-clamp-4">{{ $task->description }}</p>
+                                                @endif
+                                            </div>
+                                            <!-- All other info in one row -->
+                                            <div class="flex flex-wrap items-center gap-2 text-xs">
+                                                <flux:badge :color="match($task->priority) { 'urgent' => 'red', 'high' => 'orange', 'medium' => 'yellow', default => 'gray' }" size="sm" class="font-semibold">
+                                                    {{ ucfirst($task->priority) }}
+                                                </flux:badge>
+                                                <flux:badge :color="match($task->status) { 'completed' => 'green', 'running' => 'blue', 'cancelled' => 'red', default => 'gray' }" size="sm" class="font-semibold">
+                                                    {{ ucfirst($task->status) }}
+                                                </flux:badge>
+                                                @if($task->work_date)
+                                                    <span class="flex items-center gap-1 text-gray-600 dark:text-gray-400">
+                                                        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                                        </svg>
+                                                        {{ $task->work_date->format('M d, Y') }}
+                                                    </span>
+                                                @endif
+                                                @if($task->work_time)
+                                                    <span class="flex items-center gap-1 text-gray-600 dark:text-gray-400">
+                                                        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                                        </svg>
+                                                        {{ \Carbon\Carbon::parse($task->work_time)->format('h:i A') }}
+                                                    </span>
+                                                @endif
+                                                @if($task->assignedUsers && $task->assignedUsers->count() > 0)
+                                                    <span class="flex items-center gap-1 text-gray-600 dark:text-gray-400">
+                                                        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                                                        </svg>
+                                                        {{ $task->assignedUsers->pluck('name')->take(2)->implode(', ') }}
+                                                        @if($task->assignedUsers->count() > 2)
+                                                            +{{ $task->assignedUsers->count() - 2 }}
+                                                        @endif
+                                                    </span>
+                                                @else
+                                                    <span class="text-gray-600 dark:text-gray-400">{{ __('Unassigned') }}</span>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
                             </div>
                         </div>
                     @endif

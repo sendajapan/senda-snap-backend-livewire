@@ -74,11 +74,11 @@
         </x-table-card>
 
         <!-- Authentication Section -->
-        <x-table-card variant="violet">
+        <x-table-card variant="blue">
             <div class="space-y-6">
                 <div class="flex items-center gap-3">
                     <div
-                        class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 shadow-lg">
+                        class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-cyan-600 shadow-lg">
                         <svg class="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                   d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
@@ -89,13 +89,13 @@
 
                 <!-- Register -->
                 <div
-                    class="space-y-3 rounded-xl border border-violet-200 bg-white/50 p-6 dark:border-violet-900/50 dark:bg-gray-800/50">
+                    class="space-y-3 rounded-xl border border-blue-200 bg-white/50 p-6 dark:border-blue-900/50 dark:bg-gray-800/50">
                     <div class="flex items-center justify-between">
                         <h4 class="text-lg font-semibold text-gray-900 dark:text-white">Register</h4>
                         <div class="flex items-center gap-2">
                             <button
                                 onclick="downloadEndpoint('register', 'POST', '/api/v1/auth/register', { name: 'John Doe', email: 'john@example.com', password: 'password123', password_confirmation: 'password123', phone: '1234567890', role: 'client' }, { success: true, message: 'User registered successfully', data: { user: { id: 1, name: 'John Doe', email: 'john@example.com' }, token: '1|abc123...' } })"
-                                class="rounded-lg bg-violet-100 px-2 py-1 text-xs font-semibold text-violet-800 transition-colors hover:bg-violet-200 dark:bg-violet-900/30 dark:text-violet-400 dark:hover:bg-violet-900/50">
+                                class="rounded-lg bg-blue-100 px-2 py-1 text-xs font-semibold text-blue-800 transition-colors hover:bg-blue-200 dark:bg-blue-900/30 dark:text-blue-400 dark:hover:bg-blue-900/50">
                                 <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                           d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
@@ -154,13 +154,13 @@
 
                 <!-- Login -->
                 <div
-                    class="space-y-3 rounded-xl border border-violet-200 bg-white/50 p-6 dark:border-violet-900/50 dark:bg-gray-800/50">
+                    class="space-y-3 rounded-xl border border-blue-200 bg-white/50 p-6 dark:border-blue-900/50 dark:bg-gray-800/50">
                     <div class="flex items-center justify-between">
                         <h4 class="text-lg font-semibold text-gray-900 dark:text-white">Login</h4>
                         <div class="flex items-center gap-2">
                             <button
                                 onclick="downloadEndpoint('login', 'POST', '/api/v1/auth/login', { email: 'john@example.com', password: 'password123' }, { success: true, message: 'Login successful', data: { user: { id: 1, name: 'John Doe', email: 'john@example.com' }, token: '2|xyz789...' } })"
-                                class="rounded-lg bg-violet-100 px-2 py-1 text-xs font-semibold text-violet-800 transition-colors hover:bg-violet-200 dark:bg-violet-900/30 dark:text-violet-400 dark:hover:bg-violet-900/50">
+                                class="rounded-lg bg-blue-100 px-2 py-1 text-xs font-semibold text-blue-800 transition-colors hover:bg-blue-200 dark:bg-blue-900/30 dark:text-blue-400 dark:hover:bg-blue-900/50">
                                 <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                           d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
@@ -215,13 +215,13 @@
 
                 <!-- Logout -->
                 <div
-                    class="space-y-3 rounded-xl border border-violet-200 bg-white/50 p-6 dark:border-violet-900/50 dark:bg-gray-800/50">
+                    class="space-y-3 rounded-xl border border-blue-200 bg-white/50 p-6 dark:border-blue-900/50 dark:bg-gray-800/50">
                     <div class="flex items-center justify-between">
                         <h4 class="text-lg font-semibold text-gray-900 dark:text-white">Logout</h4>
                         <div class="flex items-center gap-2">
                             <button
                                 onclick="downloadEndpoint('logout', 'POST', '/api/v1/auth/logout', null, { success: true, message: 'Logged out successfully' })"
-                                class="rounded-lg bg-violet-100 px-2 py-1 text-xs font-semibold text-violet-800 transition-colors hover:bg-violet-200 dark:bg-violet-900/30 dark:text-violet-400 dark:hover:bg-violet-900/50">
+                                class="rounded-lg bg-blue-100 px-2 py-1 text-xs font-semibold text-blue-800 transition-colors hover:bg-blue-200 dark:bg-blue-900/30 dark:text-blue-400 dark:hover:bg-blue-900/50">
                                 <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                           d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
@@ -243,11 +243,11 @@
         </x-table-card>
 
         <!-- Users Section -->
-        <x-table-card variant="violet">
+        <x-table-card variant="blue">
             <div class="space-y-6">
                 <div class="flex items-center gap-3">
                     <div
-                        class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 shadow-lg">
+                        class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-cyan-600 shadow-lg">
                         <svg class="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                   d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
@@ -258,13 +258,13 @@
 
                 <!-- Get All Users -->
                 <div
-                    class="space-y-3 rounded-xl border border-violet-200 bg-white/50 p-6 dark:border-violet-900/50 dark:bg-gray-800/50">
+                    class="space-y-3 rounded-xl border border-blue-200 bg-white/50 p-6 dark:border-blue-900/50 dark:bg-gray-800/50">
                     <div class="flex items-center justify-between">
                         <h4 class="text-lg font-semibold text-gray-900 dark:text-white">Get All Users</h4>
                         <div class="flex items-center gap-2">
                             <button
                                 onclick="downloadEndpoint('get-all-users', 'GET', '/api/v1/users', null, { success: true, message: 'Users retrieved successfully', data: { users: [{ id: 1, name: 'John Doe', email: 'john@example.com', role: 'admin', phone: '1234567890' }] } })"
-                                class="rounded-lg bg-violet-100 px-2 py-1 text-xs font-semibold text-violet-800 transition-colors hover:bg-violet-200 dark:bg-violet-900/30 dark:text-violet-400 dark:hover:bg-violet-900/50">
+                                class="rounded-lg bg-blue-100 px-2 py-1 text-xs font-semibold text-blue-800 transition-colors hover:bg-blue-200 dark:bg-blue-900/30 dark:text-blue-400 dark:hover:bg-blue-900/50">
                                 <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                           d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
@@ -315,11 +315,11 @@
         </x-table-card>
 
         <!-- Tasks Section -->
-        <x-table-card variant="violet">
+        <x-table-card variant="emerald">
             <div class="space-y-6">
                 <div class="flex items-center gap-3">
                     <div
-                        class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 shadow-lg">
+                        class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 shadow-lg">
                         <svg class="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                   d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
@@ -330,12 +330,12 @@
 
                 <!-- Get All Tasks -->
                 <div
-                    class="space-y-3 rounded-xl border border-violet-200 bg-white/50 p-6 dark:border-violet-900/50 dark:bg-gray-800/50">
+                    class="space-y-3 rounded-xl border border-emerald-200 bg-white/50 p-6 dark:border-emerald-900/50 dark:bg-gray-800/50">
                     <div class="flex items-center justify-between">
                         <h4 class="text-lg font-semibold text-gray-900 dark:text-white">Get All Tasks</h4>
                         <div class="flex items-center gap-2">
                             <button onclick="downloadEndpoint('get-all-tasks', 'GET', '/api/v1/tasks')"
-                                    class="rounded-lg bg-violet-100 px-2 py-1 text-xs font-semibold text-violet-800 transition-colors hover:bg-violet-200 dark:bg-violet-900/30 dark:text-violet-400 dark:hover:bg-violet-900/50">
+                                    class="rounded-lg bg-blue-100 px-2 py-1 text-xs font-semibold text-blue-800 transition-colors hover:bg-blue-200 dark:bg-blue-900/30 dark:text-blue-400 dark:hover:bg-blue-900/50">
                                 <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                           d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
@@ -441,12 +441,12 @@
 
                 <!-- Create Task -->
                 <div
-                    class="space-y-3 rounded-xl border border-violet-200 bg-white/50 p-6 dark:border-violet-900/50 dark:bg-gray-800/50">
+                    class="space-y-3 rounded-xl border border-emerald-200 bg-white/50 p-6 dark:border-emerald-900/50 dark:bg-gray-800/50">
                     <div class="flex items-center justify-between">
                         <h4 class="text-lg font-semibold text-gray-900 dark:text-white">Create Task</h4>
                         <div class="flex items-center gap-2">
                             <button onclick="downloadEndpoint('create-task', 'POST', '/api/v1/tasks')"
-                                    class="rounded-lg bg-violet-100 px-2 py-1 text-xs font-semibold text-violet-800 transition-colors hover:bg-violet-200 dark:bg-violet-900/30 dark:text-violet-400 dark:hover:bg-violet-900/50">
+                                    class="rounded-lg bg-blue-100 px-2 py-1 text-xs font-semibold text-blue-800 transition-colors hover:bg-blue-200 dark:bg-blue-900/30 dark:text-blue-400 dark:hover:bg-blue-900/50">
                                 <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                           d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
@@ -584,7 +584,7 @@
 
                 <!-- Update Task -->
                 <div
-                    class="space-y-3 rounded-xl border border-violet-200 bg-white/50 p-6 dark:border-violet-900/50 dark:bg-gray-800/50">
+                    class="space-y-3 rounded-xl border border-emerald-200 bg-white/50 p-6 dark:border-emerald-900/50 dark:bg-gray-800/50">
                     <div class="flex items-center justify-between">
                         <h4 class="text-lg font-semibold text-gray-900 dark:text-white">Update Task</h4>
                         <span
@@ -626,7 +626,7 @@ attachments[]:       (file)</code></pre>
 
                 <!-- Assign Users to Task -->
                 <div
-                    class="space-y-3 rounded-xl border border-violet-200 bg-white/50 p-6 dark:border-violet-900/50 dark:bg-gray-800/50">
+                    class="space-y-3 rounded-xl border border-emerald-200 bg-white/50 p-6 dark:border-emerald-900/50 dark:bg-gray-800/50">
                     <div class="flex items-center justify-between">
                         <h4 class="text-lg font-semibold text-gray-900 dark:text-white">Assign Users to Task</h4>
                         <span
@@ -658,7 +658,7 @@ Content-Type: application/json</code></pre>
 
                 <!-- Update Task Status -->
                 <div
-                    class="space-y-3 rounded-xl border border-violet-200 bg-white/50 p-6 dark:border-violet-900/50 dark:bg-gray-800/50">
+                    class="space-y-3 rounded-xl border border-emerald-200 bg-white/50 p-6 dark:border-emerald-900/50 dark:bg-gray-800/50">
                     <div class="flex items-center justify-between">
                         <h4 class="text-lg font-semibold text-gray-900 dark:text-white">Update Task Status</h4>
                         <span
@@ -696,7 +696,7 @@ Content-Type: application/json</code></pre>
 
                 <!-- Upload Task Attachment -->
                 <div
-                    class="space-y-3 rounded-xl border border-violet-200 bg-white/50 p-6 dark:border-violet-900/50 dark:bg-gray-800/50">
+                    class="space-y-3 rounded-xl border border-emerald-200 bg-white/50 p-6 dark:border-emerald-900/50 dark:bg-gray-800/50">
                     <div class="flex items-center justify-between">
                         <h4 class="text-lg font-semibold text-gray-900 dark:text-white">Upload Task Attachment</h4>
                         <span
@@ -745,7 +745,7 @@ Content-Type: multipart/form-data</code></pre>
 
                 <!-- Delete Task Attachment -->
                 <div
-                    class="space-y-3 rounded-xl border border-violet-200 bg-white/50 p-6 dark:border-violet-900/50 dark:bg-gray-800/50">
+                    class="space-y-3 rounded-xl border border-emerald-200 bg-white/50 p-6 dark:border-emerald-900/50 dark:bg-gray-800/50">
                     <div class="flex items-center justify-between">
                         <h4 class="text-lg font-semibold text-gray-900 dark:text-white">Delete Task Attachment</h4>
                         <span
@@ -778,7 +778,7 @@ Content-Type: multipart/form-data</code></pre>
 
                 <!-- Get My Tasks -->
                 <div
-                    class="space-y-3 rounded-xl border border-violet-200 bg-white/50 p-6 dark:border-violet-900/50 dark:bg-gray-800/50">
+                    class="space-y-3 rounded-xl border border-emerald-200 bg-white/50 p-6 dark:border-emerald-900/50 dark:bg-gray-800/50">
                     <div class="flex items-center justify-between">
                         <h4 class="text-lg font-semibold text-gray-900 dark:text-white">Get My Created Tasks</h4>
                         <span
@@ -794,7 +794,7 @@ Content-Type: multipart/form-data</code></pre>
 
                 <!-- Get Tasks Assigned to Me -->
                 <div
-                    class="space-y-3 rounded-xl border border-violet-200 bg-white/50 p-6 dark:border-violet-900/50 dark:bg-gray-800/50">
+                    class="space-y-3 rounded-xl border border-emerald-200 bg-white/50 p-6 dark:border-emerald-900/50 dark:bg-gray-800/50">
                     <div class="flex items-center justify-between">
                         <h4 class="text-lg font-semibold text-gray-900 dark:text-white">Get Tasks Assigned to Me</h4>
                         <span
@@ -1211,5 +1211,149 @@ Content-Type: multipart/form-data</code></pre>
             URL.revokeObjectURL(url);
         }
     </script>
+
+    @push('scripts')
+        <script>
+            (function() {
+                const canvas = document.getElementById('particle-canvas');
+                if (!canvas) return;
+                
+                // Show canvas for API documentation
+                canvas.style.display = 'block';
+                
+                const ctx = canvas.getContext('2d');
+                let particles = [];
+                let animationId;
+                
+                // Set canvas size
+                function resizeCanvas() {
+                    canvas.width = window.innerWidth;
+                    canvas.height = window.innerHeight;
+                }
+                resizeCanvas();
+                window.addEventListener('resize', resizeCanvas);
+                
+                // Color palette matching design system
+                const colorPalettes = {
+                    light: {
+                        violet: '124, 58, 237',
+                        blue: '59, 130, 246',
+                        emerald: '16, 185, 129',
+                        amber: '245, 158, 11',
+                        purple: '168, 85, 247',
+                        cyan: '6, 182, 212',
+                        teal: '20, 184, 166',
+                        orange: '249, 115, 22'
+                    },
+                    dark: {
+                        violet: '139, 92, 246',
+                        blue: '96, 165, 250',
+                        emerald: '52, 211, 153',
+                        amber: '251, 191, 36',
+                        purple: '192, 132, 252',
+                        cyan: '34, 211, 238',
+                        teal: '45, 212, 191',
+                        orange: '251, 146, 60'
+                    }
+                };
+                
+                // Particle class
+                class Particle {
+                    constructor() {
+                        this.x = Math.random() * canvas.width;
+                        this.y = Math.random() * canvas.height;
+                        this.size = Math.random() * 2 + 0.5;
+                        this.speedX = (Math.random() - 0.5) * 0.5;
+                        this.speedY = (Math.random() - 0.5) * 0.5;
+                        this.opacity = Math.random() * 0.5 + 0.2;
+                        
+                        // Randomly assign a color from the palette
+                        const isDark = document.documentElement.classList.contains('dark');
+                        const palette = isDark ? colorPalettes.dark : colorPalettes.light;
+                        const colors = Object.values(palette);
+                        this.color = colors[Math.floor(Math.random() * colors.length)];
+                    }
+                    
+                    update() {
+                        this.x += this.speedX;
+                        this.y += this.speedY;
+                        
+                        if (this.x > canvas.width) this.x = 0;
+                        if (this.x < 0) this.x = canvas.width;
+                        if (this.y > canvas.height) this.y = 0;
+                        if (this.y < 0) this.y = canvas.height;
+                    }
+                    
+                    draw() {
+                        ctx.beginPath();
+                        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                        ctx.fillStyle = `rgba(${this.color}, ${this.opacity})`;
+                        ctx.fill();
+                    }
+                }
+                
+                // Create particles
+                function initParticles() {
+                    particles = [];
+                    const particleCount = Math.floor((canvas.width * canvas.height) / 15000);
+                    for (let i = 0; i < particleCount; i++) {
+                        particles.push(new Particle());
+                    }
+                }
+                
+                // Draw connections
+                function drawConnections() {
+                    for (let i = 0; i < particles.length; i++) {
+                        for (let j = i + 1; j < particles.length; j++) {
+                            const dx = particles[i].x - particles[j].x;
+                            const dy = particles[i].y - particles[j].y;
+                            const distance = Math.sqrt(dx * dx + dy * dy);
+                    
+                            if (distance < 120) {
+                                ctx.beginPath();
+                                // Use gradient between two particle colors - darker opacity
+                                const gradient = ctx.createLinearGradient(
+                                    particles[i].x, particles[i].y,
+                                    particles[j].x, particles[j].y
+                                );
+                                gradient.addColorStop(0, `rgba(${particles[i].color}, ${0.3 * (1 - distance / 120)})`);
+                                gradient.addColorStop(1, `rgba(${particles[j].color}, ${0.3 * (1 - distance / 120)})`);
+                                ctx.strokeStyle = gradient;
+                                ctx.lineWidth = 0.5;
+                                ctx.moveTo(particles[i].x, particles[i].y);
+                                ctx.lineTo(particles[j].x, particles[j].y);
+                                ctx.stroke();
+                            }
+                        }
+                    }
+                }
+                
+                // Animation loop
+                function animate() {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    
+                    particles.forEach(particle => {
+                        particle.update();
+                        particle.draw();
+                    });
+                    
+                    drawConnections();
+                    
+                    animationId = requestAnimationFrame(animate);
+                }
+                
+                // Initialize and start
+                initParticles();
+                animate();
+                
+                // Cleanup on page unload
+                window.addEventListener('beforeunload', () => {
+                    if (animationId) {
+                        cancelAnimationFrame(animationId);
+                    }
+                });
+            })();
+        </script>
+    @endpush
 </x-layouts.app>
 

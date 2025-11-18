@@ -4,6 +4,9 @@
         @include('partials.head')
     </head>
     <body class="min-h-screen bg-white dark:bg-zinc-800">
+        <!-- Particle Background Canvas (only for API Documentation) -->
+        <canvas id="particle-canvas" class="fixed inset-0 -z-10 pointer-events-none" style="display: none;"></canvas>
+        
         <flux:sidebar sticky stashable class="border-e border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
             <flux:sidebar.toggle class="lg:hidden" icon="x-mark" />
 
@@ -72,8 +75,11 @@
             <flux:spacer />
 
             <flux:navlist variant="outline">
+                <flux:navlist.item icon="book-open-text" :href="route('admin.manual')" wire:navigate>
+                    {{ __('Admin Manual') }}
+                </flux:navlist.item>
                 <flux:navlist.item icon="folder-git-2" :href="route('api.docs')" wire:navigate>
-                {{ __('API Documentation') }}
+                    {{ __('API Documentation') }}
                 </flux:navlist.item>
             </flux:navlist>
 

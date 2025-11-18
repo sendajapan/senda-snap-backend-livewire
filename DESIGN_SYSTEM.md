@@ -674,6 +674,189 @@ $this->dispatch('notify', message: 'Operation successful!', type: 'success');
 </div>
 ```
 
+### **Particle Background System** (Canvas-based animated background)
+Modern animated particle background with connecting lines, perfect for documentation and special pages.
+
+**Canvas Setup** (in layout):
+```blade
+<!-- Add to layout body (before main content) -->
+<canvas id="particle-canvas" class="fixed inset-0 -z-10 pointer-events-none" style="display: none;"></canvas>
+```
+
+**Particle Script** (in page):
+```blade
+@push('scripts')
+    <script>
+        (function() {
+            const canvas = document.getElementById('particle-canvas');
+            if (!canvas) return;
+            
+            // Show canvas for this page
+            canvas.style.display = 'block';
+            
+            const ctx = canvas.getContext('2d');
+            let particles = [];
+            let animationId;
+            
+            // Set canvas size
+            function resizeCanvas() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+            
+            // Color palette matching design system
+            const colorPalettes = {
+                light: {
+                    violet: '124, 58, 237',
+                    blue: '59, 130, 246',
+                    emerald: '16, 185, 129',
+                    amber: '245, 158, 11',
+                    purple: '168, 85, 247',
+                    cyan: '6, 182, 212',
+                    teal: '20, 184, 166',
+                    orange: '249, 115, 22'
+                },
+                dark: {
+                    violet: '139, 92, 246',
+                    blue: '96, 165, 250',
+                    emerald: '52, 211, 153',
+                    amber: '251, 191, 36',
+                    purple: '192, 132, 252',
+                    cyan: '34, 211, 238',
+                    teal: '45, 212, 191',
+                    orange: '251, 146, 60'
+                }
+            };
+            
+            // Particle class
+            class Particle {
+                constructor() {
+                    this.x = Math.random() * canvas.width;
+                    this.y = Math.random() * canvas.height;
+                    this.size = Math.random() * 2 + 0.5;
+                    this.speedX = (Math.random() - 0.5) * 0.5;
+                    this.speedY = (Math.random() - 0.5) * 0.5;
+                    this.opacity = Math.random() * 0.5 + 0.2;
+                    
+                    // Randomly assign a color from the palette
+                    const isDark = document.documentElement.classList.contains('dark');
+                    const palette = isDark ? colorPalettes.dark : colorPalettes.light;
+                    const colors = Object.values(palette);
+                    this.color = colors[Math.floor(Math.random() * colors.length)];
+                }
+                
+                update() {
+                    this.x += this.speedX;
+                    this.y += this.speedY;
+                    
+                    if (this.x > canvas.width) this.x = 0;
+                    if (this.x < 0) this.x = canvas.width;
+                    if (this.y > canvas.height) this.y = 0;
+                    if (this.y < 0) this.y = canvas.height;
+                }
+                
+                draw() {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(${this.color}, ${this.opacity})`;
+                    ctx.fill();
+                }
+            }
+            
+            // Create particles
+            function initParticles() {
+                particles = [];
+                const particleCount = Math.floor((canvas.width * canvas.height) / 15000);
+                for (let i = 0; i < particleCount; i++) {
+                    particles.push(new Particle());
+                }
+            }
+            
+            // Draw connections
+            function drawConnections() {
+                for (let i = 0; i < particles.length; i++) {
+                    for (let j = i + 1; j < particles.length; j++) {
+                        const dx = particles[i].x - particles[j].x;
+                        const dy = particles[i].y - particles[j].y;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                        if (distance < 120) {
+                            ctx.beginPath();
+                            // Use gradient between two particle colors - darker opacity
+                            const gradient = ctx.createLinearGradient(
+                                particles[i].x, particles[i].y,
+                                particles[j].x, particles[j].y
+                            );
+                            gradient.addColorStop(0, `rgba(${particles[i].color}, ${0.3 * (1 - distance / 120)})`);
+                            gradient.addColorStop(1, `rgba(${particles[j].color}, ${0.3 * (1 - distance / 120)})`);
+                            ctx.strokeStyle = gradient;
+                            ctx.lineWidth = 0.5;
+                            ctx.moveTo(particles[i].x, particles[i].y);
+                            ctx.lineTo(particles[j].x, particles[j].y);
+                            ctx.stroke();
+                        }
+                    }
+                }
+            }
+            
+            // Animation loop
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                particles.forEach(particle => {
+                    particle.update();
+                    particle.draw();
+                });
+                
+                drawConnections();
+                
+                animationId = requestAnimationFrame(animate);
+            }
+            
+            // Initialize and start
+            initParticles();
+            animate();
+            
+            // Cleanup on page unload
+            window.addEventListener('beforeunload', () => {
+                if (animationId) {
+                    cancelAnimationFrame(animationId);
+                }
+            });
+        })();
+    </script>
+@endpush
+```
+
+**Key Features**:
+- **Multi-color palette**: Uses 8 colors from design system (violet, blue, emerald, amber, purple, cyan, teal, orange)
+- **Dark mode support**: Automatically switches color palette based on `dark` class
+- **Dynamic particle count**: Calculated based on screen size (`width * height / 15000`)
+- **Connection lines**: Particles within 120px distance are connected with gradient lines
+- **Connection opacity**: Uses `0.3 * (1 - distance / 120)` for visible but subtle connections
+- **Smooth animation**: Uses `requestAnimationFrame` for 60fps animation
+- **Responsive**: Automatically resizes on window resize
+- **Performance**: Cleans up animation on page unload
+
+**Usage**:
+- Add canvas to layout (hidden by default)
+- Add particle script to specific pages that need it
+- Show canvas with `canvas.style.display = 'block'` in script
+- Perfect for documentation pages, landing pages, or special feature pages
+
+**Customization Options**:
+- **Particle count**: Adjust `/15000` divisor (lower = more particles)
+- **Connection distance**: Change `120` in `if (distance < 120)`
+- **Connection opacity**: Adjust `0.3` multiplier (higher = darker lines)
+- **Particle size**: Adjust `Math.random() * 2 + 0.5` range
+- **Particle speed**: Adjust `(Math.random() - 0.5) * 0.5` multiplier
+
+**Current Usage**:
+- Admin Manual page (`resources/views/admin-manual.blade.php`)
+- API Documentation page (`resources/views/api-documentation.blade.php`)
+
 ---
 
 ## 🎬 Animations & Transitions
@@ -1080,6 +1263,14 @@ When creating a new page, ensure:
 
 ## 🚀 Recent Updates
 
+### Particle Background System
+- Added canvas-based animated particle background system
+- Multi-color palette with automatic dark mode adaptation
+- Gradient connection lines between particles (opacity: 0.3)
+- Responsive particle count based on screen size
+- Used in Admin Manual and API Documentation pages
+- Performance optimized with cleanup on page unload
+
 ### Authentication Form Spacing
 - Standardized authentication forms to use `gap-4` for consistent spacing
 - Both main container and form elements use `gap-4` (1.5rem / 24px)
@@ -1234,7 +1425,14 @@ $upcomingTasks = \App\Models\Task::whereNotIn('status', ['completed', 'cancelled
 
 ---
 
-**Version**: 2.3  
+### Particle Background System
+- Canvas-based animated particle background with connecting lines
+- Multi-color palette (8 colors) with dark mode support
+- Dynamic particle count based on screen size
+- Gradient connection lines between nearby particles
+- Used in Admin Manual and API Documentation pages
+
+**Version**: 2.4  
 **Last Updated**: November 12, 2025  
 **Project**: Laravel Livewire Dashboard - Senda Snap
 

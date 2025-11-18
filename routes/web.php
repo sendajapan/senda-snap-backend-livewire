@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminManualController;
 use App\Http\Controllers\ApiDocsController;
 use App\Livewire\Settings\Appearance;
 use App\Livewire\Settings\Password;
@@ -15,6 +16,9 @@ use Laravel\Fortify\Features;
 Route::get('/', function () {
     return view('welcome');
 })->name('home');
+
+// Public Admin Manual (no authentication required)
+Route::get('admin-manual', [AdminManualController::class, 'index'])->name('admin.manual');
 
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])

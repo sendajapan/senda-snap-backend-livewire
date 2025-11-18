@@ -47,9 +47,11 @@
     
     <div class="relative flex items-center justify-between">
         <div class="flex items-center gap-4">
-            <div class="flex h-14 w-14 items-center justify-center rounded-2xl {{ $classes['iconBg'] }} shadow-lg">
-                {!! $icon !!}
-            </div>
+            @if(isset($icon))
+                <div class="flex h-14 w-14 items-center justify-center rounded-2xl {{ $classes['iconBg'] }} shadow-lg">
+                    {!! $icon !!}
+                </div>
+            @endif
             <div>
                 <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{{ $title }}</h1>
                 <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">{{ $description }}</p>

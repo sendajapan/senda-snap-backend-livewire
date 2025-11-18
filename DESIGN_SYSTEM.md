@@ -952,6 +952,25 @@ class="rounded-lg bg-gray-900 p-4 text-xs text-gray-100 dark:bg-gray-950"
 - Vertical Sections: `gap-4` (NEVER add manual spacing between cards - the container's gap-4 handles this automatically)
 - Horizontal Items: `gap-4` or `gap-3` or `gap-2`
 - Grid: `gap-4` or `gap-4`
+- Authentication Forms: `gap-4` (for both main container and form elements)
+
+### **Authentication Form Spacing**
+Authentication pages (login, register, password reset) use consistent `gap-4` spacing:
+- Main container: `<div class="flex flex-col gap-4">`
+- Form elements: `<form class="flex flex-col gap-4">`
+- This provides consistent 1.5rem (24px) spacing between all form fields and sections
+
+**Example**:
+```blade
+<x-layouts.auth>
+    <div class="flex flex-col gap-4">
+        <x-auth-header />
+        <form class="flex flex-col gap-4">
+            <!-- Form fields with automatic gap-4 spacing -->
+        </form>
+    </div>
+</x-layouts.auth>
+```
 
 ### **Critical Spacing Rule**
 **NEVER** add extra empty lines, divs, or manual margins between direct children of a `flex flex-col gap-4` container. The `gap-4` utility automatically provides consistent 1.5rem (24px) spacing. Adding manual spacing breaks the design system consistency.
@@ -1060,6 +1079,12 @@ When creating a new page, ensure:
 ---
 
 ## 🚀 Recent Updates
+
+### Authentication Form Spacing
+- Standardized authentication forms to use `gap-4` for consistent spacing
+- Both main container and form elements use `gap-4` (1.5rem / 24px)
+- Provides uniform spacing between form fields, headers, and sections
+- Applied to login, register, and password reset pages
 
 ### Modal System
 - Full-height right-side slide-in modals
@@ -1209,7 +1234,7 @@ $upcomingTasks = \App\Models\Task::whereNotIn('status', ['completed', 'cancelled
 
 ---
 
-**Version**: 2.2  
+**Version**: 2.3  
 **Last Updated**: November 12, 2025  
 **Project**: Laravel Livewire Dashboard - Senda Snap
 

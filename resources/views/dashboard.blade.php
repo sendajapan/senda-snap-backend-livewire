@@ -6,6 +6,7 @@
     $taskPending = \App\Models\Task::where('status', 'pending')->count();
     $taskRunning = \App\Models\Task::where('status', 'running')->count();
     $taskCompleted = \App\Models\Task::where('status', 'completed')->count();
+    $taskCancelled = \App\Models\Task::where('status', 'cancelled')->count();
 
     $vehiclePending = \App\Models\Vehicle::where('status', 'pending')->count();
     $vehicleInYard = \App\Models\Vehicle::where('status', 'in_yard')->count();
@@ -63,27 +64,27 @@
             </div>
 
             <!-- Date & Time Card -->
-            <div class="group relative overflow-hidden rounded-2xl border-1 border bg-white p-8 shadow-lg dark:border-gray-700 dark:bg-zinc-900">
+            <div class="group relative overflow-hidden rounded-2xl border-1 border bg-white p-6 shadow-lg dark:border-gray-700 dark:bg-zinc-900">
                 <!-- Date & Time Section -->
-                <div class="mb-3 flex items-center gap-4 border-b border-gray-200 pb-3 dark:border-gray-700">
-                    <div class="flex h-16 w-16 flex-col items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-100 to-purple-100 dark:from-indigo-900 dark:to-purple-900">
+                <div class="mb-2 flex items-center gap-4 border-b border-gray-200 pb-3 dark:border-gray-700">
+                    <div class="flex h-14 w-14 flex-col items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-100 to-purple-100 dark:from-indigo-900 dark:to-purple-900">
                         <span class="text-xs font-semibold text-indigo-600 dark:text-indigo-400">{{ now()->format('M') }}</span>
-                        <span class="text-2xl font-bold text-indigo-900 dark:text-indigo-100">{{ now()->format('d') }}</span>
+                        <span class="text-xl font-bold text-indigo-900 dark:text-indigo-100">{{ now()->format('d') }}</span>
                     </div>
                     <div>
                         <p class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ now()->format('l, Y') }}</p>
-                        <p class="mt-1 text-2xl font-bold text-gray-900 dark:text-white">{{ now()->format('h:i A') }}</p>
+                        <p class="text-xl font-bold text-gray-900 dark:text-white">{{ now()->format('h:i A') }}</p>
                     </div>
                 </div>
 
                 <!-- Next Upcoming Task -->
                 @if($nextUserTask)
-                    <div class="space-y-1">
-                        <h5 class="text-lg font-bold text-gray-900 dark:text-white">{{ $nextUserTask->title }}</h5>
+                    <div class="m-0 p-0">
+                        <h5 class="text-md font-bold text-gray-900 dark:text-white">{{ $nextUserTask->title }}</h5>
                         @if($nextUserTask->description)
-                            <p class="text-sm leading-relaxed text-gray-600 dark:text-gray-400 line-clamp-4">{{ $nextUserTask->description }}</p>
+                            <p class="text-xs leading-relaxed text-gray-600 dark:text-gray-400 line-clamp-4">{{ $nextUserTask->description }}</p>
                         @endif
-                        <div class="flex flex-wrap items-center gap-4 pt-2">
+                        <div class="flex flex-wrap items-center gap-2 pt-2">
                             <div class="flex items-center justify-between">
                                 <flux:badge class="font-semibold" :color="match($nextUserTask->status) {
                             'completed' => 'green',
@@ -228,7 +229,7 @@
                             <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ __('Distribution of all tasks') }}</p>
                         </div>
                         <div class="animate-pulse rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-500 p-4 shadow-lg shadow-emerald-500/50">
-                            <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="h-4 w-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
                             </svg>
                         </div>
@@ -237,61 +238,63 @@
                     <!-- Chart and Status List: Vertical on md/small, Horizontal on lg+ -->
                     <div class="flex flex-col gap-4 lg:flex-row lg:items-start">
                         <!-- Chart Canvas -->
-                        <div class="relative flex flex-1 items-center justify-center rounded-xl bg-white/50 p-6 backdrop-blur-sm dark:bg-gray-800/50">
+                        <div class="relative flex flex-1 items-center justify-center p-2 rounded-xl bg-white/50 backdrop-blur-sm dark:bg-gray-800/50">
                             <canvas id="taskChart" class="max-h-64"></canvas>
                         </div>
 
                         <!-- Status List -->
-                        <div class="flex-1 space-y-3">
-                            <div class="group flex items-center justify-between rounded-xl border border-amber-200 bg-gradient-to-r from-amber-50 to-amber-100/50 p-4 shadow-sm transition-all duration-200 hover:scale-105 hover:shadow-md dark:border-amber-800/50 dark:from-amber-900/20 dark:to-amber-800/10">
+                        <div class="flex-1 space-y-2">
+                            <div class="group flex items-center justify-between  border border-amber-200 bg-gradient-to-r from-amber-50 to-amber-100/50 py-2 px-3 shadow-sm transition-all duration-200 hover:scale-105 hover:shadow-md dark:border-amber-800/50 dark:from-amber-900/20 dark:to-amber-800/10">
                                 <div class="flex items-center gap-3">
                                     <div class="relative">
-                                        <div class="h-4 w-4 animate-pulse rounded-full bg-amber-500 shadow-lg shadow-amber-500/50"></div>
-                                        <div class="absolute inset-0 h-4 w-4 animate-ping rounded-full bg-amber-400 opacity-75"></div>
+                                        <div class="h-3 w-3 animate-pulse rounded-full bg-amber-500 shadow-lg shadow-amber-500/50"></div>
+                                        <div class="absolute inset-0 h-3 w-3 animate-ping rounded-full bg-amber-400 opacity-75"></div>
                                     </div>
-                                    <span class="text-sm font-semibold text-amber-900 dark:text-amber-300">{{ __('Pending') }}</span>
+                                    <span class="text-xs font-semibold text-amber-900 dark:text-amber-300">{{ __('Pending') }}</span>
                                 </div>
-                                <span class="rounded-lg bg-amber-200 px-3 py-1 text-sm font-bold text-amber-900 dark:bg-amber-800 dark:text-amber-100">{{ $taskPending }}</span>
+                                <span class="rounded-lg bg-amber-200 px-2 py-0.5 text-xs font-bold text-amber-900 dark:bg-amber-800 dark:text-amber-100">{{ $taskPending }}</span>
                             </div>
-                            <div class="group flex items-center justify-between rounded-xl border border-blue-200 bg-gradient-to-r from-blue-50 to-blue-100/50 p-4 shadow-sm transition-all duration-200 hover:scale-105 hover:shadow-md dark:border-blue-800/50 dark:from-blue-900/20 dark:to-blue-800/10">
+                            <div class="group flex items-center justify-between border border-blue-200 bg-gradient-to-r from-blue-50 to-blue-100/50 py-2 px-3 shadow-sm transition-all duration-200 hover:scale-105 hover:shadow-md dark:border-blue-800/50 dark:from-blue-900/20 dark:to-blue-800/10">
                                 <div class="flex items-center gap-3">
                                     <div class="relative">
-                                        <div class="h-4 w-4 animate-pulse rounded-full bg-blue-500 shadow-lg shadow-blue-500/50"></div>
-                                        <div class="absolute inset-0 h-4 w-4 animate-ping rounded-full bg-blue-400 opacity-75"></div>
+                                        <div class="h-3 w-3 animate-pulse rounded-full bg-blue-500 shadow-lg shadow-blue-500/50"></div>
+                                        <div class="absolute inset-0 h-3 w-3 animate-ping rounded-full bg-blue-400 opacity-75"></div>
                                     </div>
-                                    <span class="text-sm font-semibold text-blue-900 dark:text-blue-300">{{ __('Running') }}</span>
+                                    <span class="text-xs font-semibold text-blue-900 dark:text-blue-300">{{ __('Running') }}</span>
                                 </div>
-                                <span class="rounded-lg bg-blue-200 px-3 py-1 text-sm font-bold text-blue-900 dark:bg-blue-800 dark:text-blue-100">{{ $taskRunning }}</span>
+                                <span class="rounded-lg bg-blue-200 px-2 py-0.5 text-xs font-bold text-blue-900 dark:bg-blue-800 dark:text-blue-100">{{ $taskRunning }}</span>
                             </div>
-                            <div class="group flex items-center justify-between rounded-xl border border-emerald-200 bg-gradient-to-r from-emerald-50 to-emerald-100/50 p-4 shadow-sm transition-all duration-200 hover:scale-105 hover:shadow-md dark:border-emerald-800/50 dark:from-emerald-900/20 dark:to-emerald-800/10">
+                            <div class="group flex items-center justify-between border border-emerald-200 bg-gradient-to-r from-emerald-50 to-emerald-100/50 py-2 px-3 shadow-sm transition-all duration-200 hover:scale-105 hover:shadow-md dark:border-emerald-800/50 dark:from-emerald-900/20 dark:to-emerald-800/10">
                                 <div class="flex items-center gap-3">
                                     <div class="relative">
-                                        <div class="h-4 w-4 animate-pulse rounded-full bg-emerald-500 shadow-lg shadow-emerald-500/50"></div>
-                                        <div class="absolute inset-0 h-4 w-4 animate-ping rounded-full bg-emerald-400 opacity-75"></div>
+                                        <div class="h-3 w-3 animate-pulse rounded-full bg-emerald-500 shadow-lg shadow-emerald-500/50"></div>
+                                        <div class="absolute inset-0 h-3 w-3 animate-ping rounded-full bg-emerald-400 opacity-75"></div>
                                     </div>
-                                    <span class="text-sm font-semibold text-emerald-900 dark:text-emerald-300">{{ __('Completed') }}</span>
+                                    <span class="text-xs font-semibold text-emerald-900 dark:text-emerald-300">{{ __('Completed') }}</span>
                                 </div>
-                                <span class="rounded-lg bg-emerald-200 px-3 py-1 text-sm font-bold text-emerald-900 dark:bg-emerald-800 dark:text-emerald-100">{{ $taskCompleted }}</span>
+                                <span class="rounded-lg bg-emerald-200 px-2 py-0.5 text-xs font-bold text-emerald-900 dark:bg-emerald-800 dark:text-emerald-100">{{ $taskCompleted }}</span>
+                            </div>
+                            <div class="group flex items-center justify-between border border-red-200 bg-gradient-to-r from-red-50 to-red-100/50 py-2 px-3 shadow-sm transition-all duration-200 hover:scale-105 hover:shadow-md dark:border-red-800/50 dark:from-red-900/20 dark:to-red-800/10">
+                                <div class="flex items-center gap-3">
+                                    <div class="relative">
+                                        <div class="h-3 w-3 animate-pulse rounded-full bg-red-500 shadow-lg shadow-red-500/50"></div>
+                                        <div class="absolute inset-0 h-3 w-3 animate-ping rounded-full bg-red-400 opacity-75"></div>
+                                    </div>
+                                    <span class="text-xs font-semibold text-red-900 dark:text-red-300">{{ __('Cancelled') }}</span>
+                                </div>
+                                <span class="rounded-lg bg-red-200 px-2 py-0.5 text-xs font-bold text-red-900 dark:bg-red-800 dark:text-red-100">{{ $taskCancelled }}</span>
                             </div>
                         </div>
                     </div>
 
                     <!-- Upcoming Tasks Table -->
                     @if($upcomingTasks->count() > 0)
-                        <div class="mt-6">
-                            <h4 class="mb-4 text-sm font-semibold text-gray-700 dark:text-gray-300">{{ __('Upcoming Tasks') }}</h4>
+                        <div>
+                            <h4 class="mb-2 text-xs font-semibold text-gray-700 dark:text-gray-300">{{ __('Upcoming Tasks') }}</h4>
                             <!-- Table View: Large screens only -->
                             <div class="hidden lg:block overflow-x-auto border rounded-xl bg-white/50 backdrop-blur-sm dark:bg-gray-800/50">
                                 <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                                    <thead>
-                                        <tr class="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900">
-                                            <th class="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 w-1/2">{{ __('Title') }}</th>
-                                            <th class="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">{{ __('Priority') }}</th>
-                                            <th class="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">{{ __('Status') }}</th>
-                                            <th class="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">{{ __('Work Date & Time') }}</th>
-                                            <th class="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">{{ __('Assigned To') }}</th>
-                                        </tr>
-                                    </thead>
+
                                     <tbody class="divide-y divide-gray-200/50 dark:divide-gray-700/50">
                                         @foreach($upcomingTasks as $task)
                                             <tr class="group transition-all duration-200 hover:bg-gradient-to-r hover:from-emerald-50/50 hover:to-teal-50/50 dark:hover:from-emerald-900/10 dark:hover:to-teal-900/10">
@@ -451,7 +454,7 @@
                                 <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ __('Team members overview') }}</p>
                             </div>
                             <div class="animate-pulse rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-500 p-4 shadow-lg shadow-blue-500/50">
-                                <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg class="h-4 w-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
                                 </svg>
                             </div>
@@ -520,17 +523,10 @@
                         <!-- Table View: Large screens only -->
                         <div class="hidden lg:block overflow-x-auto border rounded-xl bg-white/50 backdrop-blur-sm dark:bg-gray-800/50">
                             <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                                <thead>
-                                    <tr class="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900">
-                                        <th class="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 w-1/3">{{ __('Member') }}</th>
-                                        <th class="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">{{ __('Email') }}</th>
-                                        <th class="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">{{ __('Role') }}</th>
-                                    </tr>
-                                </thead>
                                 <tbody class="divide-y divide-gray-200/50 dark:divide-gray-700/50">
                                     @foreach($members as $member)
                                         <tr class="group transition-all duration-200 hover:bg-gradient-to-r hover:from-blue-50/50 hover:to-cyan-50/50 dark:hover:from-blue-900/10 dark:hover:to-cyan-900/10">
-                                            <td class="whitespace-nowrap px-4 py-3 w-1/3">
+                                            <td class="whitespace-nowrap p-4 w-1/3">
                                                 <div class="flex items-center gap-3">
                                                     <div class="relative size-10 flex-shrink-0">
                                                         @if($member->avatar && $member->avatar_url)
@@ -548,19 +544,19 @@
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td class="whitespace-nowrap px-4 py-3">
+                                            <td class="whitespace-nowrap p-4">
+                                                <div class="flex justify-center">
+                                                    <flux:badge class="font-semibold w-20 text-center" :color="match($member->role) { 'admin' => 'red', 'manager' => 'blue', 'employee' => 'green', default => 'gray' }" size="sm">
+                                                        {{ ucfirst($member->role) }}
+                                                    </flux:badge>
+                                                </div>
+                                            </td>
+                                            <td class="whitespace-nowrap p-4">
                                                 <div class="flex items-center gap-2">
                                                     <svg class="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
                                                     </svg>
                                                     <span class="text-sm text-gray-900 dark:text-white">{{ $member->email }}</span>
-                                                </div>
-                                            </td>
-                                            <td class="whitespace-nowrap px-4 py-3">
-                                                <div class="flex justify-center">
-                                                    <flux:badge class="font-semibold w-20 text-center" :color="match($member->role) { 'admin' => 'red', 'manager' => 'blue', 'employee' => 'green', default => 'gray' }" size="sm">
-                                                        {{ ucfirst($member->role) }}
-                                                    </flux:badge>
                                                 </div>
                                             </td>
                                         </tr>
@@ -635,18 +631,20 @@
                 window.taskChart = new Chart(taskCtx.getContext('2d'), {
                     type: 'doughnut',
                     data: {
-                        labels: ['Pending', 'Running', 'Completed'],
+                        labels: ['Pending', 'Running', 'Completed', 'Cancelled'],
                         datasets: [{
-                            data: [{{ $taskPending }}, {{ $taskRunning }}, {{ $taskCompleted }}],
+                            data: [{{ $taskPending }}, {{ $taskRunning }}, {{ $taskCompleted }}, {{ $taskCancelled }}],
                             backgroundColor: [
                                 'rgba(245, 158, 11, 0.8)',  // Amber
                                 'rgba(59, 130, 246, 0.8)',  // Blue
                                 'rgba(16, 185, 129, 0.8)',  // Emerald
+                                'rgba(239, 68, 68, 0.8)',   // Red
                             ],
                             borderColor: [
                                 'rgb(245, 158, 11)',
                                 'rgb(59, 130, 246)',
                                 'rgb(16, 185, 129)',
+                                'rgb(239, 68, 68)',
                             ],
                             borderWidth: 2,
                             hoverOffset: 10

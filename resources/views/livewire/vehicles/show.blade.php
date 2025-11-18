@@ -13,7 +13,7 @@ new class extends Component {
 }; ?>
 
 <x-layouts.app :title="__('Vehicle Details')">
-    <div class="flex h-full w-full flex-1 flex-col gap-6 p-6">
+    <div class="flex h-full w-full flex-1 flex-col gap-4 p-6">
         <div class="flex items-center justify-between">
             <div>
                 <flux:heading size="xl">{{ $vehicle->serial_number }}</flux:heading>
@@ -22,7 +22,7 @@ new class extends Component {
             <flux:button :href="route('vehicles.edit', $vehicle)" icon="pencil" wire:navigate>{{ __('Edit') }}</flux:button>
         </div>
 
-        <div class="grid gap-6 md:grid-cols-3">
+        <div class="grid gap-4 md:grid-cols-3">
             <div class="md:col-span-2 space-y-6">
                 <div class="rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-900">
                     <h3 class="mb-4 text-lg font-semibold text-gray-900 dark:text-white">{{ __('Vehicle Information') }}</h3>

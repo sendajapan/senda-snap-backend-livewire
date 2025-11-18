@@ -72,7 +72,7 @@
 </div>
 
 {{-- DESIGN 3: Card Grid Layout --}}
-<div class="grid gap-6 md:grid-cols-2">
+<div class="grid gap-4 md:grid-cols-2">
     <!-- Main Welcome Card -->
     <div
         class="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-600 to-cyan-600 p-8 shadow-xl">
@@ -117,7 +117,7 @@
          style="animation-delay: 1s;"></div>
 
     <div class="relative">
-        <div class="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+        <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div class="flex items-center gap-4">
                 <!-- Avatar -->
                 <div class="group relative">

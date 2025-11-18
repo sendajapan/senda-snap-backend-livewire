@@ -33,12 +33,6 @@ class AllTasks extends Component
     {
         // Reset to null if empty string is selected, otherwise keep the value
         $this->statusFilter = ($value === '' || $value === null) ? null : $value;
-
-        // Log for debugging
-        \Log::info('Status Filter Updated', [
-            'value' => $value,
-            'statusFilter' => $this->statusFilter,
-        ]);
     }
 
     public function updatedFromDate($value): void

@@ -48,7 +48,7 @@ new class extends Component {
 }; ?>
 
 <x-layouts.app :title="__('Create Task')">
-    <div class="flex h-full w-full flex-1 flex-col gap-6 p-6">
+    <div class="flex h-full w-full flex-1 flex-col gap-4 p-6">
         <div>
             <flux:heading size="xl">{{ __('Create Task') }}</flux:heading>
             <flux:text>{{ __('Add a new task') }}</flux:text>

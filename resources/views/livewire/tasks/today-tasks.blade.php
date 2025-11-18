@@ -1,4 +1,4 @@
-<div class="flex h-full w-full flex-1 flex-col gap-6 p-6" x-data="{
+<div class="flex h-full w-full flex-1 flex-col gap-4" x-data="{
     openModal(taskId = null) {
         $wire.$dispatch('open-task-modal', { taskId: taskId })
     }
@@ -56,7 +56,7 @@
             @if($statusFilter)
                 <div class="mt-3 flex flex-wrap gap-2">
                     <span class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ __('Active Filters:') }}</span>
-                    
+
                     <flux:badge color="blue" size="sm">
                         {{ __('Status:') }} {{ ucfirst($statusFilter) }}
                     </flux:badge>

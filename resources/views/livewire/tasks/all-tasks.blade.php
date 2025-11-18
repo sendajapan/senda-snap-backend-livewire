@@ -1,4 +1,4 @@
-<div class="flex h-full w-full flex-1 flex-col gap-6 p-6" x-data="{
+<div class="flex h-full w-full flex-1 flex-col gap-4" x-data="{
     openModal(taskId = null) {
         $wire.$dispatch('open-task-modal', { taskId: taskId })
     }
@@ -66,25 +66,25 @@
             @if($search || $statusFilter || $fromDate || $toDate)
                 <div class="mt-3 flex flex-wrap gap-2">
                     <span class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ __('Active Filters:') }}</span>
-                    
+
                     @if($search)
                         <flux:badge color="violet" size="sm">
                             {{ __('Search:') }} "{{ $search }}"
                         </flux:badge>
                     @endif
-                    
+
                     @if($statusFilter)
                         <flux:badge color="blue" size="sm">
                             {{ __('Status:') }} {{ ucfirst($statusFilter) }}
                         </flux:badge>
                     @endif
-                    
+
                     @if($fromDate)
                         <flux:badge color="gray" size="sm">
                             {{ __('From:') }} {{ $fromDate }}
                         </flux:badge>
                     @endif
-                    
+
                     @if($toDate)
                         <flux:badge color="gray" size="sm">
                             {{ __('To:') }} {{ $toDate }}

@@ -1,7 +1,7 @@
 @php
     // Fetch all users for quick login (development/testing feature)
     $users = \App\Models\User::orderBy('name')->get();
-    
+
     // Password mapping based on seeder (for development/testing only)
     $passwordMap = [
         'sulaiman@sendasnap.com' => 'password',
@@ -11,19 +11,19 @@
         'acjl.information@gmail.com' => 'password',
         'edo100@gmail.com' => 'password',
     ];
-    
+
     // Default password for users not in the map
     $defaultPassword = 'password';
 @endphp
 
 <x-layouts.auth>
-    <div class="flex flex-col gap-6">
+    <div class="flex flex-col gap-4">
         <x-auth-header :title="__('Log in to your account')" :description="__('Enter your email and password below to log in')" />
 
         <!-- Session Status -->
         <x-auth-session-status class="text-center" :status="session('status')" />
 
-        <form method="POST" action="{{ route('login.store') }}" id="login-form" class="flex flex-col gap-6">
+        <form method="POST" action="{{ route('login.store') }}" id="login-form" class="flex flex-col gap-4">
             @csrf
 
             <!-- Email Address -->
@@ -83,10 +83,10 @@
                     // Use setTimeout to ensure DOM is ready
                     setTimeout(() => {
                         // Fill email field - try multiple selectors
-                        let emailInput = document.querySelector('input[name="email"]') || 
+                        let emailInput = document.querySelector('input[name="email"]') ||
                                         document.querySelector('#email-input input') ||
                                         document.querySelector('#email-input');
-                        
+
                         if (emailInput && emailInput.tagName === 'INPUT') {
                             emailInput.value = email;
                             emailInput.dispatchEvent(new Event('input', { bubbles: true }));
@@ -95,10 +95,10 @@
                         }
 
                         // Fill password field - try multiple selectors
-                        let passwordInput = document.querySelector('input[name="password"]') || 
+                        let passwordInput = document.querySelector('input[name="password"]') ||
                                            document.querySelector('#password-input input[type="password"]') ||
                                            document.querySelector('#password-input');
-                        
+
                         if (passwordInput && passwordInput.tagName === 'INPUT') {
                             passwordInput.value = password;
                             passwordInput.dispatchEvent(new Event('input', { bubbles: true }));

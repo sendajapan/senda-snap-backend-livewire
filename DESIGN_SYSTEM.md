@@ -350,10 +350,10 @@ $this->dispatch('notify', message: 'Operation successful!', type: 'success');
 
 ### **Standard Page Layout**
 
-**CRITICAL SPACING RULE**: The container uses `gap-6` which automatically provides consistent 1.5rem (24px) spacing between all direct children. **NEVER** add extra empty lines or manual spacing (like `<div class="h-6"></div>`) between sections - the gap utility handles this automatically.
+**CRITICAL SPACING RULE**: The container uses `gap-4` which automatically provides consistent 1.5rem (24px) spacing between all direct children. **NEVER** add extra empty lines or manual spacing (like `<div class="h-6"></div>`) between sections - the gap utility handles this automatically.
 
 ```blade
-<div class="flex h-full w-full flex-1 flex-col gap-6 p-6" x-data="{
+<div class="flex h-full w-full flex-1 flex-col gap-4 p-6" x-data="{
     openModal(itemId = null) {
         $wire.$dispatch('open-item-modal', { itemId: itemId })
     }
@@ -409,20 +409,20 @@ $this->dispatch('notify', message: 'Operation successful!', type: 'success');
 ### **Dashboard Layout**
 
 ```blade
-<div class="flex h-full w-full flex-1 flex-col gap-6 p-4">
+<div class="flex h-full w-full flex-1 flex-col gap-4">
     <!-- 1. Welcome Header (Grid layout) -->
-    <div class="grid gap-6 md:grid-cols-2">
+    <div class="grid gap-4 md:grid-cols-2">
         <!-- Welcome Card with Glassmorphism -->
         <!-- Date/Time Card -->
     </div>
 
     <!-- 2. Stats Cards -->
-    <div class="grid gap-6 lg:grid-cols-2 xl:grid-cols-4">
+    <div class="grid gap-4 lg:grid-cols-2 xl:grid-cols-4">
         <x-stats-card />
     </div>
 
     <!-- 3. Charts Section -->
-    <div class="grid gap-6 md:grid-cols-2">
+    <div class="grid gap-4 md:grid-cols-2">
         <!-- Chart Cards -->
     </div>
 </div>
@@ -431,7 +431,7 @@ $this->dispatch('notify', message: 'Operation successful!', type: 'success');
 ### **API Documentation Layout**
 
 ```blade
-<div class="flex h-full w-full flex-1 flex-col gap-6 p-6">
+<div class="flex h-full w-full flex-1 flex-col gap-4">
     <!-- Header with Base URL display -->
     <x-page-header variant="violet">
         <x-slot:actions>
@@ -857,7 +857,7 @@ For dashboard charts that need to display related data below the chart, embed a 
         </div>
 
         <!-- Chart and Status List: Vertical on md/small, Horizontal on lg+ -->
-        <div class="flex flex-col gap-6 lg:flex-row lg:items-start">
+        <div class="flex flex-col gap-4 lg:flex-row lg:items-start">
             <!-- Chart Canvas -->
             <div class="relative flex flex-1 items-center justify-center rounded-xl bg-white/50 p-6 backdrop-blur-sm dark:bg-gray-800/50">
                 <canvas id="chartId" class="max-h-64"></canvas>
@@ -949,12 +949,12 @@ class="rounded-lg bg-gray-900 p-4 text-xs text-gray-100 dark:bg-gray-950"
 - Modal Header/Footer: `px-6 py-4` or `px-6 py-6`
 
 ### **Gaps**
-- Vertical Sections: `gap-6` (NEVER add manual spacing between cards - the container's gap-6 handles this automatically)
+- Vertical Sections: `gap-4` (NEVER add manual spacing between cards - the container's gap-4 handles this automatically)
 - Horizontal Items: `gap-4` or `gap-3` or `gap-2`
-- Grid: `gap-6` or `gap-4`
+- Grid: `gap-4` or `gap-4`
 
 ### **Critical Spacing Rule**
-**NEVER** add extra empty lines, divs, or manual margins between direct children of a `flex flex-col gap-6` container. The `gap-6` utility automatically provides consistent 1.5rem (24px) spacing. Adding manual spacing breaks the design system consistency.
+**NEVER** add extra empty lines, divs, or manual margins between direct children of a `flex flex-col gap-4` container. The `gap-4` utility automatically provides consistent 1.5rem (24px) spacing. Adding manual spacing breaks the design system consistency.
 
 ### **Rounded Corners**
 - Cards/Containers: `rounded-2xl`
@@ -1224,7 +1224,7 @@ $upcomingTasks = \App\Models\Task::whereNotIn('status', ['completed', 'cancelled
 
 ### Common Classes
 ```
-Container: flex h-full w-full flex-1 flex-col gap-6 p-6
+Container: flex h-full w-full flex-1 flex-col gap-4 p-6
 Header: text-2xl font-bold text-gray-900 dark:text-white
 Secondary: text-sm text-gray-600 dark:text-gray-400
 Card: rounded-2xl shadow-xl transition-all hover:shadow-2xl

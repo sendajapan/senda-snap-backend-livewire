@@ -1,5 +1,5 @@
 <x-layouts.app title="{{ __('API Documentation') }}">
-    <div class="flex h-full w-full flex-1 flex-col gap-6 p-6">
+    <div class="flex h-full w-full flex-1 flex-col gap-4 p-6">
         <!-- Header Section -->
         <x-page-header
             :title="__('API Documentation')"

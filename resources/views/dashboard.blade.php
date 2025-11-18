@@ -45,9 +45,9 @@
 @endphp
 
 <x-layouts.app :title="__('Dashboard')">
-    <div class="flex h-full w-full flex-1 flex-col gap-6 p-4">
+    <div class="flex h-full w-full flex-1 flex-col gap-4">
         <!-- Welcome Header -->
-        <div class="grid gap-6 md:grid-cols-2">
+        <div class="grid gap-4 lg:grid-cols-1 xl:grid-cols-2">
             <!-- Main Welcome Card -->
             <div class="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-600 to-cyan-600 p-8 shadow-xl">
                 <div class="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-white/10 blur-2xl"></div>
@@ -63,9 +63,9 @@
             </div>
 
             <!-- Date & Time Card -->
-            <div class="group relative overflow-hidden rounded-2xl border-2 border-gray-200 bg-white p-8 shadow-lg dark:border-gray-700 dark:bg-zinc-900">
+            <div class="group relative overflow-hidden rounded-2xl border-1 border bg-white p-8 shadow-lg dark:border-gray-700 dark:bg-zinc-900">
                 <!-- Date & Time Section -->
-                <div class="mb-6 flex items-center gap-4 border-b border-gray-200 pb-6 dark:border-gray-700">
+                <div class="mb-3 flex items-center gap-4 border-b border-gray-200 pb-3 dark:border-gray-700">
                     <div class="flex h-16 w-16 flex-col items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-100 to-purple-100 dark:from-indigo-900 dark:to-purple-900">
                         <span class="text-xs font-semibold text-indigo-600 dark:text-indigo-400">{{ now()->format('M') }}</span>
                         <span class="text-2xl font-bold text-indigo-900 dark:text-indigo-100">{{ now()->format('d') }}</span>
@@ -78,29 +78,28 @@
 
                 <!-- Next Upcoming Task -->
                 @if($nextUserTask)
-                    <div class="space-y-3">
-                        <div class="flex items-center justify-between">
-                            <h4 class="text-sm font-semibold text-gray-700 dark:text-gray-300">{{ __('Your Next Task') }}</h4>
-                            <flux:badge :color="match($nextUserTask->status) {
-                    'completed' => 'green',
-                    'running' => 'blue',
-                    'cancelled' => 'red',
-                    default => 'gray',
-                }" size="sm" class="font-semibold">
-                                {{ ucfirst($nextUserTask->status) }}
-                            </flux:badge>
-                        </div>
+                    <div class="space-y-1">
                         <h5 class="text-lg font-bold text-gray-900 dark:text-white">{{ $nextUserTask->title }}</h5>
                         @if($nextUserTask->description)
                             <p class="text-sm leading-relaxed text-gray-600 dark:text-gray-400 line-clamp-4">{{ $nextUserTask->description }}</p>
                         @endif
                         <div class="flex flex-wrap items-center gap-4 pt-2">
-                            <flux:badge :color="match($nextUserTask->priority) {
-                    'urgent' => 'red',
-                    'high' => 'orange',
-                    'medium' => 'yellow',
-                    default => 'gray',
-                }" size="sm" class="font-semibold">
+                            <div class="flex items-center justify-between">
+                                <flux:badge class="font-semibold" :color="match($nextUserTask->status) {
+                            'completed' => 'green',
+                            'running' => 'blue',
+                            'cancelled' => 'red',
+                            default => 'gray',
+                            }" size="sm">
+                                    {{ ucfirst($nextUserTask->status) }}
+                                </flux:badge>
+                            </div>
+                            <flux:badge class="font-semibold" :color="match($nextUserTask->priority) {
+                            'urgent' => 'red',
+                            'high' => 'orange',
+                            'medium' => 'yellow',
+                            default => 'gray',
+                            }" size="sm">
                                 {{ ucfirst($nextUserTask->priority) }} Priority
                             </flux:badge>
                             @if($nextUserTask->work_date)
@@ -134,7 +133,7 @@
         </div>
 
         <!-- Stats Cards -->
-        <div class="grid gap-6 lg:grid-cols-2 xl:grid-cols-4">
+        <div class="grid gap-4 lg:grid-cols-2 xl:grid-cols-4">
             <!-- Users Card -->
             <x-stats-card :title="__('Total Users')" :count="$totalUsers" :description="__('All registered users')"
                           topCircleColor="bg-blue-300" bottomCircleColor="bg-blue-400">
@@ -212,7 +211,7 @@
         </div>
 
         <!-- Charts Section -->
-        <div class="grid gap-6 md:grid-cols-2">
+        <div class="grid gap-4 md:grid-cols-2">
             <!-- Task Status Donut Chart -->
             <div class="group relative overflow-hidden rounded-2xl border border-emerald-200 bg-gradient-to-br from-white via-emerald-50/30 to-teal-50/30 p-6 shadow-xl transition-all duration-300 hover:shadow-2xl dark:border-emerald-900/50 dark:from-gray-900 dark:via-emerald-900/20 dark:to-teal-900/20">
                 <!-- Decorative Elements -->
@@ -236,7 +235,7 @@
                     </div>
 
                     <!-- Chart and Status List: Vertical on md/small, Horizontal on lg+ -->
-                    <div class="flex flex-col gap-6 lg:flex-row lg:items-start">
+                    <div class="flex flex-col gap-4 lg:flex-row lg:items-start">
                         <!-- Chart Canvas -->
                         <div class="relative flex flex-1 items-center justify-center rounded-xl bg-white/50 p-6 backdrop-blur-sm dark:bg-gray-800/50">
                             <canvas id="taskChart" class="max-h-64"></canvas>
@@ -526,7 +525,6 @@
                                         <th class="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 w-1/3">{{ __('Member') }}</th>
                                         <th class="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">{{ __('Email') }}</th>
                                         <th class="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">{{ __('Role') }}</th>
-                                        <th class="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">{{ __('Phone') }}</th>
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-gray-200/50 dark:divide-gray-700/50">
@@ -559,21 +557,11 @@
                                                 </div>
                                             </td>
                                             <td class="whitespace-nowrap px-4 py-3">
-                                                <flux:badge :color="match($member->role) { 'admin' => 'red', 'manager' => 'blue', 'employee' => 'green', default => 'gray' }" size="sm" class="font-semibold">
-                                                    {{ ucfirst($member->role) }}
-                                                </flux:badge>
-                                            </td>
-                                            <td class="whitespace-nowrap px-4 py-3">
-                                                @if($member->phone)
-                                                    <div class="flex items-center gap-2">
-                                                        <svg class="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
-                                                        </svg>
-                                                        <span class="text-sm text-gray-900 dark:text-white">{{ $member->phone }}</span>
-                                                    </div>
-                                                @else
-                                                    <span class="text-sm text-gray-400 dark:text-gray-500">-</span>
-                                                @endif
+                                                <div class="flex justify-center">
+                                                    <flux:badge class="font-semibold w-20 text-center" :color="match($member->role) { 'admin' => 'red', 'manager' => 'blue', 'employee' => 'green', default => 'gray' }" size="sm">
+                                                        {{ ucfirst($member->role) }}
+                                                    </flux:badge>
+                                                </div>
                                             </td>
                                         </tr>
                                     @endforeach

@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Hash;
 
 new class extends Component {
     public User $user;
-    
+
     public string $name = '';
     public string $email = '';
     public string $password = '';
@@ -63,7 +63,7 @@ new class extends Component {
 }; ?>
 
 <x-layouts.app :title="__('Edit User')">
-    <div class="flex h-full w-full flex-1 flex-col gap-6 p-6">
+    <div class="flex h-full w-full flex-1 flex-col gap-4 p-6">
         <div>
             <flux:heading size="xl">{{ __('Edit User') }}</flux:heading>
             <flux:text>{{ __('Update user information') }}</flux:text>

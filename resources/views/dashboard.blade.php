@@ -212,7 +212,7 @@
         </div>
 
         <!-- Charts Section -->
-        <div class="grid gap-4 md:grid-cols-2">
+        <div class="grid gap-4 lg:grid-cols-1 xl:grid-cols-2">
             <!-- Task Status Donut Chart -->
             <div class="group relative overflow-hidden rounded-2xl border border-emerald-200 bg-gradient-to-br from-white via-emerald-50/30 to-teal-50/30 p-6 shadow-xl transition-all duration-300 hover:shadow-2xl dark:border-emerald-900/50 dark:from-gray-900 dark:via-emerald-900/20 dark:to-teal-900/20">
                 <!-- Decorative Elements -->

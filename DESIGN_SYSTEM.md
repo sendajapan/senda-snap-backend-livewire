@@ -154,6 +154,8 @@ The design system uses 4 primary color variants:
 
 **Examples**: `<x-user-table-row>`, `<x-task-table-row>`, `<x-vehicle-table-row>`
 
+**Responsive Behavior**: Tables are shown below `lg` (1024px), cards are shown at `lg+` (1024px+)
+
 **Pattern to Follow**:
 ```blade
 <tr class="group transition-all duration-200 hover:bg-gradient-to-r hover:from-blue-50/50 hover:to-teal-50/50 dark:hover:from-blue-900/10 dark:hover:to-teal-900/10">
@@ -219,7 +221,192 @@ The design system uses 4 primary color variants:
 
 ---
 
-### 5. **Modal Component Pattern** (Livewire)
+### 4a. **Card Components** (Model-specific, for intermediate screens)
+
+**Purpose**: Card-based layout for intermediate screen sizes (1180px to 1535px) providing better readability and visual hierarchy, while maintaining table efficiency on smaller and very large screens
+
+**Examples**: `<x-user-card>`, `<x-task-card>`
+
+**Usage Pattern**:
+```blade
+<!-- Table View (below 1180px and 2XL+) -->
+<div class="overflow-x-auto border rounded-xl bg-white/50 backdrop-blur-sm dark:bg-gray-800/50 min-[1180px]:hidden 2xl:block">
+    <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+        <!-- Table content -->
+    </table>
+</div>
+
+<!-- Card View (1180px to below 2XL - iPad Air landscape to XL) -->
+<div class="hidden min-[1180px]:grid min-[1180px]:grid-cols-1 xl:grid-cols-2 2xl:hidden gap-4">
+    @forelse($items as $item)
+        <x-item-card :item="$item" />
+    @empty
+        <!-- Empty state -->
+    @endforelse
+</div>
+```
+
+**Card Structure Pattern**:
+```blade
+<div class="group relative overflow-hidden rounded-xl border border-{color}-200 bg-white/50 p-4 backdrop-blur-sm transition-all duration-200 hover:border-{color}-300 hover:shadow-lg dark:border-{color}-900/50 dark:bg-gray-800/50 dark:hover:border-{color}-800">
+    <div class="flex flex-col gap-4">
+        <!-- Header: Main info + Actions -->
+        <div class="flex items-start justify-between gap-3">
+            <div class="flex-1 min-w-0">
+                <!-- Title/Name -->
+                <h3 class="text-base font-bold text-gray-900 dark:text-white break-words">{{ $item->title }}</h3>
+                <!-- Optional description/subtitle -->
+            </div>
+            <div class="flex flex-col items-end gap-2 flex-shrink-0">
+                <!-- Badges (Priority, Status, etc.) -->
+            </div>
+        </div>
+
+        <!-- Details Grid -->
+        <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <!-- Detail items with icons -->
+        </div>
+
+        <!-- Actions Footer -->
+        <div class="flex items-center justify-end border-t border-gray-200/50 pt-3 dark:border-gray-700/50">
+            <flux:button size="sm" variant="ghost" @click="openModal({{ $item->id }})" icon="pencil" class="opacity-50 transition-opacity group-hover:opacity-100">
+                {{ __('Edit') }}
+            </flux:button>
+        </div>
+    </div>
+</div>
+```
+
+**Key Features**:
+- Responsive grid: 1 column at `min-[1180px]` (1180px), 2 columns at `xl` (1280px)
+- Card borders match variant color (blue, emerald, violet, amber)
+- Hover effects: border color change and shadow
+- Frosted glass effect (`bg-white/50 backdrop-blur-sm`)
+- Dark mode support
+- Consistent spacing with `gap-4`
+- Details in responsive grid (1 column on small, 2 columns on sm+)
+- Time badges use dark background (`bg-accent/90`) with white text for emphasis
+
+**Time Badge Pattern** (for tasks):
+```blade
+<div class="inline-flex items-center gap-1.5 rounded-sm bg-accent/90 px-2 py-1 shadow-sm">
+    <svg class="h-4 w-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+    </svg>
+    <span class="text-sm font-semibold text-white">{{ $time }}</span>
+</div>
+```
+
+**Breakpoints**:
+- Below `min-[1180px]` (below 1180px): Table layout
+- `min-[1180px]` to below `2xl` (1180px to 1535px): Card layout
+  - 1 column grid at 1180px
+  - 2 column grid at `xl` (1280px)
+- `2xl` (1536px+) and above: Table layout
+
+---
+
+### 5. **Preview Modal Component Pattern** (Livewire)
+
+**Purpose**: Center dialog modal for displaying read-only item details with action buttons
+
+**Structure**:
+```blade
+<div>
+    <!-- Backdrop -->
+    <div x-data="{ open: @entangle('open') }"
+         x-show="open"
+         x-cloak
+         class="fixed inset-0 z-50 overflow-y-auto"
+         style="display: none;">
+
+        <!-- Background overlay -->
+        <div x-show="open"
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="transition ease-in duration-200"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"
+             class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm"></div>
+
+        <!-- Modal Container -->
+        <div class="flex min-h-full items-center justify-center p-4">
+            <div x-show="open"
+                 x-transition:enter="transition ease-out duration-300"
+                 x-transition:enter-start="opacity-0 scale-95"
+                 x-transition:enter-end="opacity-100 scale-100"
+                 x-transition:leave="transition ease-in duration-200"
+                 x-transition:leave-start="opacity-100 scale-100"
+                 x-transition:leave-end="opacity-0 scale-95"
+                 class="relative w-full max-w-4xl transform overflow-hidden rounded-2xl bg-white shadow-2xl dark:bg-gray-900"
+                 @click.away="open = false">
+
+                <!-- Content -->
+                <div class="max-h-[90vh] overflow-y-auto p-6 pb-20">
+                    <!-- Item Preview Card with gradient background matching variant -->
+                    <div class="relative overflow-hidden rounded-xl border border-{color}-200 bg-gradient-to-br from-{color}-50 via-white to-{color2}-50 p-6 shadow-xl dark:border-{color}-900/50 dark:from-{color}-900/20 dark:via-gray-900 dark:to-{color2}-900/20">
+                        <!-- Decorative blur circles -->
+                        <!-- Item details display -->
+                    </div>
+                </div>
+
+                <!-- Action Buttons (Center Bottom) -->
+                <div class="absolute bottom-0 left-0 right-0 flex items-center justify-center gap-3 border-t border-gray-200/50 bg-white/95 p-4 backdrop-blur-sm dark:border-gray-700/50 dark:bg-gray-900/95">
+                    <!-- Edit Button (cyan) -->
+                    <button wire:click="editItem" type="button" class="group relative flex items-center justify-center rounded-lg border-2 border-cyan-600/50 bg-cyan-500/10 p-3 transition-all duration-200 hover:border-cyan-600 hover:bg-cyan-500/20 hover:shadow-lg hover:shadow-cyan-600/30">
+                        <svg class="h-5 w-5 text-cyan-600">...</svg>
+                        <span class="ml-2 text-sm font-semibold text-cyan-600">{{ __('Edit') }}</span>
+                    </button>
+
+                    <!-- Close Button (gray) -->
+                    <button wire:click="closePreview" type="button" class="group relative flex items-center justify-center rounded-lg border-2 border-gray-400/50 bg-gray-500/10 p-3 transition-all duration-200 hover:border-gray-400 hover:bg-gray-500/20 hover:shadow-lg hover:shadow-gray-500/30">
+                        <svg class="h-5 w-5 text-gray-400">...</svg>
+                        <span class="ml-2 text-sm font-semibold text-gray-400">{{ __('Close') }}</span>
+                    </button>
+
+                    <!-- Delete Button (red, conditional) -->
+                    @if($this->canDelete())
+                        <button @click="window.confirmDelete(...).then(...)" type="button" class="group relative flex items-center justify-center rounded-lg border-2 border-red-600/50 bg-red-500/10 p-3 transition-all duration-200 hover:border-red-600 hover:bg-red-500/20 hover:shadow-lg hover:shadow-red-600/30">
+                            <svg class="h-5 w-5 text-red-600">...</svg>
+                            <span class="ml-2 text-sm font-semibold text-red-600">{{ __('Delete') }}</span>
+                        </button>
+                    @endif
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+```
+
+**Features**:
+- Center dialog modal (not side panel)
+- Max width: `max-w-4xl`
+- Scale animation on open/close
+- Gradient background matching variant color (blue/cyan for users, emerald/teal for tasks)
+- Decorative blur circles
+- Action buttons at bottom center: Edit (cyan), Close (gray), Delete (red, conditional)
+- Delete button only shown if `canDelete()` returns true
+- Integrated with SweetAlert2 for delete confirmation
+
+**Color Variants**:
+- **Users**: Blue/cyan gradient (`from-blue-50 via-white to-cyan-50`)
+- **Tasks**: Emerald/teal gradient (`from-emerald-50 via-white to-teal-50`)
+
+**Opening Preview** (from parent component):
+```blade
+<div x-data="{
+    openPreview(itemId = null) {
+        $wire.$dispatch('open-user-preview', { userId: itemId })
+    }
+}">
+    <button @click="openPreview({{ $user->id }})">View</button>
+</div>
+```
+
+---
+
+### 5a. **Modal Component Pattern** (Livewire)
 
 **Purpose**: Full-height right-side slide-in modal for CRUD operations
 
@@ -321,7 +508,73 @@ The design system uses 4 primary color variants:
 
 ---
 
-### 6. **Toast Notification Component** (`<x-toast-notification>`)
+### 6. **Action Buttons with Permissions Pattern**
+
+**Purpose**: View, Edit, and Delete buttons with role-based permission checks
+
+**Button Colors by Module**:
+- **Users**: View (blue-700), Edit (cyan-700), Delete (red-700)
+- **Tasks**: View (emerald-700), Edit (cyan-700), Delete (red-700)
+
+**Table Row Pattern**:
+```blade
+<td class="whitespace-nowrap px-3 md:px-6 py-3 md:py-5">
+    <div class="flex items-center gap-1.5 md:gap-2">
+        @php
+            $currentUser = auth()->user();
+            $canDelete = $currentUser && in_array($currentUser->role, ['admin', 'manager']) 
+                && !($currentUser->role === 'manager' && ($currentUser->id === $item->id || $item->role === 'admin'));
+        @endphp
+
+        <!-- View Button -->
+        <button @click="openPreview({{ $item->id }})" type="button" class="group relative flex items-center justify-center rounded-lg border-2 border-{color}-700/60 bg-{color}-500/10 p-1.5 transition-all duration-200 hover:border-{color}-700 hover:bg-{color}-500/20 hover:shadow-lg hover:shadow-{color}-700/30" title="{{ __('View') }}">
+            <svg class="h-3.5 w-3.5 md:h-4 md:w-4 text-{color}-700 transition-all duration-200 group-hover:text-{color}-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+        </button>
+
+        <!-- Edit Button -->
+        <button @click="openModal({{ $item->id }})" type="button" class="group relative flex items-center justify-center rounded-lg border-2 border-cyan-700/60 bg-cyan-500/10 p-1.5 transition-all duration-200 hover:border-cyan-700 hover:bg-cyan-500/20 hover:shadow-lg hover:shadow-cyan-700/30" title="{{ __('Edit') }}">
+            <svg class="h-3.5 w-3.5 md:h-4 md:w-4 text-cyan-700 transition-all duration-200 group-hover:text-cyan-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+            </svg>
+        </button>
+
+        <!-- Delete Button (conditional) -->
+        @if($canDelete)
+            <button @click="window.confirmDelete({{ $item->id }}, '{{ addslashes($item->name) }}').then((result) => { if (result.isConfirmed) { $wire.$dispatch('delete-item', { itemId: {{ $item->id }} }) } })" type="button" class="group relative flex items-center justify-center rounded-lg border-2 border-red-700/60 bg-red-500/10 p-1.5 transition-all duration-200 hover:border-red-700 hover:bg-red-500/20 hover:shadow-lg hover:shadow-red-700/30" title="{{ __('Delete') }}">
+                <svg class="h-3.5 w-3.5 md:h-4 md:w-4 text-red-700 transition-all duration-200 group-hover:text-red-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                </svg>
+            </button>
+        @endif
+    </div>
+</td>
+```
+
+**Permission Rules**:
+- **Delete Users**: Only `admin` or `manager` can delete
+  - Manager cannot delete their own account
+  - Manager cannot delete admin accounts
+- **Delete Tasks**: Only `admin` or `manager` can delete
+- **UI Visibility**: Delete buttons are hidden if user doesn't have permission
+
+**Key Features**:
+- Small icon-only buttons in table rows (`p-1.5`, `h-3.5 w-3.5 md:h-4 md:w-4`)
+- Outline border style with semi-transparent background
+- Hover effects: border color change, background opacity increase, shadow
+- No opacity transitions (opacity-100 by default)
+- No inner shadow effects on icons
+- Integrated with SweetAlert2 for delete confirmation
+- Permission checks in Blade using `@php` blocks
+
+**Card View Pattern**:
+Same button structure but with slightly larger padding (`p-2`) and icon size (`h-4 w-4`) for better touch targets.
+
+---
+
+### 7. **Toast Notification Component** (`<x-toast-notification>`)
 
 **Purpose**: Display success/error/info/warning messages
 
@@ -1263,6 +1516,15 @@ When creating a new page, ensure:
 
 ## 🚀 Recent Updates
 
+### Preview Modal & Permission System
+- Added center dialog preview modals for Users and Tasks
+- Implemented role-based permission system for delete actions
+- Added View, Edit, Delete action buttons with permission checks
+- Manager restrictions: cannot delete own account or admin accounts
+- Delete buttons conditionally rendered based on user permissions
+- Integrated SweetAlert2 for delete confirmations
+- Color-coded buttons: View (module color), Edit (cyan), Delete (red)
+
 ### Particle Background System
 - Added canvas-based animated particle background system
 - Multi-color palette with automatic dark mode adaptation
@@ -1367,6 +1629,33 @@ For dashboard cards displaying user/member data, show role counts above the main
 - User management pages
 - Any dashboard section displaying role-based statistics
 
+### Responsive Card Layout Pattern (Intermediate Screens)
+For data tables that need better readability on intermediate screen sizes, implement a three-tier layout system:
+- **Below 1180px**: Traditional table layout (mobile, tablet portrait)
+- **1180px to 1535px**: Card-based stacked layout in responsive grid (iPad Air landscape, XL screens)
+- **1536px+ (2XL)**: Traditional table layout (large desktop screens)
+
+**Implementation**:
+1. Create a card component (e.g., `<x-user-card>`, `<x-task-card>`) following the card structure pattern
+2. Show table with `min-[1180px]:hidden 2xl:block` classes (hidden at 1180px-1535px, shown otherwise)
+3. Show cards with `hidden min-[1180px]:grid min-[1180px]:grid-cols-1 xl:grid-cols-2 2xl:hidden` classes
+4. Use responsive grid: 1 column at 1180px, 2 columns at `xl` (1280px)
+5. Ensure both views have proper `wire:key` attributes for Livewire reactivity
+
+**Benefits**:
+- Better readability on intermediate screen sizes (iPad landscape, XL monitors)
+- More visual hierarchy with card-based design
+- Maintains table efficiency on smaller screens (mobile, tablet portrait)
+- Optimal table view on very large screens (2XL+ desktops)
+- Consistent with modern UI patterns
+
+**Current Usage**:
+- Users Management (`livewire.users.index`)
+- All Tasks (`livewire.tasks.all-tasks`)
+- Today's Tasks (`livewire.tasks.today-tasks`)
+
+---
+
 ### Upcoming Tasks Query Pattern
 For displaying upcoming tasks in dashboard tables, use this query pattern to show only future tasks sorted by work date and time.
 
@@ -1432,7 +1721,29 @@ $upcomingTasks = \App\Models\Task::whereNotIn('status', ['completed', 'cancelled
 - Gradient connection lines between nearby particles
 - Used in Admin Manual and API Documentation pages
 
-**Version**: 2.4  
+### Responsive Card Layout System
+- Three-tier layout system: table below 1180px, cards at 1180px-1535px, table at 2XL+
+- Card-based layout optimized for intermediate screen sizes (iPad Air landscape, XL monitors)
+- Responsive grid: 1 column at 1180px, 2 columns at xl (1280px)
+- Time badges use dark background (`bg-accent/90`) with white text
+- Applied to Users, All Tasks, and Today's Tasks modules
+
+### Preview Modal System
+- Center dialog modals for read-only item previews
+- Gradient backgrounds matching module variant colors (blue/cyan for users, emerald/teal for tasks)
+- Action buttons at bottom center: Edit, Close, Delete (conditional)
+- Permission-based delete button visibility
+- Integrated with SweetAlert2 for delete confirmations
+- Applied to Users and Tasks modules
+
+### Permission-Based UI System
+- Role-based permission checks for delete actions
+- Only admin/manager can delete users and tasks
+- Manager restrictions: cannot delete own account or admin accounts
+- Delete buttons conditionally rendered based on permissions
+- Permission checks implemented in both component methods and Blade templates
+
+**Version**: 2.6  
 **Last Updated**: November 12, 2025  
 **Project**: Laravel Livewire Dashboard - Senda Snap
 
@@ -1460,6 +1771,14 @@ Table: overflow-x-auto border rounded-xl bg-white/50 backdrop-blur-sm
 $this->dispatch('open-user-modal', userId: $id);
 $this->dispatch('open-task-modal', taskId: $id);
 $this->dispatch('open-vehicle-modal', vehicleId: $id);
+
+// Previews
+$this->dispatch('open-user-preview', userId: $id);
+$this->dispatch('open-task-preview', taskId: $id);
+
+// Delete Actions
+$this->dispatch('delete-user', userId: $id);
+$this->dispatch('delete-task', taskId: $id);
 
 // Notifications
 $this->dispatch('notify', message: 'Success!', type: 'success');

@@ -1,16 +1,21 @@
 <div class="flex h-full w-full flex-1 flex-col gap-4" x-data="{
     openModal(taskId = null) {
         $wire.$dispatch('open-task-modal', { taskId: taskId })
+    },
+    openPreview(taskId = null) {
+        $wire.$dispatch('open-task-preview', { taskId: taskId })
+    },
+    confirmDelete(taskId, taskTitle = null) {
+        return window.confirmDelete(taskId, taskTitle);
     }
 }">
     <!-- Header Section -->
-    <x-page-header
-        :title="__('All Tasks')"
-        :description="__('Manage all tasks with advanced filtering')"
+    <x-page-header :title="__('All Tasks')" :description="__('Manage all tasks with advanced filtering')"
         variant="emerald">
         <x-slot:icon>
             <svg class="h-7 w-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
             </svg>
         </x-slot:icon>
         <x-slot:actions>
@@ -24,25 +29,27 @@
     <x-table-card variant="emerald">
         <div class="mb-4">
             <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-                <svg class="h-5 w-5 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                <svg class="h-5 w-5 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor"
+                    viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                 </svg>
                 {{ __('All Tasks') }} ({{ $tasks->count() }})
             </h3>
 
             <!-- Filters -->
-            <div class="flex flex-wrap gap-4">
-                <div class="flex-1 min-w-64">
+            <div class="flex flex-col md:flex-row flex-wrap gap-3 md:gap-4">
+                <div class="flex-1 min-w-full md:min-w-64">
                     <flux:input wire:model.live.debounce.300ms="search"
                         placeholder="{{ __('Search by title or description...') }}" icon="magnifying-glass" />
                 </div>
-                <div class="w-44">
+                <div class="w-full md:w-44 flex-shrink-0">
                     <flux:input type="date" wire:model.live="fromDate" placeholder="{{ __('From Date') }}" />
                 </div>
-                <div class="w-44">
+                <div class="w-full md:w-44 flex-shrink-0">
                     <flux:input type="date" wire:model.live="toDate" placeholder="{{ __('To Date') }}" />
                 </div>
-                <div class="w-48">
+                <div class="w-full md:w-48 flex-shrink-0">
                     <flux:select wire:model.live="statusFilter" placeholder="{{ __('All Status') }}">
                         <option value="">{{ __('All Status') }}</option>
                         <option value="pending">{{ __('Pending') }}</option>
@@ -54,8 +61,9 @@
 
                 <!-- Clear Filters Button -->
                 @if($search || $statusFilter || $fromDate || $toDate)
-                    <div class="flex items-center">
-                        <flux:button wire:click="clearFilters" variant="ghost" size="sm" icon="x-mark">
+                    <div class="flex items-center w-full md:w-auto">
+                        <flux:button wire:click="clearFilters" variant="ghost" size="sm" icon="x-mark"
+                            class="w-full md:w-auto">
                             {{ __('Clear Filters') }}
                         </flux:button>
                     </div>
@@ -94,30 +102,38 @@
             @endif
         </div>
 
-        <div class="overflow-x-auto border rounded-xl bg-white/50 backdrop-blur-sm dark:bg-gray-800/50"
-             wire:key="all-tasks-{{ md5(($search ?? '').'|'.($statusFilter ?? '').'|'.($fromDate ?? '').'|'.($toDate ?? '')) }}">
+        <!-- Table View (below 1180px and 2XL+) -->
+        <div class="overflow-x-auto border rounded-xl bg-white/50 backdrop-blur-sm dark:bg-gray-800/50 min-[1180px]:hidden 2xl:block"
+            wire:key="all-tasks-table-{{ md5(($search ?? '') . '|' . ($statusFilter ?? '') . '|' . ($fromDate ?? '') . '|' . ($toDate ?? '')) }}">
             <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                 <thead>
                     <tr class="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900">
-                        <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">
+                        <th
+                            class="px-3 md:px-6 py-3 md:py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">
                             {{ __('Title') }}
                         </th>
-                        <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">
+                        <th
+                            class="px-3 md:px-6 py-3 md:py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 hidden lg:table-cell">
                             {{ __('Assigned To') }}
                         </th>
-                        <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">
+                        <th
+                            class="px-3 md:px-6 py-3 md:py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 hidden xl:table-cell">
                             {{ __('Assigned By') }}
                         </th>
-                        <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">
+                        <th
+                            class="px-3 md:px-6 py-3 md:py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">
                             {{ __('Priority') }}
                         </th>
-                        <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">
+                        <th
+                            class="px-3 md:px-6 py-3 md:py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">
                             {{ __('Status') }}
                         </th>
-                        <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">
+                        <th
+                            class="px-3 md:px-6 py-3 md:py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 hidden md:table-cell">
                             {{ __('Work Date') }}
                         </th>
-                        <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">
+                        <th
+                            class="px-3 md:px-6 py-3 md:py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">
                             {{ __('Actions') }}
                         </th>
                     </tr>
@@ -127,17 +143,22 @@
                         <x-task-table-row :task="$task" :showWorkDate="true" wire:key="task-{{ $task->id }}" />
                     @empty
                         <tr>
-                            <td colspan="7" class="px-6 py-12 text-center">
+                            <td colspan="7" class="px-3 md:px-6 py-12 text-center">
                                 <div class="flex flex-col items-center gap-3">
-                                    <div class="flex h-16 w-16 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800">
-                                        <svg class="h-8 w-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                                    <div
+                                        class="flex h-16 w-16 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800">
+                                        <svg class="h-8 w-8 text-gray-400" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                                         </svg>
                                     </div>
                                     <p class="text-sm font-medium text-gray-900 dark:text-white">
-                                        {{ __('No tasks found') }}</p>
+                                        {{ __('No tasks found') }}
+                                    </p>
                                     <p class="text-xs text-gray-500 dark:text-gray-400">
-                                        {{ __('Try adjusting your search or filters') }}</p>
+                                        {{ __('Try adjusting your search or filters') }}
+                                    </p>
                                 </div>
                             </td>
                         </tr>
@@ -145,8 +166,38 @@
                 </tbody>
             </table>
         </div>
+
+        <!-- Card View (1180px to below 2XL - iPad Air landscape to XL) -->
+        <div class="hidden min-[1180px]:grid min-[1180px]:grid-cols-1 xl:grid-cols-2 2xl:hidden gap-4"
+            wire:key="all-tasks-cards-{{ md5(($search ?? '') . '|' . ($statusFilter ?? '') . '|' . ($fromDate ?? '') . '|' . ($toDate ?? '')) }}">
+            @forelse($tasks as $task)
+                <x-task-card :task="$task" :showWorkDate="true" />
+            @empty
+                <div
+                    class="col-span-full rounded-xl border border-emerald-200 bg-white/50 p-12 text-center backdrop-blur-sm dark:border-emerald-900/50 dark:bg-gray-800/50">
+                    <div class="flex flex-col items-center gap-3">
+                        <div class="flex h-16 w-16 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800">
+                            <svg class="h-8 w-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                            </svg>
+                        </div>
+                        <p class="text-sm font-medium text-gray-900 dark:text-white">
+                            {{ __('No tasks found') }}
+                        </p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">
+                            {{ __('Try adjusting your search or filters') }}
+                        </p>
+                    </div>
+                </div>
+            @endforelse
+        </div>
+
     </x-table-card>
 
     <!-- Task Modal -->
     <livewire:tasks.task-modal />
+
+    <!-- Task Preview -->
+    <livewire:tasks.task-preview />
 </div>

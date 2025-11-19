@@ -56,11 +56,14 @@ app/
 │   │   ├── Password.php
 │   │   └── Profile.php
 │   ├── Tasks/
-│   │   ├── Index.php
-│   │   └── TaskModal.php
+│   │   ├── AllTasks.php
+│   │   ├── TodayTasks.php
+│   │   ├── TaskModal.php
+│   │   └── TaskPreview.php
 │   ├── Users/
 │   │   ├── Index.php
-│   │   └── UserModal.php
+│   │   ├── UserModal.php
+│   │   └── UserPreview.php
 │   └── Vehicles/
 │       └── Index.php
 ├── Models/                 # Eloquent models
@@ -548,6 +551,179 @@ class TaskModal extends Component
 }
 ```
 
+### Preview Component Example
+
+Preview components display read-only information in a center dialog modal. They provide a detailed view of an item without allowing direct editing (editing is done through the main modal).
+
+```php
+<?php
+
+declare(strict_types=1);
+
+namespace App\Livewire\Users;
+
+use App\Models\User;
+use App\Services\UserService;
+use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\On;
+use Livewire\Component;
+
+class UserPreview extends Component
+{
+    public bool $open = false;
+    public ?User $user = null;
+
+    #[On('open-user-preview')]
+    public function openPreview(?int $userId, UserService $userService): void
+    {
+        if ($userId) {
+            $this->user = $userService->getById($userId);
+        } else {
+            $this->user = null;
+        }
+
+        $this->open = true;
+    }
+
+    public function closePreview(): void
+    {
+        $this->open = false;
+        $this->user = null;
+    }
+
+    public function editUser(): void
+    {
+        if ($this->user) {
+            $this->dispatch('open-user-modal', userId: $this->user->id);
+            $this->closePreview();
+        }
+    }
+
+    public function deleteUser(UserService $userService): void
+    {
+        if ($this->user) {
+            try {
+                $userService->delete($this->user);
+                $this->dispatch('user-saved');
+                $this->dispatch('notify', message: __('User deleted successfully.'), type: 'success');
+                $this->closePreview();
+            } catch (\Exception $e) {
+                \Log::error('User delete error: '.$e->getMessage());
+                $this->dispatch('notify', message: __('An error occurred while deleting the user.'), type: 'error');
+            }
+        }
+    }
+
+    public function canDelete(): bool
+    {
+        $currentUser = Auth::user();
+        if (! $currentUser || ! $this->user) {
+            return false;
+        }
+
+        // Only admin or manager can delete
+        if (! in_array($currentUser->role, ['admin', 'manager'])) {
+            return false;
+        }
+
+        // Manager cannot delete their own account
+        if ($currentUser->role === 'manager' && $currentUser->id === $this->user->id) {
+            return false;
+        }
+
+        // Manager cannot delete admin accounts
+        if ($currentUser->role === 'manager' && $this->user->role === 'admin') {
+            return false;
+        }
+
+        return true;
+    }
+
+    public function render()
+    {
+        return view('livewire.users.user-preview');
+    }
+}
+```
+
+**Key Features**:
+- Center dialog modal (not side panel)
+- Read-only display of item details
+- Edit button redirects to main modal
+- Delete button with permission checks
+- Permission method (`canDelete()`) for UI visibility
+- Event-driven opening via `#[On('open-user-preview')]`
+
+**Opening Preview** (from parent component):
+```blade
+<div x-data="{
+    openPreview(itemId = null) {
+        $wire.$dispatch('open-user-preview', { userId: itemId })
+    }
+}">
+    <button @click="openPreview({{ $user->id }})">View</button>
+</div>
+```
+
+### Permission System Pattern
+
+The application implements role-based permission checks for delete actions. Permission logic is centralized in component methods.
+
+**Permission Rules**:
+- **Delete Users/Tasks**: Only `admin` or `manager` roles can delete
+- **Manager Restrictions**:
+  - Cannot delete their own account
+  - Cannot delete admin accounts
+- **UI Visibility**: Delete buttons are conditionally rendered based on `canDelete()` method
+
+**Implementation Pattern**:
+```php
+public function canDelete(): bool
+{
+    $currentUser = Auth::user();
+    if (! $currentUser || ! $this->item) {
+        return false;
+    }
+
+    // Only admin or manager can delete
+    if (! in_array($currentUser->role, ['admin', 'manager'])) {
+        return false;
+    }
+
+    // Additional restrictions for managers
+    if ($currentUser->role === 'manager') {
+        // Manager-specific restrictions
+        if ($currentUser->id === $this->item->id) {
+            return false; // Cannot delete own account
+        }
+        if ($this->item->role === 'admin') {
+            return false; // Cannot delete admin accounts
+        }
+    }
+
+    return true;
+}
+```
+
+**Usage in Blade**:
+```blade
+@if($this->canDelete())
+    <button wire:click="deleteItem">Delete</button>
+@endif
+```
+
+**In Table Rows and Cards**:
+```blade
+@php
+    $currentUser = auth()->user();
+    $canDelete = $currentUser && in_array($currentUser->role, ['admin', 'manager']) 
+        && !($currentUser->role === 'manager' && ($currentUser->id === $item->id || $item->role === 'admin'));
+@endphp
+@if($canDelete)
+    <button>Delete</button>
+@endif
+```
+
 ### Livewire Component Guidelines
 
 1. **Method Injection**: Use method injection for services (NOT constructor injection)
@@ -559,6 +735,8 @@ class TaskModal extends Component
 7. **Listeners**: Use `#[On('event-name')]` attribute or `protected $listeners` property
 8. **File Uploads**: Use `WithFileUploads` trait for file handling
 9. **Pagination**: Use `WithPagination` trait for paginated lists
+10. **Preview Components**: Use center dialog modals for read-only previews
+11. **Permission Checks**: Implement `canDelete()` methods for conditional UI rendering
 
 ---
 
@@ -1334,6 +1512,33 @@ $upcomingTasks = \App\Models\Task::whereNotIn('status', ['completed', 'cancelled
 
 **Display**: Shows "Work Date & Time" with date and time displayed separately with icons.
 
+### Today's Tasks Query
+For displaying today's tasks sorted by time:
+
+```php
+// TaskService::getTodayTasksAll()
+$todayTasks = \App\Models\Task::with(['assignedUsers', 'creator', 'attachments'])
+    ->whereDate('work_date', today())
+    ->orderByRaw('CASE WHEN work_time IS NULL THEN 1 ELSE 0 END')
+    ->orderBy('work_time', 'asc')
+    ->get();
+```
+
+**Key Points**:
+- Filters tasks where `work_date` equals today
+- Sorts by `work_time` in ascending order (earliest first)
+- Tasks without time (`work_time IS NULL`) are placed at the end
+- Uses `orderByRaw()` to handle NULL values properly
+- Eager loads relationships to prevent N+1 queries
+- Returns a Collection (not paginated) for full day's tasks
+
+**Sorting Logic**:
+1. First, tasks with `work_time` set are sorted by time (ASC)
+2. Then, tasks without `work_time` (NULL) are placed at the end
+3. This ensures scheduled tasks appear first, followed by unscheduled tasks
+
+**Usage**: Used in `TodayTasks` Livewire component to display all tasks for the current day, sorted chronologically by work time.
+
 ---
 
 ## 🔍 Debugging Tips
@@ -1381,13 +1586,26 @@ public function render()
 
 ---
 
-**Version**: 1.1  
+**Version**: 1.3  
 **Last Updated**: November 12, 2025  
 **Project**: Senda Snap Backend - Service-Oriented Architecture  
 
 ---
 
 ## 📝 Changelog
+
+### Version 1.3 (November 12, 2025)
+- Added Preview Component Pattern documentation
+- Documented center dialog modal pattern for read-only previews
+- Added Permission System Pattern with role-based delete restrictions
+- Documented `canDelete()` method pattern for conditional UI rendering
+- Updated Livewire directory structure to include Preview components
+- Added permission-based UI visibility guidelines
+
+### Version 1.2 (November 12, 2025)
+- Added Today's Tasks Query pattern documentation
+- Documented time-based sorting for today's tasks
+- Clarified NULL time handling in sorting logic
 
 ### Version 1.1 (November 12, 2025)
 - Added dashboard query patterns section

@@ -1,6 +1,9 @@
 <div class="flex h-full w-full flex-1 flex-col gap-4" x-data="{
     openModal(userId = null) {
         $wire.$dispatch('open-user-modal', { userId: userId })
+    },
+    openPreview(userId = null) {
+        $wire.$dispatch('open-user-preview', { userId: userId })
     }
 }">
     <!-- Header Section -->
@@ -38,36 +41,33 @@
                 </div>
             </div>
 
-            <div class="overflow-x-auto border rounded-xl bg-white/50 backdrop-blur-sm dark:bg-gray-800/50">
+            <!-- Table View (below 1180px and 2XL+) -->
+            <div class="overflow-x-auto border rounded-xl bg-white/50 backdrop-blur-sm dark:bg-gray-800/50 min-[1180px]:hidden 2xl:block">
                 <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                     <thead>
                         <tr class="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900">
                             <th
-                                class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">
+                                class="px-3 md:px-6 py-3 md:py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">
                                 {{ __('Name') }}
                             </th>
                             <th
-                                class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">
+                                class="px-3 md:px-6 py-3 md:py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">
                                 {{ __('Email') }}
                             </th>
                             <th
-                                class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">
+                                class="px-3 md:px-6 py-3 md:py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">
                                 {{ __('Role') }}
                             </th>
                             <th
-                                class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">
+                                class="px-3 md:px-6 py-3 md:py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 hidden md:table-cell">
                                 {{ __('Phone') }}
                             </th>
                             <th
-                                class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">
+                                class="px-3 md:px-6 py-3 md:py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 hidden md:table-cell">
                                 {{ __('Created At') }}
                             </th>
                             <th
-                                class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">
-                                {{ __('Updated At') }}
-                            </th>
-                            <th
-                                class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">
+                                class="px-3 md:px-6 py-3 md:py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">
                                 {{ __('Actions') }}
                             </th>
                         </tr>
@@ -77,7 +77,7 @@
                             <x-user-table-row :user="$user" />
                         @empty
                             <tr>
-                                <td colspan="5" class="px-6 py-12 text-center">
+                                <td colspan="6" class="px-3 md:px-6 py-12 text-center">
                                     <div class="flex flex-col items-center gap-3">
                                         <div
                                             class="flex h-16 w-16 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800">
@@ -99,6 +99,30 @@
                 </table>
             </div>
 
+            <!-- Card View (1180px to below 2XL - iPad Air landscape to XL) -->
+            <div class="hidden min-[1180px]:grid min-[1180px]:grid-cols-1 xl:grid-cols-2 2xl:hidden gap-4">
+                @forelse($users as $user)
+                    <x-user-card :user="$user" />
+                @empty
+                    <div class="col-span-full rounded-xl border border-blue-200 bg-white/50 p-12 text-center backdrop-blur-sm dark:border-blue-900/50 dark:bg-gray-800/50">
+                        <div class="flex flex-col items-center gap-3">
+                            <div
+                                class="flex h-16 w-16 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800">
+                                <svg class="h-8 w-8 text-gray-400" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                                </svg>
+                            </div>
+                            <p class="text-sm font-medium text-gray-900 dark:text-white">
+                                {{ __('No users found') }}</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400">
+                                {{ __('Try adjusting your search or filters') }}</p>
+                        </div>
+                    </div>
+                @endforelse
+            </div>
+
         <div class="mt-4">
             {{ $users->links() }}
         </div>
@@ -106,4 +130,7 @@
 
     <!-- User Modal -->
     <livewire:users.user-modal />
+
+    <!-- User Preview -->
+    <livewire:users.user-preview />
 </div>

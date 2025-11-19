@@ -31,6 +31,22 @@ class Index extends Component
         // This will trigger a re-render and refresh the users list
     }
 
+    #[On('delete-user')]
+    public function deleteUser(array $payload, UserService $userService): void
+    {
+        $userId = $payload['userId'] ?? null;
+        if ($userId) {
+            try {
+                $user = $userService->getById($userId);
+                $userService->delete($user);
+                $this->dispatch('notify', message: __('User deleted successfully.'), type: 'success');
+            } catch (\Exception $e) {
+                \Log::error('User delete error: '.$e->getMessage());
+                $this->dispatch('notify', message: __('An error occurred while deleting the user.'), type: 'error');
+            }
+        }
+    }
+
     public function render(UserService $userService)
     {
         $filters = [

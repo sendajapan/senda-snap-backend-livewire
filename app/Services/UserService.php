@@ -50,6 +50,11 @@ class UserService
         return $query->orderBy('created_at', 'desc')->paginate($perPage);
     }
 
+    public function getById(int $userId): User
+    {
+        return User::findOrFail($userId);
+    }
+
     public function create(array $data): User
     {
         $userData = [

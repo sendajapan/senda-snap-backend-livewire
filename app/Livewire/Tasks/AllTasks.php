@@ -23,6 +23,22 @@ class AllTasks extends Component
         // This will trigger a re-render and refresh the tasks list
     }
 
+    #[On('delete-task')]
+    public function deleteTask(array $payload, TaskService $taskService): void
+    {
+        $taskId = $payload['taskId'] ?? null;
+        if ($taskId) {
+            try {
+                $task = $taskService->getTaskById($taskId);
+                $taskService->delete($task);
+                $this->dispatch('notify', message: __('Task deleted successfully.'), type: 'success');
+            } catch (\Exception $e) {
+                \Log::error('Task delete error: '.$e->getMessage());
+                $this->dispatch('notify', message: __('An error occurred while deleting the task.'), type: 'error');
+            }
+        }
+    }
+
     public function updatedSearch($value): void
     {
         // Trim and reset to null if empty

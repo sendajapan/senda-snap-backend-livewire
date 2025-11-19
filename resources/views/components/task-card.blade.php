@@ -1,13 +1,13 @@
-@props(['task', 'showWorkDate' => false, 'showTimeFirst' => false])
+@props(['task', 'showWorkDate' => false, 'showTimeFirst' => false, 'rounded' => true])
 @php use Carbon\Carbon; @endphp
 
-<div class="group relative overflow-hidden rounded-xl border border-emerald-200 bg-white/50 p-4 backdrop-blur-sm transition-all duration-200 hover:border-emerald-300 hover:shadow-lg dark:border-emerald-900/50 dark:bg-gray-800/50 dark:hover:border-emerald-800">
+<div class="group relative overflow-hidden {{ $rounded ? 'rounded-xl' : '' }} border border-emerald-200 bg-white/50 p-4 backdrop-blur-sm transition-all duration-200 hover:border-emerald-300 hover:shadow-lg dark:border-emerald-900/50 dark:bg-gray-800/50 dark:hover:border-emerald-800">
     <div class="flex flex-col gap-4">
         <!-- Header: Title + Priority + Status -->
         <div class="flex items-start justify-between gap-3">
             <div class="flex-1 min-w-0">
                 <div class="flex items-center gap-2 flex-wrap">
-                    <h3 class="text-base font-bold text-gray-900 dark:text-white break-words">{{ $task->title }}</h3>
+                    <h3 class="text-base font-bold text-gray-900 dark:text-white whitespace-nowrap truncate">{{ $task->title }}</h3>
                     @if($task->attachments && $task->attachments->count() > 0)
                         <div class="flex items-center gap-1 rounded-md bg-emerald-100 px-2 py-0.5 dark:bg-emerald-900/30 flex-shrink-0" title="{{ $task->attachments->count() }} {{ __('attachment(s)') }}">
                             <svg class="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -61,7 +61,7 @@
                     <svg class="h-4 w-4 flex-shrink-0 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
-                    <span class="text-sm text-gray-900 dark:text-white">
+                    <span class="text-sm text-gray-900 dark:text-white whitespace-nowrap">
                         {{ $task->work_date->format('M d, Y') }}
                     </span>
                 </div>
@@ -73,7 +73,7 @@
                     <svg class="h-4 w-4 flex-shrink-0 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                    <span class="text-sm text-gray-900 dark:text-white">
+                    <span class="text-sm text-gray-900 dark:text-white whitespace-nowrap">
                         {{ Carbon::parse($task->work_time)->format('h:i A') }}
                     </span>
                 </div>
@@ -104,10 +104,10 @@
                                 </div>
                             @endif
                         </div>
-                        <span class="truncate text-sm text-gray-900 dark:text-white">
+                        <span class="truncate text-sm text-gray-900 dark:text-white whitespace-nowrap">
                             {{ $task->assignedUsers->pluck('name')->take(2)->implode(', ') }}
                             @if($task->assignedUsers->count() > 2)
-                                <span class="text-xs text-gray-500 dark:text-gray-400">+{{ $task->assignedUsers->count() - 2 }} {{ __('more') }}</span>
+                                <span class="text-xs text-gray-500 dark:text-gray-400 whitespace-nowrap">+{{ $task->assignedUsers->count() - 2 }} {{ __('more') }}</span>
                             @endif
                         </span>
                     </div>
@@ -117,7 +117,7 @@
                     <svg class="h-4 w-4 flex-shrink-0 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                     </svg>
-                    <span class="text-sm text-gray-400 dark:text-gray-500">{{ __('Unassigned') }}</span>
+                    <span class="text-sm text-gray-400 dark:text-gray-500 whitespace-nowrap">{{ __('Unassigned') }}</span>
                 </div>
             @endif
 
@@ -137,7 +137,7 @@
                                 </div>
                             @endif
                         </div>
-                        <span class="truncate text-sm text-gray-900 dark:text-white">{{ $task->creator->name }}</span>
+                        <span class="truncate text-sm text-gray-900 dark:text-white whitespace-nowrap">{{ $task->creator->name }}</span>
                     </div>
                 </div>
             @endif
@@ -151,7 +151,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>
-                <span class="ml-1.5 text-xs font-semibold text-emerald-700">{{ __('View') }}</span>
+                <span class="ml-1.5 text-xs font-semibold text-emerald-700 whitespace-nowrap">{{ __('View') }}</span>
             </button>
 
             <!-- Edit Button -->
@@ -159,7 +159,7 @@
                 <svg class="h-4 w-4 text-cyan-700 transition-all duration-200 group-hover:text-cyan-600 group-hover:drop-shadow-[0_0_8px_rgba(8,145,178,0.8)]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
                 </svg>
-                <span class="ml-1.5 text-xs font-semibold text-cyan-700">{{ __('Edit') }}</span>
+                <span class="ml-1.5 text-xs font-semibold text-cyan-700 whitespace-nowrap">{{ __('Edit') }}</span>
             </button>
 
             <!-- Delete Button -->

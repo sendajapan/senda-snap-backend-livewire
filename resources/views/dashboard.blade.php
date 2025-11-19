@@ -290,7 +290,7 @@
                     <!-- Upcoming Tasks Table -->
                     @if($upcomingTasks->count() > 0)
                         <div>
-                            <h4 class="mb-2 text-xs font-semibold text-gray-700 dark:text-gray-300">{{ __('Upcoming Tasks') }}</h4>
+                            <h4 class="my-2 text-xs font-semibold text-gray-700 dark:text-gray-300">{{ __('Upcoming Tasks') }}</h4>
                             <!-- Table View: Large screens only -->
                             <div class="hidden lg:block overflow-x-auto border rounded-xl bg-white/50 backdrop-blur-sm dark:bg-gray-800/50">
                                 <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">

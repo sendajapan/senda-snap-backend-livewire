@@ -1,6 +1,6 @@
-@props(['user'])
+@props(['user', 'rounded' => true])
 
-<div class="group relative overflow-hidden rounded-xl border border-blue-200 bg-white/50 p-4 backdrop-blur-sm transition-all duration-200 hover:border-blue-300 hover:shadow-lg dark:border-blue-900/50 dark:bg-gray-800/50 dark:hover:border-blue-800">
+<div class="group relative overflow-hidden {{ $rounded ? 'rounded-xl' : '' }} border border-blue-200 bg-white/50 p-4 backdrop-blur-sm transition-all duration-200 hover:border-blue-300 hover:shadow-lg dark:border-blue-900/50 dark:bg-gray-800/50 dark:hover:border-blue-800">
     <div class="flex flex-col gap-4">
         <!-- Header: Avatar + Name + Role -->
         <div class="flex items-start justify-between">
@@ -17,8 +17,8 @@
                     @endif
                     <div class="absolute -bottom-1 -right-1 h-4 w-4 rounded-full border-2 border-white bg-green-500 dark:border-gray-900"></div>
                 </div>
-                <div>
-                    <div class="text-base font-bold text-gray-900 dark:text-white">
+                <div class="min-w-0 flex-1">
+                    <div class="text-base font-bold text-gray-900 dark:text-white whitespace-nowrap truncate">
                         {{ $user->name }}
                     </div>
                     <div class="mt-1">
@@ -27,7 +27,7 @@
                             'manager' => 'blue',
                             'employee' => 'green',
                             default => 'gray',
-                        }" size="sm" class="font-semibold">
+                        }" size="sm" class="font-semibold whitespace-nowrap">
                             {{ ucfirst($user->role) }}
                         </flux:badge>
                     </div>
@@ -81,29 +81,33 @@
                 <svg class="h-4 w-4 flex-shrink-0 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                 </svg>
-                <span class="text-sm text-gray-900 dark:text-white">
+                <span class="text-sm text-gray-900 dark:text-white whitespace-nowrap truncate">
                     {{ $user->phone ?: '-' }}
                 </span>
             </div>
 
             <!-- Created At -->
-            <div class="flex items-center gap-2">
-                <svg class="h-4 w-4 flex-shrink-0 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
-                <span class="text-sm text-gray-600 dark:text-gray-400">
-                    {{ __('Created') }}: {{ $user->created_at->format('M d, Y') }}
-                </span>
+            <div class="flex flex-col gap-0.5 sm:flex-row sm:items-center sm:gap-2">
+                <div class="flex items-center gap-1.5">
+                    <svg class="h-3 w-3 flex-shrink-0 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    <span class="text-xs text-gray-400 dark:text-gray-500 whitespace-nowrap">
+                        {{ __('Created') }}: {{ $user->created_at->format('M d, Y') }} {{ $user->created_at->format('h:i A') }}
+                    </span>
+                </div>
             </div>
 
             <!-- Updated At -->
-            <div class="flex items-center gap-2">
-                <svg class="h-4 w-4 flex-shrink-0 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <span class="text-sm text-gray-600 dark:text-gray-400">
-                    {{ __('Updated') }}: {{ $user->updated_at->format('M d, Y') }}
-                </span>
+            <div class="flex flex-col gap-0.5 sm:flex-row sm:items-center sm:gap-2">
+                <div class="flex items-center gap-1.5">
+                    <svg class="h-3 w-3 flex-shrink-0 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span class="text-xs text-gray-400 dark:text-gray-500 whitespace-nowrap">
+                        {{ __('Updated') }}: {{ $user->updated_at->format('M d, Y') }} {{ $user->updated_at->format('h:i A') }}
+                    </span>
+                </div>
             </div>
         </div>
     </div>

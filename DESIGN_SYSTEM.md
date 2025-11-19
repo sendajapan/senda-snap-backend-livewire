@@ -223,26 +223,30 @@ The design system uses 4 primary color variants:
 
 ### 4a. **Card Components** (Model-specific, for intermediate screens)
 
-**Purpose**: Card-based layout for intermediate screen sizes (1180px to 1535px) providing better readability and visual hierarchy, while maintaining table efficiency on smaller and very large screens
+**Purpose**: Card-based layout for intermediate screen sizes (below 1536px) providing better readability and visual hierarchy, while maintaining table efficiency on very large screens (2XL+)
 
 **Examples**: `<x-user-card>`, `<x-task-card>`
 
 **Usage Pattern**:
 ```blade
-<!-- Table View (below 1180px and 2XL+) -->
-<div class="overflow-x-auto border rounded-xl bg-white/50 backdrop-blur-sm dark:bg-gray-800/50 min-[1180px]:hidden 2xl:block">
+<!-- Table View (2xl and above) -->
+<div class="hidden 2xl:block overflow-x-auto border rounded-xl bg-white/50 backdrop-blur-sm dark:bg-gray-800/50">
     <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
         <!-- Table content -->
     </table>
 </div>
 
-<!-- Card View (1180px to below 2XL - iPad Air landscape to XL) -->
-<div class="hidden min-[1180px]:grid min-[1180px]:grid-cols-1 xl:grid-cols-2 2xl:hidden gap-4">
-    @forelse($items as $item)
-        <x-item-card :item="$item" />
-    @empty
-        <!-- Empty state -->
-    @endforelse
+<!-- Stacked View (below 2xl) -->
+<div class="2xl:hidden border rounded-xl bg-white/50 backdrop-blur-sm dark:bg-gray-800/50 p-4">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        @forelse($items as $item)
+            <x-item-card :item="$item" :rounded="true" />
+        @empty
+            <div class="col-span-full p-12 text-center">
+                <!-- Empty state -->
+            </div>
+        @endforelse
+    </div>
 </div>
 ```
 
@@ -278,7 +282,6 @@ The design system uses 4 primary color variants:
 ```
 
 **Key Features**:
-- Responsive grid: 1 column at `min-[1180px]` (1180px), 2 columns at `xl` (1280px)
 - Card borders match variant color (blue, emerald, violet, amber)
 - Hover effects: border color change and shadow
 - Frosted glass effect (`bg-white/50 backdrop-blur-sm`)
@@ -286,6 +289,10 @@ The design system uses 4 primary color variants:
 - Consistent spacing with `gap-4`
 - Details in responsive grid (1 column on small, 2 columns on sm+)
 - Time badges use dark background (`bg-accent/90`) with white text for emphasis
+- Cards displayed in responsive grid below `2xl` breakpoint
+- `rounded` prop controls border radius (default: `true`, set to `false` for list layouts)
+- All text elements use `whitespace-nowrap` to prevent wrapping
+- Long text uses `truncate` for overflow handling
 
 **Time Badge Pattern** (for tasks):
 ```blade
@@ -297,11 +304,15 @@ The design system uses 4 primary color variants:
 </div>
 ```
 
+**Card Props**:
+- `rounded` (boolean, default: `true`): Controls whether card has rounded corners
+  - `true`: Rounded corners (`rounded-xl`) for grid layouts
+  - `false`: No rounded corners for vertical list layouts
+
 **Breakpoints**:
-- Below `min-[1180px]` (below 1180px): Table layout
-- `min-[1180px]` to below `2xl` (1180px to 1535px): Card layout
-  - 1 column grid at 1180px
-  - 2 column grid at `xl` (1280px)
+- Below `2xl` (below 1536px): Stacked card layout in responsive grid
+  - 1 column below `lg` (below 1024px)
+  - 2 columns at `lg` and above (1024px+)
 - `2xl` (1536px+) and above: Table layout
 
 ---
@@ -1562,8 +1573,12 @@ When creating a new page, ensure:
 ### Table Improvements
 - Border on table containers
 - Opacity-based edit button visibility (50% → 100%)
-- Added Created At and Updated At columns
-- Improved date formatting
+- Added Created At and Updated At columns with date and time
+- Improved date formatting: shows date on first line, time on second line
+- All Tasks table: Title column is 25% width, all text uses `xs` size
+- All Tasks table: Time shown below date in Work Date column
+- User table: Created At and Updated At both show date and time
+- User card: Created At and Updated At use responsive layout, light gray color, smaller font (`text-xs`)
 
 ### File Attachments
 - Multiple file upload support
@@ -1629,25 +1644,34 @@ For dashboard cards displaying user/member data, show role counts above the main
 - User management pages
 - Any dashboard section displaying role-based statistics
 
-### Responsive Card Layout Pattern (Intermediate Screens)
+### Responsive Card Layout Pattern
 For data tables that need better readability on intermediate screen sizes, implement a three-tier layout system:
-- **Below 1180px**: Traditional table layout (mobile, tablet portrait)
-- **1180px to 1535px**: Card-based stacked layout in responsive grid (iPad Air landscape, XL screens)
-- **1536px+ (2XL)**: Traditional table layout (large desktop screens)
+- **Below 2xl (below 1536px)**: Stacked card layout in responsive grid
+  - 1 column below `lg` (below 1024px)
+  - 2 columns at `lg` and above (1024px+)
+- **2xl (1536px+) and above**: Traditional table layout
 
 **Implementation**:
 1. Create a card component (e.g., `<x-user-card>`, `<x-task-card>`) following the card structure pattern
-2. Show table with `min-[1180px]:hidden 2xl:block` classes (hidden at 1180px-1535px, shown otherwise)
-3. Show cards with `hidden min-[1180px]:grid min-[1180px]:grid-cols-1 xl:grid-cols-2 2xl:hidden` classes
-4. Use responsive grid: 1 column at 1180px, 2 columns at `xl` (1280px)
-5. Ensure both views have proper `wire:key` attributes for Livewire reactivity
+2. Show table with `hidden 2xl:block` classes (hidden below 2xl, shown at 2xl+)
+3. Show stacked cards with `2xl:hidden` classes (shown below 2xl, hidden at 2xl+)
+4. Wrap cards in a grid container: `grid grid-cols-1 lg:grid-cols-2 gap-4`
+5. Add padding to card container: `p-4`
+6. Pass `rounded="true"` prop to cards in grid layout
+7. Ensure both views have proper `wire:key` attributes for Livewire reactivity
+8. Use `col-span-full` for empty states in grid layout
 
 **Benefits**:
-- Better readability on intermediate screen sizes (iPad landscape, XL monitors)
+- Better readability on intermediate screen sizes (tablet landscape, XL monitors)
 - More visual hierarchy with card-based design
-- Maintains table efficiency on smaller screens (mobile, tablet portrait)
-- Optimal table view on very large screens (2XL+ desktops)
-- Consistent with modern UI patterns
+- Maintains table efficiency on very large screens (2XL+)
+- Responsive grid adapts to screen size (1 column on mobile, 2 columns on tablet+)
+- Standard Tailwind breakpoints (no custom fixed sizes)
+
+**Text Handling in Cards**:
+- All text elements use `whitespace-nowrap` to prevent wrapping
+- Long text (names, emails, titles) use `truncate` for overflow handling
+- Date/time fields use `whitespace-nowrap` for consistent display
 
 **Current Usage**:
 - Users Management (`livewire.users.index`)
@@ -1722,11 +1746,14 @@ $upcomingTasks = \App\Models\Task::whereNotIn('status', ['completed', 'cancelled
 - Used in Admin Manual and API Documentation pages
 
 ### Responsive Card Layout System
-- Three-tier layout system: table below 1180px, cards at 1180px-1535px, table at 2XL+
-- Card-based layout optimized for intermediate screen sizes (iPad Air landscape, XL monitors)
-- Responsive grid: 1 column at 1180px, 2 columns at xl (1280px)
+- Three-tier layout system: stacked cards below 2xl (1536px), table at 2xl+
+- Card-based layout optimized for intermediate screen sizes (tablet landscape, XL monitors)
+- Cards displayed in responsive grid: 1 column below lg, 2 columns at lg+
 - Time badges use dark background (`bg-accent/90`) with white text
 - Applied to Users, All Tasks, and Today's Tasks modules
+- Uses standard Tailwind breakpoints: `lg` (1024px) for grid columns, `2xl` (1536px) for table switch
+- Cards have `rounded` prop: `true` for grid layouts, `false` for list layouts
+- All text elements use `whitespace-nowrap` with `truncate` for long text
 
 ### Preview Modal System
 - Center dialog modals for read-only item previews
@@ -1743,7 +1770,7 @@ $upcomingTasks = \App\Models\Task::whereNotIn('status', ['completed', 'cancelled
 - Delete buttons conditionally rendered based on permissions
 - Permission checks implemented in both component methods and Blade templates
 
-**Version**: 2.6  
+**Version**: 2.7  
 **Last Updated**: November 12, 2025  
 **Project**: Laravel Livewire Dashboard - Senda Snap
 

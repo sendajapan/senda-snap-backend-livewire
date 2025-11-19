@@ -55,7 +55,16 @@
         @endif
     </td>
     <td class="whitespace-nowrap px-3 md:px-6 py-3 md:py-5 hidden md:table-cell">
-        <span class="text-xs md:text-sm text-gray-900 dark:text-gray-500">{{ $user->created_at->format('Y-m-d') }}</span>
+        <div class="flex flex-col gap-0.5">
+            <span class="text-xs text-gray-900 dark:text-white">{{ $user->created_at->format('M d, Y') }}</span>
+            <span class="text-xs text-gray-500 dark:text-gray-400">{{ $user->created_at->format('h:i A') }}</span>
+        </div>
+    </td>
+    <td class="whitespace-nowrap px-3 md:px-6 py-3 md:py-5 hidden lg:table-cell">
+        <div class="flex flex-col gap-0.5">
+            <span class="text-xs text-gray-900 dark:text-white">{{ $user->updated_at->format('M d, Y') }}</span>
+            <span class="text-xs text-gray-500 dark:text-gray-400">{{ $user->updated_at->format('h:i A') }}</span>
+        </div>
     </td>
     <td class="whitespace-nowrap px-3 md:px-6 py-3 md:py-5">
         <div class="flex items-center gap-1.5 md:gap-2">

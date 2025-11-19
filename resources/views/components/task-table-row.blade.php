@@ -22,10 +22,10 @@
         </td>
     @endif
 
-    <td class="whitespace-normal px-3 md:px-6 py-3 md:py-5 w-1/4 min-w-[180px] md:min-w-[200px] lg:min-w-0">
+    <td class="w-1/4 whitespace-normal px-3 md:px-6 py-3 md:py-5">
         <div class="flex flex-col">
             <div class="flex items-center gap-1.5 md:gap-2 flex-wrap">
-                <span class="text-xs md:text-sm font-bold text-gray-900 dark:text-white break-words">{{ $task->title }}</span>
+                <span class="text-xs font-bold text-gray-900 dark:text-white break-words">{{ $task->title }}</span>
                 @if($task->attachments && $task->attachments->count() > 0)
                     <div class="flex items-center gap-0.5 md:gap-1 rounded-md bg-emerald-100 px-1.5 md:px-2 py-0.5 dark:bg-emerald-900/30 flex-shrink-0" title="{{ $task->attachments->count() }} {{ __('attachment(s)') }}">
                         <svg class="h-3 w-3 md:h-3.5 md:w-3.5 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -36,7 +36,7 @@
                 @endif
             </div>
             @if($task->description)
-                <span class="mt-1 text-[10px] md:text-xs text-gray-500 dark:text-gray-400 line-clamp-2 md:line-clamp-3">{{ $task->description }}</span>
+                <span class="mt-1 text-xs text-gray-500 dark:text-gray-400 line-clamp-2 md:line-clamp-3">{{ $task->description }}</span>
             @endif
         </div>
     </td>
@@ -78,15 +78,15 @@
                 </div>
                 <div class="flex flex-col">
                     <span
-                        class="text-xs md:text-sm text-gray-900 dark:text-white">{{ $task->assignedUsers->pluck('name')->take(2)->implode(', ') }}</span>
+                        class="text-xs text-gray-900 dark:text-white">{{ $task->assignedUsers->pluck('name')->take(2)->implode(', ') }}</span>
                     @if($task->assignedUsers->count() > 2)
                         <span
-                            class="text-[10px] md:text-xs text-gray-500 dark:text-gray-400">+{{ $task->assignedUsers->count() - 2 }} {{ __('more') }}</span>
+                            class="text-[10px] text-gray-500 dark:text-gray-400">+{{ $task->assignedUsers->count() - 2 }} {{ __('more') }}</span>
                     @endif
                 </div>
             </div>
         @else
-            <span class="text-xs md:text-sm text-gray-400 dark:text-gray-500">{{ __('Unassigned') }}</span>
+            <span class="text-xs text-gray-400 dark:text-gray-500">{{ __('Unassigned') }}</span>
         @endif
     </td>
     <td class="whitespace-nowrap px-3 md:px-6 py-3 md:py-5 hidden xl:table-cell">
@@ -113,10 +113,10 @@
                         </div>
                     @endif
                 </div>
-                <span class="text-xs md:text-sm text-gray-900 dark:text-white">{{ $task->creator->name }}</span>
+                <span class="text-xs text-gray-900 dark:text-white">{{ $task->creator->name }}</span>
             </div>
         @else
-            <span class="text-xs md:text-sm text-gray-400 dark:text-gray-500">-</span>
+            <span class="text-xs text-gray-400 dark:text-gray-500">-</span>
         @endif
     </td>
     <td class="whitespace-nowrap px-3 md:px-6 py-3 md:py-5">
@@ -125,7 +125,7 @@
                 'high' => 'orange',
                 'medium' => 'yellow',
                 default => 'gray',
-            }" size="sm" class="font-semibold text-xs md:text-sm">
+            }" size="sm" class="font-semibold text-xs">
             {{ ucfirst($task->priority) }}
         </flux:badge>
     </td>
@@ -135,7 +135,7 @@
                 'running' => 'blue',
                 'cancelled' => 'red',
                 default => 'gray',
-            }" size="sm" class="font-semibold text-xs md:text-sm">
+            }" size="sm" class="font-semibold text-xs">
             {{ ucfirst($task->status) }}
         </flux:badge>
     </td>
@@ -143,29 +143,38 @@
         <td class="whitespace-nowrap px-3 md:px-6 py-3 md:py-5 hidden md:table-cell">
             @if($showWorkDate)
                 @if($task->work_date)
-                    <div class="flex items-center gap-1.5 md:gap-2">
-                        <svg class="h-3.5 w-3.5 md:h-4 md:w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                        </svg>
-                        <span
-                            class="text-xs md:text-sm text-gray-900 dark:text-white">{{ $task->work_date->format('M d, Y') }}</span>
+                    <div class="flex flex-col gap-1">
+                        <div class="flex items-center gap-1.5">
+                            <svg class="h-3.5 w-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                            </svg>
+                            <span class="text-xs text-gray-900 dark:text-white">{{ $task->work_date->format('M d, Y') }}</span>
+                        </div>
+                        @if($task->work_time)
+                            <div class="flex items-center gap-1.5">
+                                <svg class="h-3.5 w-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                          d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                                <span class="text-xs text-gray-900 dark:text-white">{{ Carbon::parse($task->work_time)->format('h:i A') }}</span>
+                            </div>
+                        @endif
                     </div>
                 @else
-                    <span class="text-xs md:text-sm text-gray-400 dark:text-gray-500">-</span>
+                    <span class="text-xs text-gray-400 dark:text-gray-500">-</span>
                 @endif
             @else
                 @if($task->work_time)
-                    <div class="flex items-center gap-1.5 md:gap-2">
-                        <svg class="h-3.5 w-3.5 md:h-4 md:w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="flex items-center gap-1.5">
+                        <svg class="h-3.5 w-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                   d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                         </svg>
-                        <span
-                            class="text-xs md:text-sm text-gray-900 dark:text-white">{{ Carbon::parse($task->work_time)->format('h:i A') }}</span>
+                        <span class="text-xs text-gray-900 dark:text-white">{{ Carbon::parse($task->work_time)->format('h:i A') }}</span>
                     </div>
                 @else
-                    <span class="text-xs md:text-sm text-gray-400 dark:text-gray-500">-</span>
+                    <span class="text-xs text-gray-400 dark:text-gray-500">-</span>
                 @endif
             @endif
         </td>

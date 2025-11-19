@@ -124,7 +124,7 @@
         </div>
 
         <!-- Stacked View (below 2xl) -->
-        <div class="2xl:hidden border rounded-xl bg-white/50 backdrop-blur-sm dark:bg-gray-800/50 p-4"
+        <div class="2xl:hidden bg-white/50 backdrop-blur-sm dark:bg-gray-800/50"
              wire:key="today-tasks-stacked-{{ md5($statusFilter ?? 'all') }}">
             <div class="grid grid-cols-1 gap-4">
                 @forelse($tasks as $task)

@@ -168,7 +168,7 @@
         </div>
 
         <!-- Stacked View (below 2xl) -->
-        <div class="2xl:hidden border rounded-xl bg-white/50 backdrop-blur-sm dark:bg-gray-800/50 p-4"
+        <div class="2xl:hidden bg-white/50 backdrop-blur-sm dark:bg-gray-800/50"
             wire:key="all-tasks-stacked-{{ md5(($search ?? '') . '|' . ($statusFilter ?? '') . '|' . ($fromDate ?? '') . '|' . ($toDate ?? '')) }}">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 @forelse($tasks as $task)

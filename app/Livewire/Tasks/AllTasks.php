@@ -24,9 +24,13 @@ class AllTasks extends Component
     }
 
     #[On('delete-task')]
-    public function deleteTask(array $payload, TaskService $taskService): void
+    public function deleteTask($taskId = null, TaskService $taskService): void
     {
-        $taskId = $payload['taskId'] ?? null;
+        // Handle both direct taskId parameter and object with taskId property
+        if (is_array($taskId) || is_object($taskId)) {
+            $taskId = is_array($taskId) ? ($taskId['taskId'] ?? null) : ($taskId->taskId ?? null);
+        }
+        
         if ($taskId) {
             try {
                 $task = $taskService->getTaskById($taskId);

@@ -89,6 +89,13 @@ class TaskController extends Controller
 
     public function destroy(Task $task): JsonResponse
     {
+        $user = auth()->user();
+        
+        // Only admin or manager can delete tasks
+        if (!in_array($user->role, ['admin', 'manager'])) {
+            return $this->errorResponse('Unauthorized. Only admin or manager can delete tasks.', [], 403);
+        }
+
         $this->taskService->delete($task);
 
         return $this->successResponse('Task deleted successfully');

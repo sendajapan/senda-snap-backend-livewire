@@ -624,6 +624,58 @@ attachments[]:       (file)</code></pre>
                     </div>
                 </div>
 
+                <!-- Delete Task -->
+                <div
+                    class="space-y-3 rounded-xl border border-emerald-200 bg-white/50 p-6 dark:border-emerald-900/50 dark:bg-gray-800/50">
+                    <div class="flex items-center justify-between">
+                        <h4 class="text-lg font-semibold text-gray-900 dark:text-white">Delete Task</h4>
+                        <span
+                            class="rounded-lg bg-red-100 px-3 py-1 text-xs font-bold text-red-800 dark:bg-red-900/30 dark:text-red-400">DELETE</span>
+                    </div>
+                    <code class="block rounded-lg bg-gray-900 px-4 py-2 text-sm text-emerald-400 dark:bg-gray-950">/api/v1/tasks/{id}</code>
+
+                    <div class="space-y-2">
+                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Headers:</p>
+                        <pre
+                            class="overflow-x-auto rounded-lg bg-gray-900 p-4 text-xs text-gray-100 dark:bg-gray-950"><code>Authorization: Bearer {token}</code></pre>
+                    </div>
+
+                    <div class="space-y-2">
+                        <p class="text-sm text-gray-600 dark:text-gray-400">
+                            <strong>Note:</strong> This will permanently delete the task and all its attachments. This action cannot be undone.
+                        </p>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">
+                            <strong>Authorization:</strong> Only users with <code class="text-emerald-400">admin</code> or <code class="text-emerald-400">manager</code> roles can delete tasks.
+                        </p>
+                    </div>
+
+                    <div class="space-y-2">
+                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Response (200):</p>
+                        <pre class="overflow-x-auto rounded-lg bg-gray-900 p-4 text-xs text-gray-100 dark:bg-gray-950">
+                            <code>
+                                {
+                                    "success": true,
+                                    "message": "Task deleted successfully",
+                                    "data": []
+                                }
+                            </code>
+                        </pre>
+                    </div>
+
+                    <div class="space-y-2">
+                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Error Response (403):</p>
+                        <pre
+                            class="overflow-x-auto rounded-lg bg-gray-900 p-4 text-xs text-gray-100 dark:bg-gray-950">
+                            <code>
+                                {
+                                    "success": false,
+                                    "message": "Unauthorized. Only admin or manager can delete tasks.",
+                                    "data": []
+                                }
+                            </code></pre>
+                    </div>
+                </div>
+
                 <!-- Assign Users to Task -->
                 <div
                     class="space-y-3 rounded-xl border border-emerald-200 bg-white/50 p-6 dark:border-emerald-900/50 dark:bg-gray-800/50">
@@ -1217,14 +1269,14 @@ Content-Type: multipart/form-data</code></pre>
             (function() {
                 const canvas = document.getElementById('particle-canvas');
                 if (!canvas) return;
-                
+
                 // Show canvas for API documentation
                 canvas.style.display = 'block';
-                
+
                 const ctx = canvas.getContext('2d');
                 let particles = [];
                 let animationId;
-                
+
                 // Set canvas size
                 function resizeCanvas() {
                     canvas.width = window.innerWidth;
@@ -1232,7 +1284,7 @@ Content-Type: multipart/form-data</code></pre>
                 }
                 resizeCanvas();
                 window.addEventListener('resize', resizeCanvas);
-                
+
                 // Color palette matching design system
                 const colorPalettes = {
                     light: {
@@ -1256,7 +1308,7 @@ Content-Type: multipart/form-data</code></pre>
                         orange: '251, 146, 60'
                     }
                 };
-                
+
                 // Particle class
                 class Particle {
                     constructor() {
@@ -1266,24 +1318,24 @@ Content-Type: multipart/form-data</code></pre>
                         this.speedX = (Math.random() - 0.5) * 0.5;
                         this.speedY = (Math.random() - 0.5) * 0.5;
                         this.opacity = Math.random() * 0.5 + 0.2;
-                        
+
                         // Randomly assign a color from the palette
                         const isDark = document.documentElement.classList.contains('dark');
                         const palette = isDark ? colorPalettes.dark : colorPalettes.light;
                         const colors = Object.values(palette);
                         this.color = colors[Math.floor(Math.random() * colors.length)];
                     }
-                    
+
                     update() {
                         this.x += this.speedX;
                         this.y += this.speedY;
-                        
+
                         if (this.x > canvas.width) this.x = 0;
                         if (this.x < 0) this.x = canvas.width;
                         if (this.y > canvas.height) this.y = 0;
                         if (this.y < 0) this.y = canvas.height;
                     }
-                    
+
                     draw() {
                         ctx.beginPath();
                         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
@@ -1291,7 +1343,7 @@ Content-Type: multipart/form-data</code></pre>
                         ctx.fill();
                     }
                 }
-                
+
                 // Create particles
                 function initParticles() {
                     particles = [];
@@ -1300,7 +1352,7 @@ Content-Type: multipart/form-data</code></pre>
                         particles.push(new Particle());
                     }
                 }
-                
+
                 // Draw connections
                 function drawConnections() {
                     for (let i = 0; i < particles.length; i++) {
@@ -1308,7 +1360,7 @@ Content-Type: multipart/form-data</code></pre>
                             const dx = particles[i].x - particles[j].x;
                             const dy = particles[i].y - particles[j].y;
                             const distance = Math.sqrt(dx * dx + dy * dy);
-                    
+
                             if (distance < 120) {
                                 ctx.beginPath();
                                 // Use gradient between two particle colors - darker opacity
@@ -1327,25 +1379,25 @@ Content-Type: multipart/form-data</code></pre>
                         }
                     }
                 }
-                
+
                 // Animation loop
                 function animate() {
                     ctx.clearRect(0, 0, canvas.width, canvas.height);
-                    
+
                     particles.forEach(particle => {
                         particle.update();
                         particle.draw();
                     });
-                    
+
                     drawConnections();
-                    
+
                     animationId = requestAnimationFrame(animate);
                 }
-                
+
                 // Initialize and start
                 initParticles();
                 animate();
-                
+
                 // Cleanup on page unload
                 window.addEventListener('beforeunload', () => {
                     if (animationId) {

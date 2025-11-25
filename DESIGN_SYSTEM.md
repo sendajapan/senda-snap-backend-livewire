@@ -71,7 +71,8 @@ The design system uses 4 primary color variants:
 **Features**:
 - Gradient background with decorative blur circles
 - Rounded 2xl corners
-- Icon badge with gradient (14x14)
+- Icon badge with gradient (14x14, h-14 w-14)
+- Icon container uses `flex-shrink-0` to maintain 56x56px size on all screen sizes
 - Title (text-2xl font-bold)
 - Description (text-sm)
 - Optional actions slot
@@ -79,7 +80,49 @@ The design system uses 4 primary color variants:
 
 ---
 
-### 2. **Table Card Component** (`<x-table-card>`)
+### 2. **Phone Mockup Component** (`<x-phone-mockup>`)
+
+**Purpose**: Reusable phone mockup frame for displaying app screenshots with consistent styling
+
+**Usage**:
+```blade
+<x-phone-mockup 
+    image="assets/app-manual/screenshot.jpg"
+    :alt="__('Screenshot Description')"
+    zoomable="true" />
+```
+
+**Props**:
+- `image` (string, optional): Path to the image file (relative to public directory). If not provided, shows a default "No Image" placeholder.
+- `alt` (string, optional): Alt text for the image. Defaults to "Phone Screenshot" if not provided.
+- `zoomable` (boolean, default: false): If true, enables image zoom functionality on click with modal display.
+
+**Features**:
+- White phone body with gradient background (`#ffffff` to `#f8f8f8`)
+- Transparent frame with 2px border for visibility
+- No bezel design matching landing page style
+- Images maintain natural aspect ratio (`object-fit: contain`)
+- Default placeholder with "No Image" text when no image provided
+- Dark mode support for phone body and border
+- Notch indicator at top of frame
+- Responsive sizing (280px default, adjusts on smaller screens)
+
+**Default State**:
+When no `image` prop is provided, displays a white background with centered icon and "No Image" text.
+
+**Styling**:
+- Phone body: `border-radius: 40px`, white gradient background
+- Frame: `border-radius: 32px`, transparent with border
+- Screen: `border-radius: 32px`, black background
+- Image: Maintains aspect ratio, centered with flexbox
+
+**Current Usage**:
+- Android App Manual (`resources/views/android-app-manual.blade.php`)
+- Landing Page (`resources/views/welcome.blade.php`)
+
+---
+
+### 3. **Table Card Component** (`<x-table-card>`)
 
 **Purpose**: Beautiful card wrapper for tables with gradient background
 
@@ -1764,6 +1807,21 @@ $upcomingTasks = \App\Models\Task::whereNotIn('status', ['completed', 'cancelled
 - Cards have `rounded` prop: `true` for grid layouts, `false` for list layouts
 - All text elements use `whitespace-nowrap` with `truncate` for long text
 
+### Page Header Icon Responsive Fix
+- Icon container in page-header component uses `flex-shrink-0` to prevent shrinking on responsive screens
+- Maintains consistent 56x56px (h-14 w-14) icon background size on all screen sizes
+- Prevents icon background from becoming 28x56px on smaller screens
+- Applied to all pages using the page-header component (Android App Manual, Admin Manual, API Manual, etc.)
+
+### Phone Mockup Component
+- Created reusable `<x-phone-mockup>` component for displaying app screenshots
+- Accepts `image`, `alt`, and `zoomable` props
+- Shows default "No Image" placeholder when no image provided
+- White phone body with transparent frame and no bezel design
+- Images maintain natural aspect ratio with `object-fit: contain`
+- Matches landing page phone-mockup styling
+- All phone-mockup instances in Android App Manual replaced with component
+
 ### Preview Modal System
 - Center dialog modals for read-only item previews
 - Gradient backgrounds matching module variant colors (blue/cyan for users, emerald/teal for tasks)
@@ -1788,13 +1846,10 @@ For documentation pages that display app features with instructions and screensh
     @if($screenshotOnLeft)
         <!-- Screenshot on Left -->
         <div class="flex justify-center lg:justify-start order-2 lg:order-1">
-            <div class="phone-mockup">
-                <div class="phone-frame">
-                    <div class="phone-screen">
-                        <img src="..." class="phone-image manual-image" />
-                    </div>
-                </div>
-            </div>
+            <x-phone-mockup 
+                image="assets/app-manual/screenshot.jpg"
+                :alt="__('Screenshot Description')"
+                zoomable="true" />
         </div>
         <!-- Instructions on Right -->
         <div class="space-y-4 order-1 lg:order-2">
@@ -1810,7 +1865,10 @@ For documentation pages that display app features with instructions and screensh
     @if(!$screenshotOnLeft)
         <!-- Screenshot on Right -->
         <div class="flex justify-center lg:justify-end order-2">
-            <div class="phone-mockup">...</div>
+            <x-phone-mockup 
+                image="assets/app-manual/screenshot.jpg"
+                :alt="__('Screenshot Description')"
+                zoomable="true" />
         </div>
     @endif
 </div>

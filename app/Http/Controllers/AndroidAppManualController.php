@@ -10,10 +10,6 @@ class AndroidAppManualController extends Controller
 {
     public function index(): View
     {
-        $manualData = json_decode(file_get_contents(base_path('android_app_manual.json')), true);
-
-        return view('android-app-manual', [
-            'manualData' => $manualData,
-        ]);
+        return view('android-app-manual');
     }
 }

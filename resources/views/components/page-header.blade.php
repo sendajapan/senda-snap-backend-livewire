@@ -48,7 +48,7 @@
     <div class="relative flex items-center justify-between">
         <div class="flex items-center gap-4">
             @if(isset($icon))
-                <div class="flex h-14 w-14 items-center justify-center rounded-2xl {{ $classes['iconBg'] }} shadow-lg">
+                <div class="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-2xl {{ $classes['iconBg'] }} shadow-lg">
                     {!! $icon !!}
                 </div>
             @endif

@@ -8,7 +8,7 @@ use Illuminate\Contracts\View\View;
 
 class LandingPageController extends Controller
 {
-    public function design1(): View
+    public function landing(): View
     {
         return view('welcome');
     }

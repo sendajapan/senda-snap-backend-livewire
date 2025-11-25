@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminManualController;
 use App\Http\Controllers\ApiDocsController;
+use App\Http\Controllers\PrivacyPolicyController;
 use App\Livewire\Settings\Appearance;
 use App\Livewire\Settings\Password;
 use App\Livewire\Settings\Profile;
@@ -19,6 +20,9 @@ Route::get('/', function () {
 
 // Public Admin Manual (no authentication required)
 Route::get('admin-manual', [AdminManualController::class, 'index'])->name('admin.manual');
+
+// Public Privacy Policy (no authentication required)
+Route::get('privacy-policy', [PrivacyPolicyController::class, 'index'])->name('privacy.policy');
 
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])

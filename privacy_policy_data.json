@@ -1,0 +1,337 @@
+{
+  "app_info": {
+    "app_name": "SendaSnap",
+    "package_name": "com.sendajapan.sendasnap",
+    "developer_name": "Senda Japan",
+    "contact_email": "support@sendajapan.com",
+    "last_updated": "2024-12-19"
+  },
+  "privacy_policy": {
+    "introduction": {
+      "title": "Privacy Policy",
+      "content": "SendaSnap ('we', 'our', or 'us') is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our mobile application. Please read this privacy policy carefully. If you do not agree with the terms of this privacy policy, please do not access the application."
+    },
+    "information_collection": {
+      "title": "Information We Collect",
+      "sections": [
+        {
+          "type": "personal_information",
+          "title": "Personal Information",
+          "description": "We may collect personal information that you voluntarily provide to us when you:",
+          "items": [
+            "Register for an account (name, email address, password)",
+            "Update your profile (avatar, role, contact information)",
+            "Use our services (vehicle search queries, task assignments)",
+            "Contact us for support (email, messages)"
+          ]
+        },
+        {
+          "type": "device_information",
+          "title": "Device Information",
+          "description": "We automatically collect certain information about your device when you access our application:",
+          "items": [
+            "Device type and model",
+            "Operating system version",
+            "Unique device identifiers",
+            "Mobile network information",
+            "IP address"
+          ]
+        },
+        {
+          "type": "usage_information",
+          "title": "Usage Information",
+          "description": "We collect information about how you use our application:",
+          "items": [
+            "Vehicle search history and preferences",
+            "Task and schedule information",
+            "Chat messages and communications",
+            "Photos and images you upload",
+            "App features you access and use",
+            "Time and date of your activities"
+          ]
+        },
+        {
+          "type": "camera_and_media",
+          "title": "Camera and Media Access",
+          "description": "Our application requires access to your device's camera and media storage to:",
+          "items": [
+            "Capture photos of vehicles",
+            "Upload images for vehicle documentation",
+            "Share images in chat conversations",
+            "Store and manage vehicle-related media"
+          ]
+        }
+      ]
+    },
+    "how_we_use_information": {
+      "title": "How We Use Your Information",
+      "sections": [
+        {
+          "purpose": "Service Provision",
+          "description": "To provide, maintain, and improve our services including vehicle management, task scheduling, and communication features."
+        },
+        {
+          "purpose": "User Authentication",
+          "description": "To authenticate your identity and manage your account access."
+        },
+        {
+          "purpose": "Communication",
+          "description": "To enable chat functionality, send notifications, and facilitate communication between users."
+        },
+        {
+          "purpose": "Data Storage",
+          "description": "To store your vehicle search history, task information, and chat messages for your convenience."
+        },
+        {
+          "purpose": "Support",
+          "description": "To respond to your inquiries, provide customer support, and address technical issues."
+        },
+        {
+          "purpose": "Analytics",
+          "description": "To analyze usage patterns and improve application performance and user experience."
+        }
+      ]
+    },
+    "data_storage": {
+      "title": "Data Storage and Security",
+      "sections": [
+        {
+          "type": "storage_location",
+          "title": "Where We Store Your Data",
+          "description": "Your data is stored using:",
+          "items": [
+            "Firebase Realtime Database - for user profiles, chat messages, and task data",
+            "Firebase Storage - for images and media files",
+            "Local device storage - for cached vehicle information and preferences",
+            "Secure cloud servers - for application data and backups"
+          ]
+        },
+        {
+          "type": "security_measures",
+          "title": "Security Measures",
+          "description": "We implement appropriate technical and organizational security measures to protect your personal information:",
+          "items": [
+            "Encryption of data in transit using HTTPS/TLS",
+            "Secure authentication tokens for API access",
+            "Regular security assessments and updates",
+            "Access controls and authentication requirements",
+            "Secure backup procedures"
+          ]
+        }
+      ]
+    },
+    "data_sharing": {
+      "title": "Data Sharing and Disclosure",
+      "sections": [
+        {
+          "scenario": "Service Providers",
+          "description": "We may share your information with third-party service providers who perform services on our behalf, such as:",
+          "items": [
+            "Google Firebase (database and storage services)",
+            "Cloud hosting providers",
+            "Analytics services"
+          ]
+        },
+        {
+          "scenario": "Legal Requirements",
+          "description": "We may disclose your information if required by law or in response to valid requests by public authorities."
+        },
+        {
+          "scenario": "Business Transfers",
+          "description": "In the event of a merger, acquisition, or sale of assets, your information may be transferred as part of that transaction."
+        },
+        {
+          "scenario": "No Sale of Data",
+          "description": "We do not sell, rent, or trade your personal information to third parties for their marketing purposes."
+        }
+      ]
+    },
+    "user_rights": {
+      "title": "Your Rights and Choices",
+      "sections": [
+        {
+          "right": "Access",
+          "description": "You have the right to access the personal information we hold about you."
+        },
+        {
+          "right": "Correction",
+          "description": "You can update your personal information directly through the app's profile settings."
+        },
+        {
+          "right": "Deletion",
+          "description": "You can request deletion of your account and associated data by contacting us."
+        },
+        {
+          "right": "Data Portability",
+          "description": "You may request a copy of your data in a structured, machine-readable format."
+        },
+        {
+          "right": "Opt-Out",
+          "description": "You can opt-out of certain data collection by adjusting your device settings or app permissions."
+        },
+        {
+          "right": "Account Deletion",
+          "description": "You can delete your account at any time through the app settings, which will remove your personal information from our systems."
+        }
+      ]
+    },
+    "permissions": {
+      "title": "App Permissions",
+      "description": "Our application requires the following permissions to function properly:",
+      "permissions": [
+        {
+          "permission": "Internet Access",
+          "purpose": "To connect to our servers and sync data"
+        },
+        {
+          "permission": "Camera",
+          "purpose": "To capture photos of vehicles and documents"
+        },
+        {
+          "permission": "Storage/Media Access",
+          "purpose": "To save and retrieve images and files"
+        },
+        {
+          "permission": "Notifications",
+          "purpose": "To send you task reminders and chat notifications"
+        },
+        {
+          "permission": "Network State",
+          "purpose": "To check internet connectivity and optimize data usage"
+        }
+      ]
+    },
+    "children_privacy": {
+      "title": "Children's Privacy",
+      "content": "Our application is not intended for children under the age of 13. We do not knowingly collect personal information from children under 13. If you are a parent or guardian and believe your child has provided us with personal information, please contact us immediately."
+    },
+    "data_retention": {
+      "title": "Data Retention",
+      "content": "We retain your personal information for as long as necessary to provide our services and fulfill the purposes outlined in this privacy policy. When you delete your account, we will delete or anonymize your personal information, except where we are required to retain it for legal purposes."
+    },
+    "international_transfers": {
+      "title": "International Data Transfers",
+      "content": "Your information may be transferred to and processed in countries other than your country of residence. These countries may have data protection laws that differ from those in your country. We ensure appropriate safeguards are in place to protect your information in accordance with this privacy policy."
+    },
+    "policy_updates": {
+      "title": "Changes to This Privacy Policy",
+      "content": "We may update this Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the 'Last Updated' date. You are advised to review this Privacy Policy periodically for any changes."
+    },
+    "contact_information": {
+      "title": "Contact Us",
+      "content": "If you have any questions about this Privacy Policy or our data practices, please contact us at:",
+      "contact_details": {
+        "email": "support@sendajapan.com",
+        "company": "Senda Japan",
+        "address": "[Your Company Address]"
+      }
+    }
+  },
+  "terms_of_service": {
+    "introduction": {
+      "title": "Terms of Service",
+      "content": "These Terms of Service ('Terms') govern your access to and use of the SendaSnap mobile application ('App'). By downloading, installing, or using the App, you agree to be bound by these Terms. If you do not agree to these Terms, do not use the App."
+    },
+    "acceptance": {
+      "title": "Acceptance of Terms",
+      "content": "By accessing or using SendaSnap, you agree to comply with and be bound by these Terms. If you do not agree to these Terms, you may not access or use the App."
+    },
+    "user_accounts": {
+      "title": "User Accounts",
+      "sections": [
+        {
+          "requirement": "Account Creation",
+          "description": "You must create an account to use certain features of the App. You are responsible for maintaining the confidentiality of your account credentials."
+        },
+        {
+          "requirement": "Account Security",
+          "description": "You are responsible for all activities that occur under your account. Notify us immediately of any unauthorized use."
+        },
+        {
+          "requirement": "Account Information",
+          "description": "You agree to provide accurate, current, and complete information during registration and to update such information to keep it accurate."
+        }
+      ]
+    },
+    "acceptable_use": {
+      "title": "Acceptable Use",
+      "prohibited_activities": [
+        "Using the App for any illegal purpose or in violation of any laws",
+        "Transmitting any malicious code, viruses, or harmful content",
+        "Attempting to gain unauthorized access to the App or its systems",
+        "Interfering with or disrupting the App's functionality",
+        "Impersonating any person or entity",
+        "Harassing, threatening, or abusing other users",
+        "Uploading content that infringes on intellectual property rights",
+        "Using automated systems to access the App without permission"
+      ]
+    },
+    "intellectual_property": {
+      "title": "Intellectual Property",
+      "content": "The App and its original content, features, and functionality are owned by Senda Japan and are protected by international copyright, trademark, and other intellectual property laws. You may not copy, modify, distribute, or create derivative works based on the App without our prior written consent."
+    },
+    "user_content": {
+      "title": "User Content",
+      "sections": [
+        {
+          "right": "Ownership",
+          "description": "You retain ownership of any content you submit, post, or display through the App."
+        },
+        {
+          "right": "License",
+          "description": "By submitting content, you grant us a worldwide, non-exclusive, royalty-free license to use, reproduce, and distribute your content for the purpose of operating and providing the App's services."
+        },
+        {
+          "right": "Responsibility",
+          "description": "You are solely responsible for your content and warrant that you have all necessary rights to grant the license described above."
+        }
+      ]
+    },
+    "service_availability": {
+      "title": "Service Availability",
+      "content": "We strive to provide reliable service but do not guarantee that the App will be available at all times. The App may be unavailable due to maintenance, updates, or circumstances beyond our control. We reserve the right to modify, suspend, or discontinue any part of the App at any time."
+    },
+    "limitation_of_liability": {
+      "title": "Limitation of Liability",
+      "content": "To the maximum extent permitted by law, Senda Japan shall not be liable for any indirect, incidental, special, consequential, or punitive damages, or any loss of profits or revenues, whether incurred directly or indirectly, or any loss of data, use, goodwill, or other intangible losses resulting from your use of the App."
+    },
+    "termination": {
+      "title": "Termination",
+      "content": "We may terminate or suspend your account and access to the App immediately, without prior notice, for conduct that we believe violates these Terms or is harmful to other users, us, or third parties. You may also terminate your account at any time through the App settings."
+    },
+    "governing_law": {
+      "title": "Governing Law",
+      "content": "These Terms shall be governed by and construed in accordance with the laws of [Your Jurisdiction], without regard to its conflict of law provisions."
+    },
+    "changes_to_terms": {
+      "title": "Changes to Terms",
+      "content": "We reserve the right to modify these Terms at any time. We will notify users of any material changes by posting the updated Terms in the App. Your continued use of the App after such changes constitutes acceptance of the modified Terms."
+    }
+  },
+  "design_requirements": {
+    "page_structure": {
+      "sections": [
+        "Header with app name and logo",
+        "Table of contents with anchor links",
+        "Privacy Policy section",
+        "Terms of Service section",
+        "Contact information footer"
+      ]
+    },
+    "styling_preferences": {
+      "color_scheme": "Professional and clean design",
+      "typography": "Clear, readable fonts with proper hierarchy",
+      "layout": "Responsive design for mobile and desktop",
+      "accessibility": "WCAG 2.1 AA compliant"
+    },
+    "features": [
+      "Scrollable content with smooth navigation",
+      "Print-friendly version",
+      "Search functionality",
+      "Last updated date display",
+      "Easy-to-read section headers",
+      "Mobile-responsive design"
+    ]
+  }
+}
+

@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\AdminManualController;
+use App\Http\Controllers\AndroidAppManualController;
 use App\Http\Controllers\ApiDocsController;
+use App\Http\Controllers\LandingPageController;
 use App\Http\Controllers\PrivacyPolicyController;
 use App\Livewire\Settings\Appearance;
 use App\Livewire\Settings\Password;
@@ -14,15 +16,20 @@ use App\Livewire\Vehicles\Index as VehiclesIndex;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 
-Route::get('/', function () {
-    return view('welcome');
-})->name('home');
+// Landing Pages (4 different designs)
+Route::get('/', [LandingPageController::class, 'design1'])->name('home');
+Route::get('/1', [LandingPageController::class, 'design2'])->name('landing.1');
+Route::get('/2', [LandingPageController::class, 'design3'])->name('landing.2');
+Route::get('/3', [LandingPageController::class, 'design4'])->name('landing.3');
 
 // Public Admin Manual (no authentication required)
 Route::get('admin-manual', [AdminManualController::class, 'index'])->name('admin.manual');
 
 // Public Privacy Policy (no authentication required)
 Route::get('privacy-policy', [PrivacyPolicyController::class, 'index'])->name('privacy.policy');
+
+// Public Android App Manual (no authentication required)
+Route::get('android-app-manual', [AndroidAppManualController::class, 'index'])->name('android.app.manual');
 
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])

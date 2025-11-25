@@ -1527,6 +1527,15 @@ When creating a new page, ensure:
 
 ## 🚀 Recent Updates
 
+### Landing Page Pattern
+- Added landing page pattern with hero section and side-by-side layout
+- Microsoft Surface-style monitor mockup (white frame, minimal stand)
+- Phone mockup without black bezel, transparent frame
+- Vertical separator lines (|) between navigation menu items
+- Particle background animation
+- Responsive design: features and screenshots side-by-side on desktop, stacked on mobile
+- Logo component integration with hover effects
+
 ### Preview Modal & Permission System
 - Added center dialog preview modals for Users and Tasks
 - Implemented role-based permission system for delete actions
@@ -1770,8 +1779,341 @@ $upcomingTasks = \App\Models\Task::whereNotIn('status', ['completed', 'cancelled
 - Delete buttons conditionally rendered based on permissions
 - Permission checks implemented in both component methods and Blade templates
 
-**Version**: 2.7  
-**Last Updated**: November 12, 2025  
+### Android App Manual Pattern
+For documentation pages that display app features with instructions and screenshots, use an alternating side-by-side layout pattern.
+
+**Structure**:
+```blade
+<div class="grid gap-6 lg:grid-cols-2 lg:items-center">
+    @if($screenshotOnLeft)
+        <!-- Screenshot on Left -->
+        <div class="flex justify-center lg:justify-start order-2 lg:order-1">
+            <div class="phone-mockup">
+                <div class="phone-frame">
+                    <div class="phone-screen">
+                        <img src="..." class="phone-image manual-image" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Instructions on Right -->
+        <div class="space-y-4 order-1 lg:order-2">
+    @else
+        <!-- Instructions on Left -->
+        <div class="space-y-4">
+    @endif
+    
+    <!-- Step-by-step instructions or content -->
+    
+    </div>
+    
+    @if(!$screenshotOnLeft)
+        <!-- Screenshot on Right -->
+        <div class="flex justify-center lg:justify-end order-2">
+            <div class="phone-mockup">...</div>
+        </div>
+    @endif
+</div>
+```
+
+**Key Features**:
+- **Alternating Layout**: Screenshots alternate between left and right sides for visual variety
+- **Responsive Design**: Stacked on mobile (`order-2 lg:order-1`), side-by-side on desktop (`lg:grid-cols-2`)
+- **Phone Mockup**: Screenshots wrapped in smartphone mockup frames (not for banner images like feature.png)
+- **Section Index Tracking**: Use `$sectionIndex` to alternate positions: `$screenshotOnLeft = ($sectionIndex % 2 === 0)`
+- **Instructions Format**: Step-by-step instructions displayed in cards with numbered badges
+- **Feature Image**: Banner images (1024x512) displayed without phone mockup, side-by-side with feature list
+
+**Introduction Section Pattern**:
+```blade
+<div class="grid gap-6 lg:grid-cols-2 lg:items-center">
+    <!-- Features List -->
+    <div class="space-y-4">
+        <h3>{{ __('Key Features') }}</h3>
+        @foreach($features as $feature)
+            <div class="flex items-start gap-3 rounded-xl border p-4">
+                <div class="icon-badge">{{ $feature['icon'] }}</div>
+                <h4>{{ $feature['name'] }}</h4>
+            </div>
+        @endforeach
+    </div>
+    
+    <!-- Feature Banner Image (No Phone Mockup) -->
+    <div class="flex justify-center lg:justify-end">
+        <div class="w-full max-w-lg rounded-xl border shadow-lg">
+            <img src="feature.png" class="w-full h-auto" />
+        </div>
+    </div>
+</div>
+```
+
+**Use Cases**:
+- Android App Manual pages
+- Feature documentation with screenshots
+- Step-by-step guides with visual aids
+- Any documentation requiring alternating content layout
+
+**Current Usage**:
+- Android App Manual (`resources/views/android-app-manual.blade.php`)
+
+### Landing Page Pattern
+For the main landing/welcome page, use a hero section with side-by-side features and device screenshots, featuring animated particle background and modern navigation.
+
+**Structure**:
+```blade
+<!-- Top Navigation -->
+<nav class="fixed top-0 left-0 right-0 z-50 border-b border-gray-200/50 bg-white/95 backdrop-blur-md dark:border-gray-800/50 dark:bg-gray-900/95 shadow-sm">
+    <div class="mx-auto max-w-7xl px-6 py-4">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-8">
+                <!-- Logo (using app-logo component) -->
+                <a href="{{ route('home') }}" class="flex items-center group">
+                    <div class="transition-transform group-hover:scale-105">
+                        <x-app-logo />
+                    </div>
+                </a>
+                
+                <!-- Menu Items with Vertical Separators -->
+                <div class="hidden items-center gap-0 md:flex">
+                    <a href="{{ route('admin.manual') }}" class="rounded-lg px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-800 transition-all">
+                        {{ __('Admin Manual') }}
+                    </a>
+                    <span class="h-4 w-px bg-gray-300/50 dark:bg-gray-700/50"></span>
+                    <a href="{{ route('android.app.manual') }}" class="rounded-lg px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-800 transition-all">
+                        {{ __('Android Manual') }}
+                    </a>
+                    <span class="h-4 w-px bg-gray-300/50 dark:bg-gray-700/50"></span>
+                    <a href="{{ route('api.docs') }}" class="rounded-lg px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-800 transition-all">
+                        {{ __('API Docs') }}
+                    </a>
+                </div>
+            </div>
+            <!-- Login/Dashboard Button -->
+        </div>
+    </div>
+</nav>
+
+<!-- Hero Section with Particle Background -->
+<div class="relative min-h-screen pt-40 pb-20">
+    <!-- Particle Canvas -->
+    <canvas id="particle-canvas" class="fixed inset-0 -z-10 pointer-events-none"></canvas>
+    
+    <div class="mx-auto max-w-7xl px-6">
+        <!-- Hero Title -->
+        <div class="text-center mb-12">
+            <h1 class="mb-6 text-5xl font-bold text-gray-900 dark:text-white md:text-6xl lg:text-7xl">
+                {{ __('Manage Vehicles & Tasks') }}
+                <span class="block bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">
+                    {{ __('Seamlessly') }}
+                </span>
+            </h1>
+            <p class="mx-auto max-w-2xl text-xl text-gray-600 dark:text-gray-400">
+                {{ __('Description text') }}
+            </p>
+        </div>
+        
+        <!-- Features and Screenshots Side by Side -->
+        <div class="grid gap-12 lg:grid-cols-2 lg:gap-16 items-center mb-20">
+            <!-- Features Section (Left) -->
+            <div class="space-y-6">
+                <!-- Feature Cards -->
+            </div>
+            
+            <!-- Screenshots Section (Right) -->
+            <div class="relative flex items-center justify-center">
+                <!-- Monitor Mockup (Microsoft Surface style) -->
+                <div class="relative z-10 -mr-16 hidden lg:block">
+                    <div class="monitor-mockup">
+                        <div class="monitor-frame">
+                            <div class="monitor-screen">
+                                <img src="..." class="monitor-image">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Mobile Mockup (No black bezel) -->
+                <div class="relative z-20">
+                    <div class="phone-mockup">
+                        <div class="phone-frame">
+                            <div class="phone-screen">
+                                <img src="..." class="phone-image">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+```
+
+**Key Features**:
+- **Fixed Navigation**: Top navigation bar with backdrop blur and shadow
+- **Logo Component**: Uses `<x-app-logo />` for automatic light/dark mode switching
+- **Vertical Separators**: Transparent vertical lines (`|`) between menu items using `<span class="h-4 w-px bg-gray-300/50">`
+- **Particle Background**: Animated canvas particles with connecting lines (see Particle Background System section)
+- **Side-by-Side Layout**: Features on left, device screenshots on right (`lg:grid-cols-2`)
+- **Microsoft Surface Monitor**: White frame with minimal stand, matches screenshot aspect ratio
+- **Phone Mockup**: No black bezel, transparent frame, matches screenshot aspect ratio
+- **Responsive Design**: Stacks vertically on mobile, side-by-side on desktop
+- **Gradient Hero Title**: Large title with gradient accent text
+
+**Monitor Mockup CSS**:
+```css
+.monitor-mockup {
+    display: inline-block;
+    padding: 0;
+    background: transparent;
+    border-radius: 0;
+}
+
+.monitor-frame {
+    width: 600px;
+    max-width: 100%;
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 
+        0 4px 20px rgba(0, 0, 0, 0.1),
+        0 0 0 1px rgba(0, 0, 0, 0.05),
+        inset 0 0 0 1px rgba(0, 0, 0, 0.05);
+    position: relative;
+}
+
+.dark .monitor-frame {
+    background: #f5f5f5;
+    box-shadow: 
+        0 4px 20px rgba(0, 0, 0, 0.3),
+        0 0 0 1px rgba(255, 255, 255, 0.1),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+.monitor-frame::before {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 120px;
+    height: 8px;
+    background: #ffffff;
+    border-radius: 0 0 4px 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.monitor-frame::after {
+    content: '';
+    position: absolute;
+    bottom: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 200px;
+    height: 4px;
+    background: #e0e0e0;
+    border-radius: 2px;
+}
+
+.monitor-screen {
+    width: 100%;
+    background: #000;
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.monitor-image {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    display: block;
+}
+```
+
+**Phone Mockup CSS** (No Black Bezel):
+```css
+.phone-mockup {
+    display: inline-block;
+    padding: 12px;
+    background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
+    border-radius: 40px;
+    box-shadow: 
+        0 10px 30px rgba(0, 0, 0, 0.2),
+        0 0 0 8px rgba(255, 255, 255, 0.1),
+        inset 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+.dark .phone-mockup {
+    background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+    box-shadow: 
+        0 10px 30px rgba(0, 0, 0, 0.5),
+        0 0 0 8px rgba(255, 255, 255, 0.05),
+        inset 0 0 20px rgba(0, 0, 0, 0.3);
+}
+
+.phone-frame {
+    width: 280px;
+    max-width: 100%;
+    background: transparent;
+    border-radius: 32px;
+    padding: 0;
+    box-shadow: none;
+    position: relative;
+}
+
+.phone-frame::before {
+    content: '';
+    position: absolute;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 3px;
+    z-index: 10;
+}
+
+.phone-screen {
+    width: 100%;
+    background: #000;
+    border-radius: 32px;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.phone-image {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    display: block;
+}
+```
+
+**Navigation Features**:
+- **Backdrop Blur**: `backdrop-blur-md` for modern glass effect
+- **Menu Item Hover**: Background color change on hover
+- **Vertical Separators**: Transparent lines between menu items (`bg-gray-300/50`)
+- **Responsive**: Menu items hidden on mobile (`hidden md:flex`)
+- **Logo Hover**: Scale effect on logo hover (`group-hover:scale-105`)
+
+**Spacing**:
+- Top padding: `pt-40` (to account for fixed navigation)
+- Hero title margin: `mb-12`
+- Features/Screenshots gap: `gap-12 lg:gap-16`
+- Feature cards gap: `space-y-6`
+
+**Current Usage**:
+- Landing Page (`resources/views/welcome.blade.php`)
+
+**Version**: 2.9  
+**Last Updated**: December 25, 2024  
 **Project**: Laravel Livewire Dashboard - Senda Snap
 
 ---

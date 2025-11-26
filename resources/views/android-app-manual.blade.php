@@ -113,7 +113,7 @@
                                 zoomable="true" />
                         </div>
                         <!-- Keypoints -->
-                        <div class="space-y-4 w-full max-w-md">
+                        <div class="mt-8 space-y-4 w-full max-w-md">
                             <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{{ __('Key Features') }}
                             </h3>
                             <ul class="list-disc space-y-2 pl-6 text-sm text-gray-700 dark:text-gray-300">
@@ -135,41 +135,78 @@
                                     image="assets/app-manual/search-vehicle.jpg"
                                     :alt="__('Searching for Vehicles')"
                                     zoomable="true" />
-                                <ul class="list-disc space-y-2 pl-6 text-sm text-gray-700 dark:text-gray-300">
-                                    <li>{{ __('Click on search button then from dropdown menu select an option to search by vehicle id or chassis number') }}
-                                    </li>
-                                    <li>{{ __('Enter the vehicle id or chassis number in second input field, please make sure to enter the correct vehicle id or chassis number') }}
-                                    </li>
-                                    <li>{{ __('Click on search button to search for the vehicle') }}</li>
-                                </ul>
+                                <div class="w-full space-y-2">
+                                    <div class="flex gap-3 rounded-lg bg-emerald-50 p-3 dark:bg-emerald-900/20">
+                                        <div class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 border-emerald-500 bg-emerald-100 text-sm font-bold text-emerald-600 dark:border-emerald-400 dark:bg-emerald-900/40 dark:text-emerald-400">1</div>
+                                        <p class="flex-1 text-sm text-gray-700 dark:text-gray-300">
+                                            {{ __('Click on search button then from dropdown menu select an option to search by vehicle id or chassis number') }}
+                                        </p>
+                                    </div>
+                                    <div class="flex gap-3 rounded-lg bg-emerald-50 p-3 dark:bg-emerald-900/20">
+                                        <div class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 border-emerald-500 bg-emerald-100 text-sm font-bold text-emerald-600 dark:border-emerald-400 dark:bg-emerald-900/40 dark:text-emerald-400">2</div>
+                                        <p class="flex-1 text-sm text-gray-700 dark:text-gray-300">
+                                            {{ __('Enter the vehicle id or chassis number in second input field, please make sure to enter the correct vehicle id or chassis number') }}
+                                        </p>
+                                    </div>
+                                    <div class="flex gap-3 rounded-lg bg-emerald-50 p-3 dark:bg-emerald-900/20">
+                                        <div class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 border-emerald-500 bg-emerald-100 text-sm font-bold text-emerald-600 dark:border-emerald-400 dark:bg-emerald-900/40 dark:text-emerald-400">3</div>
+                                        <p class="flex-1 text-sm text-gray-700 dark:text-gray-300">
+                                            {{ __('Click on search button to search for the vehicle') }}
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
                             <div class="space-y-3 flex flex-col items-center">
                                 <x-phone-mockup 
                                     image="assets/app-manual/vehicle-detail.jpg"
                                     :alt="__('Vehicle Details')"
                                     zoomable="true" />
-                                <ul class="list-disc space-y-2 pl-6 text-sm text-gray-700 dark:text-gray-300">
-                                    <li>{{ __('On Detail page, you can see basic information, purchase information, shipping information and existing photos of the vehicle') }}
-                                    </li>
-                                    <li>{{ __('User is not allowed to edit the vehicle information from the android app, but user can add photos to the vehicle') }}
-                                    </li>
-                                    <li>
-                                        {!! __('To edit the vehicle information, user needs to go to <a class="text-blue-500 hover:underline" href=":url" target="_blank">AVIS</a> and edit the vehicle information', ['url' => 'https://senda.us/autocraft/avisnew/']) !!}
-                                    </li>
-                                </ul>
+                                <div class="w-full space-y-2">
+                                    <div class="flex gap-3 rounded-lg bg-emerald-50 p-3 dark:bg-emerald-900/20">
+                                        <div class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 border-emerald-500 bg-emerald-100 text-sm font-bold text-emerald-600 dark:border-emerald-400 dark:bg-emerald-900/40 dark:text-emerald-400">1</div>
+                                        <p class="flex-1 text-sm text-gray-700 dark:text-gray-300">
+                                            {{ __('On Detail page, you can see basic information, purchase information, shipping information and existing photos of the vehicle') }}
+                                        </p>
+                                    </div>
+                                    <div class="flex gap-3 rounded-lg bg-emerald-50 p-3 dark:bg-emerald-900/20">
+                                        <div class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 border-emerald-500 bg-emerald-100 text-sm font-bold text-emerald-600 dark:border-emerald-400 dark:bg-emerald-900/40 dark:text-emerald-400">2</div>
+                                        <p class="flex-1 text-sm text-gray-700 dark:text-gray-300">
+                                            {{ __('User is not allowed to edit the vehicle information from the android app, but user can add photos to the vehicle') }}
+                                        </p>
+                                    </div>
+                                    <div class="flex gap-3 rounded-lg bg-emerald-50 p-3 dark:bg-emerald-900/20">
+                                        <div class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 border-emerald-500 bg-emerald-100 text-sm font-bold text-emerald-600 dark:border-emerald-400 dark:bg-emerald-900/40 dark:text-emerald-400">3</div>
+                                        <p class="flex-1 text-sm text-gray-700 dark:text-gray-300">
+                                            {!! __('To edit the vehicle information, user needs to go to <a class="text-blue-500 hover:underline" href=":url" target="_blank">AVIS</a> and edit the vehicle information', ['url' => 'https://senda.us/autocraft/avisnew/']) !!}
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
                             <div class="space-y-3 flex flex-col items-center">
                                 <x-phone-mockup 
                                     image="assets/app-manual/vehicle-image-upload.jpg"
                                     :alt="__('Add Vehicle Photos')"
                                     zoomable="true" />
-                                    <ul class="list-disc space-y-2 pl-6 text-sm text-gray-700 dark:text-gray-300">
-                                        <li>{{ __('At the bottom of the page, you will see a plus icon button to add more photos to the vehicle') }}
-                                        </li>
-                                        <li>{{ __('After clicking the plus icon button, user will be redirected to the camera or gallery to select a photo to upload, User can add multiple photos to the vehicle') }}
-                                        </li>
-                                        <li>{{ __('Clicking in upload button will upload the photo to the vehicle') }}
-                                    </ul>
+                                <div class="w-full space-y-2">
+                                    <div class="flex gap-3 rounded-lg bg-emerald-50 p-3 dark:bg-emerald-900/20">
+                                        <div class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 border-emerald-500 bg-emerald-100 text-sm font-bold text-emerald-600 dark:border-emerald-400 dark:bg-emerald-900/40 dark:text-emerald-400">1</div>
+                                        <p class="flex-1 text-sm text-gray-700 dark:text-gray-300">
+                                            {{ __('At the bottom of the page, you will see a plus icon button to add more photos to the vehicle') }}
+                                        </p>
+                                    </div>
+                                    <div class="flex gap-3 rounded-lg bg-emerald-50 p-3 dark:bg-emerald-900/20">
+                                        <div class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 border-emerald-500 bg-emerald-100 text-sm font-bold text-emerald-600 dark:border-emerald-400 dark:bg-emerald-900/40 dark:text-emerald-400">2</div>
+                                        <p class="flex-1 text-sm text-gray-700 dark:text-gray-300">
+                                            {{ __('After clicking the plus icon button, user will be redirected to the camera or gallery to select a photo to upload, User can add multiple photos to the vehicle') }}
+                                        </p>
+                                    </div>
+                                    <div class="flex gap-3 rounded-lg bg-emerald-50 p-3 dark:bg-emerald-900/20">
+                                        <div class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 border-emerald-500 bg-emerald-100 text-sm font-bold text-emerald-600 dark:border-emerald-400 dark:bg-emerald-900/40 dark:text-emerald-400">3</div>
+                                        <p class="flex-1 text-sm text-gray-700 dark:text-gray-300">
+                                            {{ __('Clicking in upload button will upload the photo to the vehicle') }}
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -178,11 +215,11 @@
         </x-table-card>
 
         <!-- Task & Schedule Management -->
-        <x-table-card variant="emerald">
+        <x-table-card variant="violet">
             <div class="space-y-6">
                 <div class="flex items-center gap-3">
                     <div
-                        class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 shadow-lg">
+                        class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-purple-500 to-violet-600 shadow-lg">
                         <svg class="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
@@ -198,12 +235,12 @@
                         <!-- Feature Image -->
                         <div class="flex justify-center">
                             <x-phone-mockup 
-                                image="assets/app-manual/task-dashboard.jpg"
+                                image="assets/app-manual/task-list.jpg"
                                 :alt="__('Task Dashboard')"
                                 zoomable="true" />
                         </div>
                         <!-- Keypoints -->
-                        <div class="space-y-4 w-full max-w-md">
+                        <div class="mt-8 space-y-4 w-full max-w-md">
                             <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{{ __('Key Features') }}
                             </h3>
                             <ul class="list-disc space-y-2 pl-6 text-sm text-gray-700 dark:text-gray-300">
@@ -230,29 +267,80 @@
                             <div class="space-y-3 flex flex-col items-center">
                                 <x-phone-mockup 
                                     image="assets/app-manual/task-create.jpg"
-                                    :alt="__('Create Task')"
+                                    :alt="__('Create Schedule')"
                                     zoomable="true" />
-                                <p class="text-sm text-center text-gray-700 dark:text-gray-300">
-                                    {{ __('Create a new task or schedule') }}
-                                </p>
-                                                            </div>
-                            <div class="space-y-3 flex flex-col items-center">
-                                <x-phone-mockup 
-                                    image="assets/app-manual/task-edit.jpg"
-                                    :alt="__('Edit Task')"
-                                    zoomable="true" />
-                                <p class="text-sm text-center text-gray-700 dark:text-gray-300">
-                                    {{ __('Edit task details and assignments') }}
-                                </p>
+                                <div class="w-full space-y-2">
+                                    <div class="flex gap-3 rounded-lg bg-purple-50 p-3 dark:bg-purple-900/20">
+                                        <div class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 border-purple-500 bg-purple-100 text-sm font-bold text-purple-600 dark:border-purple-400 dark:bg-purple-900/40 dark:text-purple-400">1</div>
+                                        <p class="flex-1 text-sm text-gray-700 dark:text-gray-300">
+                                            {{ __('Navigate to the Task Dashboard and tap the create button to start a new schedule') }}
+                                        </p>
+                                    </div>
+                                    <div class="flex gap-3 rounded-lg bg-purple-50 p-3 dark:bg-purple-900/20">
+                                        <div class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 border-purple-500 bg-purple-100 text-sm font-bold text-purple-600 dark:border-purple-400 dark:bg-purple-900/40 dark:text-purple-400">2</div>
+                                        <p class="flex-1 text-sm text-gray-700 dark:text-gray-300">
+                                            {{ __('Fill in the schedule details including title, description, date, time, and assign team members') }}
+                                        </p>
+                                    </div>
+                                    <div class="flex gap-3 rounded-lg bg-purple-50 p-3 dark:bg-purple-900/20">
+                                        <div class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 border-purple-500 bg-purple-100 text-sm font-bold text-purple-600 dark:border-purple-400 dark:bg-purple-900/40 dark:text-purple-400">3</div>
+                                        <p class="flex-1 text-sm text-gray-700 dark:text-gray-300">
+                                            {{ __('Save the schedule to create the task and automatically generate a group chat for assigned members') }}
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
                             <div class="space-y-3 flex flex-col items-center">
                                 <x-phone-mockup 
-                                    image="assets/app-manual/task-delete.jpg"
-                                    :alt="__('Delete Task')"
+                                    image="assets/app-manual/task-calender.jpg"
+                                    :alt="__('Filter Task List')"
                                     zoomable="true" />
-                                <p class="text-sm text-center text-gray-700 dark:text-gray-300">
-                                    {{ __('Delete tasks when needed') }}
-                                </p>
+                                <div class="w-full space-y-2">
+                                    <div class="flex gap-3 rounded-lg bg-purple-50 p-3 dark:bg-purple-900/20">
+                                        <div class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 border-purple-500 bg-purple-100 text-sm font-bold text-purple-600 dark:border-purple-400 dark:bg-purple-900/40 dark:text-purple-400">1</div>
+                                        <p class="flex-1 text-sm text-gray-700 dark:text-gray-300">
+                                            {{ __('Use the calendar view or date filter to view tasks for specific dates') }}
+                                        </p>
+                                    </div>
+                                    <div class="flex gap-3 rounded-lg bg-purple-50 p-3 dark:bg-purple-900/20">
+                                        <div class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 border-purple-500 bg-purple-100 text-sm font-bold text-purple-600 dark:border-purple-400 dark:bg-purple-900/40 dark:text-purple-400">2</div>
+                                        <p class="flex-1 text-sm text-gray-700 dark:text-gray-300">
+                                            {{ __('Filter tasks by status (pending, running, completed, cancelled) from the filter buttons') }}
+                                        </p>
+                                    </div>
+                                    <div class="flex gap-3 rounded-lg bg-purple-50 p-3 dark:bg-purple-900/20">
+                                        <div class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 border-purple-500 bg-purple-100 text-sm font-bold text-purple-600 dark:border-purple-400 dark:bg-purple-900/40 dark:text-purple-400">3</div>
+                                        <p class="flex-1 text-sm text-gray-700 dark:text-gray-300">
+                                            {{ __('View filtered task list organized by date and status for easy management') }}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="space-y-3 flex flex-col items-center">
+                                <x-phone-mockup 
+                                    image="assets/app-manual/task-status-update.jpg"
+                                    :alt="__('Update Task Status')"
+                                    zoomable="true" />
+                                <div class="w-full space-y-2">
+                                    <div class="flex gap-3 rounded-lg bg-purple-50 p-3 dark:bg-purple-900/20">
+                                        <div class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 border-purple-500 bg-purple-100 text-sm font-bold text-purple-600 dark:border-purple-400 dark:bg-purple-900/40 dark:text-purple-400">1</div>
+                                        <p class="flex-1 text-sm text-gray-700 dark:text-gray-300">
+                                            {{ __('Long press on a task from the list to show the options menu') }}
+                                        </p>
+                                    </div>
+                                    <div class="flex gap-3 rounded-lg bg-purple-50 p-3 dark:bg-purple-900/20">
+                                        <div class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 border-purple-500 bg-purple-100 text-sm font-bold text-purple-600 dark:border-purple-400 dark:bg-purple-900/40 dark:text-purple-400">2</div>
+                                        <p class="flex-1 text-sm text-gray-700 dark:text-gray-300">
+                                            {{ __('Select the status update option to open the alert dialog with available status options') }}
+                                        </p>
+                                    </div>
+                                    <div class="flex gap-3 rounded-lg bg-purple-50 p-3 dark:bg-purple-900/20">
+                                        <div class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 border-purple-500 bg-purple-100 text-sm font-bold text-purple-600 dark:border-purple-400 dark:bg-purple-900/40 dark:text-purple-400">3</div>
+                                        <p class="flex-1 text-sm text-gray-700 dark:text-gray-300">
+                                            {{ __('Delete the task by clicking the delete option from the options menu') }}
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -261,11 +349,11 @@
         </x-table-card>
 
         <!-- Team Communication (Chat) -->
-        <x-table-card variant="emerald">
+        <x-table-card variant="blue">
             <div class="space-y-6">
                 <div class="flex items-center gap-3">
                     <div
-                        class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 shadow-lg">
+                        class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-cyan-600 shadow-lg">
                         <svg class="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
@@ -273,28 +361,25 @@
                     </div>
                     <h2 class="text-xl font-bold text-gray-900 dark:text-white">{{ __('Team Communication (Chat)') }}
                     </h2>
-                                                </div>
-                                                
+                </div>
+        
                 <div class="space-y-8">
                     <!-- First Div: Feature Image + Keypoints -->
                     <div class="flex flex-col items-center gap-6 lg:flex-row lg:justify-center lg:items-center">
                         <!-- Feature Image -->
                         <div class="flex justify-center">
                             <x-phone-mockup 
-                                image="assets/app-manual/chat-feature.jpg"
+                                image="assets/app-manual/chatting.jpg"
                                 :alt="__('Team Communication')"
                                 zoomable="true" />
                         </div>
                         <!-- Keypoints -->
-                        <div class="space-y-4 w-full max-w-md">
+                        <div class="mt-8 space-y-4 w-full max-w-md">
                             <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{{ __('Key Features') }}
                             </h3>
                             <ul class="list-disc space-y-2 pl-6 text-sm text-gray-700 dark:text-gray-300">
                                 <li class="font-semibold">
                                     {{ __('Messages are delivered instantly to all participants in group or individual chats') }}
-                                </li>
-                                <li class="font-semibold">
-                                    {{ __('Share images from camera or gallery, and attach files up to 10MB in chat conversations') }}
                                 </li>
                                 <li class="font-semibold">
                                     {{ __('Automatically created group chats for schedules, including all assigned team members') }}
@@ -312,278 +397,75 @@
                         <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
                             <div class="space-y-3 flex flex-col items-center">
                                 <x-phone-mockup 
-                                    image="assets/app-manual/chat-1.jpg"
-                                    :alt="__('Start Chat')"
+                                    image="assets/app-manual/chat-icon.jpg"
+                                    :alt="__('Chat List')"
                                     zoomable="true" />
-                                <p class="text-sm text-center text-gray-700 dark:text-gray-300">
-                                    {{ __('Start a chat from schedule or contacts') }}
-                                </p>
-                                                            </div>
-                            <div class="space-y-3 flex flex-col items-center">
-                                <x-phone-mockup 
-                                    image="assets/app-manual/chat-2.jpg"
-                                    :alt="__('Send Messages')"
-                                    zoomable="true" />
-                                <p class="text-sm text-center text-gray-700 dark:text-gray-300">
-                                    {{ __('Send text messages and attachments') }}
-                                </p>
+                                <div class="w-full space-y-2">
+                                    <div class="flex gap-3 rounded-lg bg-blue-50 p-3 dark:bg-blue-900/20">
+                                        <div class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 border-blue-500 bg-blue-100 text-sm font-bold text-blue-600 dark:border-blue-400 dark:bg-blue-900/40 dark:text-blue-400">1</div>
+                                        <p class="flex-1 text-sm text-gray-700 dark:text-gray-300">
+                                            {{ __('Click on the chat icon from top right corner of Task Details page') }}
+                                        </p>
                                     </div>
-                            <div class="space-y-3 flex flex-col items-center">
-                                <x-phone-mockup 
-                                    image="assets/app-manual/chat-3.jpg"
-                                    :alt="__('View Chat History')"
-                                    zoomable="true" />
-                                <p class="text-sm text-center text-gray-700 dark:text-gray-300">
-                                    {{ __('View chat history and manage attachments') }}
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                        </div>
-                    </div>
-                </x-table-card>
-
-        <!-- Profile & Settings -->
-        <x-table-card variant="emerald">
-                <div class="space-y-6">
-                    <div class="flex items-center gap-3">
-                    <div
-                        class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 shadow-lg">
-                            <svg class="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                            </svg>
-                        </div>
-                    <h2 class="text-xl font-bold text-gray-900 dark:text-white">{{ __('Profile & Settings') }}</h2>
-                    </div>
-
-                <div class="space-y-8">
-                    <!-- First Div: Feature Image + Keypoints -->
-                    <div class="flex flex-col items-center gap-6 lg:flex-row lg:justify-center lg:items-center">
-                        <!-- Feature Image -->
-                        <div class="flex justify-center">
-                            <x-phone-mockup 
-                                image="assets/app-manual/profile-feature.jpg"
-                                :alt="__('Profile & Settings')"
-                                zoomable="true" />
-                        </div>
-                        <!-- Keypoints -->
-                        <div class="space-y-4 w-full max-w-md">
-                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{{ __('Key Features') }}
-                            </h3>
-                            <ul class="list-disc space-y-2 pl-6 text-sm text-gray-700 dark:text-gray-300">
-                                <li class="font-semibold">
-                                    {{ __('Access your profile from the Profile tab to view your name, email, and account details') }}
-                                </li>
-                                <li class="font-semibold">
-                                    {{ __('Update your personal information and profile details as needed') }}
-                                </li>
-                                <li class="font-semibold">{{ __('Update your account password for enhanced security') }}
-                                </li>
-                                <li class="font-semibold">
-                                    {{ __('Sign out of your account using the logout option in the toolbar menu') }}
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <!-- Second Div: 3 Images in Grid -->
-                    <div class="space-y-4">
-                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{{ __('How It Works') }}</h3>
-                        <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
-                            <div class="space-y-3 flex flex-col items-center">
-                                <x-phone-mockup 
-                                    image="assets/app-manual/profile-1.jpg"
-                                    :alt="__('View Profile')"
-                                    zoomable="true" />
-                                <p class="text-sm text-center text-gray-700 dark:text-gray-300">
-                                    {{ __('View your profile information') }}
-                                </p>
+                                    <div class="flex gap-3 rounded-lg bg-blue-50 p-3 dark:bg-blue-900/20">
+                                        <div class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 border-blue-500 bg-blue-100 text-sm font-bold text-blue-600 dark:border-blue-400 dark:bg-blue-900/40 dark:text-blue-400">2</div>
+                                        <p class="flex-1 text-sm text-gray-700 dark:text-gray-300">
+                                            {{ __('Group chats are automatically created for schedules with all assigned team members') }}
+                                        </p>
+                                    </div>
+                                    <div class="flex gap-3 rounded-lg bg-blue-50 p-3 dark:bg-blue-900/20">
+                                        <div class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 border-blue-500 bg-blue-100 text-sm font-bold text-blue-600 dark:border-blue-400 dark:bg-blue-900/40 dark:text-blue-400">3</div>
+                                        <p class="flex-1 text-sm text-gray-700 dark:text-gray-300">
+                                            {{ __('Unread message indicators show the number of unread messages in each chat') }}
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
                             <div class="space-y-3 flex flex-col items-center">
                                 <x-phone-mockup 
-                                    image="assets/app-manual/profile-2.jpg"
-                                    :alt="__('Edit Profile')"
+                                    image="assets/app-manual/start-chatting.jpg"
+                                    :alt="__('Chat Messages')"
                                     zoomable="true" />
-                                <p class="text-sm text-center text-gray-700 dark:text-gray-300">
-                                    {{ __('Edit your profile details') }}
-                                </p>
+                                <div class="w-full space-y-2">
+                                    <div class="flex gap-3 rounded-lg bg-blue-50 p-3 dark:bg-blue-900/20">
+                                        <div class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 border-blue-500 bg-blue-100 text-sm font-bold text-blue-600 dark:border-blue-400 dark:bg-blue-900/40 dark:text-blue-400">1</div>
+                                        <p class="flex-1 text-sm text-gray-700 dark:text-gray-300">
+                                            {{ __('Send text messages instantly to team members in group or individual chats') }}
+                                        </p>
+                                    </div>
+                                    <div class="flex gap-3 rounded-lg bg-blue-50 p-3 dark:bg-blue-900/20">
+                                        <div class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 border-blue-500 bg-blue-100 text-sm font-bold text-blue-600 dark:border-blue-400 dark:bg-blue-900/40 dark:text-blue-400">2</div>
+                                        <p class="flex-1 text-sm text-gray-700 dark:text-gray-300">
+                                            {{ __('Messages are delivered in real-time to all participants') }}
+                                        </p>
+                                    </div>
+                                    <div class="flex gap-3 rounded-lg bg-blue-50 p-3 dark:bg-blue-900/20">
+                                        <div class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 border-blue-500 bg-blue-100 text-sm font-bold text-blue-600 dark:border-blue-400 dark:bg-blue-900/40 dark:text-blue-400">3</div>
+                                        <p class="flex-1 text-sm text-gray-700 dark:text-gray-300">
+                                            {{ __('View message timestamps and read receipts for better communication tracking') }}
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
                             <div class="space-y-3 flex flex-col items-center">
                                 <x-phone-mockup 
-                                    image="assets/app-manual/profile-3.jpg"
-                                    :alt="__('Account Settings')"
+                                    image="assets/app-manual/chatting.jpg"
+                                    :alt="__('Share Media & Files')"
                                     zoomable="true" />
-                                <p class="text-sm text-center text-gray-700 dark:text-gray-300">
-                                    {{ __('Manage account settings') }}
-                                </p>
+                                <div class="w-full space-y-2">
+                                    <div class="flex gap-3 rounded-lg bg-blue-50 p-3 dark:bg-blue-900/20">
+                                        <div class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 border-blue-500 bg-blue-100 text-sm font-bold text-blue-600 dark:border-blue-400 dark:bg-blue-900/40 dark:text-blue-400">1</div>
+                                        <p class="flex-1 text-sm text-gray-700 dark:text-gray-300">
+                                            {{ __('Tap the attachment icon to share images is not functionality in this version') }}
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
                     </div>
                 </div>
-            </x-table-card>
-
-        <!-- Search History -->
-        <x-table-card variant="emerald">
-                <div class="space-y-6">
-                    <div class="flex items-center gap-3">
-                    <div
-                        class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 shadow-lg">
-                            <svg class="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                        </div>
-                    <h2 class="text-xl font-bold text-gray-900 dark:text-white">{{ __('Search History') }}</h2>
-                    </div>
-
-                <div class="space-y-8">
-                    <!-- First Div: Feature Image + Keypoints -->
-                    <div class="flex flex-col items-center gap-6 lg:flex-row lg:justify-center lg:items-center">
-                        <!-- Feature Image -->
-                        <div class="flex justify-center">
-                            <x-phone-mockup 
-                                image="assets/app-manual/history-feature.jpg"
-                                :alt="__('Search History')"
-                                zoomable="true" />
-                        </div>
-                        <!-- Keypoints -->
-                        <div class="space-y-4 w-full max-w-md">
-                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{{ __('Key Features') }}
-                            </h3>
-                            <ul class="list-disc space-y-2 pl-6 text-sm text-gray-700 dark:text-gray-300">
-                                <li class="font-semibold">
-                                    {{ __('Navigate to History from the navigation drawer or home screen to view your search history') }}
-                                </li>
-                                <li class="font-semibold">
-                                    {{ __('View your recent vehicle searches with timestamps for easy reference') }}
-                                </li>
-                                <li class="font-semibold">
-                                    {{ __('Tap on any history item to quickly access that vehicle again without searching') }}
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <!-- Second Div: 3 Images in Grid -->
-                    <div class="space-y-4">
-                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{{ __('How It Works') }}</h3>
-                        <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
-                            <div class="space-y-3 flex flex-col items-center">
-                                <x-phone-mockup 
-                                    image="assets/app-manual/history-1.jpg"
-                                    :alt="__('Access History')"
-                                    zoomable="true" />
-                                <p class="text-sm text-center text-gray-700 dark:text-gray-300">
-                                    {{ __('Access history from navigation') }}
-                                </p>
-                            </div>
-                            <div class="space-y-3 flex flex-col items-center">
-                                <x-phone-mockup 
-                                    image="assets/app-manual/history-2.jpg"
-                                    :alt="__('View Recent Searches')"
-                                    zoomable="true" />
-                                <p class="text-sm text-center text-gray-700 dark:text-gray-300">
-                                    {{ __('View recent searches with timestamps') }}
-                                </p>
-                            </div>
-                            <div class="space-y-3 flex flex-col items-center">
-                                <x-phone-mockup 
-                                    image="assets/app-manual/history-3.jpg"
-                                    :alt="__('Quick Access Vehicle')"
-                                    zoomable="true" />
-                                <p class="text-sm text-center text-gray-700 dark:text-gray-300">
-                                    {{ __('Quick access to previously viewed vehicles') }}
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                    </div>
-                </div>
-            </x-table-card>
-
-        <!-- Tips & Tricks Section -->
-        <x-table-card variant="amber">
-                <div class="space-y-6">
-                    <div class="flex items-center gap-3">
-                    <div
-                        class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 shadow-lg">
-                            <svg class="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-                            </svg>
-                        </div>
-                    <h2 class="text-xl font-bold text-gray-900 dark:text-white">{{ __('Tips & Tricks') }}</h2>
-                    </div>
-
-                <div class="grid gap-4 md:grid-cols-2">
-                    <div
-                        class="rounded-xl border border-amber-200 bg-amber-50/30 p-4 dark:border-amber-900/50 dark:bg-amber-900/20">
-                        <h3 class="mb-2 text-base font-semibold text-gray-900 dark:text-white">
-                            {{ __('Quick Vehicle Access') }}
-                        </h3>
-                        <p class="text-sm text-gray-700 dark:text-gray-300">
-                            {{ __('Use the recent vehicles section on the home screen for quick access to frequently viewed vehicles') }}
-                        </p>
-                            </div>
-                    <div
-                        class="rounded-xl border border-amber-200 bg-amber-50/30 p-4 dark:border-amber-900/50 dark:bg-amber-900/20">
-                        <h3 class="mb-2 text-base font-semibold text-gray-900 dark:text-white">
-                            {{ __('Efficient Task Management') }}
-                        </h3>
-                        <p class="text-sm text-gray-700 dark:text-gray-300">
-                            {{ __('Set task priorities to help organize your workflow. High priority tasks appear first') }}
-                        </p>
-                    </div>
-                    <div
-                        class="rounded-xl border border-amber-200 bg-amber-50/30 p-4 dark:border-amber-900/50 dark:bg-amber-900/20">
-                        <h3 class="mb-2 text-base font-semibold text-gray-900 dark:text-white">
-                            {{ __('Photo Documentation') }}
-                        </h3>
-                        <p class="text-sm text-gray-700 dark:text-gray-300">
-                            {{ __('Take photos directly from the vehicle details screen for instant documentation without leaving the app') }}
-                        </p>
-                    </div>
-                    <div
-                        class="rounded-xl border border-amber-200 bg-amber-50/30 p-4 dark:border-amber-900/50 dark:bg-amber-900/20">
-                        <h3 class="mb-2 text-base font-semibold text-gray-900 dark:text-white">
-                            {{ __('Group Collaboration') }}
-                        </h3>
-                        <p class="text-sm text-gray-700 dark:text-gray-300">
-                            {{ __('Use group chats for schedule discussions to keep all team members informed in one place') }}
-                        </p>
-                    </div>
-                    <div
-                        class="rounded-xl border border-amber-200 bg-amber-50/30 p-4 dark:border-amber-900/50 dark:bg-amber-900/20">
-                        <h3 class="mb-2 text-base font-semibold text-gray-900 dark:text-white">
-                            {{ __('Notification Management') }}
-                        </h3>
-                        <p class="text-sm text-gray-700 dark:text-gray-300">
-                            {{ __('Check the notifications icon in the toolbar to see all your task and message notifications in one place') }}
-                        </p>
-                    </div>
-                    <div
-                        class="rounded-xl border border-amber-200 bg-amber-50/30 p-4 dark:border-amber-900/50 dark:bg-amber-900/20">
-                        <h3 class="mb-2 text-base font-semibold text-gray-900 dark:text-white">
-                            {{ __('Haptic Feedback') }}
-                        </h3>
-                        <p class="text-sm text-gray-700 dark:text-gray-300">
-                            {{ __('The app provides haptic feedback for better interaction. Feel the vibration when tapping buttons') }}
-                        </p>
-                    </div>
-                    <div
-                        class="rounded-xl border border-amber-200 bg-amber-50/30 p-4 dark:border-amber-900/50 dark:bg-amber-900/20">
-                        <h3 class="mb-2 text-base font-semibold text-gray-900 dark:text-white">
-                            {{ __('Offline Access') }}
-                        </h3>
-                        <p class="text-sm text-gray-700 dark:text-gray-300">
-                            {{ __('Recently viewed vehicles and cached data are available offline. Full functionality requires internet connection') }}
-                        </p>
-                    </div>
-                    </div>
-                </div>
-            </x-table-card>
+            </div>
+        </x-table-card>
 
         <!-- Troubleshooting Section -->
         <x-table-card variant="red">
@@ -650,18 +532,6 @@
                     <div
                         class="rounded-xl border border-red-200 bg-red-50/30 p-4 dark:border-red-900/50 dark:bg-red-900/20">
                         <h3 class="mb-3 text-base font-semibold text-red-900 dark:text-red-400">
-                            {{ __('Notifications Not Appearing') }}
-                        </h3>
-                        <ul class="list-disc space-y-2 pl-6 text-sm text-gray-700 dark:text-gray-300">
-                            <li>{{ __('Check notification permissions in app settings') }}</li>
-                            <li>{{ __('Verify device notification settings are enabled') }}</li>
-                            <li>{{ __('Check if \'Do Not Disturb\' mode is active') }}</li>
-                            <li>{{ __('Restart the app to refresh notification service') }}</li>
-                        </ul>
-                    </div>
-                    <div
-                        class="rounded-xl border border-red-200 bg-red-50/30 p-4 dark:border-red-900/50 dark:bg-red-900/20">
-                        <h3 class="mb-3 text-base font-semibold text-red-900 dark:text-red-400">
                             {{ __('App Crashes or Freezes') }}
                         </h3>
                         <ul class="list-disc space-y-2 pl-6 text-sm text-gray-700 dark:text-gray-300">
@@ -672,23 +542,11 @@
                             <li>{{ __('Contact support if the issue persists') }}</li>
                         </ul>
                     </div>
-                    <div
-                        class="rounded-xl border border-red-200 bg-red-50/30 p-4 dark:border-red-900/50 dark:bg-red-900/20">
-                        <h3 class="mb-3 text-base font-semibold text-red-900 dark:text-red-400">
-                            {{ __('Files Cannot Be Attached') }}
-                        </h3>
-                        <ul class="list-disc space-y-2 pl-6 text-sm text-gray-700 dark:text-gray-300">
-                            <li>{{ __('Ensure file size is under 10MB') }}</li>
-                            <li>{{ __('Grant storage permission if prompted') }}</li>
-                            <li>{{ __('Check that the file format is supported') }}</li>
-                            <li>{{ __('Try selecting the file again') }}</li>
-                        </ul>
-                    </div>
-                    </div>
                 </div>
             </x-table-card>
 
         <!-- Support & Contact Section -->
+        <div class="mt-4">
             <x-table-card variant="violet">
                 <div class="space-y-6">
                     <div class="flex items-center gap-3">
@@ -725,6 +583,7 @@
                     </div>
                 </div>
             </x-table-card>
+        </div>
     </div>
 
     <!-- Smartphone Mockup Styles -->

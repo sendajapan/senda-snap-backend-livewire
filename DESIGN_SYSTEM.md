@@ -1837,6 +1837,14 @@ $upcomingTasks = \App\Models\Task::whereNotIn('status', ['completed', 'cancelled
 - Delete buttons conditionally rendered based on permissions
 - Permission checks implemented in both component methods and Blade templates
 
+### "How It Works" Bullet Points Pattern
+- Card-based design with rounded circular serial numbers matching section variant colors
+- Color matching system: Emerald for Vehicle Search, Purple for Task Management, Blue for Team Communication
+- Responsive 3-column grid layout (1 column mobile, 3 columns desktop)
+- Dark mode support for all color variants
+- Consistent spacing with `mt-8` margin before Keypoints sections
+- Applied to Android App Manual "How It Works" sections
+
 ### Android App Manual Pattern
 For documentation pages that display app features with instructions and screenshots, use an alternating side-by-side layout pattern.
 
@@ -1910,6 +1918,85 @@ For documentation pages that display app features with instructions and screensh
 - Feature documentation with screenshots
 - Step-by-step guides with visual aids
 - Any documentation requiring alternating content layout
+
+**Current Usage**:
+- Android App Manual (`resources/views/android-app-manual.blade.php`)
+
+### "How It Works" Bullet Points Pattern
+For step-by-step instructions in documentation pages, use a card-based design with rounded circular serial numbers that match the section's variant color.
+
+**Structure**:
+```blade
+<div class="grid grid-cols-1 gap-6 md:grid-cols-3">
+    <div class="space-y-3 flex flex-col items-center">
+        <x-phone-mockup 
+            image="assets/app-manual/screenshot.jpg"
+            :alt="__('Screenshot Description')"
+            zoomable="true" />
+        <div class="w-full space-y-2">
+            <div class="flex gap-3 rounded-lg bg-{color}-50 p-3 dark:bg-{color}-900/20">
+                <div class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 border-{color}-500 bg-{color}-100 text-sm font-bold text-{color}-600 dark:border-{color}-400 dark:bg-{color}-900/40 dark:text-{color}-400">1</div>
+                <p class="flex-1 text-sm text-gray-700 dark:text-gray-300">
+                    {{ __('Step description text') }}
+                </p>
+            </div>
+            <!-- Repeat for steps 2, 3, etc. -->
+        </div>
+    </div>
+    <!-- Repeat for additional columns -->
+</div>
+```
+
+**Color Variants by Section**:
+- **Emerald** (`emerald-50`, `emerald-500`, `emerald-600`): Vehicle Search & Photo Upload sections
+- **Purple** (`purple-50`, `purple-500`, `purple-600`): Task & Schedule Management sections
+- **Blue** (`blue-50`, `blue-500`, `blue-600`): Team Communication sections
+
+**Key Features**:
+- **Card-based Design**: Each step is in a rounded card with background color matching section variant
+- **Rounded Circular Badges**: Numbered badges (1, 2, 3) with border and background matching card color
+- **Color Matching**: Bullet point colors automatically match the section's `<x-table-card variant="">` color
+- **Responsive Grid**: 1 column on mobile, 3 columns on desktop (`md:grid-cols-3`)
+- **Dark Mode Support**: All colors have dark mode variants
+- **Consistent Spacing**: `space-y-2` between cards, `gap-3` between badge and text
+- **Flex Layout**: Badge and text use flexbox for proper alignment
+
+**Color Class Mapping**:
+```blade
+<!-- Emerald (Vehicle Search) -->
+bg-emerald-50 dark:bg-emerald-900/20
+border-emerald-500 dark:border-emerald-400
+bg-emerald-100 dark:bg-emerald-900/40
+text-emerald-600 dark:text-emerald-400
+
+<!-- Purple (Task Management) -->
+bg-purple-50 dark:bg-purple-900/20
+border-purple-500 dark:border-purple-400
+bg-purple-100 dark:bg-purple-900/40
+text-purple-600 dark:text-purple-400
+
+<!-- Blue (Team Communication) -->
+bg-blue-50 dark:bg-blue-900/20
+border-blue-500 dark:border-blue-400
+bg-blue-100 dark:bg-blue-900/40
+text-blue-600 dark:text-blue-400
+```
+
+**Keypoints Section Spacing**:
+Add `mt-8` margin-top to the Keypoints container for proper spacing before the "Key Features" section:
+```blade
+<!-- Keypoints -->
+<div class="mt-8 space-y-4 w-full max-w-md">
+    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{{ __('Key Features') }}</h3>
+    <!-- Feature list -->
+</div>
+```
+
+**Use Cases**:
+- Step-by-step instructions in app manuals
+- Feature documentation with numbered steps
+- How-to guides with visual instructions
+- Any documentation requiring sequential numbered steps
 
 **Current Usage**:
 - Android App Manual (`resources/views/android-app-manual.blade.php`)
@@ -2170,7 +2257,15 @@ For the main landing/welcome page, use a hero section with side-by-side features
 **Current Usage**:
 - Landing Page (`resources/views/welcome.blade.php`)
 
-**Version**: 2.9  
+### "How It Works" Bullet Points Pattern
+- Card-based design with rounded circular serial numbers
+- Color matching system: bullet points automatically match section variant colors
+- Emerald for Vehicle Search, Purple for Task Management, Blue for Team Communication
+- Responsive 3-column grid layout
+- Dark mode support for all color variants
+- Consistent spacing with `mt-8` margin before Keypoints sections
+
+**Version**: 2.10  
 **Last Updated**: December 25, 2024  
 **Project**: Laravel Livewire Dashboard - Senda Snap
 

@@ -95,7 +95,7 @@ class TaskSeeder extends Seeder
         // Create tasks for tomorrow
         $this->command->info('Creating tomorrow\'s tasks...');
 
-        for ($i = 1; $i <= 5; $i++) {
+        for ($i = 1; $i <= 2; $i++) {
             $task = Task::create([
                 'title' => fake()->randomElement([
                     'Vehicle Pickup',

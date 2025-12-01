@@ -20,53 +20,59 @@ class UserSeeder extends Seeder
             'password' => Hash::make('password'),
             'role' => 'admin',
             'phone' => '+1234567890',
+            'avatar' => 'avatars/aUZFZnTfL6GbtJ0M7EnDrWfopA6u48MoOim7tiNu.jpg',
             'avis_id' => '',
         ]);
 
         // Create specific manager user
-        $manager = User::create([
+        User::create([
             'name' => 'Shiroyama',
             'email' => 'acj.shiroyama@gmail.com',
             'password' => Hash::make('acjl7861'),
             'role' => 'manager',
             'phone' => '+1234567891',
+            'avatar' => 'avatars/V22VLgZiw1NyCCUYvJhD9AvsJKjHgsjDPsLQza2W.png',
             'avis_id' => '',
         ]);
 
-        $manager1 = User::create([
+        User::create([
             'name' => 'Zafar',
             'email' => 'zafar@kar-men.com',
             'password' => Hash::make('0898'),
             'role' => 'manager',
             'phone' => '+1234567891',
+            'avatar' => 'avatars/7nqcDM16dlEngdZiYgec3WmPUNqNaEj1HbZwMzGL.jpg',
             'avis_id' => '',
         ]);
 
         // Create specific employee users
-        $employee1 = User::create([
+        User::create([
             'name' => 'Kasahara',
             'email' => 'acj.document@gmail.com',
             'password' => Hash::make('kasahara'),
             'role' => 'employee',
             'phone' => '+1234567892',
+            'avatar' => 'avatars/dndoo6bGnZNhnWVkzhvh1KfgnImkaAqCsBlwNG9C.webp',
             'avis_id' => '',
         ]);
 
-        $employee2 = User::create([
+        User::create([
             'name' => 'Akunova Alisa',
             'email' => 'acjl.information@gmail.com',
             'password' => Hash::make('password'),
             'role' => 'employee',
             'phone' => '+1234567893',
+            'avatar' => 'avatars/F5HMzs9YoRWmDSCUm9d0tda1jShgOzb4eEC7Ytk3.png',
             'avis_id' => '',
         ]);
 
-        $employee3 = User::create([
+        User::create([
             'name' => 'Valentine',
             'email' => 'edo100@gmail.com',
             'password' => Hash::make('password'),
             'role' => 'employee',
             'phone' => '+1234567893',
+            'avatar' => 'avatars/4NkFo0WFOGuGUnocQ0EiJIxvRmv0bxA2sSga0gRx.png',
             'avis_id' => '',
         ]);
 

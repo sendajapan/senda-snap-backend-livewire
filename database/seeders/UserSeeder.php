@@ -19,7 +19,7 @@ class UserSeeder extends Seeder
             'email' => 'sulaiman@sendasnap.com',
             'password' => Hash::make('password'),
             'role' => 'admin',
-            'phone' => '+1234567890',
+            'phone' => '+819019735910',
             'avatar' => 'avatars/aUZFZnTfL6GbtJ0M7EnDrWfopA6u48MoOim7tiNu.jpg',
             'avis_id' => '',
         ]);
@@ -30,7 +30,7 @@ class UserSeeder extends Seeder
             'email' => 'acj.shiroyama@gmail.com',
             'password' => Hash::make('acjl7861'),
             'role' => 'manager',
-            'phone' => '+1234567891',
+            'phone' => '+819015505716',
             'avatar' => 'avatars/V22VLgZiw1NyCCUYvJhD9AvsJKjHgsjDPsLQza2W.png',
             'avis_id' => '',
         ]);

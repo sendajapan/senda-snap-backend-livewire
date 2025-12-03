@@ -1575,7 +1575,10 @@ When creating a new page, ensure:
 - Microsoft Surface-style monitor mockup (white frame, minimal stand)
 - Phone mockup without black bezel, transparent frame
 - Vertical separator lines (|) between navigation menu items
-- Particle background animation
+- Mobile hamburger menu with dropdown for small screens (below 768px)
+- Desktop horizontal menu for tablet and larger screens (768px+)
+- Alpine.js-powered mobile menu toggle with smooth slide animations
+- Particle background animation with increased density (divisor: 8000)
 - Responsive design: features and screenshots side-by-side on desktop, stacked on mobile
 - Logo component integration with hover effects
 
@@ -2007,7 +2010,7 @@ For the main landing/welcome page, use a hero section with side-by-side features
 **Structure**:
 ```blade
 <!-- Top Navigation -->
-<nav class="fixed top-0 left-0 right-0 z-50 border-b border-gray-200/50 bg-white/95 backdrop-blur-md dark:border-gray-800/50 dark:bg-gray-900/95 shadow-sm">
+<nav class="fixed top-0 left-0 right-0 z-50 border-b border-gray-200/50 bg-white/95 backdrop-blur-md dark:border-gray-800/50 dark:bg-gray-900/95 shadow-sm" x-data="{ mobileMenuOpen: false }">
     <div class="mx-auto max-w-7xl px-6 py-4">
         <div class="flex items-center justify-between">
             <div class="flex items-center gap-8">
@@ -2018,7 +2021,7 @@ For the main landing/welcome page, use a hero section with side-by-side features
                     </div>
                 </a>
                 
-                <!-- Menu Items with Vertical Separators -->
+                <!-- Desktop Menu Items with Vertical Separators -->
                 <div class="hidden items-center gap-0 md:flex">
                     <a href="{{ route('admin.manual') }}" class="rounded-lg px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-800 transition-all">
                         {{ __('Admin Manual') }}
@@ -2033,7 +2036,60 @@ For the main landing/welcome page, use a hero section with side-by-side features
                     </a>
                 </div>
             </div>
-            <!-- Login/Dashboard Button -->
+            <div class="flex items-center gap-3">
+                <!-- Mobile Menu Button -->
+                <button @click="mobileMenuOpen = !mobileMenuOpen" class="rounded-lg p-2 text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800 md:hidden" aria-label="Toggle menu">
+                    <svg x-show="!mobileMenuOpen" class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                    <svg x-show="mobileMenuOpen" class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="display: none;">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+                <!-- Desktop Auth Buttons -->
+                <div class="hidden md:flex items-center gap-3">
+                    @auth
+                        <a href="{{ route('dashboard') }}" class="rounded-lg bg-gradient-to-r from-violet-600 to-purple-600 px-5 py-2.5 text-sm font-semibold text-white transition-all hover:from-violet-700 hover:to-purple-700 hover:shadow-lg hover:shadow-violet-500/50">
+                            {{ __('Dashboard') }}
+                        </a>
+                    @else
+                        <a href="{{ route('login') }}" class="rounded-lg border-2 border-gray-300 bg-white px-5 py-2.5 text-sm font-semibold text-gray-900 transition-all hover:bg-gray-50 hover:border-gray-400 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700 dark:hover:border-gray-600">
+                            {{ __('Log in') }}
+                        </a>
+                    @endauth
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Menu Dropdown -->
+        <div x-show="mobileMenuOpen" 
+             x-transition:enter="transition ease-out duration-200"
+             x-transition:enter-start="opacity-0 -translate-y-2"
+             x-transition:enter-end="opacity-100 translate-y-0"
+             x-transition:leave="transition ease-in duration-150"
+             x-transition:leave-start="opacity-100 translate-y-0"
+             x-transition:leave-end="opacity-0 -translate-y-2"
+             class="mt-4 space-y-2 border-t border-gray-200/50 pt-4 dark:border-gray-700/50 md:hidden"
+             style="display: none;">
+            <a href="{{ route('admin.manual') }}" class="block rounded-lg px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800">
+                {{ __('Admin Manual') }}
+            </a>
+            <a href="{{ route('android.app.manual') }}" class="block rounded-lg px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800">
+                {{ __('Android Manual') }}
+            </a>
+            <a href="{{ route('api.docs') }}" class="block rounded-lg px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800">
+                {{ __('API Docs') }}
+            </a>
+            <div class="pt-2 border-t border-gray-200/50 dark:border-gray-700/50">
+                @auth
+                    <a href="{{ route('dashboard') }}" class="block rounded-lg bg-gradient-to-r from-violet-600 to-purple-600 px-4 py-2.5 text-sm font-semibold text-white text-center transition-all hover:from-violet-700 hover:to-purple-700">
+                        {{ __('Dashboard') }}
+                    </a>
+                @else
+                    <a href="{{ route('login') }}" class="block rounded-lg border-2 border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-900 text-center transition-all hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700">
+                        {{ __('Log in') }}
+                    </a>
+                @endauth
+            </div>
         </div>
     </div>
 </nav>
@@ -2245,8 +2301,19 @@ For the main landing/welcome page, use a hero section with side-by-side features
 - **Backdrop Blur**: `backdrop-blur-md` for modern glass effect
 - **Menu Item Hover**: Background color change on hover
 - **Vertical Separators**: Transparent lines between menu items (`bg-gray-300/50`)
-- **Responsive**: Menu items hidden on mobile (`hidden md:flex`)
+- **Desktop Menu**: Horizontal menu bar visible on `md` screens and above (768px+)
+- **Mobile Menu**: Hamburger button with dropdown menu for screens below `md` (below 768px)
+- **Alpine.js Integration**: Uses `x-data="{ mobileMenuOpen: false }"` for toggle functionality
+- **Smooth Transitions**: Mobile menu slides down with fade animation
 - **Logo Hover**: Scale effect on logo hover (`group-hover:scale-105`)
+
+**Mobile Menu Pattern**:
+- **Hamburger Button**: Visible on screens below `md` breakpoint (`md:hidden`)
+- **Toggle Icons**: Hamburger icon (☰) when closed, X icon (✕) when open
+- **Dropdown Menu**: Slides down below navigation bar with fade and slide animation
+- **Menu Items**: All navigation links displayed vertically in mobile menu
+- **Auth Buttons**: Login/Dashboard button included at bottom of mobile menu with separator
+- **Responsive Breakpoint**: Desktop menu at `md:flex`, mobile menu at `md:hidden`
 
 **Spacing**:
 - Top padding: `pt-40` (to account for fixed navigation)
@@ -2265,7 +2332,7 @@ For the main landing/welcome page, use a hero section with side-by-side features
 - Dark mode support for all color variants
 - Consistent spacing with `mt-8` margin before Keypoints sections
 
-**Version**: 2.10  
+**Version**: 2.11  
 **Last Updated**: December 25, 2024  
 **Project**: Laravel Livewire Dashboard - Senda Snap
 

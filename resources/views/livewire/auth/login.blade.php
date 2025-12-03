@@ -99,13 +99,13 @@
                 <p class="mb-3 text-xs font-semibold text-gray-600 dark:text-gray-400">{{ __('Quick Login (Development)') }}</p>
                 <div class="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
                     @foreach($users as $user)
-                        <button
-                            type="button"
+                        <button type="button"
                             onclick="fillLoginForm('{{ $user->email }}', '{{ $passwordMap[$user->email] ?? $defaultPassword }}')"
                             class="group flex items-center justify-center rounded-md border border-gray-300 bg-white px-3 py-2 text-xs transition-all hover:border-emerald-500 hover:bg-emerald-50 dark:border-gray-600 dark:bg-gray-700 dark:hover:border-emerald-400 dark:hover:bg-emerald-900/20"
-                            title="Click to fill {{ $user->email }}"
-                        >
-                            <span class="font-medium text-gray-700 group-hover:text-emerald-700 dark:text-gray-300 dark:group-hover:text-emerald-300">{{ $user->name }}</span>
+                            title="Click to fill {{ $user->email }}">
+                            <span class="font-medium text-gray-700 group-hover:text-emerald-700 dark:text-gray-300 dark:group-hover:text-emerald-300">
+                                {{ ($parts = explode(' ', $user->name)) && count($parts) > 1 ? $parts[1] : $user->name }}
+                            </span>
                         </button>
                     @endforeach
                 </div>

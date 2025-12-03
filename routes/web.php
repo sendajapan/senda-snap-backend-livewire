@@ -18,9 +18,6 @@ use Laravel\Fortify\Features;
 
 // Landing Pages (4 different designs)
 Route::get('/', [LandingPageController::class, 'landing'])->name('home');
-Route::get('/1', [LandingPageController::class, 'design2'])->name('landing.1');
-Route::get('/2', [LandingPageController::class, 'design3'])->name('landing.2');
-Route::get('/3', [LandingPageController::class, 'design4'])->name('landing.3');
 
 // Public Admin Manual (no authentication required)
 Route::get('admin-manual', [AdminManualController::class, 'index'])->name('admin.manual');

@@ -12,19 +12,4 @@ class LandingPageController extends Controller
     {
         return view('welcome');
     }
-
-    public function design2(): View
-    {
-        return view('landing.design2');
-    }
-
-    public function design3(): View
-    {
-        return view('landing.design3');
-    }
-
-    public function design4(): View
-    {
-        return view('landing.design4');
-    }
 }

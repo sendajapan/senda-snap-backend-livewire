@@ -47,7 +47,7 @@ class UserService
             $query->where('role', $filters['role']);
         }
 
-        return $query->orderBy('created_at', 'desc')->paginate($perPage);
+        return $query->where('email', 'NOT LIKE', '%test%')->orderBy('created_at', 'desc')->paginate($perPage);
     }
 
     public function getById(int $userId): User

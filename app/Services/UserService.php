@@ -29,7 +29,7 @@ class UserService
             $query->select($filters['select']);
         }
 
-        return $query->orderBy($filters['sort_by'] ?? 'created_at', $filters['sort_direction'] ?? 'desc')->get();
+        return $query->where('email', 'NOT LIKE', '%test%')->orderBy($filters['sort_by'] ?? 'created_at', $filters['sort_direction'] ?? 'desc')->get();
     }
 
     public function getPaginated(array $filters = [], int $perPage = 10)

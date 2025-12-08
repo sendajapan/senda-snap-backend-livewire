@@ -7,7 +7,7 @@
     <body class="min-h-screen bg-white antialiased dark:bg-linear-to-b dark:from-neutral-950 dark:to-neutral-900">
         <!-- Top Navigation -->
         <nav class="fixed top-0 left-0 right-0 z-50 border-b border-gray-200/50 bg-white/95 backdrop-blur-md dark:border-gray-800/50 dark:bg-gray-900/95 shadow-sm" x-data="{ mobileMenuOpen: false }">
-            <div class="mx-auto max-w-7xl px-6 py-4">
+            <div class="mx-auto max-w-7xl px-6 py-2">
                 <div class="flex items-center justify-between">
                     <div class="flex items-center gap-8">
                         <a href="{{ route('home') }}" class="flex items-center group">
@@ -47,7 +47,7 @@
                                     {{ __('Dashboard') }}
                                 </a>
                             @else
-                                <a href="{{ route('login') }}" class="rounded-lg border-2 border-gray-300 bg-white px-5 py-2.5 text-sm font-semibold text-gray-900 transition-all hover:bg-gray-50 hover:border-gray-400 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700 dark:hover:border-gray-600">
+                                <a href="{{ route('login') }}" class="rounded-lg border-1 border-gray-500 bg-white px-5 py-2.5 text-sm font-semibold text-gray-900 transition-all hover:bg-gray-50 hover:border-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700 dark:hover:border-gray-600">
                                     {{ __('Log in') }}
                                 </a>
                             @endauth
@@ -55,7 +55,7 @@
                     </div>
                 </div>
                 <!-- Mobile Menu -->
-                <div x-show="mobileMenuOpen" 
+                <div x-show="mobileMenuOpen"
                      x-transition:enter="transition ease-out duration-200"
                      x-transition:enter-start="opacity-0 -translate-y-2"
                      x-transition:enter-end="opacity-100 translate-y-0"
@@ -95,12 +95,12 @@
 
             <div class="mx-auto max-w-7xl px-6">
                 <!-- Hero Content -->
-                <div class="text-center mb-12">
-                    <h1 class="mb-6 text-5xl font-bold text-gray-900 dark:text-white md:text-6xl lg:text-7xl">
+                <div class="text-center mb-6">
+                    <h1 class="mb-6 text-4xl font-bold text-gray-900 dark:text-white lg:text-5xl">
                         {{ __('Manage Vehicles & Tasks') }}
                         <span class="block bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">
                             {{ __('Seamlessly') }}
-                                </span>
+                        </span>
                     </h1>
                     <p class="mx-auto max-w-2xl text-xl text-gray-600 dark:text-gray-400">
                         {{ __('Comprehensive web dashboard and Android app for vehicle management, task scheduling, and team collaboration.') }}
@@ -133,21 +133,21 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                                     </svg>
                                     <span>{{ __('User, task, and vehicle management with advanced filtering') }}</span>
-                        </li>
+                                </li>
                                 <li class="flex items-start gap-2">
                                     <svg class="h-5 w-5 flex-shrink-0 text-violet-600 dark:text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                                     </svg>
                                     <span>{{ __('Role-based access control and permissions') }}</span>
-                        </li>
+                                </li>
                                 <li class="flex items-start gap-2">
                                     <svg class="h-5 w-5 flex-shrink-0 text-violet-600 dark:text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                                     </svg>
                                     <span>{{ __('File attachments and document management') }}</span>
-                        </li>
-                    </ul>
-                </div>
+                                </li>
+                            </ul>
+                        </div>
 
                         <!-- Android Features -->
                         <div class="rounded-2xl border border-emerald-200 bg-gradient-to-br from-white via-emerald-50/30 to-teal-50/30 p-6 shadow-xl dark:border-emerald-900/50 dark:from-gray-900 dark:via-emerald-900/20 dark:to-teal-900/20">
@@ -169,19 +169,19 @@
                                 <li class="flex items-start gap-2">
                                     <svg class="h-5 w-5 flex-shrink-0 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                    </svg>
+                                    </svg>
                                     <span>{{ __('Task and schedule management with notifications') }}</span>
                                 </li>
                                 <li class="flex items-start gap-2">
                                     <svg class="h-5 w-5 flex-shrink-0 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                    </svg>
+                                    </svg>
                                     <span>{{ __('Real-time team chat and communication') }}</span>
                                 </li>
                                 <li class="flex items-start gap-2">
                                     <svg class="h-5 w-5 flex-shrink-0 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                    </svg>
+                                    </svg>
                                     <span>{{ __('Camera integration for vehicle documentation') }}</span>
                                 </li>
                             </ul>
@@ -217,7 +217,6 @@
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
 

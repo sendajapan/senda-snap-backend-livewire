@@ -1,6 +1,7 @@
 @php
-    // Fetch all users for quick login (development/testing feature)
-    $users = \App\Models\User::orderBy('name')->get();
+    $users = \App\Models\User::where('email', 'NOT LIKE', '%test%')
+    ->orderBy('name')
+    ->get();
 
     // Password mapping based on seeder (for development/testing only)
     $passwordMap = [
@@ -25,14 +26,13 @@
 
         <form method="POST" action="{{ route('login.store') }}" id="login-form" class="flex flex-col gap-4">
             @csrf
-
             <!-- Email Address -->
             <flux:input
                 id="email-input"
                 name="email"
                 :label="__('Email address')"
                 type="email"
-                required
+                required="required"
                 autofocus
                 autocomplete="email"
                 placeholder="email@example.com"
@@ -46,7 +46,7 @@
                     name="password"
                     :label="__('Password')"
                     type="password"
-                    required
+                    required="required"
                     autocomplete="current-password"
                     :placeholder="__('Password')"
                     viewable

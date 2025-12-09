@@ -16,7 +16,7 @@ class TaskService
         $query = Task::with(['assignedUsers', 'creator', 'attachments']);
 
         // if got search keyword then search in title or description
-        if (!empty($filters['search'])) {
+        if (! empty($filters['search'])) {
             $search = $filters['search'];
             $query->where(function ($q) use ($search) {
                 $q->where('title', 'like', "%{$search}%")
@@ -25,32 +25,32 @@ class TaskService
         }
 
         // filter by status if needed
-        if (!empty($filters['status'])) {
+        if (! empty($filters['status'])) {
             $query->where('status', $filters['status']);
         }
 
         // filter by priority also can
-        if (!empty($filters['priority'])) {
+        if (! empty($filters['priority'])) {
             $query->where('priority', $filters['priority']);
         }
 
         // filter by which user assigned to
-        if (!empty($filters['assigned_to'])) {
+        if (! empty($filters['assigned_to'])) {
             $query->whereHas('assignedUsers', function ($q) use ($filters) {
                 $q->where('users.id', $filters['assigned_to']);
             });
         }
 
         // filter by date from and to
-        if (!empty($filters['date_from'])) {
+        if (! empty($filters['date_from'])) {
             $query->where('work_date', '>=', $filters['date_from']);
         }
-        if (!empty($filters['date_to'])) {
+        if (! empty($filters['date_to'])) {
             $query->where('work_date', '<=', $filters['date_to']);
         }
 
         // sorting, default is newest first
-        if (!empty($filters['sort_by']) && !empty($filters['sort_direction'])) {
+        if (! empty($filters['sort_by']) && ! empty($filters['sort_direction'])) {
             $query->orderBy($filters['sort_by'], $filters['sort_direction']);
         } else {
             $query->orderBy('created_at', 'desc');
@@ -73,7 +73,7 @@ class TaskService
         ]);
 
         // assign users to this task if got any
-        if (!empty($assignedUserIds)) {
+        if (! empty($assignedUserIds)) {
             $task->assignedUsers()->sync($assignedUserIds);
         }
 
@@ -92,7 +92,7 @@ class TaskService
             'priority' => $data['priority'] ?? null,
             'status' => $data['status'] ?? null,
             'due_date' => $data['due_date'] ?? null,
-        ], fn($value) => $value !== null));
+        ], fn ($value) => $value !== null));
 
         // update who assigned to this task also if got changes
         if ($assignedUserIds !== null) {
@@ -135,6 +135,11 @@ class TaskService
         }
 
         $task->update($updateData);
+
+        // Refresh the model to ensure we have the latest data from database
+        $task->refresh();
+
+        // Reload relationships
         $task->load(['assignedUsers', 'creator', 'attachments']);
 
         return $task;
@@ -173,7 +178,7 @@ class TaskService
     public function replaceAttachments(Task $task, array $files, int $uploadedBy): void
     {
         $this->clearAttachments($task);
-        if (!empty($files)) {
+        if (! empty($files)) {
             $this->addAttachments($task, $files, $uploadedBy);
         }
     }
@@ -211,10 +216,10 @@ class TaskService
             ->where('created_by', $userId);
 
         // Apply filters
-        if (!empty($filters['status'])) {
+        if (! empty($filters['status'])) {
             $query->where('status', $filters['status']);
         }
-        if (!empty($filters['priority'])) {
+        if (! empty($filters['priority'])) {
             $query->where('priority', $filters['priority']);
         }
 
@@ -229,10 +234,10 @@ class TaskService
             });
 
         // Apply filters
-        if (!empty($filters['status'])) {
+        if (! empty($filters['status'])) {
             $query->where('status', $filters['status']);
         }
-        if (!empty($filters['priority'])) {
+        if (! empty($filters['priority'])) {
             $query->where('priority', $filters['priority']);
         }
 
@@ -244,15 +249,15 @@ class TaskService
         $query = Task::with(['assignedUsers', 'creator', 'attachments'])
             ->whereDate('work_date', today());
 
-        if (!empty($filters['status'])) {
+        if (! empty($filters['status'])) {
             $query->where('status', $filters['status']);
         }
 
-        if (!empty($filters['priority'])) {
+        if (! empty($filters['priority'])) {
             $query->where('priority', $filters['priority']);
         }
 
-        if (!empty($filters['assigned_to'])) {
+        if (! empty($filters['assigned_to'])) {
             $query->whereHas('assignedUsers', function ($q) use ($filters) {
                 $q->where('users.id', $filters['assigned_to']);
             });
@@ -267,32 +272,32 @@ class TaskService
     {
         $query = Task::with(['assignedUsers', 'creator', 'attachments']);
 
-        if (!empty($filters['search'])) {
+        if (! empty($filters['search'])) {
             $query->where(function ($q) use ($filters) {
                 $q->where('title', 'like', "%{$filters['search']}%")
                     ->orWhere('description', 'like', "%{$filters['search']}%");
             });
         }
 
-        if (!empty($filters['status'])) {
+        if (! empty($filters['status'])) {
             $query->where('status', $filters['status']);
         }
 
-        if (!empty($filters['priority'])) {
+        if (! empty($filters['priority'])) {
             $query->where('priority', $filters['priority']);
         }
 
-        if (!empty($filters['assigned_to'])) {
+        if (! empty($filters['assigned_to'])) {
             $query->whereHas('assignedUsers', function ($q) use ($filters) {
                 $q->where('users.id', $filters['assigned_to']);
             });
         }
 
-        if (!empty($filters['from_date'])) {
+        if (! empty($filters['from_date'])) {
             $query->whereDate('work_date', '>=', $filters['from_date']);
         }
 
-        if (!empty($filters['to_date'])) {
+        if (! empty($filters['to_date'])) {
             $query->whereDate('work_date', '<=', $filters['to_date']);
         }
 
@@ -380,5 +385,72 @@ class TaskService
         return $query->orderBy('work_date', 'desc')
             ->orderBy('work_time', 'desc')
             ->get();
+    }
+
+    /**
+     * Get all tasks grouped by status for Kanban board
+     */
+    public function getTasksGroupedByStatus(array $filters = []): array
+    {
+        $query = Task::with(['assignedUsers', 'creator', 'attachments']);
+
+        // Apply search filter
+        if (isset($filters['search']) && $filters['search'] !== '' && $filters['search'] !== null) {
+            $query->where(function ($q) use ($filters) {
+                $q->where('title', 'like', "%{$filters['search']}%")
+                    ->orWhere('description', 'like', "%{$filters['search']}%");
+            });
+        }
+
+        // Apply priority filter
+        if (isset($filters['priority']) && $filters['priority'] !== '' && $filters['priority'] !== null) {
+            \Log::info('Applying priority filter in getTasksGroupedByStatus', [
+                'priority_value' => $filters['priority'],
+                'priority_type' => gettype($filters['priority']),
+                'all_filters' => $filters,
+            ]);
+            $query->where('priority', $filters['priority']);
+        } else {
+            \Log::info('Priority filter NOT applied in getTasksGroupedByStatus', [
+                'isset' => isset($filters['priority']),
+                'value' => $filters['priority'] ?? 'not set',
+            ]);
+        }
+
+        // Apply assigned user filter
+        if (isset($filters['assigned_to']) && $filters['assigned_to'] !== '' && $filters['assigned_to'] !== null) {
+            $query->whereHas('assignedUsers', function ($q) use ($filters) {
+                $q->where('users.id', $filters['assigned_to']);
+            });
+        }
+
+        // Apply date range filters
+        if (isset($filters['from_date']) && $filters['from_date'] !== '' && $filters['from_date'] !== null) {
+            $query->whereDate('work_date', '>=', $filters['from_date']);
+        }
+
+        if (isset($filters['to_date']) && $filters['to_date'] !== '' && $filters['to_date'] !== null) {
+            $query->whereDate('work_date', '<=', $filters['to_date']);
+        }
+
+        // Get fresh data from database - ensure we're not using cached results
+        \Log::info('Kanban Query SQL', [
+            'sql' => $query->toSql(),
+            'bindings' => $query->getBindings(),
+        ]);
+        $tasks = $query->orderBy('created_at', 'desc')->get();
+        \Log::info('Kanban Query Results', [
+            'total_tasks' => $tasks->count(),
+            'priorities' => $tasks->pluck('priority')->unique()->values()->toArray(),
+        ]);
+
+        // Group tasks by status and ensure we return fresh collections
+        // Using values() to reset keys and ensure proper collection structure
+        return [
+            'pending' => $tasks->where('status', 'pending')->values(),
+            'running' => $tasks->where('status', 'running')->values(),
+            'completed' => $tasks->where('status', 'completed')->values(),
+            'cancelled' => $tasks->where('status', 'cancelled')->values(),
+        ];
     }
 }

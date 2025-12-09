@@ -10,19 +10,22 @@ class TaskSeeder extends Seeder
 {
     /**
      * Run the database seeds.
+     * This seeder creates tasks for existing users. It will create new tasks each time it runs.
      */
     public function run(): void
     {
-        // Get users for assignment
+        // Get users for assignment (works with existing users)
         $admin = User::where('email', 'sulaiman@sendasnap.com')->first();
         $manager = User::where('email', 'acj.shiroyama@gmail.com')->first();
         $employees = User::where('role', 'employee')->get();
 
         if (! $admin || ! $manager || $employees->isEmpty()) {
-            $this->command->error('Users must be seeded first. Run UserSeeder before TaskSeeder.');
+            $this->command->error('Required users not found. Please ensure users exist before running TaskSeeder.');
 
             return;
         }
+
+        $this->command->info('Creating tasks for existing users...');
 
         // Create tasks for today
         $this->command->info('Creating today\'s tasks...');

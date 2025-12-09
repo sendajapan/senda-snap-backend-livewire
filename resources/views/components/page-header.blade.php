@@ -40,12 +40,14 @@
     $classes = $variants[$variant] ?? $variants['blue'];
 @endphp
 
-<div class="group relative overflow-hidden rounded-2xl border {{ $classes['border'] }} {{ $classes['bg'] }} p-6 shadow-xl transition-all duration-300 hover:shadow-2xl">
-    <!-- Decorative Elements -->
-    <div class="absolute -right-8 -top-8 h-32 w-32 rounded-full {{ $classes['decorTop'] }} blur-2xl"></div>
-    <div class="absolute -bottom-8 -left-8 h-32 w-32 rounded-full {{ $classes['decorBottom'] }} blur-2xl"></div>
+<div class="group relative rounded-2xl border {{ $classes['border'] }} {{ $classes['bg'] }} p-6 shadow-xl transition-all duration-300 hover:shadow-2xl">
+    <!-- Decorative Elements Container (with overflow-hidden to clip decorative elements) -->
+    <div class="absolute inset-0 overflow-hidden rounded-2xl pointer-events-none">
+        <div class="absolute -right-8 -top-8 h-32 w-32 rounded-full {{ $classes['decorTop'] }} blur-2xl"></div>
+        <div class="absolute -bottom-8 -left-8 h-32 w-32 rounded-full {{ $classes['decorBottom'] }} blur-2xl"></div>
+    </div>
     
-    <div class="relative flex items-center justify-between">
+    <div class="relative flex items-center justify-between z-10">
         <div class="flex items-center gap-4">
             @if(isset($icon))
                 <div class="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-2xl {{ $classes['iconBg'] }} shadow-lg">

@@ -56,9 +56,11 @@
                                 {{ __('All Tasks') }}
                             </flux:navlist.item>
                             <flux:navlist.item
-                                disabled
-                                class="text-sm opacity-50 cursor-not-allowed">
-                                {{ __('Kanban Board') }} <span class="text-xs">({{ __('Coming Soon') }})</span>
+                                :href="route('tasks.kanban')"
+                                :current="request()->routeIs('tasks.kanban')"
+                                wire:navigate
+                                class="text-sm">
+                                {{ __('Kanban Board') }}
                             </flux:navlist.item>
                         </div>
                     </div>

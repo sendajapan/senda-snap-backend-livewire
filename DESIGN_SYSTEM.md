@@ -2556,3 +2556,213 @@ public function listAll(array $filters = []): \Illuminate\Database\Eloquent\Coll
 - Keep UI within `<x-table-card>` and follow spacing, borders, and dark mode rules above.
 
 This is the canonical table pattern. Reuse as-is and adapt field names only.
+
+---
+
+## 📋 Kanban Board Pattern
+
+### Purpose
+Display tasks in a drag-and-drop Kanban board layout with status-based columns (Pending, Running, Completed, Cancelled).
+
+### Structure
+
+**Livewire Component**:
+```php
+<?php
+
+namespace App\Livewire\Tasks;
+
+use App\Services\TaskService;
+use Livewire\Component;
+
+class KanbanBoard extends Component
+{
+    public ?string $search = null;
+    public ?string $priorityFilter = null;
+    public ?string $assignedToFilter = null;
+    public ?string $fromDate = null;
+    public ?string $toDate = null;
+    public int $refreshKey = 0; // Critical for filter refresh
+
+    public function mount(): void
+    {
+        // Set default date range: 1 month back to today
+        $this->fromDate = now()->subMonth()->format('Y-m-d');
+        $this->toDate = now()->format('Y-m-d');
+    }
+
+    public function updatedPriorityFilter($value): void
+    {
+        $this->priorityFilter = ($value === '' || $value === null) ? null : trim($value);
+        $this->refreshKey++; // Force refresh
+    }
+
+    public function render(TaskService $taskService): View
+    {
+        $filters = [];
+        // Build filters array...
+        
+        $tasksByStatus = $taskService->getTasksGroupedByStatus($filters);
+        
+        return view('livewire.tasks.kanban-board', [
+            'tasksByStatus' => $tasksByStatus,
+        ]);
+    }
+}
+```
+
+**Blade Template Structure**:
+```blade
+<div class="flex h-full w-full flex-1 flex-col gap-4 min-w-[1280px]" x-data="{...}">
+    <!-- Page Header -->
+    <x-page-header variant="emerald" ... />
+
+    <!-- Filters Card with Kanban Board -->
+    <x-table-card variant="emerald" class="flex flex-col flex-1 min-h-0 min-w-[1280px]">
+        <!-- Filters Section -->
+        <div class="mb-4 flex-shrink-0">
+            <h3>Filters</h3>
+            <div class="flex flex-col md:flex-row flex-wrap gap-3 md:gap-4">
+                <flux:input wire:model.live.debounce.300ms="search" ... />
+                <flux:select wire:model.live="priorityFilter" ... />
+                <flux:select wire:model.live="assignedToFilter" ... />
+                <flux:input type="date" wire:model.live="fromDate" ... />
+                <flux:input type="date" wire:model.live="toDate" ... />
+            </div>
+        </div>
+
+        <flux:separator class="my-4" />
+
+        <!-- Kanban Board -->
+        <div class="flex-1 overflow-x-auto overflow-y-hidden min-h-0" 
+             wire:key="kanban-board-{{ $refreshKey }}-{{ md5(($priorityFilter ?? '') . '|' . ($assignedToFilter ?? '')) }}">
+            <div class="h-full w-full">
+                <div class="grid grid-cols-4 gap-0 h-full">
+                    <!-- Pending Column -->
+                    <div class="flex flex-col border-r border-gray-200 dark:border-gray-700 pr-3 h-full overflow-hidden"
+                         @dragover.prevent="handleDragOver($event, 'pending')"
+                         @drop.prevent="handleDrop($event, 'pending')">
+                        <div class="flex-shrink-0 mb-3 rounded-lg border border-emerald-200 bg-emerald-50 p-3 shadow-md dark:border-emerald-900/50 dark:bg-emerald-900/20">
+                            <h3>Pending</h3>
+                        </div>
+                        <div class="flex flex-col gap-2 flex-1 overflow-y-auto">
+                            @forelse($tasksByStatus['pending'] as $task)
+                                <div draggable="true" @dragstart="handleDragStart($event, {{ $task->id }}, 'pending')">
+                                    <x-task-card-kanban :task="$task" status="pending" />
+                                </div>
+                            @empty
+                                <div>No tasks</div>
+                            @endforelse
+                        </div>
+                    </div>
+                    <!-- Repeat for Running, Completed, Cancelled -->
+                </div>
+            </div>
+        </div>
+    </x-table-card>
+</div>
+```
+
+### Key Features
+
+1. **Column Headers**: Solid background colors matching status
+   - Pending: `bg-emerald-50 dark:bg-emerald-900/20`
+   - Running: `bg-blue-50 dark:bg-blue-900/20`
+   - Completed: `bg-green-50 dark:bg-green-900/20`
+   - Cancelled: `bg-red-50 dark:bg-red-900/20`
+
+2. **Task Cards**: Gradient backgrounds with 50% opacity
+   - Use `<x-task-card-kanban>` component
+   - Colors match column status
+   - Display: title, description, priority badge, assigned users, created time, preview button
+
+3. **Drag and Drop**: Alpine.js implementation
+   - `handleDragStart()`: Store task ID and source status
+   - `handleDragOver()`: Visual feedback on drop zones
+   - `handleDrop()`: Call Livewire method to update status
+   - Force refresh after drop: `$wire.$refresh()` or increment `refreshKey`
+
+4. **Filtering**: 
+   - Search (title/description)
+   - Priority (low, medium, high, urgent)
+   - Assigned user
+   - Date range (from/to)
+   - Default: 1 month back to today
+
+5. **Responsive Design**:
+   - Minimum width: `min-w-[1280px]` (xl breakpoint)
+   - Fixed 4-column grid: `grid-cols-4`
+   - Horizontal scroll on smaller screens
+   - Fixed height with vertical scroll per column
+
+6. **Refresh Pattern**:
+   - Use `refreshKey` property in component
+   - Increment in all `updatedXxx()` filter methods
+   - Include in `wire:key` for main container
+   - Ensures view updates when filters change
+
+### Task Card Component (`<x-task-card-kanban>`)
+
+**Props**:
+- `task`: Task model instance
+- `status`: Status for color theming (pending, running, completed, cancelled)
+
+**Features**:
+- Gradient background with 50% opacity matching status color
+- Compact layout with title, description, priority badge
+- Assigned users avatars (max 2 visible + count)
+- Attachment count indicator
+- Created time in 12-hour format (highlighted)
+- Preview button at bottom end
+- Drag-and-drop enabled
+
+**Color Mapping**:
+- Each status has its own color scheme (border, background, text, icons)
+- Colors are defined in PHP array and applied dynamically
+- Dark mode support for all color variants
+
+### Service Method Pattern
+
+```php
+public function getTasksGroupedByStatus(array $filters = []): array
+{
+    $query = Task::with(['assignedUsers', 'creator', 'attachments']);
+
+    // Apply filters
+    if (isset($filters['search']) && $filters['search'] !== '' && $filters['search'] !== null) {
+        $query->where(function ($q) use ($filters) {
+            $q->where('title', 'like', "%{$filters['search']}%")
+                ->orWhere('description', 'like', "%{$filters['search']}%");
+        });
+    }
+
+    if (isset($filters['priority']) && $filters['priority'] !== '' && $filters['priority'] !== null) {
+        $query->where('priority', $filters['priority']);
+    }
+
+    // ... other filters
+
+    $tasks = $query->orderBy('created_at', 'desc')->get();
+
+    // Group by status
+    return [
+        'pending' => $tasks->where('status', 'pending')->values(),
+        'running' => $tasks->where('status', 'running')->values(),
+        'completed' => $tasks->where('status', 'completed')->values(),
+        'cancelled' => $tasks->where('status', 'cancelled')->values(),
+    ];
+}
+```
+
+### Critical Requirements
+
+- ✅ Always use `refreshKey` pattern for filter updates
+- ✅ Minimum width: `min-w-[1280px]` for main container and table-card
+- ✅ Fixed 4-column grid (no responsive breakpoints)
+- ✅ Column headers use solid colors (not gradients)
+- ✅ Task cards use gradients with 50% opacity
+- ✅ Time display in 12-hour format with AM/PM
+- ✅ Preview button at bottom end of each card
+- ✅ Force refresh after drag-and-drop operations
+- ✅ Shadow should not be cropped (no `overflow-hidden` on table-card)
+- ✅ Each column has independent vertical scrolling

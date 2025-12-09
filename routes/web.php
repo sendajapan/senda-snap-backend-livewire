@@ -44,6 +44,7 @@ Route::middleware(['auth'])->group(function () {
     Route::redirect('tasks', 'tasks/today')->name('tasks.index');
     Route::get('tasks/today', TodayTasks::class)->name('tasks.today');
     Route::get('tasks/all', AllTasks::class)->name('tasks.all');
+    Route::get('tasks/kanban', \App\Livewire\Tasks\KanbanBoard::class)->name('tasks.kanban');
     Route::get('tasks/create', fn () => view('livewire.tasks.create'))->name('tasks.create');
     Route::get('tasks/{task}/edit', fn ($task) => view('livewire.tasks.edit', ['task' => $task]))->name('tasks.edit');
     Route::get('tasks/{task}', fn ($task) => view('livewire.tasks.show', ['task' => $task]))->name('tasks.show');

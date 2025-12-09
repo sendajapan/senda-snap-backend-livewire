@@ -737,6 +737,93 @@ public function canDelete(): bool
 9. **Pagination**: Use `WithPagination` trait for paginated lists
 10. **Preview Components**: Use center dialog modals for read-only previews
 11. **Permission Checks**: Implement `canDelete()` methods for conditional UI rendering
+12. **Filter Refresh Pattern**: When implementing filters that update component state, always increment a `refreshKey` property in `updatedXxx()` methods to force view re-renders
+
+### Filter Refresh Pattern (Critical for Livewire Components)
+
+**Problem**: When filters are applied via `wire:model.live`, Livewire may not always detect the change and refresh the view, especially when the filtered data is displayed in complex layouts (like Kanban boards, tables, or grids).
+
+**Solution**: Use a `refreshKey` pattern to force component re-renders when filters change.
+
+**Implementation**:
+
+```php
+<?php
+
+namespace App\Livewire\Tasks;
+
+use App\Services\TaskService;
+use Livewire\Component;
+
+class KanbanBoard extends Component
+{
+    public ?string $priorityFilter = null;
+    public ?string $assignedToFilter = null;
+    public int $refreshKey = 0; // Force refresh counter
+
+    /**
+     * When priority filter changes, increment refreshKey to force re-render
+     */
+    public function updatedPriorityFilter($value): void
+    {
+        $this->priorityFilter = ($value === '' || $value === null) ? null : trim($value);
+        // CRITICAL: Increment refreshKey to force view refresh
+        $this->refreshKey++;
+    }
+
+    /**
+     * When assigned user filter changes, increment refreshKey
+     */
+    public function updatedAssignedToFilter($value): void
+    {
+        $this->assignedToFilter = ($value === '' || $value === null) ? null : $value;
+        // CRITICAL: Increment refreshKey to force view refresh
+        $this->refreshKey++;
+    }
+
+    public function render(TaskService $taskService): View
+    {
+        $filters = [];
+        
+        if ($this->priorityFilter !== null && $this->priorityFilter !== '') {
+            $filters['priority'] = $this->priorityFilter;
+        }
+        
+        if ($this->assignedToFilter !== null && $this->assignedToFilter !== '') {
+            $filters['assigned_to'] = $this->assignedToFilter;
+        }
+
+        $tasksByStatus = $taskService->getTasksGroupedByStatus($filters);
+
+        return view('livewire.tasks.kanban-board', [
+            'tasksByStatus' => $tasksByStatus,
+        ]);
+    }
+}
+```
+
+**In Blade Template**:
+
+```blade
+<!-- Use refreshKey in wire:key to force re-render when filters change -->
+<div wire:key="kanban-board-{{ $refreshKey }}-{{ md5(($priorityFilter ?? '') . '|' . ($assignedToFilter ?? '')) }}">
+    <!-- Kanban board content -->
+</div>
+```
+
+**Key Points**:
+- ✅ Always add `public int $refreshKey = 0;` property to components with filters
+- ✅ Increment `$this->refreshKey++` in ALL `updatedXxx()` filter methods
+- ✅ Include `refreshKey` in `wire:key` attributes for main content containers
+- ✅ Optionally include filter values in `wire:key` hash for additional specificity
+- ✅ This ensures Livewire detects changes and refreshes the view properly
+- ❌ Without this pattern, filters may work in the backend but the view won't update
+
+**When to Use**:
+- Components with multiple filters (search, status, priority, date ranges, etc.)
+- Complex layouts (Kanban boards, grids, tables with filters)
+- Any component where filter changes must immediately reflect in the UI
+- Components using `wire:model.live` for real-time filtering
 
 ---
 
@@ -1586,13 +1673,20 @@ public function render()
 
 ---
 
-**Version**: 1.3  
-**Last Updated**: November 12, 2025  
+**Version**: 1.4  
+**Last Updated**: December 9, 2025  
 **Project**: Senda Snap Backend - Service-Oriented Architecture  
 
 ---
 
 ## 📝 Changelog
+
+### Version 1.4 (December 9, 2025)
+- Added Filter Refresh Pattern documentation for Livewire components
+- Documented `refreshKey` pattern to force view updates when filters change
+- Added critical requirement to increment `refreshKey` in all `updatedXxx()` filter methods
+- Documented `wire:key` usage with `refreshKey` for proper component re-rendering
+- Prevents filter issues where backend applies filters but view doesn't update
 
 ### Version 1.3 (November 12, 2025)
 - Added Preview Component Pattern documentation

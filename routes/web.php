@@ -6,7 +6,6 @@ use App\Http\Controllers\ApiDocsController;
 use App\Http\Controllers\LandingPageController;
 use App\Http\Controllers\PrivacyPolicyController;
 use App\Livewire\Settings\Appearance;
-use App\Livewire\Settings\Password;
 use App\Livewire\Settings\Profile;
 use App\Livewire\Settings\TwoFactor;
 use App\Livewire\Tasks\AllTasks;
@@ -59,7 +58,7 @@ Route::middleware(['auth'])->group(function () {
     Route::redirect('settings', 'settings/profile');
 
     Route::get('settings/profile', Profile::class)->name('profile.edit');
-    Route::get('settings/password', Password::class)->name('user-password.edit');
+    Route::redirect('settings/password', 'settings/profile')->name('user-password.edit');
     Route::get('settings/appearance', Appearance::class)->name('appearance.edit');
 
     Route::get('settings/two-factor', TwoFactor::class)

@@ -980,15 +980,15 @@ When no `image` prop is provided, displays a white background with centered icon
                  x-transition:leave="transform transition ease-in-out duration-500"
                  x-transition:leave-start="translate-x-0"
                  x-transition:leave-end="translate-x-full"
-                 class="w-screen max-w-xl bg-white/90">
+                 class="w-screen max-w-xl bg-white/60 backdrop-blur-xl dark:bg-gray-800/60">
 
-                <div class="flex h-full flex-col overflow-y-auto border-l border-emerald-200 bg-gradient-to-br from-white via-emerald-50/30 to-teal-50/30 shadow-2xl dark:border-emerald-900/50 dark:from-gray-900 dark:via-emerald-900/20 dark:to-teal-900/20">
+                <div class="flex h-full flex-col overflow-y-auto border-l border-emerald-300/50 bg-white/60 shadow-xl shadow-emerald-200/40 backdrop-blur-xl dark:border-emerald-800/50 dark:bg-gray-800/60 dark:shadow-emerald-900/30">
                     <!-- Decorative Elements -->
                     <div class="pointer-events-none absolute -right-8 -top-8 h-64 w-64 rounded-full bg-gradient-to-br from-emerald-400/20 to-teal-400/20 blur-3xl"></div>
                     <div class="pointer-events-none absolute -bottom-8 -left-8 h-64 w-64 rounded-full bg-gradient-to-br from-teal-400/20 to-emerald-400/20 blur-3xl"></div>
 
                     <!-- Header -->
-                    <div class="relative border-b border-gray-200/50 bg-white/50 px-6 py-6 backdrop-blur-sm dark:border-gray-700/50 dark:bg-gray-900/50">
+                    <div class="relative border-b border-gray-200/50 bg-white/50 px-6 py-6 backdrop-blur-sm dark:border-gray-700/50 dark:bg-gray-800/60">
                         <div class="flex items-center justify-between">
                             <div class="flex items-center gap-3">
                                 <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 shadow-lg">
@@ -1012,7 +1012,7 @@ When no `image` prop is provided, displays a white background with centered icon
                         </div>
 
                         <!-- Footer Actions -->
-                        <div class="border-t border-gray-200/50 px-6 py-4 backdrop-blur-sm dark:border-gray-700/50">
+                        <div class="border-t border-gray-200/50 px-6 py-4 backdrop-blur-sm dark:border-gray-700/50 dark:bg-gray-800/60">
                             <div class="flex items-center justify-end gap-3">
                                 <flux:button type="button" wire:click="closeModal" variant="ghost">Cancel</flux:button>
                                 <flux:button type="submit" variant="primary" icon="check">Save</flux:button>
@@ -2085,7 +2085,7 @@ When creating a new page, ensure:
 - Multi-color palette with automatic dark mode adaptation
 - Gradient connection lines between particles (opacity: 0.3)
 - Responsive particle count based on screen size
-- Used in Admin Manual and API Documentation pages
+- Enabled only on Landing page, Dashboard, Admin Manual, Android Manual, and API Docs
 - Performance optimized with cleanup on page unload
 
 ### Authentication Form Spacing
@@ -2287,7 +2287,7 @@ $upcomingTasks = \App\Models\Task::whereNotIn('status', ['completed', 'cancelled
 - Multi-color palette (8 colors) with dark mode support
 - Dynamic particle count based on screen size
 - Gradient connection lines between nearby particles
-- Used in Admin Manual and API Documentation pages
+- Enabled only on Landing page, Dashboard, Admin Manual, Android Manual, and API Docs
 
 ### Responsive Card Layout System
 - Three-tier layout system: stacked cards below 2xl (1536px), table at 2xl+

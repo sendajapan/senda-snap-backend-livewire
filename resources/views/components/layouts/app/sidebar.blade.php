@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
         @include('partials.head')
         <style>
@@ -111,9 +111,19 @@
             }
         </style>
     </head>
+    @php
+        $showParticles = request()->routeIs(
+            'home',
+            'dashboard',
+            'admin.manual',
+            'android.app.manual',
+            'api.docs',
+        );
+    @endphp
     <body class="min-h-screen bg-white dark:bg-zinc-800">
-        <!-- Particle Background Canvas (enabled for all pages) -->
-        <canvas id="particle-canvas" class="fixed inset-0 -z-10 pointer-events-none"></canvas>
+        @if ($showParticles)
+            <canvas id="particle-canvas" class="fixed inset-0 -z-10 pointer-events-none"></canvas>
+        @endif
         
         <flux:sidebar sticky stashable class="border-e border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
             <flux:sidebar.toggle class="lg:hidden" icon="x-mark" />
@@ -350,11 +360,11 @@
         <x-toast-notification />
 
         @fluxScripts
-        <!-- Particle Background Script (enabled for all pages) -->
-        <script>
-            (function() {
-                const canvas = document.getElementById('particle-canvas');
-                if (!canvas) return;
+        @if ($showParticles)
+            <script>
+                (function() {
+                    const canvas = document.getElementById('particle-canvas');
+                    if (!canvas) return;
 
                 const ctx = canvas.getContext('2d');
                 let particles = [];
@@ -487,8 +497,9 @@
                         cancelAnimationFrame(animationId);
                     }
                 });
-            })();
-        </script>
+                })();
+            </script>
+        @endif
         <!-- SweetAlert2 -->
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>

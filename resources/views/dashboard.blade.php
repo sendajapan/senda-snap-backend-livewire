@@ -273,7 +273,7 @@
                         <div>
                             <h4 class="my-2 text-xs font-semibold text-gray-700 dark:text-gray-300">{{ __('Upcoming Tasks') }}</h4>
                             <!-- Table View: Large screens only -->
-                            <div class="hidden lg:block overflow-x-auto border rounded-xl bg-white/50 backdrop-blur-sm dark:bg-gray-800/50">
+                            <div class="hidden lg:block overflow-x-auto border rounded-xl bg-white/50 backdrop-blur-sm dark:border-gray-700/50 dark:bg-gray-900/20">
                                 <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
 
                                     <tbody class="divide-y divide-gray-200/50 dark:divide-gray-700/50">
@@ -360,7 +360,7 @@
                                 </table>
                             </div>
                             <!-- Vertical Stacked View: Medium screens and below -->
-                            <div class="lg:hidden border rounded-xl bg-white/50 backdrop-blur-sm dark:bg-gray-800/50">
+                            <div class="lg:hidden border rounded-xl bg-white/50 backdrop-blur-sm dark:border-gray-700/50 dark:bg-gray-900/20">
                                 <div class="divide-y divide-gray-200/50 dark:divide-gray-700/50">
                                     @foreach($upcomingTasks as $task)
                                         <div class="p-3 group transition-all duration-200 hover:bg-gradient-to-r hover:from-emerald-50/50 hover:to-teal-50/50 dark:hover:from-emerald-900/10 dark:hover:to-teal-900/10">
@@ -513,7 +513,7 @@
                         </div>
 
                         <!-- Table View: Large screens only -->
-                        <div class="hidden lg:block overflow-x-auto border rounded-xl bg-white/50 backdrop-blur-sm dark:bg-gray-800/50">
+                        <div class="hidden lg:block overflow-x-auto border rounded-xl bg-white/50 backdrop-blur-sm dark:border-gray-700/50 dark:bg-gray-900/20">
                             <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                                 <tbody class="divide-y divide-gray-200/50 dark:divide-gray-700/50">
                                     @foreach($members as $member)
@@ -558,7 +558,7 @@
                         </div>
 
                         <!-- Vertical Stacked View: Medium screens and below -->
-                        <div class="lg:hidden border rounded-xl bg-white/50 backdrop-blur-sm dark:bg-gray-800/50">
+                        <div class="lg:hidden border rounded-xl bg-white/50 backdrop-blur-sm dark:border-gray-700/50 dark:bg-gray-900/20">
                             <div class="divide-y divide-gray-200/50 dark:divide-gray-700/50">
                                 @foreach($members as $member)
                                     <div class="p-3 group transition-all duration-200 hover:bg-gradient-to-r hover:from-blue-50/50 hover:to-cyan-50/50 dark:hover:from-blue-900/10 dark:hover:to-cyan-900/10">
@@ -760,3 +760,5 @@
         </script>
     @endpush
 </x-layouts.app>
+
+

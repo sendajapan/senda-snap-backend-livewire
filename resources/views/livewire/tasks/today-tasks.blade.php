@@ -71,7 +71,7 @@
         </div>
 
         <!-- Table View (2xl and above) -->
-        <div class="hidden 2xl:block overflow-x-auto border rounded-xl bg-white/50 backdrop-blur-sm dark:bg-gray-800/50"
+        <div class="hidden 2xl:block overflow-x-auto border rounded-xl bg-white/50 backdrop-blur-sm dark:border-gray-700/50 dark:bg-gray-900/20"
              wire:key="today-tasks-table-{{ md5($statusFilter ?? 'all') }}">
             <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                 <thead>
@@ -124,7 +124,7 @@
         </div>
 
         <!-- Stacked View (below 2xl) -->
-        <div class="2xl:hidden bg-white/50 backdrop-blur-sm dark:bg-gray-800/50"
+        <div class="2xl:hidden bg-white/50 backdrop-blur-sm dark:bg-gray-900/20"
              wire:key="today-tasks-stacked-{{ md5($statusFilter ?? 'all') }}">
             <div class="grid grid-cols-1 gap-4">
                 @forelse($tasks as $task)
@@ -155,3 +155,5 @@
     <!-- Task Preview -->
     <livewire:tasks.task-preview />
 </div>
+
+

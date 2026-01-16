@@ -66,7 +66,7 @@
         @endif
 
         <!-- Table View (2xl and above) -->
-        <div class="hidden 2xl:block overflow-x-auto border rounded-xl bg-white/50 backdrop-blur-sm dark:bg-gray-800/50"
+        <div class="hidden 2xl:block overflow-x-auto border rounded-xl bg-white/50 backdrop-blur-sm dark:border-gray-700/50 dark:bg-gray-900/20"
              wire:key="vendors-table-{{ md5(($search ?? '').'|'.($statusFilter ?? '')) }}">
             <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                 <thead>
@@ -114,7 +114,7 @@
         </div>
 
         <!-- Stacked View (below 2xl) -->
-        <div class="2xl:hidden bg-white/50 backdrop-blur-sm dark:bg-gray-800/50"
+        <div class="2xl:hidden bg-white/50 backdrop-blur-sm dark:bg-gray-900/20"
              wire:key="vendors-stacked-{{ md5(($search ?? '').'|'.($statusFilter ?? '')) }}">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 p-4">
                 @forelse($vendors as $vendor)
@@ -147,3 +147,5 @@
     <!-- Vendor Preview -->
     <livewire:vendors.vendor-preview />
 </div>
+
+

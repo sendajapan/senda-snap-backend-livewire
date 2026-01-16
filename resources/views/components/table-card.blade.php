@@ -5,47 +5,47 @@
 @php
     $variants = [
         'blue' => [
-            'border' => 'border-blue-200 dark:border-blue-900/50',
-            'bg' => 'bg-white/50 backdrop-blur-sm dark:bg-gray-800/50',
-            'shadow' => 'shadow-md shadow-blue-100/50 dark:shadow-blue-900/20',
-            'hoverShadow' => 'hover:shadow-lg hover:shadow-blue-200/50 dark:hover:shadow-blue-800/30',
-            'hoverBorder' => 'hover:border-blue-300 dark:hover:border-blue-800',
-            'decorTop' => 'bg-gradient-to-br from-blue-400/20 to-cyan-400/20',
-            'decorBottom' => 'bg-gradient-to-br from-cyan-400/20 to-blue-400/20',
+            'border' => 'border-blue-300/50 dark:border-blue-800/50',
+            'bg' => 'bg-white/60 backdrop-blur-xl dark:bg-gray-900/50',
+            'shadow' => 'shadow-xl shadow-blue-200/40 dark:shadow-blue-900/30',
+            'hoverShadow' => 'hover:shadow-2xl hover:shadow-blue-300/50 dark:hover:shadow-blue-800/40',
+            'hoverBorder' => 'hover:border-blue-400/60 dark:hover:border-blue-700',
+            'decorTop' => 'bg-gradient-to-br from-blue-400/30 to-cyan-400/30',
+            'decorBottom' => 'bg-gradient-to-br from-cyan-400/30 to-blue-400/30',
         ],
         'emerald' => [
-            'border' => 'border-emerald-200 dark:border-emerald-900/50',
-            'bg' => 'bg-white/50 backdrop-blur-sm dark:bg-gray-800/50',
-            'shadow' => 'shadow-md shadow-emerald-100/50 dark:shadow-emerald-900/20',
-            'hoverShadow' => 'hover:shadow-lg hover:shadow-emerald-200/50 dark:hover:shadow-emerald-800/30',
-            'hoverBorder' => 'hover:border-emerald-300 dark:hover:border-emerald-800',
-            'decorTop' => 'bg-gradient-to-br from-emerald-400/20 to-teal-400/20',
-            'decorBottom' => 'bg-gradient-to-br from-teal-400/20 to-emerald-400/20',
+            'border' => 'border-emerald-300/50 dark:border-emerald-800/50',
+            'bg' => 'bg-white/60 backdrop-blur-xl dark:bg-gray-900/50',
+            'shadow' => 'shadow-xl shadow-emerald-200/40 dark:shadow-emerald-900/30',
+            'hoverShadow' => 'hover:shadow-2xl hover:shadow-emerald-300/50 dark:hover:shadow-emerald-800/40',
+            'hoverBorder' => 'hover:border-emerald-400/60 dark:hover:border-emerald-700',
+            'decorTop' => 'bg-gradient-to-br from-emerald-400/30 to-teal-400/30',
+            'decorBottom' => 'bg-gradient-to-br from-teal-400/30 to-emerald-400/30',
         ],
         'violet' => [
-            'border' => 'border-violet-200 dark:border-violet-900/50',
-            'bg' => 'bg-white/50 backdrop-blur-sm dark:bg-gray-800/50',
-            'shadow' => 'shadow-md shadow-violet-100/50 dark:shadow-violet-900/20',
-            'hoverShadow' => 'hover:shadow-lg hover:shadow-violet-200/50 dark:hover:shadow-violet-800/30',
-            'hoverBorder' => 'hover:border-violet-300 dark:hover:border-violet-800',
-            'decorTop' => 'bg-gradient-to-br from-violet-400/20 to-purple-400/20',
-            'decorBottom' => 'bg-gradient-to-br from-purple-400/20 to-violet-400/20',
+            'border' => 'border-violet-300/50 dark:border-violet-800/50',
+            'bg' => 'bg-white/60 backdrop-blur-xl dark:bg-gray-900/50',
+            'shadow' => 'shadow-xl shadow-violet-200/40 dark:shadow-violet-900/30',
+            'hoverShadow' => 'hover:shadow-2xl hover:shadow-violet-300/50 dark:hover:shadow-violet-800/40',
+            'hoverBorder' => 'hover:border-violet-400/60 dark:hover:border-violet-700',
+            'decorTop' => 'bg-gradient-to-br from-violet-400/30 to-purple-400/30',
+            'decorBottom' => 'bg-gradient-to-br from-purple-400/30 to-violet-400/30',
         ],
         'amber' => [
-            'border' => 'border-amber-200 dark:border-amber-900/50',
-            'bg' => 'bg-white/50 backdrop-blur-sm dark:bg-gray-800/50',
-            'shadow' => 'shadow-md shadow-amber-100/50 dark:shadow-amber-900/20',
-            'hoverShadow' => 'hover:shadow-lg hover:shadow-amber-200/50 dark:hover:shadow-amber-800/30',
-            'hoverBorder' => 'hover:border-amber-300 dark:hover:border-amber-800',
-            'decorTop' => 'bg-gradient-to-br from-amber-400/20 to-orange-400/20',
-            'decorBottom' => 'bg-gradient-to-br from-orange-400/20 to-amber-400/20',
+            'border' => 'border-amber-300/50 dark:border-amber-800/50',
+            'bg' => 'bg-white/60 backdrop-blur-xl dark:bg-gray-900/50',
+            'shadow' => 'shadow-xl shadow-amber-200/40 dark:shadow-amber-900/30',
+            'hoverShadow' => 'hover:shadow-2xl hover:shadow-amber-300/50 dark:hover:shadow-amber-800/40',
+            'hoverBorder' => 'hover:border-amber-400/60 dark:hover:border-amber-700',
+            'decorTop' => 'bg-gradient-to-br from-amber-400/30 to-orange-400/30',
+            'decorBottom' => 'bg-gradient-to-br from-orange-400/30 to-amber-400/30',
         ],
     ];
     
     $classes = $variants[$variant] ?? $variants['emerald'];
 @endphp
 
-<div class="group relative rounded-2xl border {{ $classes['border'] }} {{ $classes['bg'] }} {{ $classes['shadow'] }} p-6 transition-all duration-300 {{ $classes['hoverShadow'] }} {{ $classes['hoverBorder'] }}">
+<div class="group relative rounded-2xl border {{ $classes['border'] }} {{ $classes['bg'] }} {{ $classes['shadow'] }} p-6 ring-1 ring-white/20 transition-all duration-300 dark:ring-white/10 {{ $classes['hoverShadow'] }} {{ $classes['hoverBorder'] }}">
     <!-- Decorative Elements Container (with overflow-hidden to clip decorative elements) -->
     <div class="absolute inset-0 overflow-hidden rounded-2xl pointer-events-none">
         <div class="absolute -right-8 -top-8 h-32 w-32 rounded-full {{ $classes['decorTop'] }} blur-2xl"></div>

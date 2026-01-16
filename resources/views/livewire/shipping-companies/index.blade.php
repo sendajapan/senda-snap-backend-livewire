@@ -80,7 +80,7 @@
         @endif
 
         <!-- Table View (2xl and above) -->
-        <div class="hidden 2xl:block overflow-x-auto border rounded-xl bg-white/50 backdrop-blur-sm dark:bg-gray-800/50"
+        <div class="hidden 2xl:block overflow-x-auto border rounded-xl bg-white/50 backdrop-blur-sm dark:border-gray-700/50 dark:bg-gray-900/20"
              wire:key="shipping-companies-table-{{ md5(($search ?? '').'|'.($companyTypeFilter ?? '').'|'.($companyStatusFilter ?? '')) }}">
             <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                 <thead>
@@ -125,7 +125,7 @@
         </div>
 
         <!-- Stacked View (below 2xl) -->
-        <div class="2xl:hidden bg-white/50 backdrop-blur-sm dark:bg-gray-800/50"
+        <div class="2xl:hidden bg-white/50 backdrop-blur-sm dark:bg-gray-900/20"
              wire:key="shipping-companies-stacked-{{ md5(($search ?? '').'|'.($companyTypeFilter ?? '').'|'.($companyStatusFilter ?? '')) }}">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 p-4">
                 @forelse($shippingCompanies as $shippingCompany)
@@ -158,3 +158,5 @@
     <!-- Shipping Company Preview -->
     <livewire:shipping-companies.shipping-company-preview />
 </div>
+
+

@@ -35,7 +35,7 @@
         </div>
 
         <!-- Notices List -->
-        <div class="overflow-x-auto border rounded-xl bg-white/50 backdrop-blur-sm dark:bg-gray-800/50">
+        <div class="overflow-x-auto border rounded-xl bg-white/50 backdrop-blur-sm dark:border-gray-700/50 dark:bg-gray-900/20">
             <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                 <thead>
                     <tr class="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900">
@@ -132,3 +132,5 @@
     <!-- Notice Modal -->
     <livewire:notices.notice-modal />
 </div>
+
+

@@ -50,22 +50,25 @@
     <div class="flex h-full w-full flex-1 flex-col gap-4">
         <!-- Welcome Header -->
         <div class="grid gap-4 lg:grid-cols-1 xl:grid-cols-2">
-            <!-- Main Welcome Card -->
-            <div class="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-600 to-cyan-600 p-8 shadow-xl">
-                <div class="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-white/10 blur-2xl"></div>
-                <div class="relative">
-                    <div class="mb-4 inline-flex rounded-full bg-white/20 px-4 py-1 backdrop-blur-sm">
-                        <span class="text-sm font-medium text-white">👋 Hello!</span>
+            <!-- Main Welcome Card - Simple Design -->
+            <div class="group relative overflow-hidden rounded-2xl border border-blue-300/50 bg-gradient-to-br from-blue-600 to-cyan-600 p-8 shadow-md shadow-blue-200/20 backdrop-blur-xl transition-all duration-300 hover:border-blue-400/60 hover:shadow-lg hover:shadow-blue-300/25 dark:border-blue-700/50 dark:from-blue-700 dark:to-cyan-700 dark:shadow-blue-900/15 dark:hover:border-blue-600 dark:hover:shadow-blue-800/20">
+                <!-- Content -->
+                <div class="relative z-10">
+                    <div class="mb-4 inline-flex rounded-full bg-white/25 px-4 py-1.5 backdrop-blur-md">
+                        <span class="text-sm font-semibold text-white">👋 Hello!</span>
                     </div>
                     <h1 class="text-3xl font-bold text-white">
                         {{ auth()->user()->name }}
                     </h1>
-                    <p class="mt-2 text-blue-100">{{ __('Welcome back to your dashboard') }}</p>
+                    <p class="mt-2 text-lg font-medium text-white/90">{{ __('Welcome back to your dashboard') }}</p>
                 </div>
             </div>
 
-            <!-- Date & Time Card -->
-            <div class="group relative overflow-hidden rounded-2xl border-1 border bg-white p-6 shadow-lg dark:border-gray-700 dark:bg-zinc-900">
+            <!-- Date & Time Card - Glass Morphism with Single Color -->
+            <div class="group relative overflow-hidden rounded-2xl border border-indigo-300/50 bg-white/60 p-6 shadow-md shadow-indigo-200/20 backdrop-blur-xl transition-all duration-300 hover:border-indigo-400/60 hover:shadow-lg hover:shadow-indigo-300/25 dark:border-indigo-700/50 dark:bg-gray-800/60 dark:shadow-indigo-900/15 dark:hover:border-indigo-600 dark:hover:shadow-indigo-800/20">
+                <!-- Decorative blur circles -->
+                <div class="pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-full bg-indigo-400/20 blur-2xl"></div>
+                <div class="pointer-events-none absolute -bottom-8 -left-8 h-32 w-32 rounded-full bg-indigo-400/20 blur-2xl"></div>
                 <!-- Date & Time Section -->
                 <div class="mb-2 flex items-center gap-4 border-b border-gray-200 pb-3 dark:border-gray-700">
                     <div class="flex h-14 w-14 flex-col items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-100 to-purple-100 dark:from-indigo-900 dark:to-purple-900">
@@ -134,91 +137,52 @@
             </div>
         </div>
 
-        <!-- Stats Cards -->
+        <!-- Stats Cards - Enhanced with Blur and Colors -->
         <div class="grid gap-4 lg:grid-cols-2 xl:grid-cols-4">
             <!-- Users Card -->
-            <x-stats-card :title="__('Total Users')" :count="$totalUsers" :description="__('All registered users')"
-                          topCircleColor="bg-blue-300" bottomCircleColor="bg-blue-400">
+            <x-stats-card :title="__('Total Users')" :count="$totalUsers" :description="__('All registered users')" variant="blue">
                 <x-slot:icon>
-                    <svg class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                         stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                              d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z"/>
+                    <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z"/>
                     </svg>
                 </x-slot:icon>
             </x-stats-card>
 
             <!-- Tasks Card -->
-            <x-stats-card :title="__('Total Tasks')" :count="$totalTasks" :description="__('All tasks of users')"
-                          topCircleColor="bg-emerald-300" bottomCircleColor="bg-emerald-400">
+            <x-stats-card :title="__('Total Tasks')" :count="$totalTasks" :description="__('All tasks of users')" variant="emerald">
                 <x-slot:icon>
-                    <svg class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                         stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                              d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z"/>
+                    <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z"/>
                     </svg>
                 </x-slot:icon>
             </x-stats-card>
 
             <!-- Vehicles Card -->
-            <x-stats-card :title="__('Total Vehicles')" :count="$totalVehicles" :description="__('In inventory')"
-                          topCircleColor="bg-amber-300" bottomCircleColor="bg-amber-400">
+            <x-stats-card :title="__('Total Vehicles')" :count="$totalVehicles" :description="__('In inventory')" variant="amber">
                 <x-slot:icon>
-                    <svg class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                         stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                              d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z"/>
+                    <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12"/>
                     </svg>
                 </x-slot:icon>
             </x-stats-card>
 
             <!-- Notifications Card -->
-            <x-stats-card :title="__('Total Notifications')" :count="$totalVehicles" :description="__('From Tasks')"
-                          topCircleColor="bg-red-300" bottomCircleColor="bg-red-400">
+            <x-stats-card :title="__('Notifications')" :count="$totalVehicles" :description="__('From Tasks')" variant="violet">
                 <x-slot:icon>
-                    <svg class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                         stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                              d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z"/>
+                    <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"/>
                     </svg>
                 </x-slot:icon>
             </x-stats-card>
-
-            {{--<div
-                class="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-violet-500 to-purple-500 p-6 shadow-lg transition-all hover:scale-105 hover:shadow-2xl">
-                <div class="absolute -right-4 -top-4 h-24 w-24 rounded-full bg-white/10 backdrop-blur-sm"></div>
-                <div class="absolute -bottom-4 -right-4 h-32 w-32 rounded-full bg-white/5"></div>
-                <div class="relative">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-sm font-medium text-violet-100">{{ __('Total Vehicles') }}</p>
-                            <h3 class="mt-2 text-4xl font-bold text-white">{{ $totalVehicles }}</h3>
-                        </div>
-                        <div class="rounded-xl bg-white/20 p-4 backdrop-blur-sm">
-                            <svg class="h-8 w-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" />
-                            </svg>
-                        </div>
-                    </div>
-                    <div class="mt-4 flex items-center text-sm text-violet-100">
-                        <svg class="mr-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M5 13l4 4L19 7" />
-                        </svg>
-                        <span>{{ __('In inventory') }}</span>
-                    </div>
-                </div>
-            </div>--}}
         </div>
 
         <!-- Charts Section -->
         <div class="grid gap-4 lg:grid-cols-1 xl:grid-cols-2">
-            <!-- Task Status Donut Chart -->
-            <div class="group relative overflow-hidden rounded-2xl border border-emerald-200 bg-gradient-to-br from-white via-emerald-50/30 to-teal-50/30 p-6 shadow-xl transition-all duration-300 hover:shadow-2xl dark:border-emerald-900/50 dark:from-gray-900 dark:via-emerald-900/20 dark:to-teal-900/20">
-                <!-- Decorative Elements -->
-                <div class="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-gradient-to-br from-emerald-400/20 to-teal-400/20 blur-2xl"></div>
-                <div class="absolute -bottom-8 -left-8 h-32 w-32 rounded-full bg-gradient-to-br from-teal-400/20 to-emerald-400/20 blur-2xl"></div>
+            <!-- Task Status Donut Chart - Following Design System -->
+            <div class="group relative overflow-hidden rounded-2xl border border-emerald-300/50 bg-white/60 p-6 shadow-xl shadow-emerald-200/40 backdrop-blur-xl transition-all duration-300 hover:border-emerald-400/60 hover:shadow-2xl hover:shadow-emerald-300/50 dark:border-emerald-800/50 dark:bg-gray-800/60 dark:shadow-emerald-900/30 dark:hover:border-emerald-700 dark:hover:shadow-emerald-800/40">
+                <!-- Decorative blur circles - larger and more spread -->
+                <div class="pointer-events-none absolute -right-12 -top-12 h-48 w-48 rounded-full bg-gradient-to-br from-emerald-400/30 to-teal-400/30 blur-3xl"></div>
+                <div class="pointer-events-none absolute -bottom-12 -left-12 h-48 w-48 rounded-full bg-gradient-to-br from-teal-400/30 to-emerald-400/30 blur-3xl"></div>
 
                 <div class="relative">
                     <div class="mb-6 flex items-center justify-between">
@@ -236,55 +200,71 @@
                         </div>
                     </div>
 
-                    <!-- Chart and Status List: Vertical on md/small, Horizontal on lg+ -->
-                    <div class="flex flex-col gap-4 lg:flex-row lg:items-start">
+                    <!-- Chart Container - Centered Layout -->
+                    <div class="flex flex-col items-center gap-6 lg:flex-row lg:justify-center">
                         <!-- Chart Canvas -->
-                        <div class="relative flex flex-1 items-center justify-center p-2 rounded-xl bg-white/50 backdrop-blur-sm dark:bg-gray-800/50">
-                            <canvas id="taskChart" class="max-h-64"></canvas>
+                        <div class="relative flex items-center justify-center">
+                            <canvas id="taskChart" class="relative z-10" style="max-height: 240px; max-width: 240px;"></canvas>
                         </div>
 
-                        <!-- Status List -->
-                        <div class="flex-1 space-y-2">
-                            <div class="group flex items-center justify-between  border border-amber-200 bg-gradient-to-r from-amber-50 to-amber-100/50 py-2 px-3 shadow-sm transition-all duration-200 hover:scale-105 hover:shadow-md dark:border-amber-800/50 dark:from-amber-900/20 dark:to-amber-800/10">
-                                <div class="flex items-center gap-3">
-                                    <div class="relative">
-                                        <div class="h-3 w-3 animate-pulse rounded-full bg-amber-500 shadow-lg shadow-amber-500/50"></div>
-                                        <div class="absolute inset-0 h-3 w-3 animate-ping rounded-full bg-amber-400 opacity-75"></div>
+                        <!-- Status Labels - Compact Glass with Gradient Stroke -->
+                        <div class="w-full max-w-xs space-y-1.5">
+                            <!-- Pending -->
+                            <div class="group relative flex items-center justify-between overflow-hidden rounded-xl border border-amber-400/50 bg-gradient-to-r from-amber-500/10 via-amber-400/5 to-white/40 px-3 py-2 shadow-md shadow-amber-500/10 backdrop-blur-xl transition-all duration-300 hover:scale-[1.02] hover:border-amber-400 hover:shadow-lg hover:shadow-amber-500/15 dark:border-amber-500/30 dark:from-amber-500/20 dark:via-amber-400/10 dark:to-gray-900/40">
+                                <div class="absolute -left-3 top-1/2 h-12 w-12 -translate-y-1/2 rounded-full bg-amber-500/20 blur-xl transition-all group-hover:bg-amber-500/40"></div>
+                                <div class="relative flex items-center gap-2">
+                                    <div class="flex h-6 w-6 items-center justify-center rounded-lg bg-gradient-to-br from-amber-400 to-orange-500 shadow-md shadow-amber-500/50">
+                                        <svg class="h-3 w-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                        </svg>
                                     </div>
-                                    <span class="text-xs font-semibold text-amber-900 dark:text-amber-300">{{ __('Pending') }}</span>
+                                    <span class="text-xs font-bold text-amber-900 dark:text-amber-200">{{ __('Pending') }}</span>
                                 </div>
-                                <span class="rounded-lg bg-amber-200 px-2 py-0.5 text-xs font-bold text-amber-900 dark:bg-amber-800 dark:text-amber-100" data-task-status="pending">{{ $taskPending }}</span>
+                                <span class="text-xs font-bold text-amber-600 dark:text-amber-400" data-task-status="pending">{{ $taskPending }}</span>
                             </div>
-                            <div class="group flex items-center justify-between border border-blue-200 bg-gradient-to-r from-blue-50 to-blue-100/50 py-2 px-3 shadow-sm transition-all duration-200 hover:scale-105 hover:shadow-md dark:border-blue-800/50 dark:from-blue-900/20 dark:to-blue-800/10">
-                                <div class="flex items-center gap-3">
-                                    <div class="relative">
-                                        <div class="h-3 w-3 animate-pulse rounded-full bg-blue-500 shadow-lg shadow-blue-500/50"></div>
-                                        <div class="absolute inset-0 h-3 w-3 animate-ping rounded-full bg-blue-400 opacity-75"></div>
+
+                            <!-- Running -->
+                            <div class="group relative flex items-center justify-between overflow-hidden rounded-xl border border-blue-400/50 bg-gradient-to-r from-blue-500/10 via-blue-400/5 to-white/40 px-3 py-2 shadow-md shadow-blue-500/10 backdrop-blur-xl transition-all duration-300 hover:scale-[1.02] hover:border-blue-400 hover:shadow-lg hover:shadow-blue-500/15 dark:border-blue-500/30 dark:from-blue-500/20 dark:via-blue-400/10 dark:to-gray-900/40">
+                                <div class="absolute -left-3 top-1/2 h-12 w-12 -translate-y-1/2 rounded-full bg-blue-500/20 blur-xl transition-all group-hover:bg-blue-500/40"></div>
+                                <div class="relative flex items-center gap-2">
+                                    <div class="flex h-6 w-6 items-center justify-center rounded-lg bg-gradient-to-br from-blue-400 to-indigo-500 shadow-md shadow-blue-500/50">
+                                        <svg class="h-3 w-3 animate-spin text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                                        </svg>
                                     </div>
-                                    <span class="text-xs font-semibold text-blue-900 dark:text-blue-300">{{ __('Running') }}</span>
+                                    <span class="text-xs font-bold text-blue-900 dark:text-blue-200">{{ __('Running') }}</span>
                                 </div>
-                                <span class="rounded-lg bg-blue-200 px-2 py-0.5 text-xs font-bold text-blue-900 dark:bg-blue-800 dark:text-blue-100" data-task-status="running">{{ $taskRunning }}</span>
+                                <span class="text-xs font-bold text-blue-600 dark:text-blue-400" data-task-status="running">{{ $taskRunning }}</span>
                             </div>
-                            <div class="group flex items-center justify-between border border-emerald-200 bg-gradient-to-r from-emerald-50 to-emerald-100/50 py-2 px-3 shadow-sm transition-all duration-200 hover:scale-105 hover:shadow-md dark:border-emerald-800/50 dark:from-emerald-900/20 dark:to-emerald-800/10">
-                                <div class="flex items-center gap-3">
-                                    <div class="relative">
-                                        <div class="h-3 w-3 animate-pulse rounded-full bg-emerald-500 shadow-lg shadow-emerald-500/50"></div>
-                                        <div class="absolute inset-0 h-3 w-3 animate-ping rounded-full bg-emerald-400 opacity-75"></div>
+
+                            <!-- Completed -->
+                            <div class="group relative flex items-center justify-between overflow-hidden rounded-xl border border-emerald-400/50 bg-gradient-to-r from-emerald-500/10 via-emerald-400/5 to-white/40 px-3 py-2 shadow-md shadow-emerald-500/10 backdrop-blur-xl transition-all duration-300 hover:scale-[1.02] hover:border-emerald-400 hover:shadow-lg hover:shadow-emerald-500/15 dark:border-emerald-500/30 dark:from-emerald-500/20 dark:via-emerald-400/10 dark:to-gray-900/40">
+                                <div class="absolute -left-3 top-1/2 h-12 w-12 -translate-y-1/2 rounded-full bg-emerald-500/20 blur-xl transition-all group-hover:bg-emerald-500/40"></div>
+                                <div class="relative flex items-center gap-2">
+                                    <div class="flex h-6 w-6 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-400 to-green-500 shadow-md shadow-emerald-500/50">
+                                        <svg class="h-3 w-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                        </svg>
                                     </div>
-                                    <span class="text-xs font-semibold text-emerald-900 dark:text-emerald-300">{{ __('Completed') }}</span>
+                                    <span class="text-xs font-bold text-emerald-900 dark:text-emerald-200">{{ __('Completed') }}</span>
                                 </div>
-                                <span class="rounded-lg bg-emerald-200 px-2 py-0.5 text-xs font-bold text-emerald-900 dark:bg-emerald-800 dark:text-emerald-100" data-task-status="completed">{{ $taskCompleted }}</span>
+                                <span class="text-xs font-bold text-emerald-600 dark:text-emerald-400" data-task-status="completed">{{ $taskCompleted }}</span>
                             </div>
-                            <div class="group flex items-center justify-between border border-red-200 bg-gradient-to-r from-red-50 to-red-100/50 py-2 px-3 shadow-sm transition-all duration-200 hover:scale-105 hover:shadow-md dark:border-red-800/50 dark:from-red-900/20 dark:to-red-800/10">
-                                <div class="flex items-center gap-3">
-                                    <div class="relative">
-                                        <div class="h-3 w-3 animate-pulse rounded-full bg-red-500 shadow-lg shadow-red-500/50"></div>
-                                        <div class="absolute inset-0 h-3 w-3 animate-ping rounded-full bg-red-400 opacity-75"></div>
+
+                            <!-- Cancelled -->
+                            <div class="group relative flex items-center justify-between overflow-hidden rounded-xl border border-red-400/50 bg-gradient-to-r from-red-500/10 via-red-400/5 to-white/40 px-3 py-2 shadow-md shadow-red-500/10 backdrop-blur-xl transition-all duration-300 hover:scale-[1.02] hover:border-red-400 hover:shadow-lg hover:shadow-red-500/15 dark:border-red-500/30 dark:from-red-500/20 dark:via-red-400/10 dark:to-gray-900/40">
+                                <div class="absolute -left-3 top-1/2 h-12 w-12 -translate-y-1/2 rounded-full bg-red-500/20 blur-xl transition-all group-hover:bg-red-500/40"></div>
+                                <div class="relative flex items-center gap-2">
+                                    <div class="flex h-6 w-6 items-center justify-center rounded-lg bg-gradient-to-br from-red-400 to-rose-500 shadow-md shadow-red-500/50">
+                                        <svg class="h-3 w-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                        </svg>
                                     </div>
-                                    <span class="text-xs font-semibold text-red-900 dark:text-red-300">{{ __('Cancelled') }}</span>
+                                    <span class="text-xs font-bold text-red-900 dark:text-red-200">{{ __('Cancelled') }}</span>
                                 </div>
-                                <span class="rounded-lg bg-red-200 px-2 py-0.5 text-xs font-bold text-red-900 dark:bg-red-800 dark:text-red-100" data-task-status="cancelled">{{ $taskCancelled }}</span>
+                                <span class="text-xs font-bold text-red-600 dark:text-red-400" data-task-status="cancelled">{{ $taskCancelled }}</span>
                             </div>
+
                         </div>
                     </div>
 
@@ -438,12 +418,12 @@
                 </div>
             </div>
 
-            <!-- Members Card -->
+            <!-- Members Card - Following Design System -->
             @if($members->count() > 0)
-                <div class="group relative overflow-hidden rounded-2xl border border-blue-200 bg-gradient-to-br from-white via-blue-50/30 to-cyan-50/30 p-6 shadow-xl transition-all duration-300 hover:shadow-2xl dark:border-blue-900/50 dark:from-gray-900 dark:via-blue-900/20 dark:to-cyan-900/20">
-                    <!-- Decorative Elements -->
-                    <div class="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-gradient-to-br from-blue-400/20 to-cyan-400/20 blur-2xl"></div>
-                    <div class="absolute -bottom-8 -left-8 h-32 w-32 rounded-full bg-gradient-to-br from-cyan-400/20 to-blue-400/20 blur-2xl"></div>
+                <div class="group relative overflow-hidden rounded-2xl border border-blue-300/50 bg-white/60 p-6 shadow-xl shadow-blue-200/40 backdrop-blur-xl transition-all duration-300 hover:border-blue-400/60 hover:shadow-2xl hover:shadow-blue-300/50 dark:border-blue-800/50 dark:bg-gray-800/60 dark:shadow-blue-900/30 dark:hover:border-blue-700 dark:hover:shadow-blue-800/40">
+                    <!-- Decorative blur circles - larger and more spread -->
+                    <div class="pointer-events-none absolute -right-12 -top-12 h-48 w-48 rounded-full bg-gradient-to-br from-blue-400/30 to-cyan-400/30 blur-3xl"></div>
+                    <div class="pointer-events-none absolute -bottom-12 -left-12 h-48 w-48 rounded-full bg-gradient-to-br from-cyan-400/30 to-blue-400/30 blur-3xl"></div>
 
                     <div class="relative">
                         <div class="mb-6 flex items-center justify-between">
@@ -455,69 +435,80 @@
                                 <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ __('Team members overview') }}</p>
                             </div>
                             <div class="animate-pulse rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-500 p-4 shadow-lg shadow-blue-500/50">
-                                <svg class="h-4 w-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+                                <svg class="h-4 w-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z"/>
                                 </svg>
                             </div>
                         </div>
 
-                        <!-- Role Counts Section -->
+                        <!-- Role Counts Section - Neon Glow Cards Style -->
                         <div class="mb-6 grid grid-cols-2 gap-4 md:grid-cols-4">
                             <!-- Admin Count -->
-                            <div class="group relative overflow-hidden rounded-xl border border-red-200 bg-gradient-to-br from-red-50 to-red-100/50 p-4 shadow-sm transition-all duration-200 hover:scale-105 hover:shadow-md dark:border-red-800/50 dark:from-red-900/20 dark:to-red-800/10">
-                                <div class="flex items-center justify-between">
-                                    <div>
-                                        <p class="text-xs font-medium text-red-700 dark:text-red-400">{{ __('Admin') }}</p>
-                                        <p class="mt-1 text-2xl font-bold text-red-900 dark:text-red-200">{{ $adminCount }}</p>
-                                    </div>
-                                    <div class="rounded-lg bg-red-200/50 p-2 dark:bg-red-900/30">
-                                        <svg class="h-5 w-5 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <div class="group relative flex items-center justify-between overflow-hidden rounded-xl border border-red-400/50 px-4 py-3 shadow-lg shadow-red-500/20 backdrop-blur-xl transition-all duration-300 hover:scale-[1.03] hover:border-red-400 hover:shadow-xl hover:shadow-red-500/30 dark:border-red-500/30">
+                                <div class="absolute -left-4 top-1/2 h-16 w-16 -translate-y-1/2 rounded-full bg-red-500/30 blur-2xl transition-all group-hover:bg-red-500/50"></div>
+                                <div class="relative flex items-center gap-3">
+                                    <div class="relative flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-red-400 to-rose-500 shadow-lg shadow-red-500/50">
+                                        <svg class="h-4 w-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
                                         </svg>
                                     </div>
-                                </div>
-                            </div>
-                            <!-- Manager Count -->
-                            <div class="group relative overflow-hidden rounded-xl border border-blue-200 bg-gradient-to-br from-blue-50 to-blue-100/50 p-4 shadow-sm transition-all duration-200 hover:scale-105 hover:shadow-md dark:border-blue-800/50 dark:from-blue-900/20 dark:to-blue-800/10">
-                                <div class="flex items-center justify-between">
                                     <div>
-                                        <p class="text-xs font-medium text-blue-700 dark:text-blue-400">{{ __('Manager') }}</p>
-                                        <p class="mt-1 text-2xl font-bold text-blue-900 dark:text-blue-200">{{ $managerCount }}</p>
+                                        <span class="text-sm font-bold text-red-900 dark:text-red-200">{{ __('Admin') }}</span>
+                                        <p class="text-xs text-red-600/80 dark:text-red-400/70">{{ __('Full Access') }}</p>
                                     </div>
-                                    <div class="rounded-lg bg-blue-200/50 p-2 dark:bg-blue-900/30">
-                                        <svg class="h-5 w-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                </div>
+                                <span class="relative rounded-full border border-red-400/50 px-3 py-1 text-sm font-bold text-red-900 dark:text-red-200 shadow-lg shadow-red-500/20 backdrop-blur-xl">{{ $adminCount }}</span>
+                            </div>
+
+                            <!-- Manager Count -->
+                            <div class="group relative flex items-center justify-between overflow-hidden rounded-xl border border-blue-400/50 px-4 py-3 shadow-lg shadow-blue-500/20 backdrop-blur-xl transition-all duration-300 hover:scale-[1.03] hover:border-blue-400 hover:shadow-xl hover:shadow-blue-500/30 dark:border-blue-500/30">
+                                <div class="absolute -left-4 top-1/2 h-16 w-16 -translate-y-1/2 rounded-full bg-blue-500/30 blur-2xl transition-all group-hover:bg-blue-500/50"></div>
+                                <div class="relative flex items-center gap-3">
+                                    <div class="relative flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-blue-400 to-indigo-500 shadow-lg shadow-blue-500/50">
+                                        <svg class="h-4 w-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
                                         </svg>
                                     </div>
-                                </div>
-                            </div>
-                            <!-- Employee Count -->
-                            <div class="group relative overflow-hidden rounded-xl border border-emerald-200 bg-gradient-to-br from-emerald-50 to-emerald-100/50 p-4 shadow-sm transition-all duration-200 hover:scale-105 hover:shadow-md dark:border-emerald-800/50 dark:from-emerald-900/20 dark:to-emerald-800/10">
-                                <div class="flex items-center justify-between">
                                     <div>
-                                        <p class="text-xs font-medium text-emerald-700 dark:text-emerald-400">{{ __('Employee') }}</p>
-                                        <p class="mt-1 text-2xl font-bold text-emerald-900 dark:text-emerald-200">{{ $employeeCount }}</p>
+                                        <span class="text-sm font-bold text-blue-900 dark:text-blue-200">{{ __('Manager') }}</span>
+                                        <p class="text-xs text-blue-600/80 dark:text-blue-400/70">{{ __('Team Lead') }}</p>
                                     </div>
-                                    <div class="rounded-lg bg-emerald-200/50 p-2 dark:bg-emerald-900/30">
-                                        <svg class="h-5 w-5 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                </div>
+                                <span class="relative rounded-full border border-blue-400/50 px-3 py-1 text-sm font-bold text-blue-900 dark:text-blue-200 shadow-lg shadow-blue-500/20 backdrop-blur-xl">{{ $managerCount }}</span>
+                            </div>
+
+                            <!-- Employee Count -->
+                            <div class="group relative flex items-center justify-between overflow-hidden rounded-xl border border-emerald-400/50 px-4 py-3 shadow-lg shadow-emerald-500/20 backdrop-blur-xl transition-all duration-300 hover:scale-[1.03] hover:border-emerald-400 hover:shadow-xl hover:shadow-emerald-500/30 dark:border-emerald-500/30">
+                                <div class="absolute -left-4 top-1/2 h-16 w-16 -translate-y-1/2 rounded-full bg-emerald-500/30 blur-2xl transition-all group-hover:bg-emerald-500/50"></div>
+                                <div class="relative flex items-center gap-3">
+                                    <div class="relative flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-400 to-green-500 shadow-lg shadow-emerald-500/50">
+                                        <svg class="h-4 w-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
                                         </svg>
                                     </div>
-                                </div>
-                            </div>
-                            <!-- Client Count -->
-                            <div class="group relative overflow-hidden rounded-xl border border-gray-200 bg-gradient-to-br from-gray-50 to-gray-100/50 p-4 shadow-sm transition-all duration-200 hover:scale-105 hover:shadow-md dark:border-gray-800/50 dark:from-gray-900/20 dark:to-gray-800/10">
-                                <div class="flex items-center justify-between">
                                     <div>
-                                        <p class="text-xs font-medium text-gray-700 dark:text-gray-400">{{ __('Client') }}</p>
-                                        <p class="mt-1 text-2xl font-bold text-gray-900 dark:text-gray-200">{{ $clientCount }}</p>
+                                        <span class="text-sm font-bold text-emerald-900 dark:text-emerald-200">{{ __('Employee') }}</span>
+                                        <p class="text-xs text-emerald-600/80 dark:text-emerald-400/70">{{ __('Staff') }}</p>
                                     </div>
-                                    <div class="rounded-lg bg-gray-200/50 p-2 dark:bg-gray-900/30">
-                                        <svg class="h-5 w-5 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                </div>
+                                <span class="relative rounded-full border border-emerald-400/50 px-3 py-1 text-sm font-bold text-emerald-900 dark:text-emerald-200 shadow-lg shadow-emerald-500/20 backdrop-blur-xl">{{ $employeeCount }}</span>
+                            </div>
+
+                            <!-- Client Count -->
+                            <div class="group relative flex items-center justify-between overflow-hidden rounded-xl border border-violet-400/50 px-4 py-3 shadow-lg shadow-violet-500/20 backdrop-blur-xl transition-all duration-300 hover:scale-[1.03] hover:border-violet-400 hover:shadow-xl hover:shadow-violet-500/30 dark:border-violet-500/30">
+                                <div class="absolute -left-4 top-1/2 h-16 w-16 -translate-y-1/2 rounded-full bg-violet-500/30 blur-2xl transition-all group-hover:bg-violet-500/50"></div>
+                                <div class="relative flex items-center gap-3">
+                                    <div class="relative flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-violet-400 to-purple-500 shadow-lg shadow-violet-500/50">
+                                        <svg class="h-4 w-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
                                         </svg>
                                     </div>
+                                    <div>
+                                        <span class="text-sm font-bold text-violet-900 dark:text-violet-200">{{ __('Client') }}</span>
+                                        <p class="text-xs text-violet-600/80 dark:text-violet-400/70">{{ __('Customer') }}</p>
+                                    </div>
                                 </div>
+                                <span class="relative rounded-full border border-violet-400/50 px-3 py-1 text-sm font-bold text-violet-900 dark:text-violet-200 shadow-lg shadow-violet-500/20 backdrop-blur-xl">{{ $clientCount }}</span>
                             </div>
                         </div>
 
@@ -616,6 +607,15 @@
         </div>
     </div>
 
+    @push('styles')
+        <style>
+            /* Modern flat chart styling */
+            #taskChart {
+                filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.05));
+            }
+        </style>
+    @endpush
+
     @push('scripts')
         <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
         <script>
@@ -673,61 +673,81 @@
                 if (completedBadge) completedBadge.textContent = stats.completed;
                 if (cancelledBadge) cancelledBadge.textContent = stats.cancelled;
 
+                // Modern flat colors - vibrant and clean
+                const colors = {
+                    amber: '#f59e0b',
+                    blue: '#3b82f6',
+                    emerald: '#10b981',
+                    red: '#ef4444'
+                };
+
                 window.taskChart = new Chart(taskCtx.getContext('2d'), {
                     type: 'doughnut',
                     data: {
                         labels: ['Pending', 'Running', 'Completed', 'Cancelled'],
                         datasets: [{
                             data: [stats.pending, stats.running, stats.completed, stats.cancelled],
-                            backgroundColor: [
-                                'rgba(245, 158, 11, 0.8)',  // Amber
-                                'rgba(59, 130, 246, 0.8)',  // Blue
-                                'rgba(16, 185, 129, 0.8)',  // Emerald
-                                'rgba(239, 68, 68, 0.8)',   // Red
-                            ],
-                            borderColor: [
-                                'rgb(245, 158, 11)',
-                                'rgb(59, 130, 246)',
-                                'rgb(16, 185, 129)',
-                                'rgb(239, 68, 68)',
-                            ],
-                            borderWidth: 2,
-                            hoverOffset: 10
+                            backgroundColor: [colors.amber, colors.blue, colors.emerald, colors.red],
+                            borderColor: 'transparent',
+                            borderWidth: 0,
+                            hoverOffset: 8,
+                            borderRadius: 6,
+                            spacing: 4,
                         }]
                     },
                     options: {
                         responsive: true,
                         maintainAspectRatio: true,
+                        animation: {
+                            animateRotate: true,
+                            animateScale: false,
+                            duration: 800,
+                            easing: 'easeOutQuart'
+                        },
                         plugins: {
                             legend: {
                                 display: false
                             },
                             tooltip: {
-                                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                                enabled: true,
+                                backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                                titleColor: '#fff',
+                                bodyColor: '#e2e8f0',
+                                borderColor: 'rgba(255,255,255,0.1)',
+                                borderWidth: 1,
+                                cornerRadius: 10,
                                 padding: 12,
                                 titleFont: {
-                                    size: 14,
-                                    weight: 'bold'
+                                    size: 13,
+                                    weight: '600',
+                                    family: "'Inter', sans-serif"
                                 },
                                 bodyFont: {
-                                    size: 13
+                                    size: 12,
+                                    family: "'Inter', sans-serif"
                                 },
+                                displayColors: true,
+                                boxWidth: 10,
+                                boxHeight: 10,
+                                boxPadding: 4,
+                                usePointStyle: true,
                                 callbacks: {
+                                    title: function(context) {
+                                        return context[0].label + ' Tasks';
+                                    },
                                     label: function (context) {
-                                        let label = context.label || '';
-                                        if (label) {
-                                            label += ': ';
-                                        }
-                                        label += context.parsed;
+                                        const value = context.parsed;
                                         const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                                        const percentage = ((context.parsed / total) * 100).toFixed(1);
-                                        label += ` (${percentage}%)`;
-                                        return label;
+                                        const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+                                        return `${value} tasks (${percentage}%)`;
                                     }
                                 }
                             }
                         },
-                        cutout: '70%',
+                        cutout: '78%',
+                        radius: '100%',
+                        rotation: -90,
+                        circumference: 360,
                     }
                 });
             }

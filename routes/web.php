@@ -6,6 +6,7 @@ use App\Http\Controllers\ApiDocsController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LandingPageController;
 use App\Http\Controllers\PrivacyPolicyController;
+use App\Livewire\Notices\Index as NoticesIndex;
 use App\Livewire\Ports\Index as PortsIndex;
 use App\Livewire\Settings\Appearance;
 use App\Livewire\Settings\Profile;
@@ -66,6 +67,9 @@ Route::middleware(['auth'])->group(function () {
 
     // Vendors Management (Admin Only - checked in component)
     Route::get('vendors', VendorsIndex::class)->name('vendors.index');
+
+    // Notices Management (Admin Only - checked in component)
+    Route::get('notices', NoticesIndex::class)->name('notices.index');
 
     // Vehicles Management
     Route::get('vehicles', VehiclesIndex::class)->name('vehicles.index');

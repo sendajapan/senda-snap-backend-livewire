@@ -10,9 +10,23 @@ use Illuminate\Support\Facades\Storage;
 
 class UserService
 {
+    /**
+     * Scope query by vendor_id for multi-tenancy (admin can see all)
+     */
+    protected function scopeByVendor($query)
+    {
+        $user = auth()->user();
+        if ($user && $user->role !== 'admin' && $user->vendor_id) {
+            $query->where('vendor_id', $user->vendor_id);
+        }
+
+        return $query;
+    }
+
     public function list(array $filters = []): Collection
     {
         $query = User::query();
+        $this->scopeByVendor($query);
 
         if (! empty($filters['search'])) {
             $query->where(function ($q) use ($filters) {
@@ -35,6 +49,7 @@ class UserService
     public function getPaginated(array $filters = [], int $perPage = 10)
     {
         $query = User::query();
+        $this->scopeByVendor($query);
 
         if (! empty($filters['search'])) {
             $query->where(function ($q) use ($filters) {
@@ -52,11 +67,20 @@ class UserService
 
     public function getById(int $userId): User
     {
-        return User::findOrFail($userId);
+        $query = User::query();
+        $this->scopeByVendor($query);
+
+        return $query->findOrFail($userId);
     }
 
     public function create(array $data): User
     {
+        // Multi-tenancy: Auto-assign vendor_id from authenticated user (for managers creating employees)
+        $user = auth()->user();
+        if ($user && $user->vendor_id && ! isset($data['vendor_id'])) {
+            $data['vendor_id'] = $user->vendor_id;
+        }
+
         $userData = [
             'name' => $data['name'],
             'email' => $data['email'],
@@ -64,6 +88,7 @@ class UserService
             'role' => $data['role'] ?? 'client',
             'phone' => $data['phone'] ?? null,
             'avis_id' => $data['avis_id'] ?? null,
+            'vendor_id' => $data['vendor_id'] ?? null,
         ];
 
         if (! empty($data['avatar']) && $data['avatar'] instanceof UploadedFile) {

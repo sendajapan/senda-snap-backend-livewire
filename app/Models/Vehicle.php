@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\BelongsToVendor;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -10,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Vehicle extends Model
 {
+    use BelongsToVendor;
     use HasFactory;
 
     protected $fillable = [
@@ -38,6 +40,7 @@ class Vehicle extends Model
         'tohon_copy',
         'status',
         'created_by',
+        'vendor_id',
     ];
 
     protected function casts(): array
@@ -54,21 +57,33 @@ class Vehicle extends Model
         ];
     }
 
+    /**
+     * Vehicle photos.
+     */
     public function photos(): HasMany
     {
         return $this->hasMany(VehiclePhoto::class);
     }
 
+    /**
+     * Consignee details.
+     */
     public function consignee(): HasOne
     {
         return $this->hasOne(ConsigneeDetail::class);
     }
 
+    /**
+     * Tasks related to this vehicle.
+     */
     public function tasks(): HasMany
     {
         return $this->hasMany(Task::class);
     }
 
+    /**
+     * User who created this vehicle.
+     */
     public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');

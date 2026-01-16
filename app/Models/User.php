@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -14,14 +14,11 @@ use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasApiTokens, HasFactory, Notifiable, TwoFactorAuthenticatable;
+    use HasApiTokens;
+    use HasFactory;
+    use Notifiable;
+    use TwoFactorAuthenticatable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
     protected $fillable = [
         'name',
         'email',
@@ -30,13 +27,9 @@ class User extends Authenticatable
         'phone',
         'avatar',
         'avis_id',
+        'vendor_id',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
     protected $hidden = [
         'password',
         'two_factor_secret',
@@ -44,11 +37,6 @@ class User extends Authenticatable
         'remember_token',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
@@ -57,8 +45,48 @@ class User extends Authenticatable
         ];
     }
 
+    // ========================================
+    // Relationships
+    // ========================================
+
     /**
-     * Get the user's initials
+     * Vendor this user belongs to.
+     */
+    public function vendor(): BelongsTo
+    {
+        return $this->belongsTo(Vendor::class);
+    }
+
+    /**
+     * Tasks assigned to this user.
+     */
+    public function assignedTasks(): HasMany
+    {
+        return $this->hasMany(Task::class, 'assigned_to');
+    }
+
+    /**
+     * Tasks created by this user.
+     */
+    public function createdTasks(): HasMany
+    {
+        return $this->hasMany(Task::class, 'created_by');
+    }
+
+    /**
+     * Vehicles created by this user.
+     */
+    public function vehicles(): HasMany
+    {
+        return $this->hasMany(Vehicle::class, 'created_by');
+    }
+
+    // ========================================
+    // Helper Methods
+    // ========================================
+
+    /**
+     * Get user initials.
      */
     public function initials(): string
     {
@@ -70,7 +98,7 @@ class User extends Authenticatable
     }
 
     /**
-     * Get the avatar URL attribute
+     * Get avatar URL.
      */
     public function getAvatarUrlAttribute(): ?string
     {
@@ -82,26 +110,27 @@ class User extends Authenticatable
     }
 
     /**
-     * Get tasks assigned to this user
+     * Check if user is admin.
      */
-    public function assignedTasks(): HasMany
+    public function isAdmin(): bool
     {
-        return $this->hasMany(Task::class, 'assigned_to');
+        return $this->role === 'admin';
     }
 
     /**
-     * Get tasks created by this user
+     * Check if user is manager.
      */
-    public function createdTasks(): HasMany
+    public function isManager(): bool
     {
-        return $this->hasMany(Task::class, 'created_by');
+        return $this->role === 'manager';
     }
 
     /**
-     * Get vehicles created by this user
+     * Check if user has vendor restriction.
+     * Admin users have no restriction (can see all data).
      */
-    public function vehicles(): HasMany
+    public function hasVendorRestriction(): bool
     {
-        return $this->hasMany(Vehicle::class, 'created_by');
+        return ! $this->isAdmin() && $this->vendor_id !== null;
     }
 }

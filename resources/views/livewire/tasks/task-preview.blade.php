@@ -27,17 +27,17 @@
                  x-transition:leave="transition ease-in duration-200"
                  x-transition:leave-start="opacity-100 scale-100"
                  x-transition:leave-end="opacity-0 scale-95"
-                 class="relative w-full max-w-4xl transform overflow-hidden rounded-2xl bg-white shadow-2xl dark:bg-gray-900"
+                 class="relative w-full max-w-4xl transform overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-50 via-white to-teal-50 shadow-2xl dark:from-emerald-900/20 dark:via-gray-900 dark:to-teal-900/20"
                  @click.away="open = false">
+                <!-- Decorative Elements -->
+                <div class="pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-full bg-gradient-to-br from-emerald-400/20 to-teal-400/20 blur-2xl"></div>
+                <div class="pointer-events-none absolute -bottom-8 -left-8 h-32 w-32 rounded-full bg-gradient-to-br from-teal-400/20 to-emerald-400/20 blur-2xl"></div>
 
                 <!-- Content -->
-                <div class="max-h-[90vh] overflow-y-auto p-6 pb-20">
+                <div class="relative max-h-[90vh] overflow-y-auto p-6 pb-20">
                     @if($task)
                         <!-- Task Preview Card -->
-                        <div class="relative overflow-hidden rounded-xl border border-emerald-200 bg-gradient-to-br from-emerald-50 via-white to-teal-50 p-6 shadow-xl dark:border-emerald-900/50 dark:from-emerald-900/20 dark:via-gray-900 dark:to-teal-900/20">
-                            <!-- Decorative Elements -->
-                            <div class="pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-full bg-gradient-to-br from-emerald-400/20 to-teal-400/20 blur-2xl"></div>
-                            <div class="pointer-events-none absolute -bottom-8 -left-8 h-32 w-32 rounded-full bg-gradient-to-br from-teal-400/20 to-emerald-400/20 blur-2xl"></div>
+                        <div class="relative overflow-hidden rounded-xl border border-emerald-200/50 bg-white/50 p-6 mb-3 backdrop-blur-sm dark:border-emerald-800/50 dark:bg-gray-800/50">
 
                             <div class="relative">
                                 <div class="mb-4 flex items-center justify-between">
@@ -177,34 +177,37 @@
                     @endif
                 </div>
 
-                <!-- Action Buttons (Center Bottom) -->
+                <!-- Action Buttons (Separated: Close on Left, Edit/Delete on Right) -->
                 @if($task)
-                    <div class="absolute bottom-0 left-0 right-0 flex items-center justify-center gap-3 border-t border-gray-200/50 bg-white/95 p-4 backdrop-blur-sm dark:border-gray-700/50 dark:bg-gray-900/95">
-                        <!-- Edit Button -->
-                        <button wire:click="editTask" type="button" class="group relative flex items-center justify-center rounded-lg border-2 border-cyan-600/50 bg-cyan-500/10 p-3 transition-all duration-200 hover:border-cyan-600 hover:bg-cyan-500/20 hover:shadow-lg hover:shadow-cyan-600/30">
-                            <svg class="h-5 w-5 text-cyan-600 transition-all duration-200 group-hover:text-cyan-500 group-hover:drop-shadow-[0_0_8px_rgba(6,182,212,0.8)]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                    <div class="absolute bottom-0 left-0 right-0 flex items-center justify-between gap-3 border-t border-emerald-200/30 bg-white/60 px-4 py-3 backdrop-blur-md dark:border-emerald-800/30 dark:bg-gray-900/60">
+                        <!-- Close Button (Left) -->
+                        <button wire:click="closePreview" type="button" class="group relative flex items-center justify-center rounded-lg border-2 border-gray-500/60 bg-gray-600/20 backdrop-blur-sm px-3 py-2 transition-all duration-200 hover:border-gray-400 hover:bg-gray-500/30 hover:shadow-lg hover:shadow-gray-500/40">
+                            <svg class="h-4 w-4 text-gray-700 dark:text-gray-200 transition-all duration-200 group-hover:text-gray-900 dark:group-hover:text-white group-hover:drop-shadow-[0_0_6px_rgba(156,163,175,0.9)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                             </svg>
-                            <span class="ml-2 text-sm font-semibold text-cyan-600">{{ __('Edit') }}</span>
+                            <span class="ml-1.5 text-xs font-semibold text-gray-700 dark:text-gray-200 group-hover:text-gray-900 dark:group-hover:text-white">{{ __('Close') }}</span>
                         </button>
 
-                        <!-- Close Button -->
-                        <button wire:click="closePreview" type="button" class="group relative flex items-center justify-center rounded-lg border-2 border-gray-400/50 bg-gray-500/10 p-3 transition-all duration-200 hover:border-gray-400 hover:bg-gray-500/20 hover:shadow-lg hover:shadow-gray-500/30">
-                            <svg class="h-5 w-5 text-gray-400 transition-all duration-200 group-hover:text-gray-300 group-hover:drop-shadow-[0_0_8px_rgba(156,163,175,0.8)]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                            </svg>
-                            <span class="ml-2 text-sm font-semibold text-gray-400">{{ __('Close') }}</span>
-                        </button>
-
-                        <!-- Delete Button -->
-                        @if($this->canDelete())
-                            <button @click="window.confirmDelete({{ $task->id }}, '{{ addslashes($task->title) }}').then((result) => { if (result.isConfirmed) { $wire.deleteTask() } })" type="button" class="group relative flex items-center justify-center rounded-lg border-2 border-red-600/50 bg-red-500/10 p-3 transition-all duration-200 hover:border-red-600 hover:bg-red-500/20 hover:shadow-lg hover:shadow-red-600/30">
-                                <svg class="h-5 w-5 text-red-600 transition-all duration-200 group-hover:text-red-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                        <!-- Edit and Delete Buttons (Right) -->
+                        <div class="flex items-center gap-2">
+                            <!-- Edit Button (cyan) -->
+                            <button wire:click="editTask" type="button" class="group relative flex items-center justify-center rounded-lg border-2 border-cyan-500/70 bg-cyan-600/20 backdrop-blur-sm px-3 py-2 transition-all duration-200 hover:border-cyan-400 hover:bg-cyan-500/30 hover:shadow-lg hover:shadow-cyan-500/50">
+                                <svg class="h-4 w-4 text-cyan-700 dark:text-cyan-200 transition-all duration-200 group-hover:text-cyan-900 dark:group-hover:text-cyan-100 group-hover:drop-shadow-[0_0_6px_rgba(6,182,212,0.9)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
                                 </svg>
-                                <span class="ml-2 text-sm font-semibold text-red-600">{{ __('Delete') }}</span>
+                                <span class="ml-1.5 text-xs font-semibold text-cyan-700 dark:text-cyan-200 group-hover:text-cyan-900 dark:group-hover:text-cyan-100">{{ __('Edit') }}</span>
                             </button>
-                        @endif
+
+                            <!-- Delete Button (red, conditional) -->
+                            @if($this->canDelete())
+                                <button @click="window.confirmDelete({{ $task->id }}, '{{ addslashes($task->title) }}').then((result) => { if (result.isConfirmed) { $wire.deleteTask() } })" type="button" class="group relative flex items-center justify-center rounded-lg border-2 border-red-500/70 bg-red-600/20 backdrop-blur-sm px-3 py-2 transition-all duration-200 hover:border-red-400 hover:bg-red-500/30 hover:shadow-lg hover:shadow-red-500/50">
+                                    <svg class="h-4 w-4 text-red-700 dark:text-red-200 transition-all duration-200 group-hover:text-red-900 dark:group-hover:text-red-100 group-hover:drop-shadow-[0_0_6px_rgba(239,68,68,0.9)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                                    </svg>
+                                    <span class="ml-1.5 text-xs font-semibold text-red-700 dark:text-red-200 group-hover:text-red-900 dark:group-hover:text-red-100">{{ __('Delete') }}</span>
+                                </button>
+                            @endif
+                        </div>
                     </div>
                 @endif
             </div>

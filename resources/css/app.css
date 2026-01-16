@@ -65,3 +65,55 @@ select:focus[data-flux-control] {
 /* \[:where(&)\]:size-4 {
     @apply size-4;
 } */
+
+/* Custom styling for active/selected navlist items - muted green matte appearance */
+/* High contrast greenish but attractive matt faded look - scoped to sidebar navlist */
+[data-flux-sidebar] a[aria-current="page"],
+[data-flux-sidebar] a[aria-current="true"],
+[data-flux-sidebar] button[aria-current="page"],
+[data-flux-sidebar] button[aria-current="true"],
+flux-sidebar a[aria-current="page"],
+flux-sidebar a[aria-current="true"],
+flux-sidebar button[aria-current="page"],
+flux-sidebar button[aria-current="true"] {
+    background-color: rgba(209, 250, 229, 0.7) !important; /* emerald-50 with 70% opacity - matte faded green */
+    color: rgb(4, 120, 87) !important; /* emerald-700 - darker green text for contrast */
+    font-weight: 500 !important; /* medium weight for emphasis */
+}
+
+.dark [data-flux-sidebar] a[aria-current="page"],
+.dark [data-flux-sidebar] a[aria-current="true"],
+.dark [data-flux-sidebar] button[aria-current="page"],
+.dark [data-flux-sidebar] button[aria-current="true"],
+.dark flux-sidebar a[aria-current="page"],
+.dark flux-sidebar a[aria-current="true"],
+.dark flux-sidebar button[aria-current="page"],
+.dark flux-sidebar button[aria-current="true"] {
+    background-color: rgba(6, 78, 59, 0.5) !important; /* emerald-950 with 50% opacity - dark matte faded green */
+    color: rgb(110, 231, 183) !important; /* emerald-300 - muted green text */
+    font-weight: 500 !important;
+}
+
+[data-flux-sidebar] a[aria-current="page"]:hover,
+[data-flux-sidebar] a[aria-current="true"]:hover,
+[data-flux-sidebar] button[aria-current="page"]:hover,
+[data-flux-sidebar] button[aria-current="true"]:hover,
+flux-sidebar a[aria-current="page"]:hover,
+flux-sidebar a[aria-current="true"]:hover,
+flux-sidebar button[aria-current="page"]:hover,
+flux-sidebar button[aria-current="true"]:hover {
+    background-color: rgba(167, 243, 208, 0.8) !important; /* emerald-100 with 80% opacity */
+    color: rgb(5, 150, 105) !important; /* emerald-600 - slightly brighter on hover */
+}
+
+.dark [data-flux-sidebar] a[aria-current="page"]:hover,
+.dark [data-flux-sidebar] a[aria-current="true"]:hover,
+.dark [data-flux-sidebar] button[aria-current="page"]:hover,
+.dark [data-flux-sidebar] button[aria-current="true"]:hover,
+.dark flux-sidebar a[aria-current="page"]:hover,
+.dark flux-sidebar a[aria-current="true"]:hover,
+.dark flux-sidebar button[aria-current="page"]:hover,
+.dark flux-sidebar button[aria-current="true"]:hover {
+    background-color: rgba(20, 83, 45, 0.6) !important; /* emerald-900 with 60% opacity */
+    color: rgb(125, 211, 252) !important; /* slightly brighter green on hover */
+}

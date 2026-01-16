@@ -32,6 +32,7 @@
     $nextUserTask = \App\Models\Task::whereNotIn('status', ['completed', 'cancelled'])
         ->whereNotNull('work_date')
         ->where('work_date', '>=', now()->toDateString())
+        ->where('work_time', '>=', now()->toTimeString())
         ->where(function ($query) {
             $userId = auth()->id();
             $query->whereHas('assignedUsers', function ($q) use ($userId) {
@@ -252,7 +253,7 @@
                                     </div>
                                     <span class="text-xs font-semibold text-amber-900 dark:text-amber-300">{{ __('Pending') }}</span>
                                 </div>
-                                <span class="rounded-lg bg-amber-200 px-2 py-0.5 text-xs font-bold text-amber-900 dark:bg-amber-800 dark:text-amber-100">{{ $taskPending }}</span>
+                                <span class="rounded-lg bg-amber-200 px-2 py-0.5 text-xs font-bold text-amber-900 dark:bg-amber-800 dark:text-amber-100" data-task-status="pending">{{ $taskPending }}</span>
                             </div>
                             <div class="group flex items-center justify-between border border-blue-200 bg-gradient-to-r from-blue-50 to-blue-100/50 py-2 px-3 shadow-sm transition-all duration-200 hover:scale-105 hover:shadow-md dark:border-blue-800/50 dark:from-blue-900/20 dark:to-blue-800/10">
                                 <div class="flex items-center gap-3">
@@ -262,7 +263,7 @@
                                     </div>
                                     <span class="text-xs font-semibold text-blue-900 dark:text-blue-300">{{ __('Running') }}</span>
                                 </div>
-                                <span class="rounded-lg bg-blue-200 px-2 py-0.5 text-xs font-bold text-blue-900 dark:bg-blue-800 dark:text-blue-100">{{ $taskRunning }}</span>
+                                <span class="rounded-lg bg-blue-200 px-2 py-0.5 text-xs font-bold text-blue-900 dark:bg-blue-800 dark:text-blue-100" data-task-status="running">{{ $taskRunning }}</span>
                             </div>
                             <div class="group flex items-center justify-between border border-emerald-200 bg-gradient-to-r from-emerald-50 to-emerald-100/50 py-2 px-3 shadow-sm transition-all duration-200 hover:scale-105 hover:shadow-md dark:border-emerald-800/50 dark:from-emerald-900/20 dark:to-emerald-800/10">
                                 <div class="flex items-center gap-3">
@@ -272,7 +273,7 @@
                                     </div>
                                     <span class="text-xs font-semibold text-emerald-900 dark:text-emerald-300">{{ __('Completed') }}</span>
                                 </div>
-                                <span class="rounded-lg bg-emerald-200 px-2 py-0.5 text-xs font-bold text-emerald-900 dark:bg-emerald-800 dark:text-emerald-100">{{ $taskCompleted }}</span>
+                                <span class="rounded-lg bg-emerald-200 px-2 py-0.5 text-xs font-bold text-emerald-900 dark:bg-emerald-800 dark:text-emerald-100" data-task-status="completed">{{ $taskCompleted }}</span>
                             </div>
                             <div class="group flex items-center justify-between border border-red-200 bg-gradient-to-r from-red-50 to-red-100/50 py-2 px-3 shadow-sm transition-all duration-200 hover:scale-105 hover:shadow-md dark:border-red-800/50 dark:from-red-900/20 dark:to-red-800/10">
                                 <div class="flex items-center gap-3">
@@ -282,7 +283,7 @@
                                     </div>
                                     <span class="text-xs font-semibold text-red-900 dark:text-red-300">{{ __('Cancelled') }}</span>
                                 </div>
-                                <span class="rounded-lg bg-red-200 px-2 py-0.5 text-xs font-bold text-red-900 dark:bg-red-800 dark:text-red-100">{{ $taskCancelled }}</span>
+                                <span class="rounded-lg bg-red-200 px-2 py-0.5 text-xs font-bold text-red-900 dark:bg-red-800 dark:text-red-100" data-task-status="cancelled">{{ $taskCancelled }}</span>
                             </div>
                         </div>
                     </div>
@@ -618,7 +619,37 @@
     @push('scripts')
         <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
         <script>
-            function initializeCharts() {
+            async function fetchTaskStats() {
+                try {
+                    const response = await fetch('{{ route('dashboard.task-stats') }}', {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
+                        credentials: 'same-origin'
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch task stats');
+                    }
+
+                    const result = await response.json();
+                    return result.data.stats;
+                } catch (error) {
+                    console.error('Error fetching task stats:', error);
+                    // Fallback to initial server-rendered values
+                    return {
+                        pending: {{ $taskPending }},
+                        running: {{ $taskRunning }},
+                        completed: {{ $taskCompleted }},
+                        cancelled: {{ $taskCancelled }}
+                    };
+                }
+            }
+
+            async function initializeCharts() {
                 // Destroy existing charts if they exist
                 if (window.taskChart && typeof window.taskChart.destroy === 'function') {
                     window.taskChart.destroy();
@@ -628,12 +659,26 @@
                 const taskCtx = document.getElementById('taskChart');
                 if (!taskCtx) return;
 
+                // Fetch fresh task statistics
+                const stats = await fetchTaskStats();
+
+                // Update status count badges
+                const pendingBadge = document.querySelector('[data-task-status="pending"]');
+                const runningBadge = document.querySelector('[data-task-status="running"]');
+                const completedBadge = document.querySelector('[data-task-status="completed"]');
+                const cancelledBadge = document.querySelector('[data-task-status="cancelled"]');
+
+                if (pendingBadge) pendingBadge.textContent = stats.pending;
+                if (runningBadge) runningBadge.textContent = stats.running;
+                if (completedBadge) completedBadge.textContent = stats.completed;
+                if (cancelledBadge) cancelledBadge.textContent = stats.cancelled;
+
                 window.taskChart = new Chart(taskCtx.getContext('2d'), {
                     type: 'doughnut',
                     data: {
                         labels: ['Pending', 'Running', 'Completed', 'Cancelled'],
                         datasets: [{
-                            data: [{{ $taskPending }}, {{ $taskRunning }}, {{ $taskCompleted }}, {{ $taskCancelled }}],
+                            data: [stats.pending, stats.running, stats.completed, stats.cancelled],
                             backgroundColor: [
                                 'rgba(245, 158, 11, 0.8)',  // Amber
                                 'rgba(59, 130, 246, 0.8)',  // Blue

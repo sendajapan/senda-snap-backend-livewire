@@ -9,14 +9,14 @@
                 </svg>
             </x-slot:icon>
             <x-slot:actions>
-                <a href="{{ asset('senda_snap.release_1.0_25_11_25.apk') }}" 
-                   download="senda_snap.release_1.0_25_11_25.apk"
+                <a href="https://play.google.com/store/apps/details?id=com.sendajapan.sendasnap" 
+                   target="_blank"
+                   rel="noopener noreferrer"
                    class="flex items-center gap-2 rounded-lg bg-white px-4 py-2 text-sm font-semibold text-gray-900 shadow-md transition-all hover:bg-gray-50 hover:shadow-lg dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700">
-                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M3,20.5V3.5C3,2.91 3.34,2.39 3.84,2.15L13.69,12L3.84,21.85C3.34,21.6 3,21.09 3,20.5M16.81,15.12L6.05,21.34L14.54,12.85L16.81,15.12M20.16,10.81C20.5,11.08 20.75,11.5 20.75,12C20.75,12.5 20.5,12.92 20.16,13.19L17.19,15.53L15.12,13.46L17.47,12L15.12,10.54L17.19,8.47L20.16,10.81M6.05,2.66L16.81,8.88L14.54,11.15L6.05,2.66Z" />
                     </svg>
-                    <span>{{ __('Download APK') }}</span>
+                    <span>{{ __('Get it on Google Play') }}</span>
                 </a>
             </x-slot:actions>
         </x-page-header>

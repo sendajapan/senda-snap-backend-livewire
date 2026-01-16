@@ -20,6 +20,9 @@
                 </flux:navlist.group>
 
                 <flux:navlist.group :heading="__('Management')" class="grid">
+                    @if(auth()->user()?->role === 'admin')
+                        <flux:navlist.item icon="building-office" :href="route('vendors.index')" :current="request()->routeIs('vendors.*')" wire:navigate>{{ __('Vendors') }}</flux:navlist.item>
+                    @endif
                     <flux:navlist.item icon="users" :href="route('users.index')" :current="request()->routeIs('users.*')" wire:navigate>{{ __('Users') }}</flux:navlist.item>
 
                     <!-- Tasks with Submenu -->
@@ -61,6 +64,49 @@
                                 wire:navigate
                                 class="text-sm">
                                 {{ __('Kanban Board') }}
+                            </flux:navlist.item>
+                        </div>
+                    </div>
+
+                    <!-- Shipments with Submenu -->
+                    <div x-data="{ open: {{ request()->routeIs('shipping-companies.*') || request()->routeIs('shipment-schedule.*') || request()->routeIs('ports.*') ? 'true' : 'false' }} }">
+                        <flux:navlist.item
+                            icon="layout-grid"
+                            @click="open = !open"
+                            :current="request()->routeIs('shipping-companies.*') || request()->routeIs('shipment-schedule.*') || request()->routeIs('ports.*')"
+                            class="cursor-pointer">
+                            <div class="flex items-center justify-between w-full">
+                                <span>{{ __('Shipments') }}</span>
+                                <svg x-show="!open" class="h-4 w-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                </svg>
+                                <svg x-show="open" class="h-4 w-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+                                </svg>
+                            </div>
+                        </flux:navlist.item>
+
+                        <div x-show="open" x-collapse class="ml-8 mt-1 space-y-1">
+                            <flux:navlist.item
+                                :href="route('shipping-companies.index')"
+                                :current="request()->routeIs('shipping-companies.*')"
+                                wire:navigate
+                                class="text-sm">
+                                {{ __('Shipping Companies') }}
+                            </flux:navlist.item>
+                            <flux:navlist.item
+                                :href="route('ports.index')"
+                                :current="request()->routeIs('ports.*')"
+                                wire:navigate
+                                class="text-sm">
+                                {{ __('Ports') }}
+                            </flux:navlist.item>
+                            <flux:navlist.item
+                                :href="route('shipment-schedule.index')"
+                                :current="request()->routeIs('shipment-schedule.index')"
+                                wire:navigate
+                                class="text-sm">
+                                {{ __('Shipment Schedule') }}
                             </flux:navlist.item>
                         </div>
                     </div>

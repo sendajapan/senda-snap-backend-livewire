@@ -393,39 +393,50 @@ When no `image` prop is provided, displays a white background with centered icon
                  x-transition:leave="transition ease-in duration-200"
                  x-transition:leave-start="opacity-100 scale-100"
                  x-transition:leave-end="opacity-0 scale-95"
-                 class="relative w-full max-w-4xl transform overflow-hidden rounded-2xl bg-white shadow-2xl dark:bg-gray-900"
+                 class="relative w-full max-w-4xl transform overflow-hidden rounded-2xl bg-gradient-to-br from-{color}-50 via-white to-{color2}-50 shadow-2xl dark:from-{color}-900/20 dark:via-gray-900 dark:to-{color2}-900/20"
                  @click.away="open = false">
+                <!-- Decorative Elements (on parent) -->
+                <div class="pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-full bg-gradient-to-br from-{color}-400/20 to-{color2}-400/20 blur-2xl"></div>
+                <div class="pointer-events-none absolute -bottom-8 -left-8 h-32 w-32 rounded-full bg-gradient-to-br from-{color2}-400/20 to-{color}-400/20 blur-2xl"></div>
 
                 <!-- Content -->
-                <div class="max-h-[90vh] overflow-y-auto p-6 pb-20">
-                    <!-- Item Preview Card with gradient background matching variant -->
-                    <div class="relative overflow-hidden rounded-xl border border-{color}-200 bg-gradient-to-br from-{color}-50 via-white to-{color2}-50 p-6 shadow-xl dark:border-{color}-900/50 dark:from-{color}-900/20 dark:via-gray-900 dark:to-{color2}-900/20">
-                        <!-- Decorative blur circles -->
+                <div class="relative max-h-[90vh] overflow-y-auto p-6 pb-20">
+                    <!-- Item Preview Card (transparent to show parent gradient) -->
+                    <div class="relative overflow-hidden rounded-xl border border-{color}-200/50 bg-white/50 p-6 mb-3 backdrop-blur-sm dark:border-{color}-800/50 dark:bg-gray-800/50">
                         <!-- Item details display -->
                     </div>
                 </div>
 
-                <!-- Action Buttons (Center Bottom) -->
-                <div class="absolute bottom-0 left-0 right-0 flex items-center justify-center gap-3 border-t border-gray-200/50 bg-white/95 p-4 backdrop-blur-sm dark:border-gray-700/50 dark:bg-gray-900/95">
-                    <!-- Edit Button (cyan) -->
-                    <button wire:click="editItem" type="button" class="group relative flex items-center justify-center rounded-lg border-2 border-cyan-600/50 bg-cyan-500/10 p-3 transition-all duration-200 hover:border-cyan-600 hover:bg-cyan-500/20 hover:shadow-lg hover:shadow-cyan-600/30">
-                        <svg class="h-5 w-5 text-cyan-600">...</svg>
-                        <span class="ml-2 text-sm font-semibold text-cyan-600">{{ __('Edit') }}</span>
+                <!-- Action Buttons (Separated: Close on Left, Edit/Delete on Right) -->
+                <div class="absolute bottom-0 left-0 right-0 flex items-center justify-between gap-3 border-t border-{color}-200/30 bg-white/60 px-4 py-3 backdrop-blur-md dark:border-{color}-800/30 dark:bg-gray-900/60">
+                    <!-- Close Button (Left) -->
+                    <button wire:click="closePreview" type="button" class="group relative flex items-center justify-center rounded-lg border-2 border-gray-500/60 bg-gray-600/20 backdrop-blur-sm px-3 py-2 transition-all duration-200 hover:border-gray-400 hover:bg-gray-500/30 hover:shadow-lg hover:shadow-gray-500/40">
+                        <svg class="h-4 w-4 text-gray-700 dark:text-gray-200 transition-all duration-200 group-hover:text-gray-900 dark:group-hover:text-white group-hover:drop-shadow-[0_0_6px_rgba(156,163,175,0.9)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                        <span class="ml-1.5 text-xs font-semibold text-gray-700 dark:text-gray-200 group-hover:text-gray-900 dark:group-hover:text-white">{{ __('Close') }}</span>
                     </button>
 
-                    <!-- Close Button (gray) -->
-                    <button wire:click="closePreview" type="button" class="group relative flex items-center justify-center rounded-lg border-2 border-gray-400/50 bg-gray-500/10 p-3 transition-all duration-200 hover:border-gray-400 hover:bg-gray-500/20 hover:shadow-lg hover:shadow-gray-500/30">
-                        <svg class="h-5 w-5 text-gray-400">...</svg>
-                        <span class="ml-2 text-sm font-semibold text-gray-400">{{ __('Close') }}</span>
-                    </button>
-
-                    <!-- Delete Button (red, conditional) -->
-                    @if($this->canDelete())
-                        <button @click="window.confirmDelete(...).then(...)" type="button" class="group relative flex items-center justify-center rounded-lg border-2 border-red-600/50 bg-red-500/10 p-3 transition-all duration-200 hover:border-red-600 hover:bg-red-500/20 hover:shadow-lg hover:shadow-red-600/30">
-                            <svg class="h-5 w-5 text-red-600">...</svg>
-                            <span class="ml-2 text-sm font-semibold text-red-600">{{ __('Delete') }}</span>
+                    <!-- Edit and Delete Buttons (Right) -->
+                    <div class="flex items-center gap-2">
+                        <!-- Edit Button (cyan) -->
+                        <button wire:click="editItem" type="button" class="group relative flex items-center justify-center rounded-lg border-2 border-cyan-500/70 bg-cyan-600/20 backdrop-blur-sm px-3 py-2 transition-all duration-200 hover:border-cyan-400 hover:bg-cyan-500/30 hover:shadow-lg hover:shadow-cyan-500/50">
+                            <svg class="h-4 w-4 text-cyan-700 dark:text-cyan-200 transition-all duration-200 group-hover:text-cyan-900 dark:group-hover:text-cyan-100 group-hover:drop-shadow-[0_0_6px_rgba(6,182,212,0.9)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                            </svg>
+                            <span class="ml-1.5 text-xs font-semibold text-cyan-700 dark:text-cyan-200 group-hover:text-cyan-900 dark:group-hover:text-cyan-100">{{ __('Edit') }}</span>
                         </button>
-                    @endif
+
+                        <!-- Delete Button (red, conditional) -->
+                        @if($this->canDelete())
+                            <button @click="window.confirmDelete(...).then(...)" type="button" class="group relative flex items-center justify-center rounded-lg border-2 border-red-500/70 bg-red-600/20 backdrop-blur-sm px-3 py-2 transition-all duration-200 hover:border-red-400 hover:bg-red-500/30 hover:shadow-lg hover:shadow-red-500/50">
+                                <svg class="h-4 w-4 text-red-700 dark:text-red-200 transition-all duration-200 group-hover:text-red-900 dark:group-hover:text-red-100 group-hover:drop-shadow-[0_0_6px_rgba(239,68,68,0.9)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                                </svg>
+                                <span class="ml-1.5 text-xs font-semibold text-red-700 dark:text-red-200 group-hover:text-red-900 dark:group-hover:text-red-100">{{ __('Delete') }}</span>
+                            </button>
+                        @endif
+                    </div>
                 </div>
             </div>
         </div>
@@ -437,15 +448,29 @@ When no `image` prop is provided, displays a white background with centered icon
 - Center dialog modal (not side panel)
 - Max width: `max-w-4xl`
 - Scale animation on open/close
-- Gradient background matching variant color (blue/cyan for users, emerald/teal for tasks)
-- Decorative blur circles
-- Action buttons at bottom center: Edit (cyan), Close (gray), Delete (red, conditional)
+- **Gradient on parent container** (not on preview card) matching variant color
+- **Transparent preview card** (`bg-white/50`) to show parent gradient through
+- **No shadow on preview card** (removed for cleaner look)
+- Decorative blur circles on parent container
+- **Separated button layout**: Close button on left, Edit/Delete buttons on right
+- **Smaller buttons**: `px-3 py-2` padding, `h-4 w-4` icons, `text-xs` text
+- **High contrast button text**: `text-gray-700 dark:text-gray-200` for Close, `text-cyan-700 dark:text-cyan-200` for Edit, `text-red-700 dark:text-red-200` for Delete
+- **Glowing borders and blurry backgrounds**: `backdrop-blur-sm` on buttons, enhanced shadows with glow effects
+- **Preview card margin**: `mb-3` (half of top padding `p-6`)
+- Action buttons at bottom: Edit (cyan), Close (gray), Delete (red, conditional)
 - Delete button only shown if `canDelete()` returns true
 - Integrated with SweetAlert2 for delete confirmation
 
 **Color Variants**:
-- **Users**: Blue/cyan gradient (`from-blue-50 via-white to-cyan-50`)
+- **Users/Ports**: Blue/cyan gradient (`from-blue-50 via-white to-cyan-50`)
 - **Tasks**: Emerald/teal gradient (`from-emerald-50 via-white to-teal-50`)
+- **Shipping Companies**: Indigo/purple gradient (`from-indigo-50 via-white to-purple-50`)
+
+**Key Design Principles**:
+- **Parent has gradient, child is transparent**: Gradient applied to modal container, preview card uses `bg-white/50` to show gradient through
+- **No shadows on preview card**: Clean, flat design that blends with parent
+- **Button separation**: Close button separated from action buttons for better UX
+- **Readable button text**: Darker text colors (`text-{color}-700`) for better contrast on blurry backgrounds
 
 **Opening Preview** (from parent component):
 ```blade
@@ -1827,11 +1852,27 @@ $upcomingTasks = \App\Models\Task::whereNotIn('status', ['completed', 'cancelled
 
 ### Preview Modal System
 - Center dialog modals for read-only item previews
-- Gradient backgrounds matching module variant colors (blue/cyan for users, emerald/teal for tasks)
-- Action buttons at bottom center: Edit, Close, Delete (conditional)
+- **Gradient on parent container** (not on preview card) matching module variant colors
+- **Transparent preview card** (`bg-white/50`) to show parent gradient through, matching table card pattern
+- **No shadow on preview card** for cleaner appearance
+- **Separated button layout**: Close button on left, Edit/Delete buttons grouped on right
+- **Smaller, high-contrast buttons**: `px-3 py-2` padding, `h-4 w-4` icons, `text-xs` text with darker colors (`text-{color}-700`) for readability
+- **Glowing borders and blurry backgrounds**: Enhanced visual effects with `backdrop-blur-sm` on buttons and glow shadows on hover
+- **Preview card margin**: `mb-3` (half of top padding `p-6`) for balanced spacing
+- Action buttons: Edit (cyan), Close (gray), Delete (red, conditional)
 - Permission-based delete button visibility
 - Integrated with SweetAlert2 for delete confirmations
-- Applied to Users and Tasks modules
+- Applied to Users, Tasks, Ports, and Shipping Companies modules
+
+### Preview Modal System Updates (v2.13)
+- **Gradient moved to parent container**: Parent modal container now has gradient, preview card is transparent
+- **Transparent preview cards**: Changed from `bg-white/80` to `bg-white/50` to match table card pattern and show parent gradient through
+- **Removed shadows**: Preview cards no longer have `shadow-lg` for cleaner appearance
+- **Separated button layout**: Close button positioned on left, Edit/Delete buttons grouped on right
+- **Smaller, high-contrast buttons**: Reduced button size (`px-3 py-2`, `h-4 w-4` icons, `text-xs` text) with darker text colors for better readability
+- **Enhanced button styling**: Added glowing borders (`border-{color}-500/70`), blurry backgrounds (`backdrop-blur-sm`), and glow shadows on hover
+- **Balanced spacing**: Preview card bottom margin set to `mb-3` (half of top padding)
+- Applied to all preview dialogs: Users, Tasks, Ports, Shipping Companies
 
 ### Permission-Based UI System
 - Role-based permission checks for delete actions
@@ -2332,9 +2373,90 @@ For the main landing/welcome page, use a hero section with side-by-side features
 - Dark mode support for all color variants
 - Consistent spacing with `mt-8` margin before Keypoints sections
 
-**Version**: 2.11  
-**Last Updated**: December 25, 2024  
+### Navigation Menu Naming Conventions
+- Added standard for menu item naming: plural forms without "Manage" suffix
+- Main menu items: Users, Tasks, Shipments, Vehicles
+- Submenu items: Descriptive names (Today's Tasks, Shipping Companies, Ports)
+- Consistent with industry best practices
+
+**Version**: 2.13  
+**Last Updated**: January 17, 2026  
 **Project**: Laravel Livewire Dashboard - Senda Snap
+
+---
+
+## 🧭 Navigation Menu Naming Conventions
+
+### Menu Item Naming Standard
+
+All navigation menu items in the sidebar follow a consistent naming convention:
+
+**Rule**: Use **plural form** without "Manage" suffix for all menu items.
+
+**Examples**:
+- ✅ `Users` (not "User Manage" or "User Management")
+- ✅ `Tasks` (not "Task Manage" or "Task Management")
+- ✅ `Shipments` (not "Shipment Manage" or "Shipment Management")
+- ✅ `Vehicles` (not "Vehicle Manage" or "Vehicle Management")
+
+**Rationale**:
+- Plural forms are standard for resource lists in modern UIs
+- Shorter, cleaner labels improve readability
+- Consistent with industry best practices (GitHub, GitLab, etc.)
+- Avoids redundancy (the "Management" section heading already implies management)
+
+**Submenu Items**:
+- Submenu items can be more descriptive (e.g., "Today's Tasks", "All Tasks", "Shipping Companies", "Ports")
+- Submenu items use specific names that describe the content or action
+
+**Implementation Pattern**:
+```blade
+<flux:navlist.group :heading="__('Management')" class="grid">
+    <!-- Main menu items: plural form, no "Manage" suffix -->
+    <flux:navlist.item icon="users" :href="route('users.index')">
+        {{ __('Users') }}
+    </flux:navlist.item>
+
+    <!-- Menu items with submenus -->
+    <div x-data="{ open: {{ request()->routeIs('tasks.*') ? 'true' : 'false' }} }">
+        <flux:navlist.item icon="clipboard" @click="open = !open">
+            <span>{{ __('Tasks') }}</span>
+        </flux:navlist.item>
+        
+        <div x-show="open" x-collapse class="ml-8 mt-1 space-y-1">
+            <!-- Submenu items: descriptive names -->
+            <flux:navlist.item :href="route('tasks.today')">
+                {{ __("Today's Tasks") }}
+            </flux:navlist.item>
+            <flux:navlist.item :href="route('tasks.all')">
+                {{ __('All Tasks') }}
+            </flux:navlist.item>
+        </div>
+    </div>
+
+    <!-- Shipments with submenu -->
+    <div x-data="{ open: {{ request()->routeIs('shipping-companies.*') || request()->routeIs('ports.*') ? 'true' : 'false' }} }">
+        <flux:navlist.item icon="layout-grid" @click="open = !open">
+            <span>{{ __('Shipments') }}</span>
+        </flux:navlist.item>
+        
+        <div x-show="open" x-collapse class="ml-8 mt-1 space-y-1">
+            <flux:navlist.item :href="route('shipping-companies.index')">
+                {{ __('Shipping Companies') }}
+            </flux:navlist.item>
+            <flux:navlist.item :href="route('ports.index')">
+                {{ __('Ports') }}
+            </flux:navlist.item>
+        </div>
+    </div>
+</flux:navlist.group>
+```
+
+**Key Points**:
+- Main menu items: Always plural, no "Manage" suffix
+- Submenu items: Can be descriptive and specific
+- Consistency: All menu items follow the same pattern
+- Translation: Always use `__()` helper for internationalization
 
 ---
 

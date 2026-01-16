@@ -89,59 +89,59 @@
         </nav>
 
         <!-- Hero Section -->
-        <div class="relative min-h-screen pt-40 pb-20">
+        <div class="relative h-screen max-h-[1080px] pt-24 pb-12">
             <!-- Particle Background -->
             <canvas id="particle-canvas" class="fixed inset-0 -z-10 pointer-events-none"></canvas>
 
-            <div class="mx-auto max-w-7xl px-6">
+            <div class="mx-auto max-w-7xl h-full px-4 sm:px-6 lg:px-8">
                 <!-- Hero Content -->
-                <div class="text-center mb-6">
-                    <h1 class="mb-6 text-4xl font-bold text-gray-900 dark:text-white lg:text-5xl">
+                <div class="text-center mb-4 sm:mb-6 mt-8 sm:mt-12">
+                    <h1 class="mb-2 sm:mb-3 text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white lg:text-4xl">
                         {{ __('Manage Vehicles & Tasks') }}
                         <span class="block bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">
                             {{ __('Seamlessly') }}
                         </span>
                     </h1>
-                    <p class="mx-auto max-w-2xl text-xl text-gray-600 dark:text-gray-400">
+                    <p class="mx-auto max-w-2xl text-sm sm:text-base lg:text-lg text-gray-600 dark:text-gray-400">
                         {{ __('Comprehensive web dashboard and Android app for vehicle management, task scheduling, and team collaboration.') }}
                     </p>
                 </div>
 
                 <!-- Features and Screenshots Side by Side -->
-                <div class="grid gap-12 lg:grid-cols-2 lg:gap-16 items-center mb-20">
+                <div class="relative grid gap-6 sm:gap-8 lg:grid-cols-2 lg:gap-20 items-start lg:items-center h-[calc(100%-180px)] sm:h-[calc(100%-200px)]">
                     <!-- Features Section (Left) -->
-                    <div class="space-y-6">
+                    <div class="relative z-20 space-y-4 sm:space-y-5 lg:space-y-6">
                         <!-- Web Features -->
-                        <div class="rounded-2xl border border-violet-200 bg-gradient-to-br from-white via-violet-50/30 to-purple-50/30 p-6 shadow-xl dark:border-violet-900/50 dark:from-gray-900 dark:via-violet-900/20 dark:to-purple-900/20">
-                            <div class="mb-4 flex items-center gap-3">
-                                <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 shadow-lg">
-                                    <svg class="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div class="rounded-2xl border border-violet-200 bg-gradient-to-br from-white via-violet-50/30 to-purple-50/30 p-4 sm:p-5 lg:p-6 shadow-xl dark:border-violet-900/50 dark:from-gray-900 dark:via-violet-900/20 dark:to-purple-900/20">
+                            <div class="mb-3 flex items-center gap-3">
+                                <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 shadow-lg">
+                                    <svg class="h-4 w-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                                     </svg>
                                 </div>
-                                <h2 class="text-xl font-bold text-gray-900 dark:text-white">{{ __('Web Dashboard') }}</h2>
+                                <h2 class="text-lg font-bold text-gray-900 dark:text-white">{{ __('Web Dashboard') }}</h2>
                             </div>
-                            <ul class="space-y-2.5 text-sm text-gray-700 dark:text-gray-300">
+                            <ul class="space-y-1.5 text-sm text-gray-700 dark:text-gray-300">
                                 <li class="flex items-start gap-2">
-                                    <svg class="h-5 w-5 flex-shrink-0 text-violet-600 dark:text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg class="h-4 w-4 flex-shrink-0 mt-0.5 text-violet-600 dark:text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                                     </svg>
                                     <span>{{ __('Comprehensive dashboard with real-time statistics and charts') }}</span>
                                 </li>
                                 <li class="flex items-start gap-2">
-                                    <svg class="h-5 w-5 flex-shrink-0 text-violet-600 dark:text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg class="h-4 w-4 flex-shrink-0 mt-0.5 text-violet-600 dark:text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                                     </svg>
                                     <span>{{ __('User, task, and vehicle management with advanced filtering') }}</span>
                                 </li>
                                 <li class="flex items-start gap-2">
-                                    <svg class="h-5 w-5 flex-shrink-0 text-violet-600 dark:text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg class="h-4 w-4 flex-shrink-0 mt-0.5 text-violet-600 dark:text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                                     </svg>
                                     <span>{{ __('Role-based access control and permissions') }}</span>
                                 </li>
                                 <li class="flex items-start gap-2">
-                                    <svg class="h-5 w-5 flex-shrink-0 text-violet-600 dark:text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg class="h-4 w-4 flex-shrink-0 mt-0.5 text-violet-600 dark:text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                                     </svg>
                                     <span>{{ __('File attachments and document management') }}</span>
@@ -150,48 +150,99 @@
                         </div>
 
                         <!-- Android Features -->
-                        <div class="rounded-2xl border border-emerald-200 bg-gradient-to-br from-white via-emerald-50/30 to-teal-50/30 p-6 shadow-xl dark:border-emerald-900/50 dark:from-gray-900 dark:via-emerald-900/20 dark:to-teal-900/20">
-                            <div class="mb-4 flex items-center gap-3">
-                                <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 shadow-lg">
-                                    <svg class="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div class="rounded-2xl border border-emerald-200 bg-gradient-to-br from-white via-emerald-50/30 to-teal-50/30 p-4 sm:p-5 lg:p-6 shadow-xl dark:border-emerald-900/50 dark:from-gray-900 dark:via-emerald-900/20 dark:to-teal-900/20">
+                            <div class="mb-3 flex items-center gap-3">
+                                <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 shadow-lg">
+                                    <svg class="h-4 w-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
                                     </svg>
                                 </div>
-                                <h2 class="text-xl font-bold text-gray-900 dark:text-white">{{ __('Android App') }}</h2>
+                                <h2 class="text-lg font-bold text-gray-900 dark:text-white">{{ __('Android App') }}</h2>
                             </div>
-                            <ul class="space-y-2.5 text-sm text-gray-700 dark:text-gray-300">
+                            <ul class="space-y-1.5 text-sm text-gray-700 dark:text-gray-300">
                                 <li class="flex items-start gap-2">
-                                    <svg class="h-5 w-5 flex-shrink-0 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg class="h-4 w-4 flex-shrink-0 mt-0.5 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                                     </svg>
                                     <span>{{ __('Vehicle search and management on the go') }}</span>
                                 </li>
                                 <li class="flex items-start gap-2">
-                                    <svg class="h-5 w-5 flex-shrink-0 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg class="h-4 w-4 flex-shrink-0 mt-0.5 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                                     </svg>
                                     <span>{{ __('Task and schedule management with notifications') }}</span>
                                 </li>
                                 <li class="flex items-start gap-2">
-                                    <svg class="h-5 w-5 flex-shrink-0 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg class="h-4 w-4 flex-shrink-0 mt-0.5 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                                     </svg>
                                     <span>{{ __('Real-time team chat and communication') }}</span>
                                 </li>
                                 <li class="flex items-start gap-2">
-                                    <svg class="h-5 w-5 flex-shrink-0 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg class="h-4 w-4 flex-shrink-0 mt-0.5 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                                     </svg>
                                     <span>{{ __('Camera integration for vehicle documentation') }}</span>
                                 </li>
                             </ul>
                         </div>
+
+                        <!-- Play Store Download Section -->
+                        <a href="https://play.google.com/store/apps/details?id=com.sendajapan.sendasnap" 
+                           target="_blank"
+                           rel="noopener noreferrer"
+                           class="group block rounded-2xl border border-emerald-200 bg-gradient-to-br from-white via-emerald-50/30 to-teal-50/30 p-4 sm:p-6 lg:p-8 shadow-xl transition-all hover:scale-[1.02] hover:shadow-2xl hover:shadow-emerald-500/20 dark:border-emerald-900/50 dark:from-gray-900 dark:via-emerald-900/20 dark:to-teal-900/20 dark:hover:shadow-emerald-500/10">
+                            <div class="flex flex-col items-center text-center">
+                                <!-- App Icon -->
+                                <div class="mb-4 sm:mb-5 lg:mb-6 flex h-20 w-20 sm:h-24 sm:w-24 lg:h-28 lg:w-28 items-center justify-center transition-transform group-hover:scale-110 relative">
+                                    <img src="https://play-lh.googleusercontent.com/WXLRHhKAqge_MSE5lTZewLN53eVVwQGwS-3mT6eb0rzAeVz2Pp5mrw_3sDk1dxUPZkOopFGW1qEfTz5e5WRT=w480-h960-rw" 
+                                         alt="{{ __('Senda Snap App Icon') }}"
+                                         class="h-full w-full rounded-3xl object-cover app-icon-fade">
+                                </div>
+                                
+                                <!-- App Information -->
+                                <h3 class="mb-1 sm:mb-2 text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 dark:text-white">{{ __('Senda Snap') }}</h3>
+                                <p class="mb-3 sm:mb-4 text-xs sm:text-sm text-gray-600 dark:text-gray-400">
+                                    {{ __('Your Complete Vehicle Image Management & Team Collaboration Solution') }}
+                                </p>
+                                
+                                <!-- App Details -->
+                                <div class="mb-4 sm:mb-5 lg:mb-6 flex flex-wrap items-center justify-center gap-3 sm:gap-4 text-xs text-gray-500 dark:text-gray-400">
+                                    <div class="flex items-center gap-1">
+                                        <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
+                                            <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4M12,6A6,6 0 0,0 6,12A6,6 0 0,0 12,18A6,6 0 0,0 18,12A6,6 0 0,0 12,6M12,8A4,4 0 0,1 16,12A4,4 0 0,1 12,16A4,4 0 0,1 8,12A4,4 0 0,1 12,8Z" />
+                                        </svg>
+                                        <span>{{ __('10+ Downloads') }}</span>
+                                    </div>
+                                    <div class="flex items-center gap-1">
+                                        <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
+                                            <path d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.46,13.97L5.82,21L12,17.27Z" />
+                                        </svg>
+                                        <span>{{ __('Everyone') }}</span>
+                                    </div>
+                                </div>
+                                
+                                <!-- Official Google Play Store Badge -->
+                                <div class="flex items-center justify-center">
+                                    <img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" 
+                                         alt="{{ __('Get it on Google Play') }}"
+                                         class="h-10 sm:h-12 lg:h-14 transition-transform group-hover:scale-105"
+                                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                    <div class="hidden items-center gap-2 rounded-lg bg-gradient-to-r from-emerald-600 to-teal-600 px-6 py-3 text-sm font-semibold text-white shadow-md transition-all group-hover:from-emerald-700 group-hover:to-teal-700 group-hover:shadow-lg">
+                                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M3,20.5V3.5C3,2.91 3.34,2.39 3.84,2.15L13.69,12L3.84,21.85C3.34,21.6 3,21.09 3,20.5M16.81,15.12L6.05,21.34L14.54,12.85L16.81,15.12M20.16,10.81C20.5,11.08 20.75,11.5 20.75,12C20.75,12.5 20.5,12.92 20.16,13.19L17.19,15.53L15.12,13.46L17.47,12L15.12,10.54L17.19,8.47L20.16,10.81M6.05,2.66L16.81,8.88L14.54,11.15L6.05,2.66Z" />
+                                        </svg>
+                                        <span>{{ __('Get it on Google Play') }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
                     </div>
 
                     <!-- Screenshots Section (Right) -->
-                    <div class="relative flex items-center justify-center">
+                    <div class="relative flex items-center justify-center lg:justify-end">
                         <!-- Monitor Mockup -->
-                        <div class="relative z-10 -mr-16 hidden lg:block">
+                        <div class="relative z-0 -mr-12 hidden lg:block">
                             <div class="monitor-mockup">
                                 <div class="monitor-frame">
                                     <div class="monitor-screen">
@@ -204,7 +255,7 @@
                         </div>
 
                         <!-- Mobile Mockup (Overlapping) -->
-                        <div class="relative z-20">
+                        <div class="relative z-10">
                             <div class="phone-mockup">
                                 <div class="phone-frame">
                                     <div class="phone-screen">
@@ -230,11 +281,11 @@
             }
 
             .monitor-frame {
-                width: 600px;
+                width: 540px;
                 max-width: 100%;
                 background: #ffffff;
                 border-radius: 12px;
-                padding: 16px;
+                padding: 14px;
                 box-shadow:
                     0 4px 20px rgba(0, 0, 0, 0.1),
                     0 0 0 1px rgba(0, 0, 0, 0.05),
@@ -323,7 +374,7 @@
             }
 
             .phone-frame {
-                width: 280px;
+                width: 250px;
                 max-width: 100%;
                 background: transparent;
                 border-radius: 32px;
@@ -367,12 +418,33 @@
                 display: block;
             }
 
+            /* App Icon Fade Effect */
+            .app-icon-fade {
+                mask-image: radial-gradient(ellipse 85% 85% at center, black 70%, transparent 100%);
+                -webkit-mask-image: radial-gradient(ellipse 85% 85% at center, black 70%, transparent 100%);
+            }
+
             @media (max-width: 1024px) {
                 .monitor-mockup {
                     display: none;
                 }
                 .phone-mockup {
                     margin: 0 auto;
+                }
+                .phone-frame {
+                    width: 220px;
+                }
+            }
+
+            @media (max-width: 768px) {
+                .phone-frame {
+                    width: 200px;
+                }
+            }
+
+            @media (max-width: 640px) {
+                .phone-frame {
+                    width: 180px;
                 }
             }
         </style>

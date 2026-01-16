@@ -5,6 +5,130 @@ This document outlines the system architecture, patterns, and conventions used t
 
 ---
 
+## 🏢 Multi-Vendor Architecture
+
+This system supports multiple vendors (companies) using a simple, clean multi-tenant architecture.
+
+### Architecture Diagram
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                         VENDORS                                  │
+│  (Companies using this system)                                   │
+│  - AUTOCRAFT JAPAN LTD (default)                                 │
+│  - Future vendors...                                             │
+└─────────────────────────────────────────────────────────────────┘
+           │
+           │ has many
+           ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                          USERS                                   │
+│  - Each user belongs to ONE vendor                               │
+│  - Admin users have vendor_id = null (can see all data)          │
+└─────────────────────────────────────────────────────────────────┘
+           │
+           │ creates / owns
+           ▼
+┌─────────────────────────────────────────────────────────────────┐
+│              VENDOR-SCOPED DATA                                  │
+│                                                                  │
+│  TASKS                    VEHICLES                               │
+│  - vendor_id (FK)         - vendor_id (FK)                       │
+│  - created_by (FK)        - created_by (FK)                      │
+│  - Only visible within    - Only visible within                  │
+│    same vendor             same vendor                           │
+└─────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────┐
+│                    GLOBAL RESOURCES                              │
+│  (Shared across all vendors)                                     │
+│                                                                  │
+│  PORTS                    SHIPPING COMPANIES                     │
+│  - created_by (FK)        - created_by (FK)                      │
+│  - Visible to all users   - Visible to all users                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### User Roles & Vendor Access
+
+| Role     | Can See Tasks/Vehicles | Can See Ports/Shipping | Can Manage Vendors |
+|----------|------------------------|------------------------|-------------------|
+| Admin    | All vendors            | All                    | Yes               |
+| Manager  | Own vendor only        | All                    | No                |
+| Employee | Own vendor only        | All                    | No                |
+| Client   | Own vendor only        | All                    | No                |
+
+### Multi-Vendor Key Points
+
+1. **Vendor Scoping**: Tasks and Vehicles are automatically filtered by the user's vendor
+2. **Admin Access**: Admin users (vendor_id = null) can see all data across vendors
+3. **Global Resources**: Ports and Shipping Companies are shared across all vendors
+4. **Auto-Assignment**: When creating Tasks/Vehicles, vendor_id is auto-assigned from the current user
+5. **Simple Tracking**: Global resources track who created them via `created_by`
+
+### Default Vendor
+
+The system comes with a default vendor:
+- **Name**: AUTOCRAFT JAPAN LTD
+- **Address**: 〒110-0015 Tokyo, Taito City, Higashiueno, 3 Chome−18−7 上野駅前ビル 8F
+- **Phone**: 03-5826-7885
+- **Website**: https://autocraftjapan.com
+
+### BelongsToVendor Trait
+
+Models that need vendor scoping use the `BelongsToVendor` trait:
+
+```php
+use App\Models\Concerns\BelongsToVendor;
+
+class Task extends Model
+{
+    use BelongsToVendor;
+}
+
+// Available scopes:
+$query->forCurrentVendor();      // Filter by current user's vendor
+$query->forVendor($vendorId);    // Filter by specific vendor
+```
+
+### Vendor Scoping in Services
+
+Services use the model scope for vendor filtering:
+
+```php
+// TaskService - auto-filters by user's vendor
+public function list(array $filters = [], int $perPage = 100): LengthAwarePaginator
+{
+    $query = Task::with(['assignedUsers', 'creator', 'attachments'])
+        ->forCurrentVendor();  // Uses trait scope
+
+    // Apply filters...
+    return $query->paginate($perPage);
+}
+
+// Creating records - vendor_id auto-assigned
+public function create(array $data): Task
+{
+    $user = auth()->user();
+    $vendorId = $data['vendor_id'] ?? $user?->vendor_id;
+
+    return Task::create([
+        'title' => $data['title'],
+        'vendor_id' => $vendorId,  // Auto-assigned
+        // ...
+    ]);
+}
+```
+
+### Adding a New Vendor
+
+1. Go to Admin > Vendors
+2. Click "Add Vendor"
+3. Fill in vendor details
+4. Assign users to the vendor
+
+---
+
 ## 🏗️ Architecture Overview
 
 This application follows a **Service-Oriented Architecture (SOA)** where:
@@ -1628,6 +1752,47 @@ $todayTasks = \App\Models\Task::with(['assignedUsers', 'creator', 'attachments']
 
 ---
 
+## 🧭 Navigation Menu Naming Conventions
+
+### Menu Item Naming Standard
+
+All navigation menu items in the sidebar follow a consistent naming convention:
+
+**Rule**: Use **plural form** without "Manage" suffix for all menu items.
+
+**Examples**:
+- ✅ `Users` (not "User Manage" or "User Management")
+- ✅ `Tasks` (not "Task Manage" or "Task Management")
+- ✅ `Shipments` (not "Shipment Manage" or "Shipment Management")
+- ✅ `Vehicles` (not "Vehicle Manage" or "Vehicle Management")
+
+**Rationale**:
+- Plural forms are standard for resource lists in modern UIs
+- Shorter, cleaner labels improve readability
+- Consistent with industry best practices (GitHub, GitLab, etc.)
+- Avoids redundancy (the "Management" section heading already implies management)
+
+**Submenu Items**:
+- Submenu items can be more descriptive (e.g., "Today's Tasks", "All Tasks", "Shipping Companies", "Ports")
+- Submenu items use specific names that describe the content or action
+
+**Implementation**:
+```blade
+<!-- Main menu items use plural form -->
+<flux:navlist.item>{{ __('Users') }}</flux:navlist.item>
+<flux:navlist.item>{{ __('Tasks') }}</flux:navlist.item>
+<flux:navlist.item>{{ __('Shipments') }}</flux:navlist.item>
+
+<!-- Submenu items can be more descriptive -->
+<div x-show="open" x-collapse>
+    <flux:navlist.item>{{ __('Shipping Companies') }}</flux:navlist.item>
+    <flux:navlist.item>{{ __('Ports') }}</flux:navlist.item>
+    <flux:navlist.item>{{ __('Shipment Schedule') }}</flux:navlist.item>
+</div>
+```
+
+---
+
 ## 🔍 Debugging Tips
 
 ### Service Layer Debugging
@@ -1673,13 +1838,26 @@ public function render()
 
 ---
 
-**Version**: 1.4  
-**Last Updated**: December 9, 2025  
+**Version**: 1.6  
+**Last Updated**: January 16, 2026  
 **Project**: Senda Snap Backend - Service-Oriented Architecture  
 
 ---
 
 ## 📝 Changelog
+
+### Version 1.6 (January 16, 2026)
+- Added Multi-Vendor Architecture section
+- Documented vendor scoping with BelongsToVendor trait
+- Documented user roles and vendor access permissions
+- Added vendor-scoped vs global resources explanation
+- Documented default vendor (AUTOCRAFT JAPAN LTD)
+
+### Version 1.5 (January 16, 2026)
+- Added Navigation Menu Naming Conventions section
+- Documented standard for using plural forms without "Manage" suffix
+- Established consistent naming pattern: Users, Tasks, Shipments, Vehicles
+- Clarified submenu item naming guidelines
 
 ### Version 1.4 (December 9, 2025)
 - Added Filter Refresh Pattern documentation for Livewire components

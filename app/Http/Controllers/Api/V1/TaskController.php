@@ -90,9 +90,9 @@ class TaskController extends Controller
     public function destroy(Task $task): JsonResponse
     {
         $user = auth()->user();
-        
+
         // Only admin or manager can delete tasks
-        if (!in_array($user->role, ['admin', 'manager'])) {
+        if (! in_array($user->role, ['admin', 'manager'])) {
             return $this->errorResponse('Unauthorized. Only admin or manager can delete tasks.', [], 403);
         }
 
@@ -205,6 +205,20 @@ class TaskController extends Controller
                 'per_page' => $tasks->perPage(),
                 'total' => $tasks->total(),
             ],
+        ]);
+    }
+
+    public function stats(): JsonResponse
+    {
+        $stats = [
+            'pending' => Task::where('status', 'pending')->count(),
+            'running' => Task::where('status', 'running')->count(),
+            'completed' => Task::where('status', 'completed')->count(),
+            'cancelled' => Task::where('status', 'cancelled')->count(),
+        ];
+
+        return $this->successResponse('Task statistics retrieved successfully', [
+            'stats' => $stats,
         ]);
     }
 }

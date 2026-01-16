@@ -1099,6 +1099,188 @@ Content-Type: multipart/form-data</code></pre>
             </div>
         </x-table-card>
 
+        <!-- Vendors Section (Admin Only) -->
+        <x-table-card variant="violet">
+            <div class="space-y-6">
+                <div class="flex items-center gap-3">
+                    <div
+                        class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 shadow-lg">
+                        <svg class="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3.75h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white">Vendors</h3>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Admin only - Manage vendors/companies</p>
+                    </div>
+                </div>
+
+                <!-- Get All Vendors -->
+                <div
+                    class="space-y-3 rounded-xl border border-violet-200 bg-white/50 p-6 dark:border-violet-900/50 dark:bg-gray-800/50">
+                    <div class="flex items-center justify-between">
+                        <h4 class="text-lg font-semibold text-gray-900 dark:text-white">Get All Vendors</h4>
+                        <span
+                            class="rounded-lg bg-blue-100 px-3 py-1 text-xs font-bold text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">GET</span>
+                    </div>
+                    <code class="block rounded-lg bg-gray-900 px-4 py-2 text-sm text-emerald-400 dark:bg-gray-950">/api/v1/vendors</code>
+
+                    <div class="space-y-2">
+                        <p class="text-sm text-gray-600 dark:text-gray-400">
+                            <strong>Admin Only:</strong> Returns all vendors. Only administrators can access this endpoint.
+                        </p>
+                    </div>
+
+                    <div class="space-y-2">
+                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Headers:</p>
+                        <pre
+                            class="overflow-x-auto rounded-lg bg-gray-900 p-4 text-xs text-gray-100 dark:bg-gray-950"><code>Authorization: Bearer {token}</code></pre>
+                    </div>
+
+                    <div class="space-y-2">
+                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Query Parameters:</p>
+                        <div class="rounded-lg bg-gray-900 p-4 dark:bg-gray-950">
+                            <ul class="space-y-1 text-xs text-gray-100">
+                                <li>• <code class="text-emerald-400">search</code> (optional): Search by name, email, or phone</li>
+                                <li>• <code class="text-emerald-400">status</code> (optional): Filter by status - <code class="text-amber-400">active</code> or <code class="text-amber-400">inactive</code></li>
+                                <li>• <code class="text-emerald-400">per_page</code> (optional): Number of results per page (default: 15)</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Response (200):</p>
+                        <pre
+                            class="overflow-x-auto rounded-lg bg-gray-900 p-4 text-xs text-gray-100 dark:bg-gray-950"><code>{
+    "success": true,
+    "message": "Vendors retrieved successfully",
+    "data": {
+        "vendors": [
+            {
+                "id": 1,
+                "name": "ABC Company",
+                "email": "contact@abccompany.com",
+                "phone": "+1234567890",
+                "address": "123 Main St",
+                "city": "New York",
+                "state": "NY",
+                "country": "USA",
+                "zip": "10001",
+                "website": "https://abccompany.com",
+                "status": "active",
+                "created_at": "2024-01-01T08:00:00.000000Z",
+                "updated_at": "2024-01-01T08:00:00.000000Z"
+            }
+        ],
+        "pagination": {
+            "current_page": 1,
+            "last_page": 1,
+            "per_page": 15,
+            "total": 1
+        }
+    }
+}</code></pre>
+                    </div>
+
+                    <div class="space-y-2">
+                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Error Response (403):</p>
+                        <pre
+                            class="overflow-x-auto rounded-lg bg-gray-900 p-4 text-xs text-gray-100 dark:bg-gray-950"><code>{
+    "success": false,
+    "message": "Only administrators can access vendor management."
+}</code></pre>
+                    </div>
+                </div>
+
+                <!-- Create Vendor -->
+                <div
+                    class="space-y-3 rounded-xl border border-violet-200 bg-white/50 p-6 dark:border-violet-900/50 dark:bg-gray-800/50">
+                    <div class="flex items-center justify-between">
+                        <h4 class="text-lg font-semibold text-gray-900 dark:text-white">Create Vendor</h4>
+                        <span
+                            class="rounded-lg bg-green-100 px-3 py-1 text-xs font-bold text-green-800 dark:bg-green-900/30 dark:text-green-400">POST</span>
+                    </div>
+                    <code class="block rounded-lg bg-gray-900 px-4 py-2 text-sm text-emerald-400 dark:bg-gray-950">/api/v1/vendors</code>
+
+                    <div class="space-y-2">
+                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Request Body:</p>
+                        <pre class="overflow-x-auto rounded-lg bg-gray-900 p-4 text-xs text-gray-100 dark:bg-gray-950"><code>{
+    "name": "ABC Company",
+    "email": "contact@abccompany.com",
+    "phone": "+1234567890",
+    "address": "123 Main St",
+    "city": "New York",
+    "state": "NY",
+    "country": "USA",
+    "zip": "10001",
+    "website": "https://abccompany.com",
+    "status": "active"
+}</code></pre>
+                    </div>
+
+                    <div class="space-y-2">
+                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Response (201):</p>
+                        <pre
+                            class="overflow-x-auto rounded-lg bg-gray-900 p-4 text-xs text-gray-100 dark:bg-gray-950"><code>{
+    "success": true,
+    "message": "Vendor created successfully",
+    "data": {
+        "vendor": {
+            "id": 1,
+            "name": "ABC Company",
+            "email": "contact@abccompany.com",
+            "phone": "+1234567890",
+            "address": "123 Main St",
+            "city": "New York",
+            "state": "NY",
+            "country": "USA",
+            "zip": "10001",
+            "website": "https://abccompany.com",
+            "status": "active",
+            "created_at": "2024-01-01T08:00:00.000000Z",
+            "updated_at": "2024-01-01T08:00:00.000000Z"
+        }
+    }
+}</code></pre>
+                    </div>
+                </div>
+
+                <!-- Get Single Vendor -->
+                <div
+                    class="space-y-3 rounded-xl border border-violet-200 bg-white/50 p-6 dark:border-violet-900/50 dark:bg-gray-800/50">
+                    <div class="flex items-center justify-between">
+                        <h4 class="text-lg font-semibold text-gray-900 dark:text-white">Get Single Vendor</h4>
+                        <span
+                            class="rounded-lg bg-blue-100 px-3 py-1 text-xs font-bold text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">GET</span>
+                    </div>
+                    <code class="block rounded-lg bg-gray-900 px-4 py-2 text-sm text-emerald-400 dark:bg-gray-950">/api/v1/vendors/{vendor_id}</code>
+                </div>
+
+                <!-- Update Vendor -->
+                <div
+                    class="space-y-3 rounded-xl border border-violet-200 bg-white/50 p-6 dark:border-violet-900/50 dark:bg-gray-800/50">
+                    <div class="flex items-center justify-between">
+                        <h4 class="text-lg font-semibold text-gray-900 dark:text-white">Update Vendor</h4>
+                        <span
+                            class="rounded-lg bg-amber-100 px-3 py-1 text-xs font-bold text-amber-800 dark:bg-amber-900/30 dark:text-amber-400">PUT</span>
+                    </div>
+                    <code class="block rounded-lg bg-gray-900 px-4 py-2 text-sm text-emerald-400 dark:bg-gray-950">/api/v1/vendors/{vendor_id}</code>
+                </div>
+
+                <!-- Delete Vendor -->
+                <div
+                    class="space-y-3 rounded-xl border border-violet-200 bg-white/50 p-6 dark:border-violet-900/50 dark:bg-gray-800/50">
+                    <div class="flex items-center justify-between">
+                        <h4 class="text-lg font-semibold text-gray-900 dark:text-white">Delete Vendor</h4>
+                        <span
+                            class="rounded-lg bg-red-100 px-3 py-1 text-xs font-bold text-red-800 dark:bg-red-900/30 dark:text-red-400">DELETE</span>
+                    </div>
+                    <code class="block rounded-lg bg-gray-900 px-4 py-2 text-sm text-emerald-400 dark:bg-gray-950">/api/v1/vendors/{vendor_id}</code>
+                </div>
+            </div>
+        </x-table-card>
+
         <!-- Error Responses -->
         <x-table-card variant="violet">
             <div class="space-y-6">

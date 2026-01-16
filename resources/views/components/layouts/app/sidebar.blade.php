@@ -2,10 +2,118 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
     <head>
         @include('partials.head')
+        <style>
+            /* Compact Glass with Gradient Stroke for Selected Sidebar Items */
+            /* Target Flux UI current/active states with multiple selectors */
+            [data-flux-navlist-item][data-current="true"],
+            [data-flux-navlist-item][aria-current="page"],
+            [data-flux-navlist-item].current,
+            .flux-navlist-item[data-current="true"],
+            .flux-navlist-item[aria-current="page"],
+            flux\\:navlist\\.item[data-current="true"],
+            [data-current="true"][class*="navlist"],
+            a[data-current="true"],
+            button[data-current="true"] {
+                background: linear-gradient(to right, rgba(59, 130, 246, 0.1), rgba(99, 102, 241, 0.05), rgba(255, 255, 255, 0.4)) !important;
+                border: 1px solid rgba(59, 130, 246, 0.5) !important;
+                border-radius: 0.75rem !important;
+                box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.1), 0 2px 4px -2px rgba(59, 130, 246, 0.1) !important;
+                backdrop-filter: blur(16px) !important;
+                -webkit-backdrop-filter: blur(16px) !important;
+                position: relative;
+                overflow: hidden;
+                margin: 2px 0;
+            }
+            
+            /* Left glow effect - matching status labels */
+            [data-flux-navlist-item][data-current="true"]::before,
+            [data-flux-navlist-item][aria-current="page"]::before,
+            [data-flux-navlist-item].current::before,
+            a[data-current="true"]::before,
+            button[data-current="true"]::before {
+                content: '';
+                position: absolute;
+                left: -0.75rem;
+                top: 50%;
+                transform: translateY(-50%);
+                width: 3rem;
+                height: 3rem;
+                background: rgba(59, 130, 246, 0.2);
+                border-radius: 50%;
+                filter: blur(1rem);
+                pointer-events: none;
+                z-index: 0;
+            }
+            
+            [data-flux-navlist-item][data-current="true"]:hover,
+            [data-flux-navlist-item][aria-current="page"]:hover,
+            [data-flux-navlist-item].current:hover,
+            a[data-current="true"]:hover,
+            button[data-current="true"]:hover {
+                background: linear-gradient(to right, rgba(59, 130, 246, 0.15), rgba(99, 102, 241, 0.08), rgba(255, 255, 255, 0.5)) !important;
+                border-color: rgba(59, 130, 246, 0.6) !important;
+                box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.15), 0 4px 6px -4px rgba(59, 130, 246, 0.1) !important;
+                transform: scale(1.02);
+            }
+            
+            [data-flux-navlist-item][data-current="true"]:hover::before,
+            [data-flux-navlist-item][aria-current="page"]:hover::before,
+            [data-flux-navlist-item].current:hover::before,
+            a[data-current="true"]:hover::before,
+            button[data-current="true"]:hover::before {
+                background: rgba(59, 130, 246, 0.4);
+            }
+            
+            /* Dark mode adjustments */
+            .dark [data-flux-navlist-item][data-current="true"],
+            .dark [data-flux-navlist-item][aria-current="page"],
+            .dark [data-flux-navlist-item].current,
+            .dark a[data-current="true"],
+            .dark button[data-current="true"] {
+                background: linear-gradient(to right, rgba(59, 130, 246, 0.2), rgba(99, 102, 241, 0.1), rgba(17, 24, 39, 0.4)) !important;
+                border-color: rgba(59, 130, 246, 0.3) !important;
+                box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.1), 0 2px 4px -2px rgba(59, 130, 246, 0.05) !important;
+            }
+            
+            .dark [data-flux-navlist-item][data-current="true"]::before,
+            .dark [data-flux-navlist-item][aria-current="page"]::before,
+            .dark [data-flux-navlist-item].current::before,
+            .dark a[data-current="true"]::before,
+            .dark button[data-current="true"]::before {
+                background: rgba(59, 130, 246, 0.35);
+            }
+            
+            .dark [data-flux-navlist-item][data-current="true"]:hover,
+            .dark [data-flux-navlist-item][aria-current="page"]:hover,
+            .dark [data-flux-navlist-item].current:hover,
+            .dark a[data-current="true"]:hover,
+            .dark button[data-current="true"]:hover {
+                background: linear-gradient(to right, rgba(59, 130, 246, 0.25), rgba(99, 102, 241, 0.15), rgba(17, 24, 39, 0.5)) !important;
+                border-color: rgba(59, 130, 246, 0.5) !important;
+            }
+            
+            /* Smooth transition for all sidebar items */
+            [data-flux-navlist-item],
+            .flux-navlist-item,
+            [class*="navlist-item"] {
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            }
+            
+            /* Non-active items hover effect */
+            [data-flux-navlist-item]:not([data-current="true"]):hover,
+            a:not([data-current="true"]):hover[class*="navlist"] {
+                background: rgba(59, 130, 246, 0.05) !important;
+                border-radius: 0.75rem;
+            }
+            
+            .dark [data-flux-navlist-item]:not([data-current="true"]):hover {
+                background: rgba(59, 130, 246, 0.1) !important;
+            }
+        </style>
     </head>
     <body class="min-h-screen bg-white dark:bg-zinc-800">
-        <!-- Particle Background Canvas (only for API Documentation) -->
-        <canvas id="particle-canvas" class="fixed inset-0 -z-10 pointer-events-none" style="display: none;"></canvas>
+        <!-- Particle Background Canvas (enabled for all pages) -->
+        <canvas id="particle-canvas" class="fixed inset-0 -z-10 pointer-events-none"></canvas>
         
         <flux:sidebar sticky stashable class="border-e border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
             <flux:sidebar.toggle class="lg:hidden" icon="x-mark" />
@@ -20,10 +128,13 @@
                 </flux:navlist.group>
 
                 <flux:navlist.group :heading="__('Management')" class="grid">
+                    @if(auth()->user()?->role === 'admin')
+                        <flux:navlist.item icon="building-office" :href="route('vendors.index')" :current="request()->routeIs('vendors.*')" wire:navigate>{{ __('Vendors') }}</flux:navlist.item>
+                    @endif
                     <flux:navlist.item icon="users" :href="route('users.index')" :current="request()->routeIs('users.*')" wire:navigate>{{ __('Users') }}</flux:navlist.item>
 
                     <!-- Tasks with Submenu -->
-                    <div x-data="{ open: {{ request()->routeIs('tasks.*') ? 'true' : 'false' }} }">
+                    <div x-data="{ open: true }">
                         <flux:navlist.item
                             icon="clipboard"
                             @click="open = !open"
@@ -31,11 +142,11 @@
                             class="cursor-pointer">
                             <div class="flex items-center justify-between w-full">
                                 <span>{{ __('Tasks') }}</span>
-                                <svg x-show="!open" class="h-4 w-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg x-show="open" class="h-4 w-4 transition-transform rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                                 </svg>
-                                <svg x-show="open" class="h-4 w-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+                                <svg x-show="!open" class="h-4 w-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                                 </svg>
                             </div>
                         </flux:navlist.item>
@@ -65,6 +176,49 @@
                         </div>
                     </div>
 
+                    <!-- Shipments with Submenu -->
+                    <div x-data="{ open: true }">
+                        <flux:navlist.item
+                            icon="layout-grid"
+                            @click="open = !open"
+                            :current="request()->routeIs('shipping-companies.*') || request()->routeIs('shipment-schedule.*') || request()->routeIs('ports.*')"
+                            class="cursor-pointer">
+                            <div class="flex items-center justify-between w-full">
+                                <span>{{ __('Shipments') }}</span>
+                                <svg x-show="open" class="h-4 w-4 transition-transform rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                </svg>
+                                <svg x-show="!open" class="h-4 w-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </div>
+                        </flux:navlist.item>
+
+                        <div x-show="open" x-collapse class="ml-8 mt-1 space-y-1">
+                            <flux:navlist.item
+                                :href="route('shipping-companies.index')"
+                                :current="request()->routeIs('shipping-companies.*')"
+                                wire:navigate
+                                class="text-sm">
+                                {{ __('Shipping Companies') }}
+                            </flux:navlist.item>
+                            <flux:navlist.item
+                                :href="route('ports.index')"
+                                :current="request()->routeIs('ports.*')"
+                                wire:navigate
+                                class="text-sm">
+                                {{ __('Ports') }}
+                            </flux:navlist.item>
+                            <flux:navlist.item
+                                :href="route('shipment-schedule.index')"
+                                :current="request()->routeIs('shipment-schedule.index')"
+                                wire:navigate
+                                class="text-sm">
+                                {{ __('Shipment Schedule') }}
+                            </flux:navlist.item>
+                        </div>
+                    </div>
+
                     <flux:navlist.item
                         icon="view-columns"
                         disabled
@@ -72,6 +226,12 @@
                         {{ __('Vehicles') }} <span class="text-xs">({{ __('Coming Soon') }})</span>
                     </flux:navlist.item>
                 </flux:navlist.group>
+
+                @if(auth()->user()?->role === 'admin')
+                    <flux:navlist.group :heading="__('System')" class="grid">
+                        <flux:navlist.item icon="megaphone" :href="route('notices.index')" :current="request()->routeIs('notices.*')" wire:navigate>{{ __('Notices') }}</flux:navlist.item>
+                    </flux:navlist.group>
+                @endif
             </flux:navlist>
 
             <flux:spacer />
@@ -181,12 +341,154 @@
             </flux:dropdown>
         </flux:header>
 
+        <!-- Top Bar with Date, Time, Temperature, and Notices -->
+        <livewire:top-bar />
+
         {{ $slot }}
 
         <!-- Toast Notifications -->
         <x-toast-notification />
 
         @fluxScripts
+        <!-- Particle Background Script (enabled for all pages) -->
+        <script>
+            (function() {
+                const canvas = document.getElementById('particle-canvas');
+                if (!canvas) return;
+
+                const ctx = canvas.getContext('2d');
+                let particles = [];
+                let animationId;
+
+                // Set canvas size
+                function resizeCanvas() {
+                    canvas.width = window.innerWidth;
+                    canvas.height = window.innerHeight;
+                }
+                resizeCanvas();
+                window.addEventListener('resize', resizeCanvas);
+
+                // Color palette matching design system
+                const colorPalettes = {
+                    light: {
+                        violet: '124, 58, 237',
+                        blue: '59, 130, 246',
+                        emerald: '16, 185, 129',
+                        amber: '245, 158, 11',
+                        purple: '168, 85, 247',
+                        cyan: '6, 182, 212',
+                        teal: '20, 184, 166',
+                        orange: '249, 115, 22'
+                    },
+                    dark: {
+                        violet: '139, 92, 246',
+                        blue: '96, 165, 250',
+                        emerald: '52, 211, 153',
+                        amber: '251, 191, 36',
+                        purple: '192, 132, 252',
+                        cyan: '34, 211, 238',
+                        teal: '45, 212, 191',
+                        orange: '251, 146, 60'
+                    }
+                };
+
+                // Particle class
+                class Particle {
+                    constructor() {
+                        this.x = Math.random() * canvas.width;
+                        this.y = Math.random() * canvas.height;
+                        this.size = Math.random() * 2 + 0.5;
+                        this.speedX = (Math.random() - 0.5) * 0.5;
+                        this.speedY = (Math.random() - 0.5) * 0.5;
+                        this.opacity = Math.random() * 0.5 + 0.2;
+
+                        // Randomly assign a color from the palette
+                        const isDark = document.documentElement.classList.contains('dark');
+                        const palette = isDark ? colorPalettes.dark : colorPalettes.light;
+                        const colors = Object.values(palette);
+                        this.color = colors[Math.floor(Math.random() * colors.length)];
+                    }
+
+                    update() {
+                        this.x += this.speedX;
+                        this.y += this.speedY;
+
+                        if (this.x > canvas.width) this.x = 0;
+                        if (this.x < 0) this.x = canvas.width;
+                        if (this.y > canvas.height) this.y = 0;
+                        if (this.y < 0) this.y = canvas.height;
+                    }
+
+                    draw() {
+                        ctx.beginPath();
+                        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                        ctx.fillStyle = `rgba(${this.color}, ${this.opacity})`;
+                        ctx.fill();
+                    }
+                }
+
+                // Create particles
+                function initParticles() {
+                    particles = [];
+                    const particleCount = Math.floor((canvas.width * canvas.height) / 15000);
+                    for (let i = 0; i < particleCount; i++) {
+                        particles.push(new Particle());
+                    }
+                }
+
+                // Draw connections
+                function drawConnections() {
+                    for (let i = 0; i < particles.length; i++) {
+                        for (let j = i + 1; j < particles.length; j++) {
+                            const dx = particles[i].x - particles[j].x;
+                            const dy = particles[i].y - particles[j].y;
+                            const distance = Math.sqrt(dx * dx + dy * dy);
+
+                            if (distance < 120) {
+                                ctx.beginPath();
+                                // Use gradient between two particle colors - darker opacity
+                                const gradient = ctx.createLinearGradient(
+                                    particles[i].x, particles[i].y,
+                                    particles[j].x, particles[j].y
+                                );
+                                gradient.addColorStop(0, `rgba(${particles[i].color}, ${0.3 * (1 - distance / 120)})`);
+                                gradient.addColorStop(1, `rgba(${particles[j].color}, ${0.3 * (1 - distance / 120)})`);
+                                ctx.strokeStyle = gradient;
+                                ctx.lineWidth = 0.5;
+                                ctx.moveTo(particles[i].x, particles[i].y);
+                                ctx.lineTo(particles[j].x, particles[j].y);
+                                ctx.stroke();
+                            }
+                        }
+                    }
+                }
+
+                // Animation loop
+                function animate() {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                    particles.forEach(particle => {
+                        particle.update();
+                        particle.draw();
+                    });
+
+                    drawConnections();
+
+                    animationId = requestAnimationFrame(animate);
+                }
+
+                // Initialize and start
+                initParticles();
+                animate();
+
+                // Cleanup on page unload
+                window.addEventListener('beforeunload', () => {
+                    if (animationId) {
+                        cancelAnimationFrame(animationId);
+                    }
+                });
+            })();
+        </script>
         <!-- SweetAlert2 -->
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>

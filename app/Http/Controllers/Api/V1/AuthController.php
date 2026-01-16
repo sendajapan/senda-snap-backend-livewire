@@ -23,6 +23,7 @@ class AuthController extends Controller
             'password' => 'required|string|min:8|confirmed',
             'role' => 'sometimes|in:admin,manager,employee,client',
             'phone' => 'nullable|string|max:20',
+            'vendor_id' => 'nullable|exists:vendors,id', // Only admin can specify vendor_id
         ]);
 
         if ($validator->fails()) {
@@ -31,7 +32,13 @@ class AuthController extends Controller
             return $this->errorResponse($messages ?: 'Validation failed', $validator->errors()->toArray(), 422);
         }
 
-        $result = $this->authService->register($request->only(['name', 'email', 'password', 'role', 'phone']));
+        // Only admin can specify vendor_id, managers auto-assign their vendor_id
+        $data = $request->only(['name', 'email', 'password', 'role', 'phone']);
+        if ($request->user()?->role === 'admin' && $request->has('vendor_id')) {
+            $data['vendor_id'] = $request->input('vendor_id');
+        }
+
+        $result = $this->authService->register($data);
 
         return $this->successResponse('User registered successfully', [
             'user' => new UserResource($result['user']),

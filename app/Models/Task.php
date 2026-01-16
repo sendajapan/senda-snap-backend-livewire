@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\BelongsToVendor;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -10,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Task extends Model
 {
+    use BelongsToVendor;
     use HasFactory;
 
     protected $fillable = [
@@ -22,6 +24,7 @@ class Task extends Model
         'created_by',
         'due_date',
         'completed_at',
+        'vendor_id',
     ];
 
     protected function casts(): array
@@ -33,37 +36,25 @@ class Task extends Model
         ];
     }
 
+    /**
+     * Users assigned to this task.
+     */
     public function assignedUsers(): BelongsToMany
     {
-        //here task_user table is pivot table holds the foreign keys of both related tables. [ex: task_id, user_id]
         return $this->belongsToMany(User::class, 'task_user')->withTimestamps();
-
-        /* Code snippets for future
-        // Get all users assigned to a task
-        $task = Task::find(1);
-        $users = $task->users;
-
-        // Get all tasks assigned to a user
-        $user = User::find(2);
-        $tasks = $user->tasks;
-
-        // Attach a user to a task
-        $task->users()->attach($userId);
-
-        // Detach a user from a task
-        $task->users()->detach($userId);
-
-        // Sync users (replace all existing ones)
-        $task->users()->sync([1, 2, 3]);
-        */
-
     }
 
+    /**
+     * User who created this task.
+     */
     public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
     }
 
+    /**
+     * Task attachments.
+     */
     public function attachments(): HasMany
     {
         return $this->hasMany(TaskAttachment::class);

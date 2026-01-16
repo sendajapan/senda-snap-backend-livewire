@@ -37,6 +37,423 @@ The design system uses 4 primary color variants:
 - Decorative: `violet-400/20` → `purple-400/20`
 - Use for: Data tables, analytics, API documentation
 
+---
+
+## 🌟 Shadow Standards
+
+All cards and containers use a consistent shadow system with colored shadows for visual depth.
+
+### **Standard Card Shadow Pattern**
+
+```blade
+<!-- Base shadow with colored tint -->
+shadow-md shadow-{color}-100/50 dark:shadow-{color}-900/20
+
+<!-- Hover state shadow -->
+hover:shadow-lg hover:shadow-{color}-200/50 dark:hover:shadow-{color}-800/30
+```
+
+### **Shadow by Variant**
+
+| Variant | Default Shadow | Hover Shadow |
+|---------|---------------|--------------|
+| Blue | `shadow-md shadow-blue-100/50` | `hover:shadow-lg hover:shadow-blue-200/50` |
+| Emerald | `shadow-md shadow-emerald-100/50` | `hover:shadow-lg hover:shadow-emerald-200/50` |
+| Violet | `shadow-md shadow-violet-100/50` | `hover:shadow-lg hover:shadow-violet-200/50` |
+| Amber | `shadow-md shadow-amber-100/50` | `hover:shadow-lg hover:shadow-amber-200/50` |
+| Gray (neutral) | `shadow-md shadow-gray-100/50` | `hover:shadow-lg hover:shadow-gray-200/50` |
+
+### **Dark Mode Shadows**
+
+```blade
+<!-- Dark mode default -->
+dark:shadow-{color}-900/20
+
+<!-- Dark mode hover -->
+dark:hover:shadow-{color}-800/30
+```
+
+### **Complete Card Example**
+
+```blade
+<div class="group relative overflow-hidden rounded-2xl border border-{color}-200 bg-white/50 p-6 shadow-md shadow-{color}-100/50 backdrop-blur-sm transition-all duration-300 hover:border-{color}-300 hover:shadow-lg hover:shadow-{color}-200/50 dark:border-{color}-900/50 dark:bg-gray-800/50 dark:shadow-{color}-900/20 dark:hover:border-{color}-800 dark:hover:shadow-{color}-800/30">
+    <!-- Card content -->
+</div>
+```
+
+### **Small Element Shadows (Status indicators, badges)**
+
+```blade
+<!-- Glowing indicator dot -->
+<div class="h-3 w-3 animate-pulse rounded-full bg-{color}-500 shadow-lg shadow-{color}-500/50"></div>
+
+<!-- Small card/label shadow -->
+shadow-sm transition-all duration-200 hover:shadow-md hover:shadow-{color}-200/50
+```
+
+---
+
+## 🏷️ Status Label Design Variants
+
+Five pre-built design variants for status labels, counters, and stat indicators. Each can be customized with different colors using the color combinations table below.
+
+### **Design 1: Neon Glow Cards** (Recommended for Role Counters)
+
+Best for: Role counters, category indicators, high-impact stats with subtitles
+
+**Features:**
+- Left-side blur glow effect that intensifies on hover
+- Gradient icon box with colored shadow
+- Gradient badge for count
+- Status name with subtitle
+- Scale effect on hover
+
+```blade
+<div class="group relative flex items-center justify-between overflow-hidden rounded-xl border border-{color}-400/50 bg-gradient-to-r from-{color}-500/10 via-{color}-400/5 to-transparent px-4 py-3 shadow-lg shadow-{color}-500/20 backdrop-blur-sm transition-all duration-300 hover:scale-[1.03] hover:border-{color}-400 hover:shadow-xl hover:shadow-{color}-500/30 dark:border-{color}-500/30 dark:from-{color}-500/20 dark:via-{color}-400/10 dark:to-transparent">
+    <!-- Blur glow effect -->
+    <div class="absolute -left-4 top-1/2 h-16 w-16 -translate-y-1/2 rounded-full bg-{color}-500/30 blur-2xl transition-all group-hover:bg-{color}-500/50"></div>
+    <div class="relative flex items-center gap-3">
+        <!-- Icon box (h-8 w-8) -->
+        <div class="relative flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-{color}-400 to-{color2}-500 shadow-lg shadow-{color}-500/50">
+            <svg class="h-4 w-4 text-white">...</svg>
+        </div>
+        <div>
+            <span class="text-sm font-bold text-{color}-900 dark:text-{color}-200">Label</span>
+            <p class="text-xs text-{color}-600/80 dark:text-{color}-400/70">Subtitle</p>
+        </div>
+    </div>
+    <!-- Count badge -->
+    <span class="relative rounded-full bg-gradient-to-r from-{color}-500 to-{color2}-500 px-3 py-1 text-sm font-bold text-white shadow-lg shadow-{color}-500/40">{{ $count }}</span>
+</div>
+```
+
+---
+
+### **Design 2: Compact Glass with Gradient Stroke** ⭐ (Recommended for Status Labels)
+
+Best for: Task status labels, compact indicators, space-efficient displays
+
+**Features:**
+- Smaller, compact size
+- Colored gradient stroke/border
+- Glass morphism with gradient background
+- Left-side blur glow
+- Gradient icon box and badge
+- Scale effect on hover
+
+```blade
+<div class="group relative flex items-center justify-between overflow-hidden rounded-xl border border-{color}-400/50 bg-gradient-to-r from-{color}-500/10 via-{color}-400/5 to-white/40 px-3 py-2 shadow-lg shadow-{color}-500/20 backdrop-blur-xl transition-all duration-300 hover:scale-[1.02] hover:border-{color}-400 hover:shadow-xl hover:shadow-{color}-500/30 dark:border-{color}-500/30 dark:from-{color}-500/20 dark:via-{color}-400/10 dark:to-gray-900/40">
+    <!-- Blur glow effect -->
+    <div class="absolute -left-3 top-1/2 h-12 w-12 -translate-y-1/2 rounded-full bg-{color}-500/20 blur-xl transition-all group-hover:bg-{color}-500/40"></div>
+    <div class="relative flex items-center gap-2">
+        <!-- Icon box (h-7 w-7) - smaller -->
+        <div class="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-{color}-400 to-{color2}-500 shadow-md shadow-{color}-500/50">
+            <svg class="h-3.5 w-3.5 text-white">...</svg>
+        </div>
+        <span class="text-xs font-bold text-{color}-900 dark:text-{color}-200">Label</span>
+    </div>
+    <!-- Compact count badge -->
+    <span class="relative rounded-full bg-gradient-to-r from-{color}-500 to-{color2}-500 px-2.5 py-0.5 text-xs font-bold text-white shadow-md shadow-{color}-500/40">{{ $count }}</span>
+</div>
+```
+
+**Size Comparison:**
+| Property | Design 1 (Neon Glow) | Design 2 (Compact) |
+|----------|---------------------|-------------------|
+| Padding | `px-4 py-3` | `px-3 py-2` |
+| Icon Box | `h-8 w-8` | `h-7 w-7` |
+| Icon | `h-4 w-4` | `h-3.5 w-3.5` |
+| Text | `text-sm` | `text-xs` |
+| Badge | `px-3 py-1 text-sm` | `px-2.5 py-0.5 text-xs` |
+| Gap | `gap-3` | `gap-2` |
+| Spacing | `space-y-2` | `space-y-1.5` |
+
+---
+
+### **Design 3: Glass Morphism Pills**
+
+Best for: Large displays, progress tracking with visual indicators
+
+**Features:**
+- Frosted glass background (white border)
+- Number displayed inside gradient box with ring effect
+- Progress bar indicator
+- Animated icons for running states
+- Soft shadows
+
+```blade
+<div class="group flex items-center justify-between rounded-2xl border border-white/20 bg-white/40 px-4 py-3 shadow-xl shadow-{color}-200/30 backdrop-blur-xl transition-all duration-300 hover:bg-white/60 hover:shadow-2xl hover:shadow-{color}-300/40 dark:border-white/10 dark:bg-gray-900/40 dark:shadow-{color}-900/20">
+    <div class="flex items-center gap-3">
+        <!-- Number box with ring -->
+        <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-{color}-400 via-{color}-500 to-{color2}-500 shadow-lg shadow-{color}-500/50 ring-4 ring-{color}-200/50 dark:ring-{color}-900/50">
+            <span class="text-lg font-black text-white">{{ $count }}</span>
+        </div>
+        <div>
+            <span class="text-sm font-bold text-gray-900 dark:text-white">Label</span>
+            <!-- Progress bar -->
+            <div class="mt-0.5 h-1.5 w-16 overflow-hidden rounded-full bg-{color}-200/50 dark:bg-{color}-900/30">
+                <div class="h-full w-3/4 rounded-full bg-gradient-to-r from-{color}-400 to-{color2}-500"></div>
+            </div>
+        </div>
+    </div>
+    <!-- Status icon (can be animated with animate-spin) -->
+    <svg class="h-5 w-5 text-{color}-500">...</svg>
+</div>
+```
+
+---
+
+### **Design 4: Solid Color Blocks**
+
+Best for: Dashboard highlights, key metrics, bold presentations
+
+**Features:**
+- Full gradient colored background
+- White text for maximum contrast
+- Large count number on right
+- Decorative blur circles
+- Bold and vibrant appearance
+
+```blade
+<div class="group relative overflow-hidden rounded-xl bg-gradient-to-r from-{color}-500 to-{color2}-500 p-4 shadow-lg shadow-{color}-500/30 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-{color}-500/50">
+    <!-- Decorative blurs -->
+    <div class="absolute -right-4 -top-4 h-20 w-20 rounded-full bg-white/10 blur-xl"></div>
+    <div class="absolute -bottom-2 -left-2 h-16 w-16 rounded-full bg-white/10 blur-lg"></div>
+    <div class="relative flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <!-- Icon box -->
+            <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm">
+                <svg class="h-5 w-5 text-white">...</svg>
+            </div>
+            <div>
+                <span class="text-sm font-bold text-white">Label</span>
+                <p class="text-xs text-white/70">Subtitle</p>
+            </div>
+        </div>
+        <!-- Large count -->
+        <span class="text-3xl font-black text-white drop-shadow-lg">{{ $count }}</span>
+    </div>
+</div>
+```
+
+---
+
+### **Design 5: Minimal Dark Cards**
+
+Best for: Dark themes, dashboard widgets, subtle displays
+
+**Features:**
+- Dark background with colored borders
+- Animated ping dot indicator
+- Large colored count number
+- Minimal and modern aesthetic
+- Works great in dark mode
+
+```blade
+<div class="group flex items-center justify-between rounded-xl border border-{color}-500/30 bg-gray-900/90 px-4 py-3 shadow-lg shadow-{color}-500/10 backdrop-blur-sm transition-all duration-300 hover:border-{color}-500/60 hover:shadow-xl hover:shadow-{color}-500/20">
+    <div class="flex items-center gap-3">
+        <!-- Animated dot -->
+        <div class="relative h-2 w-2">
+            <div class="absolute inset-0 animate-ping rounded-full bg-{color}-500"></div>
+            <div class="relative h-2 w-2 rounded-full bg-{color}-400 shadow-lg shadow-{color}-500"></div>
+        </div>
+        <span class="text-sm font-medium text-gray-300">Label</span>
+    </div>
+    <div class="flex items-center gap-2">
+        <span class="text-2xl font-black text-{color}-400">{{ $count }}</span>
+        <svg class="h-4 w-4 text-{color}-500/50">...</svg>
+    </div>
+</div>
+```
+
+---
+
+### **Quick Reference: When to Use Which Design**
+
+| Design | Use When | Example |
+|--------|----------|---------|
+| **1. Neon Glow** | Need subtitles, larger display, role counters | Members stats (Admin, Manager, etc.) |
+| **2. Compact Glass** ⭐ | Space-efficient, status labels, lists | Task status (Pending, Running, etc.) |
+| **3. Glass Pills** | Progress tracking, number-focused display | Progress indicators |
+| **4. Solid Blocks** | Bold presentation, key metrics | Dashboard highlights |
+| **5. Minimal Dark** | Dark themes, subtle indicators | Dark mode widgets |
+
+---
+
+### **Color Combinations**
+
+| Status | Primary `{color}` | Secondary `{color2}` |
+|--------|-------------------|---------------------|
+| Pending | `amber` | `orange` |
+| Running | `blue` | `indigo` |
+| Completed | `emerald` | `green` |
+| Cancelled | `red` | `rose` |
+| Admin | `red` | `rose` |
+| Manager | `blue` | `indigo` |
+| Employee | `emerald` | `green` |
+| Client | `violet` | `purple` |
+
+### **Common Icons by Status**
+
+```blade
+<!-- Pending (clock) -->
+<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+
+<!-- Running (refresh/spin) - add animate-spin -->
+<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+
+<!-- Completed (check) -->
+<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+
+<!-- Cancelled (x) -->
+<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+```
+
+---
+
+## 📍 Sidebar Active Item Styling
+
+The sidebar uses Glass Morphism Pills effect for selected/current menu items.
+
+### **Active Item CSS**
+
+```css
+/* Glass Morphism Pills for Selected Sidebar Items */
+[data-current="true"],
+[aria-current="page"] {
+    background: linear-gradient(to right, 
+        rgba(59, 130, 246, 0.15),    /* blue-500/15 */
+        rgba(99, 102, 241, 0.08),    /* indigo-500/8 */
+        rgba(255, 255, 255, 0.4)     /* white/40 */
+    ) !important;
+    border: 1px solid rgba(59, 130, 246, 0.5) !important;
+    border-radius: 0.75rem !important;
+    box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.25),
+                0 4px 6px -4px rgba(59, 130, 246, 0.15) !important;
+    backdrop-filter: blur(16px) !important;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Left glow effect */
+[data-current="true"]::before {
+    content: '';
+    position: absolute;
+    left: -0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 2.5rem;
+    height: 2.5rem;
+    background: rgba(59, 130, 246, 0.3);
+    border-radius: 50%;
+    filter: blur(0.75rem);
+    pointer-events: none;
+}
+
+/* Hover state */
+[data-current="true"]:hover {
+    background: linear-gradient(to right, 
+        rgba(59, 130, 246, 0.2),
+        rgba(99, 102, 241, 0.12),
+        rgba(255, 255, 255, 0.5)
+    ) !important;
+    border-color: rgba(59, 130, 246, 0.7) !important;
+    box-shadow: 0 20px 25px -5px rgba(59, 130, 246, 0.3),
+                0 8px 10px -6px rgba(59, 130, 246, 0.2) !important;
+    transform: scale(1.02);
+}
+```
+
+### **Dark Mode**
+
+```css
+.dark [data-current="true"] {
+    background: linear-gradient(to right, 
+        rgba(59, 130, 246, 0.25),
+        rgba(99, 102, 241, 0.15),
+        rgba(17, 24, 39, 0.7)        /* gray-900/70 */
+    ) !important;
+    border-color: rgba(59, 130, 246, 0.4) !important;
+}
+```
+
+### **Non-Active Hover**
+
+```css
+[data-flux-navlist-item]:not([data-current="true"]):hover {
+    background: rgba(59, 130, 246, 0.05) !important;
+    border-radius: 0.75rem;
+}
+
+.dark [data-flux-navlist-item]:not([data-current="true"]):hover {
+    background: rgba(59, 130, 246, 0.1) !important;
+}
+```
+
+### **Features**
+- Glass morphism background with gradient
+- Blue-indigo color scheme (matches primary accent)
+- Left-side blur glow effect
+- Scale transform on hover (1.02x)
+- Smooth transitions (0.3s cubic-bezier)
+- Dark mode support
+
+---
+
+## 🌫️ Card Blur Levels
+
+Three levels of blur and shadow intensity for different visual hierarchy needs.
+
+### **Level 1: Standard Cards** (Default)
+
+```blade
+<div class="... border-{color}-200 bg-white/50 shadow-md shadow-{color}-100/50 backdrop-blur-sm ...">
+    <div class="... h-32 w-32 ... blur-2xl"></div>
+</div>
+```
+
+### **Level 2: Enhanced Cards** (Recommended for Dashboard)
+
+```blade
+<div class="... border-{color}-300/50 bg-white/60 shadow-xl shadow-{color}-200/40 backdrop-blur-xl hover:shadow-2xl hover:shadow-{color}-300/50 ...">
+    <div class="... h-48 w-48 ... blur-3xl"></div>
+</div>
+```
+
+### **Level 3: Premium Cards** (Hero Sections)
+
+```blade
+<div class="... border-{color}-400/60 bg-white/70 shadow-2xl shadow-{color}-300/50 backdrop-blur-2xl hover:shadow-3xl ...">
+    <div class="... h-64 w-64 ... blur-[40px]"></div>
+</div>
+```
+
+### **Comparison Table**
+
+| Property | Standard | Enhanced | Premium |
+|----------|----------|----------|---------|
+| Background | `bg-white/50` | `bg-white/60` | `bg-white/70` |
+| Blur | `backdrop-blur-sm` | `backdrop-blur-xl` | `backdrop-blur-2xl` |
+| Shadow | `shadow-md` | `shadow-xl` | `shadow-2xl` |
+| Shadow Color | `{color}-100/50` | `{color}-200/40` | `{color}-300/50` |
+| Hover Shadow | `shadow-lg` | `shadow-2xl` | `shadow-3xl` |
+| Blur Circle Size | `h-32 w-32` | `h-48 w-48` | `h-64 w-64` |
+| Blur Circle Blur | `blur-2xl` | `blur-3xl` | `blur-[40px]` |
+| Border | `{color}-200` | `{color}-300/50` | `{color}-400/60` |
+
+### **Full Enhanced Card Example**
+
+```blade
+<div class="group relative overflow-hidden rounded-2xl border border-{color}-300/50 bg-white/60 p-6 shadow-xl shadow-{color}-200/40 backdrop-blur-xl transition-all duration-300 hover:border-{color}-400/60 hover:shadow-2xl hover:shadow-{color}-300/50 dark:border-{color}-800/50 dark:bg-gray-800/60 dark:shadow-{color}-900/30 dark:hover:border-{color}-700 dark:hover:shadow-{color}-800/40">
+    <!-- Decorative blur circles -->
+    <div class="pointer-events-none absolute -right-12 -top-12 h-48 w-48 rounded-full bg-gradient-to-br from-{color}-400/30 to-{color2}-400/30 blur-3xl"></div>
+    <div class="pointer-events-none absolute -bottom-12 -left-12 h-48 w-48 rounded-full bg-gradient-to-br from-{color2}-400/30 to-{color}-400/30 blur-3xl"></div>
+    <!-- Card content -->
+</div>
+```
+
+---
+
 **Base URL Badge (API Docs Header):**
 ```blade
 <div class="flex items-center gap-2 rounded-lg bg-gray-900/80 px-3 py-2 backdrop-blur-sm border border-white/30 shadow-lg">
@@ -69,14 +486,17 @@ The design system uses 4 primary color variants:
 ```
 
 **Features**:
-- Gradient background with decorative blur circles
+- Transparent frosted glass background (`bg-white/50 backdrop-blur-sm`)
+- Decorative blur circles in corners
 - Rounded 2xl corners
 - Icon badge with gradient (14x14, h-14 w-14)
 - Icon container uses `flex-shrink-0` to maintain 56x56px size on all screen sizes
 - Title (text-2xl font-bold)
 - Description (text-sm)
 - Optional actions slot
-- Hover shadow effect (hover:shadow-2xl)
+- Colored shadow: `shadow-md shadow-{color}-100/50`
+- Hover effects: `hover:shadow-lg hover:shadow-{color}-200/50 hover:border-{color}-300`
+- Dark mode support
 
 ---
 
@@ -148,10 +568,12 @@ When no `image` prop is provided, displays a white background with centered icon
 ```
 
 **Features**:
-- Same gradient style as dashboard charts
-- Decorative blur circles
+- Transparent frosted glass background (`bg-white/50 backdrop-blur-sm`)
+- Decorative blur circles in corners
 - Rounded 2xl corners
 - Responsive padding
+- Colored shadow: `shadow-md shadow-{color}-100/50`
+- Hover effects: `hover:shadow-lg hover:shadow-{color}-200/50 hover:border-{color}-300`
 - Dark mode support
 - Border on table container
 
@@ -159,7 +581,7 @@ When no `image` prop is provided, displays a white background with centered icon
 
 ### 3. **Stats Card Component** (`<x-stats-card>`)
 
-**Purpose**: Display statistics with gradient background and icon
+**Purpose**: Display statistics with gradient background, icon, and animated bubble particles
 
 **Usage**:
 ```blade
@@ -167,27 +589,69 @@ When no `image` prop is provided, displays a white background with centered icon
     :title="__('Total Items')" 
     :count="$totalCount" 
     :description="__('Description text')"
-    topCircleColor="bg-blue-300"
-    bottomCircleColor="bg-blue-400">
+    variant="blue|emerald|amber|violet|red">
     <x-slot:icon>
-        <svg class="h-8 w-8 text-white">...</svg>
+        <svg class="h-6 w-6 text-white">...</svg>
     </x-slot:icon>
 </x-stats-card>
 ```
 
-**Features**:
-- Neutral background (bg-zink-200 dark:bg-zinc-900)
-- Colored decorative circles (top-right and bottom-right)
-- Text uses `text-accent` class
-- Rounded 2xl corners
-- Icon container with backdrop blur
-- Hover scale effect
+**Props**:
+- `title` (string, required): Card title text
+- `count` (string|number, required): The statistic number to display
+- `description` (string, required): Description text below the count
+- `variant` (string, default: "blue"): Color variant - `blue`, `emerald`, `amber`, `violet`, or `red`
+- `icon` (slot, required): SVG icon element (should be `h-6 w-6`)
 
-**Color Combinations**:
-- Users: `bg-blue-300` / `bg-blue-400`
-- Tasks: `bg-emerald-300` / `bg-emerald-400`
-- Vehicles: `bg-amber-300` / `bg-amber-400`
-- Notifications: `bg-red-300` / `bg-red-400`
+**Features**:
+- Transparent frosted glass background (`bg-white/60 backdrop-blur-xl`)
+- **Animated bubble particles** with floating animation
+  - Middle section: Proper visible bubbles (opacity 60-70%, size 10-16px)
+  - Side areas: Faded bubbles (opacity 20%, size 8px)
+- Colored decorative blur circles (top-right and bottom-right, opacity 30%)
+- Variant-based color scheme (gradient, borders, shadows, text colors)
+- Rounded 2xl corners
+- Compact icon container with gradient background (`rounded-xl p-3`)
+- Reduced shadows: `shadow-md shadow-{color}-200/20`
+- Hover effects: `hover:shadow-lg hover:shadow-{color}-300/25`
+- Dark mode support with adjusted colors and shadows
+
+**Color Variants**:
+- `blue`: Blue to cyan gradient (Users)
+- `emerald`: Emerald to teal gradient (Tasks)
+- `amber`: Amber to orange gradient (Vehicles)
+- `violet`: Violet to purple gradient (Notifications)
+- `red`: Red to rose gradient (Alerts)
+
+**Bubble Particles Animation**:
+```css
+@keyframes bubble-float {
+    0%, 100% { transform: translateY(0) translateX(0) scale(1); opacity: 0.6; }
+    25% { transform: translateY(-15px) translateX(10px) scale(1.1); opacity: 0.8; }
+    50% { transform: translateY(-25px) translateX(-5px) scale(0.9); opacity: 0.7; }
+    75% { transform: translateY(-10px) translateX(15px) scale(1.05); opacity: 0.75; }
+}
+```
+
+**Bubble Particles Structure**:
+- **Middle bubbles** (4 particles): Positioned in center area, higher opacity (60-70%), larger size
+- **Side bubbles** (4 particles): Positioned at edges, lower opacity (20%), smaller size
+- Animation durations: 6-9 seconds with staggered delays for natural movement
+
+**Full Example**:
+```blade
+<x-stats-card 
+    :title="__('Total Users')" 
+    :count="$totalUsers" 
+    :description="__('All registered users')" 
+    variant="blue">
+    <x-slot:icon>
+        <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z"/>
+        </svg>
+    </x-slot:icon>
+</x-stats-card>
+```
 
 ---
 
@@ -393,39 +857,50 @@ When no `image` prop is provided, displays a white background with centered icon
                  x-transition:leave="transition ease-in duration-200"
                  x-transition:leave-start="opacity-100 scale-100"
                  x-transition:leave-end="opacity-0 scale-95"
-                 class="relative w-full max-w-4xl transform overflow-hidden rounded-2xl bg-white shadow-2xl dark:bg-gray-900"
+                 class="relative w-full max-w-4xl transform overflow-hidden rounded-2xl bg-gradient-to-br from-{color}-50 via-white to-{color2}-50 shadow-2xl dark:from-{color}-900/20 dark:via-gray-900 dark:to-{color2}-900/20"
                  @click.away="open = false">
+                <!-- Decorative Elements (on parent) -->
+                <div class="pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-full bg-gradient-to-br from-{color}-400/20 to-{color2}-400/20 blur-2xl"></div>
+                <div class="pointer-events-none absolute -bottom-8 -left-8 h-32 w-32 rounded-full bg-gradient-to-br from-{color2}-400/20 to-{color}-400/20 blur-2xl"></div>
 
                 <!-- Content -->
-                <div class="max-h-[90vh] overflow-y-auto p-6 pb-20">
-                    <!-- Item Preview Card with gradient background matching variant -->
-                    <div class="relative overflow-hidden rounded-xl border border-{color}-200 bg-gradient-to-br from-{color}-50 via-white to-{color2}-50 p-6 shadow-xl dark:border-{color}-900/50 dark:from-{color}-900/20 dark:via-gray-900 dark:to-{color2}-900/20">
-                        <!-- Decorative blur circles -->
+                <div class="relative max-h-[90vh] overflow-y-auto p-6 pb-20">
+                    <!-- Item Preview Card (transparent to show parent gradient) -->
+                    <div class="relative overflow-hidden rounded-xl border border-{color}-200/50 bg-white/50 p-6 mb-3 backdrop-blur-sm dark:border-{color}-800/50 dark:bg-gray-800/50">
                         <!-- Item details display -->
                     </div>
                 </div>
 
-                <!-- Action Buttons (Center Bottom) -->
-                <div class="absolute bottom-0 left-0 right-0 flex items-center justify-center gap-3 border-t border-gray-200/50 bg-white/95 p-4 backdrop-blur-sm dark:border-gray-700/50 dark:bg-gray-900/95">
-                    <!-- Edit Button (cyan) -->
-                    <button wire:click="editItem" type="button" class="group relative flex items-center justify-center rounded-lg border-2 border-cyan-600/50 bg-cyan-500/10 p-3 transition-all duration-200 hover:border-cyan-600 hover:bg-cyan-500/20 hover:shadow-lg hover:shadow-cyan-600/30">
-                        <svg class="h-5 w-5 text-cyan-600">...</svg>
-                        <span class="ml-2 text-sm font-semibold text-cyan-600">{{ __('Edit') }}</span>
+                <!-- Action Buttons (Separated: Close on Left, Edit/Delete on Right) -->
+                <div class="absolute bottom-0 left-0 right-0 flex items-center justify-between gap-3 border-t border-{color}-200/30 bg-white/60 px-4 py-3 backdrop-blur-md dark:border-{color}-800/30 dark:bg-gray-900/60">
+                    <!-- Close Button (Left) -->
+                    <button wire:click="closePreview" type="button" class="group relative flex items-center justify-center rounded-lg border-2 border-gray-500/60 bg-gray-600/20 backdrop-blur-sm px-3 py-2 transition-all duration-200 hover:border-gray-400 hover:bg-gray-500/30 hover:shadow-lg hover:shadow-gray-500/40">
+                        <svg class="h-4 w-4 text-gray-700 dark:text-gray-200 transition-all duration-200 group-hover:text-gray-900 dark:group-hover:text-white group-hover:drop-shadow-[0_0_6px_rgba(156,163,175,0.9)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                        <span class="ml-1.5 text-xs font-semibold text-gray-700 dark:text-gray-200 group-hover:text-gray-900 dark:group-hover:text-white">{{ __('Close') }}</span>
                     </button>
 
-                    <!-- Close Button (gray) -->
-                    <button wire:click="closePreview" type="button" class="group relative flex items-center justify-center rounded-lg border-2 border-gray-400/50 bg-gray-500/10 p-3 transition-all duration-200 hover:border-gray-400 hover:bg-gray-500/20 hover:shadow-lg hover:shadow-gray-500/30">
-                        <svg class="h-5 w-5 text-gray-400">...</svg>
-                        <span class="ml-2 text-sm font-semibold text-gray-400">{{ __('Close') }}</span>
-                    </button>
-
-                    <!-- Delete Button (red, conditional) -->
-                    @if($this->canDelete())
-                        <button @click="window.confirmDelete(...).then(...)" type="button" class="group relative flex items-center justify-center rounded-lg border-2 border-red-600/50 bg-red-500/10 p-3 transition-all duration-200 hover:border-red-600 hover:bg-red-500/20 hover:shadow-lg hover:shadow-red-600/30">
-                            <svg class="h-5 w-5 text-red-600">...</svg>
-                            <span class="ml-2 text-sm font-semibold text-red-600">{{ __('Delete') }}</span>
+                    <!-- Edit and Delete Buttons (Right) -->
+                    <div class="flex items-center gap-2">
+                        <!-- Edit Button (cyan) -->
+                        <button wire:click="editItem" type="button" class="group relative flex items-center justify-center rounded-lg border-2 border-cyan-500/70 bg-cyan-600/20 backdrop-blur-sm px-3 py-2 transition-all duration-200 hover:border-cyan-400 hover:bg-cyan-500/30 hover:shadow-lg hover:shadow-cyan-500/50">
+                            <svg class="h-4 w-4 text-cyan-700 dark:text-cyan-200 transition-all duration-200 group-hover:text-cyan-900 dark:group-hover:text-cyan-100 group-hover:drop-shadow-[0_0_6px_rgba(6,182,212,0.9)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                            </svg>
+                            <span class="ml-1.5 text-xs font-semibold text-cyan-700 dark:text-cyan-200 group-hover:text-cyan-900 dark:group-hover:text-cyan-100">{{ __('Edit') }}</span>
                         </button>
-                    @endif
+
+                        <!-- Delete Button (red, conditional) -->
+                        @if($this->canDelete())
+                            <button @click="window.confirmDelete(...).then(...)" type="button" class="group relative flex items-center justify-center rounded-lg border-2 border-red-500/70 bg-red-600/20 backdrop-blur-sm px-3 py-2 transition-all duration-200 hover:border-red-400 hover:bg-red-500/30 hover:shadow-lg hover:shadow-red-500/50">
+                                <svg class="h-4 w-4 text-red-700 dark:text-red-200 transition-all duration-200 group-hover:text-red-900 dark:group-hover:text-red-100 group-hover:drop-shadow-[0_0_6px_rgba(239,68,68,0.9)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                                </svg>
+                                <span class="ml-1.5 text-xs font-semibold text-red-700 dark:text-red-200 group-hover:text-red-900 dark:group-hover:text-red-100">{{ __('Delete') }}</span>
+                            </button>
+                        @endif
+                    </div>
                 </div>
             </div>
         </div>
@@ -437,15 +912,29 @@ When no `image` prop is provided, displays a white background with centered icon
 - Center dialog modal (not side panel)
 - Max width: `max-w-4xl`
 - Scale animation on open/close
-- Gradient background matching variant color (blue/cyan for users, emerald/teal for tasks)
-- Decorative blur circles
-- Action buttons at bottom center: Edit (cyan), Close (gray), Delete (red, conditional)
+- **Gradient on parent container** (not on preview card) matching variant color
+- **Transparent preview card** (`bg-white/50`) to show parent gradient through
+- **No shadow on preview card** (removed for cleaner look)
+- Decorative blur circles on parent container
+- **Separated button layout**: Close button on left, Edit/Delete buttons on right
+- **Smaller buttons**: `px-3 py-2` padding, `h-4 w-4` icons, `text-xs` text
+- **High contrast button text**: `text-gray-700 dark:text-gray-200` for Close, `text-cyan-700 dark:text-cyan-200` for Edit, `text-red-700 dark:text-red-200` for Delete
+- **Glowing borders and blurry backgrounds**: `backdrop-blur-sm` on buttons, enhanced shadows with glow effects
+- **Preview card margin**: `mb-3` (half of top padding `p-6`)
+- Action buttons at bottom: Edit (cyan), Close (gray), Delete (red, conditional)
 - Delete button only shown if `canDelete()` returns true
 - Integrated with SweetAlert2 for delete confirmation
 
 **Color Variants**:
-- **Users**: Blue/cyan gradient (`from-blue-50 via-white to-cyan-50`)
+- **Users/Ports**: Blue/cyan gradient (`from-blue-50 via-white to-cyan-50`)
 - **Tasks**: Emerald/teal gradient (`from-emerald-50 via-white to-teal-50`)
+- **Shipping Companies**: Indigo/purple gradient (`from-indigo-50 via-white to-purple-50`)
+
+**Key Design Principles**:
+- **Parent has gradient, child is transparent**: Gradient applied to modal container, preview card uses `bg-white/50` to show gradient through
+- **No shadows on preview card**: Clean, flat design that blends with parent
+- **Button separation**: Close button separated from action buttons for better UX
+- **Readable button text**: Darker text colors (`text-{color}-700`) for better contrast on blurry backgrounds
 
 **Opening Preview** (from parent component):
 ```blade
@@ -1827,11 +2316,27 @@ $upcomingTasks = \App\Models\Task::whereNotIn('status', ['completed', 'cancelled
 
 ### Preview Modal System
 - Center dialog modals for read-only item previews
-- Gradient backgrounds matching module variant colors (blue/cyan for users, emerald/teal for tasks)
-- Action buttons at bottom center: Edit, Close, Delete (conditional)
+- **Gradient on parent container** (not on preview card) matching module variant colors
+- **Transparent preview card** (`bg-white/50`) to show parent gradient through, matching table card pattern
+- **No shadow on preview card** for cleaner appearance
+- **Separated button layout**: Close button on left, Edit/Delete buttons grouped on right
+- **Smaller, high-contrast buttons**: `px-3 py-2` padding, `h-4 w-4` icons, `text-xs` text with darker colors (`text-{color}-700`) for readability
+- **Glowing borders and blurry backgrounds**: Enhanced visual effects with `backdrop-blur-sm` on buttons and glow shadows on hover
+- **Preview card margin**: `mb-3` (half of top padding `p-6`) for balanced spacing
+- Action buttons: Edit (cyan), Close (gray), Delete (red, conditional)
 - Permission-based delete button visibility
 - Integrated with SweetAlert2 for delete confirmations
-- Applied to Users and Tasks modules
+- Applied to Users, Tasks, Ports, and Shipping Companies modules
+
+### Preview Modal System Updates (v2.13)
+- **Gradient moved to parent container**: Parent modal container now has gradient, preview card is transparent
+- **Transparent preview cards**: Changed from `bg-white/80` to `bg-white/50` to match table card pattern and show parent gradient through
+- **Removed shadows**: Preview cards no longer have `shadow-lg` for cleaner appearance
+- **Separated button layout**: Close button positioned on left, Edit/Delete buttons grouped on right
+- **Smaller, high-contrast buttons**: Reduced button size (`px-3 py-2`, `h-4 w-4` icons, `text-xs` text) with darker text colors for better readability
+- **Enhanced button styling**: Added glowing borders (`border-{color}-500/70`), blurry backgrounds (`backdrop-blur-sm`), and glow shadows on hover
+- **Balanced spacing**: Preview card bottom margin set to `mb-3` (half of top padding)
+- Applied to all preview dialogs: Users, Tasks, Ports, Shipping Companies
 
 ### Permission-Based UI System
 - Role-based permission checks for delete actions
@@ -2332,9 +2837,90 @@ For the main landing/welcome page, use a hero section with side-by-side features
 - Dark mode support for all color variants
 - Consistent spacing with `mt-8` margin before Keypoints sections
 
-**Version**: 2.11  
-**Last Updated**: December 25, 2024  
+### Navigation Menu Naming Conventions
+- Added standard for menu item naming: plural forms without "Manage" suffix
+- Main menu items: Users, Tasks, Shipments, Vehicles
+- Submenu items: Descriptive names (Today's Tasks, Shipping Companies, Ports)
+- Consistent with industry best practices
+
+**Version**: 2.13  
+**Last Updated**: January 17, 2026  
 **Project**: Laravel Livewire Dashboard - Senda Snap
+
+---
+
+## 🧭 Navigation Menu Naming Conventions
+
+### Menu Item Naming Standard
+
+All navigation menu items in the sidebar follow a consistent naming convention:
+
+**Rule**: Use **plural form** without "Manage" suffix for all menu items.
+
+**Examples**:
+- ✅ `Users` (not "User Manage" or "User Management")
+- ✅ `Tasks` (not "Task Manage" or "Task Management")
+- ✅ `Shipments` (not "Shipment Manage" or "Shipment Management")
+- ✅ `Vehicles` (not "Vehicle Manage" or "Vehicle Management")
+
+**Rationale**:
+- Plural forms are standard for resource lists in modern UIs
+- Shorter, cleaner labels improve readability
+- Consistent with industry best practices (GitHub, GitLab, etc.)
+- Avoids redundancy (the "Management" section heading already implies management)
+
+**Submenu Items**:
+- Submenu items can be more descriptive (e.g., "Today's Tasks", "All Tasks", "Shipping Companies", "Ports")
+- Submenu items use specific names that describe the content or action
+
+**Implementation Pattern**:
+```blade
+<flux:navlist.group :heading="__('Management')" class="grid">
+    <!-- Main menu items: plural form, no "Manage" suffix -->
+    <flux:navlist.item icon="users" :href="route('users.index')">
+        {{ __('Users') }}
+    </flux:navlist.item>
+
+    <!-- Menu items with submenus -->
+    <div x-data="{ open: {{ request()->routeIs('tasks.*') ? 'true' : 'false' }} }">
+        <flux:navlist.item icon="clipboard" @click="open = !open">
+            <span>{{ __('Tasks') }}</span>
+        </flux:navlist.item>
+        
+        <div x-show="open" x-collapse class="ml-8 mt-1 space-y-1">
+            <!-- Submenu items: descriptive names -->
+            <flux:navlist.item :href="route('tasks.today')">
+                {{ __("Today's Tasks") }}
+            </flux:navlist.item>
+            <flux:navlist.item :href="route('tasks.all')">
+                {{ __('All Tasks') }}
+            </flux:navlist.item>
+        </div>
+    </div>
+
+    <!-- Shipments with submenu -->
+    <div x-data="{ open: {{ request()->routeIs('shipping-companies.*') || request()->routeIs('ports.*') ? 'true' : 'false' }} }">
+        <flux:navlist.item icon="layout-grid" @click="open = !open">
+            <span>{{ __('Shipments') }}</span>
+        </flux:navlist.item>
+        
+        <div x-show="open" x-collapse class="ml-8 mt-1 space-y-1">
+            <flux:navlist.item :href="route('shipping-companies.index')">
+                {{ __('Shipping Companies') }}
+            </flux:navlist.item>
+            <flux:navlist.item :href="route('ports.index')">
+                {{ __('Ports') }}
+            </flux:navlist.item>
+        </div>
+    </div>
+</flux:navlist.group>
+```
+
+**Key Points**:
+- Main menu items: Always plural, no "Manage" suffix
+- Submenu items: Can be descriptive and specific
+- Consistency: All menu items follow the same pattern
+- Translation: Always use `__()` helper for internationalization
 
 ---
 

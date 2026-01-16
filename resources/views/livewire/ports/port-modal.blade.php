@@ -1,0 +1,111 @@
+<div>
+    <!-- Backdrop -->
+    <div x-data="{ open: @entangle('open') }"
+         x-show="open"
+         x-cloak
+         class="fixed inset-0 z-50 overflow-hidden"
+         style="display: none;">
+
+        <!-- Background overlay -->
+        <div x-show="open"
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="transition ease-in duration-500"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"
+             class="absolute inset-0 bg-gray-900/50 backdrop-blur-sm"></div>
+
+        <!-- Modal Panel -->
+        <div class="fixed inset-y-0 right-0 flex max-w-full pl-10">
+            <div x-show="open"
+                 x-transition:enter="transform transition ease-in-out duration-500"
+                 x-transition:enter-start="translate-x-full"
+                 x-transition:enter-end="translate-x-0"
+                 x-transition:leave="transform transition ease-in-out duration-500"
+                 x-transition:leave-start="translate-x-0"
+                 x-transition:leave-end="translate-x-full"
+                 class="w-screen max-w-xl bg-white/90">
+
+                <div class="flex h-full flex-col overflow-y-auto border-l border-blue-200 bg-gradient-to-br from-white via-blue-50/30 to-cyan-50/30 shadow-2xl dark:border-blue-900/50 dark:from-gray-900 dark:via-blue-900/20 dark:to-cyan-900/20">
+                    <!-- Decorative Elements -->
+                    <div class="pointer-events-none absolute -right-8 -top-8 h-64 w-64 rounded-full bg-gradient-to-br from-blue-400/20 to-cyan-400/20 blur-3xl"></div>
+                    <div class="pointer-events-none absolute -bottom-8 -left-8 h-64 w-64 rounded-full bg-gradient-to-br from-cyan-400/20 to-blue-400/20 blur-3xl"></div>
+
+                    <!-- Header -->
+                    <div class="relative border-b border-gray-200/50 bg-white/50 px-6 py-6 backdrop-blur-sm dark:border-gray-700/50 dark:bg-gray-900/50">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-cyan-600 shadow-lg">
+                                    <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h2 class="text-xl font-bold text-gray-900 dark:text-white">
+                                        {{ $isEditing ? __('Edit Port') : __('Add New Port') }}
+                                    </h2>
+                                    <p class="text-sm text-gray-600 dark:text-gray-400">
+                                        {{ $isEditing ? __('Update port information') : __('Create a new port') }}
+                                    </p>
+                                </div>
+                            </div>
+                            <button wire:click="closeModal" type="button" class="rounded-lg p-2 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-gray-800 dark:hover:text-gray-300">
+                                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Form -->
+                    <form wire:submit="save" class="relative flex-1 overflow-y-auto">
+                        <div class="space-y-6 p-6">
+                            <!-- Port Name -->
+                            <div>
+                                <flux:input wire:model="port_name" label="{{ __('Port Name') }}" placeholder="{{ __('Enter port name') }}" required />
+                                @error('port_name')
+                                    <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <!-- Port Type -->
+                            <div>
+                                <flux:select wire:model="port_type" label="{{ __('Port Type') }}" required>
+                                    <option value="Auction">{{ __('Auction') }}</option>
+                                    <option value="Yard">{{ __('Yard') }}</option>
+                                    <option value="Local Port">{{ __('Local Port') }}</option>
+                                    <option value="Overseas Port">{{ __('Overseas Port') }}</option>
+                                </flux:select>
+                                @error('port_type')
+                                    <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <!-- Port Address -->
+                            <div>
+                                <flux:textarea wire:model="port_address" label="{{ __('Port Address') }}" placeholder="{{ __('Enter port address') }}" rows="3" required />
+                                @error('port_address')
+                                    <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <!-- Footer Actions -->
+                        <div class="border-t border-gray-200/50 px-6 py-4 backdrop-blur-sm dark:border-gray-700/50">
+                            <div class="flex items-center justify-end gap-3">
+                                <flux:button type="button" wire:click="closeModal" variant="ghost">
+                                    {{ __('Cancel') }}
+                                </flux:button>
+                                <flux:button type="submit" variant="primary" icon="check">
+                                    {{ $isEditing ? __('Update Port') : __('Create Port') }}
+                                </flux:button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -12,12 +12,20 @@ class AuthService
 {
     public function register(array $data): array
     {
+        // Multi-tenancy: Auto-assign vendor_id from authenticated user (for managers creating employees)
+        // Admin can specify vendor_id when creating users
+        $user = auth()->user();
+        if ($user && $user->vendor_id && ! isset($data['vendor_id'])) {
+            $data['vendor_id'] = $user->vendor_id;
+        }
+
         $user = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
             'role' => $data['role'] ?? 'client',
             'phone' => $data['phone'] ?? null,
+            'vendor_id' => $data['vendor_id'] ?? null,
         ]);
 
         $token = $user->createToken('auth_token')->plainTextToken;

@@ -9,6 +9,12 @@ class VendorSeeder extends Seeder
 {
     public function run(): void
     {
+        // If there is already at least one vendor, do not seed or modify vendor data.
+        // This keeps existing vendor records intact when running seeders on a live database.
+        if (Vendor::query()->exists()) {
+            return;
+        }
+
         // Create default vendor (AUTOCRAFT JAPAN LTD)
         Vendor::firstOrCreate(
             ['email' => 'info@autocraftjapan.com'],

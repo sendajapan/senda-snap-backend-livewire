@@ -74,6 +74,9 @@
             <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                 <thead>
                     <tr class="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900">
+                        <th class="px-3 md:px-6 py-3 md:py-4 text-center text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 w-16">
+                            {{ __('S/N') }}
+                        </th>
                         <th class="px-3 md:px-6 py-3 md:py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">
                             {{ __('Port Name') }}
                         </th>
@@ -86,17 +89,17 @@
                         <th class="px-3 md:px-6 py-3 md:py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 hidden lg:table-cell">
                             {{ __('Created At') }}
                         </th>
-                        <th class="px-3 md:px-6 py-3 md:py-4 text-center text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">
+                        <th class="px-3 md:px-6 py-3 md:py-4 text-center text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 w-32">
                             {{ __('Actions') }}
                         </th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200/50 dark:divide-gray-700/50">
-                    @forelse($ports as $port)
-                        <x-port-table-row :port="$port" wire:key="port-{{ $port->id }}" />
+                    @forelse($ports as $index => $port)
+                        <x-port-table-row :port="$port" :index="$ports->firstItem() + $index" wire:key="port-{{ $port->id }}" />
                     @empty
                         <tr>
-                            <td colspan="5" class="px-3 md:px-6 py-12 text-center">
+                            <td colspan="6" class="px-3 md:px-6 py-12 text-center">
                                 <div class="flex flex-col items-center gap-3">
                                     <div class="flex h-16 w-16 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800">
                                         <svg class="h-8 w-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">

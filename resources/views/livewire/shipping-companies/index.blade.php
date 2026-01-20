@@ -16,7 +16,7 @@
         variant="indigo">
         <x-slot:icon>
             <svg class="h-7 w-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9l9-6 9 6v9a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2V9" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
             </svg>
         </x-slot:icon>
         <x-slot:actions>
@@ -36,25 +36,14 @@
                     icon="magnifying-glass" />
             </div>
             <div class="w-48">
-                <flux:select wire:model.live="companyTypeFilter" placeholder="{{ __('All Types') }}">
-                    <option value="">{{ __('All Types') }}</option>
-                    <option value="Transporter">{{ __('Transporter') }}</option>
-                    <option value="Shipping Line">{{ __('Shipping Line') }}</option>
-                    <option value="Workshop">{{ __('Workshop') }}</option>
-                    <option value="PROVIDER">{{ __('PROVIDER') }}</option>
-                    <option value="EXPENSE">{{ __('EXPENSE') }}</option>
-                    <option value="COURIER">{{ __('COURIER') }}</option>
-                </flux:select>
-            </div>
-            <div class="w-48">
-                <flux:select wire:model.live="companyStatusFilter" placeholder="{{ __('All Status') }}">
+                <flux:select wire:model.live="statusFilter" placeholder="{{ __('All Status') }}">
                     <option value="">{{ __('All Status') }}</option>
                     <option value="Active">{{ __('Active') }}</option>
                     <option value="Inactive">{{ __('Inactive') }}</option>
                 </flux:select>
             </div>
 
-            @if($search || $companyTypeFilter || $companyStatusFilter)
+            @if($search || $statusFilter)
                 <div class="flex items-center">
                     <flux:button wire:click="clearFilters" variant="ghost" size="sm" icon="x-mark">
                         {{ __('Clear Filters') }}
@@ -64,54 +53,51 @@
         </div>
 
         <!-- Active Filters Display -->
-        @if($search || $companyTypeFilter || $companyStatusFilter)
+        @if($search || $statusFilter)
             <div class="mb-3 flex flex-wrap gap-2">
                 <span class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ __('Active Filters:') }}</span>
                 @if($search)
                     <flux:badge color="violet" size="sm">{{ __('Search:') }} "{{ $search }}"</flux:badge>
                 @endif
-                @if($companyTypeFilter)
-                    <flux:badge color="blue" size="sm">{{ __('Type:') }} {{ $companyTypeFilter }}</flux:badge>
-                @endif
-                @if($companyStatusFilter)
-                    <flux:badge color="green" size="sm">{{ __('Status:') }} {{ $companyStatusFilter }}</flux:badge>
+                @if($statusFilter)
+                    <flux:badge color="green" size="sm">{{ __('Status:') }} {{ $statusFilter }}</flux:badge>
                 @endif
             </div>
         @endif
 
         <!-- Table View (2xl and above) -->
         <div class="hidden 2xl:block overflow-x-auto border rounded-xl bg-white/50 backdrop-blur-sm dark:border-gray-700/50 dark:bg-gray-900/20"
-             wire:key="shipping-companies-table-{{ md5(($search ?? '').'|'.($companyTypeFilter ?? '').'|'.($companyStatusFilter ?? '')) }}">
+             wire:key="shipping-companies-table-{{ md5(($search ?? '').'|'.($statusFilter ?? '')) }}">
             <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                 <thead>
                     <tr class="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900">
-                        <th class="px-3 md:px-6 py-3 md:py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">
-                            {{ __('Company Name') }}
+                        <th class="px-3 md:px-6 py-3 md:py-4 text-center text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 w-16">
+                            {{ __('S/N') }}
                         </th>
                         <th class="px-3 md:px-6 py-3 md:py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">
-                            {{ __('Type') }}
+                            {{ __('Shipping Company Name') }}
                         </th>
                         <th class="px-3 md:px-6 py-3 md:py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">
                             {{ __('Status') }}
                         </th>
                         <th class="px-3 md:px-6 py-3 md:py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 hidden lg:table-cell">
-                            {{ __('Location') }}
+                            {{ __('Created At') }}
                         </th>
-                        <th class="px-3 md:px-6 py-3 md:py-4 text-center text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">
+                        <th class="px-3 md:px-6 py-3 md:py-4 text-center text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 w-32">
                             {{ __('Actions') }}
                         </th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200/50 dark:divide-gray-700/50">
-                    @forelse($shippingCompanies as $shippingCompany)
-                        <x-shipping-company-table-row :shippingCompany="$shippingCompany" wire:key="shipping-company-{{ $shippingCompany->id }}" />
+                    @forelse($shippingCompanies as $index => $shippingCompany)
+                        <x-shipping-company-table-row :shippingCompany="$shippingCompany" :index="$shippingCompanies->firstItem() + $index" wire:key="shipping-company-{{ $shippingCompany->id }}" />
                     @empty
                         <tr>
                             <td colspan="5" class="px-3 md:px-6 py-12 text-center">
                                 <div class="flex flex-col items-center gap-3">
                                     <div class="flex h-16 w-16 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800">
                                         <svg class="h-8 w-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9l9-6 9 6v9a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2V9" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                                         </svg>
                                     </div>
                                     <p class="text-sm font-medium text-gray-900 dark:text-white">{{ __('No shipping companies found') }}</p>
@@ -126,7 +112,7 @@
 
         <!-- Stacked View (below 2xl) -->
         <div class="2xl:hidden bg-white/50 backdrop-blur-sm dark:bg-gray-900/20"
-             wire:key="shipping-companies-stacked-{{ md5(($search ?? '').'|'.($companyTypeFilter ?? '').'|'.($companyStatusFilter ?? '')) }}">
+             wire:key="shipping-companies-stacked-{{ md5(($search ?? '').'|'.($statusFilter ?? '')) }}">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 p-4">
                 @forelse($shippingCompanies as $shippingCompany)
                     <x-shipping-company-card :shippingCompany="$shippingCompany" :rounded="true" wire:key="shipping-company-card-{{ $shippingCompany->id }}" />
@@ -135,7 +121,7 @@
                         <div class="flex flex-col items-center gap-3">
                             <div class="flex h-16 w-16 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800">
                                 <svg class="h-8 w-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9l9-6 9 6v9a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2V9" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                                 </svg>
                             </div>
                             <p class="text-sm font-medium text-gray-900 dark:text-white">{{ __('No shipping companies found') }}</p>

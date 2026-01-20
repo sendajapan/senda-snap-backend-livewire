@@ -1699,6 +1699,42 @@ $clientCount = \App\Models\User::where('role', 'client')->count();
 
 **Usage**: Display role counts above member/user tables in dashboard cards.
 
+### Members Query with Vendor Context
+The dashboard **Members** card and the `/users` listing both rely on vendor-aware user queries to avoid N+1 problems and to keep tenant context visible in the UI.
+
+```php
+// Dashboard members (inline in dashboard view)
+$members = \App\Models\User::with('vendor')
+    ->latest()
+    ->limit(5)
+    ->get();
+
+// UsersService::getPaginated()
+public function getPaginated(array $filters = [], int $perPage = 10)
+{
+    $query = User::query()->with('vendor');
+    $this->scopeByVendor($query);
+
+    // ... search / role filters ...
+
+    return $query
+        ->where('email', 'NOT LIKE', '%test%')
+        ->orderBy('created_at', 'desc')
+        ->paginate($perPage);
+}
+```
+
+**Display conventions**:
+- **Dashboard Members card**:
+  - Member column: avatar, name, and “Member since :date”.
+  - Vendor column: vendor name (or `-` in muted text when missing).
+- **Users `/users` table**:
+  - Vendor column:
+    - Vendor name in bold, smaller text (`text-xs font-bold`).
+    - Vendor address below in lighter text (`text-[10px]/text-xs text-gray-400 dark:text-gray-500`) when available.
+
+These conventions ensure vendor/tenant context is always visible wherever users are listed, while keeping typography compact.
+
 ### Upcoming Tasks Query
 For displaying upcoming tasks in dashboard tables:
 

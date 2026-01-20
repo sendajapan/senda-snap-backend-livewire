@@ -108,6 +108,9 @@
             <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                 <thead>
                     <tr class="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900">
+                        <th class="px-3 md:px-6 py-3 md:py-4 text-center text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 w-16">
+                            {{ __('S/N') }}
+                        </th>
                         <th
                             class="w-1/4 px-3 md:px-6 py-3 md:py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">
                             {{ __('Title') }}
@@ -133,17 +136,17 @@
                             {{ __('Work Date') }}
                         </th>
                         <th
-                            class="px-3 md:px-6 py-3 md:py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">
+                            class="px-3 md:px-6 py-3 md:py-4 text-center text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 w-32">
                             {{ __('Actions') }}
                         </th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200/50 dark:divide-gray-700/50">
-                    @forelse($tasks as $task)
-                        <x-task-table-row :task="$task" :showWorkDate="true" wire:key="task-{{ $task->id }}" />
+                    @forelse($tasks as $index => $task)
+                        <x-task-table-row :task="$task" :showWorkDate="true" :index="$tasks->firstItem() + $index" wire:key="task-{{ $task->id }}" />
                     @empty
                         <tr>
-                            <td colspan="7" class="px-3 md:px-6 py-12 text-center">
+                            <td colspan="8" class="px-3 md:px-6 py-12 text-center">
                                 <div class="flex flex-col items-center gap-3">
                                     <div
                                         class="flex h-16 w-16 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800">
@@ -195,6 +198,10 @@
             </div>
         </div>
 
+        <!-- Pagination -->
+        <div class="mt-4">
+            {{ $tasks->links() }}
+        </div>
     </x-table-card>
 
     <!-- Task Modal -->

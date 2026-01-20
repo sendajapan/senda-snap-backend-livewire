@@ -8,15 +8,15 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreShippingCompanyRequest;
 use App\Http\Requests\UpdateShippingCompanyRequest;
 use App\Http\Resources\ShippingCompanyResource;
-use App\Models\ShippingCompany;
-use App\Services\ShippingCompanyService;
+use App\Models\ShipLine;
+use App\Services\ShipLineService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class ShippingCompanyController extends Controller
 {
     public function __construct(
-        protected ShippingCompanyService $shippingCompanyService
+        protected ShipLineService $shipLineService
     ) {}
 
     /**
@@ -26,14 +26,13 @@ class ShippingCompanyController extends Controller
     {
         $filters = [
             'search' => $request->input('search'),
-            'company_type' => $request->input('company_type'),
-            'company_status' => $request->input('company_status'),
+            'status' => $request->input('status'),
             'sort_by' => $request->input('sort_by', 'created_at'),
             'sort_direction' => $request->input('sort_direction', 'desc'),
         ];
 
         $perPage = (int) $request->input('per_page', 15);
-        $shippingCompanies = $this->shippingCompanyService->list($filters, $perPage);
+        $shippingCompanies = $this->shipLineService->list($filters, $perPage);
 
         return $this->successResponse('Shipping companies retrieved successfully', [
             'shipping_companies' => ShippingCompanyResource::collection($shippingCompanies->items()),
@@ -51,7 +50,7 @@ class ShippingCompanyController extends Controller
      */
     public function store(StoreShippingCompanyRequest $request): JsonResponse
     {
-        $shippingCompany = $this->shippingCompanyService->create($request->validated());
+        $shippingCompany = $this->shipLineService->create($request->validated());
 
         return $this->successResponse('Shipping company created successfully', [
             'shipping_company' => new ShippingCompanyResource($shippingCompany),
@@ -61,7 +60,7 @@ class ShippingCompanyController extends Controller
     /**
      * Show a single shipping company
      */
-    public function show(ShippingCompany $shippingCompany): JsonResponse
+    public function show(ShipLine $shippingCompany): JsonResponse
     {
         return $this->successResponse('Shipping company retrieved successfully', [
             'shipping_company' => new ShippingCompanyResource($shippingCompany),
@@ -71,9 +70,9 @@ class ShippingCompanyController extends Controller
     /**
      * Update an existing shipping company
      */
-    public function update(UpdateShippingCompanyRequest $request, ShippingCompany $shippingCompany): JsonResponse
+    public function update(UpdateShippingCompanyRequest $request, ShipLine $shippingCompany): JsonResponse
     {
-        $updatedShippingCompany = $this->shippingCompanyService->update($shippingCompany, $request->validated());
+        $updatedShippingCompany = $this->shipLineService->update($shippingCompany, $request->validated());
 
         return $this->successResponse('Shipping company updated successfully', [
             'shipping_company' => new ShippingCompanyResource($updatedShippingCompany),
@@ -83,9 +82,9 @@ class ShippingCompanyController extends Controller
     /**
      * Delete a shipping company
      */
-    public function destroy(ShippingCompany $shippingCompany): JsonResponse
+    public function destroy(ShipLine $shippingCompany): JsonResponse
     {
-        $this->shippingCompanyService->delete($shippingCompany);
+        $this->shipLineService->delete($shippingCompany);
 
         return $this->successResponse('Shipping company deleted successfully', []);
     }

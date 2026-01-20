@@ -29,22 +29,23 @@ class Schedule extends Model
     {
         return [
             'status' => 'string',
+            'eta' => 'date',
         ];
     }
 
     public function carrier1(): BelongsTo
     {
-        return $this->belongsTo(ShippingCompany::class, 'carrier_1_id');
+        return $this->belongsTo(ShipLine::class, 'carrier_1_id');
     }
 
     public function carrier2(): BelongsTo
     {
-        return $this->belongsTo(ShippingCompany::class, 'carrier_2_id');
+        return $this->belongsTo(ShipLine::class, 'carrier_2_id');
     }
 
     public function carrier3(): BelongsTo
     {
-        return $this->belongsTo(ShippingCompany::class, 'carrier_3_id');
+        return $this->belongsTo(ShipLine::class, 'carrier_3_id');
     }
 
     public function startPort(): BelongsTo

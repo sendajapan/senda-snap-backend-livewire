@@ -3,7 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Port;
-use App\Models\ShippingCompany;
+use App\Models\ShipLine;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -25,9 +25,9 @@ class ScheduleFactory extends Factory
         return [
             'vessel_name' => fake()->company().' '.fake()->randomElement(['Vessel', 'Ship', 'Freighter', 'Container Ship']),
             'voyage_no' => 'V'.fake()->numerify('####'),
-            'carrier_1_id' => ShippingCompany::where('company_type', 'PROVIDER')->inRandomOrder()->first()?->id,
-            'carrier_2_id' => ShippingCompany::where('company_type', 'PROVIDER')->inRandomOrder()->first()?->id,
-            'carrier_3_id' => ShippingCompany::where('company_type', 'PROVIDER')->inRandomOrder()->first()?->id,
+            'carrier_1_id' => ShipLine::where('status', 'Active')->inRandomOrder()->first()?->id,
+            'carrier_2_id' => ShipLine::where('status', 'Active')->inRandomOrder()->first()?->id,
+            'carrier_3_id' => ShipLine::where('status', 'Active')->inRandomOrder()->first()?->id,
             'start_port_id' => $startPort->id,
             'end_port_id' => $endPort->id,
             'eta' => fake()->dateTimeBetween('now', '+3 months')->format('Y-m-d H:i'),

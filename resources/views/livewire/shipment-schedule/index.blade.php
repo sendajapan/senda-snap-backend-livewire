@@ -62,7 +62,7 @@
                 <flux:select wire:model.live="carrierFilter" placeholder="{{ __('All Carriers') }}">
                     <option value="">{{ __('All Carriers') }}</option>
                     @foreach($providers as $provider)
-                        <option value="{{ $provider->id }}">{{ $provider->company_name }}</option>
+                        <option value="{{ $provider->id }}">{{ $provider->line_name }}</option>
                     @endforeach
                 </flux:select>
             </div>
@@ -110,7 +110,7 @@
                         $carrier = $providers->firstWhere('id', $carrierFilter);
                     @endphp
                     @if($carrier)
-                        <flux:badge color="blue" size="sm">{{ __('Carrier:') }} {{ $carrier->company_name }}</flux:badge>
+                        <flux:badge color="blue" size="sm">{{ __('Carrier:') }} {{ $carrier->line_name }}</flux:badge>
                     @endif
                 @endif
                 @if($startPortFilter)
@@ -138,6 +138,9 @@
             <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                 <thead>
                     <tr class="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900">
+                        <th class="px-3 md:px-6 py-3 md:py-4 text-center text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 w-16">
+                            {{ __('S/N') }}
+                        </th>
                         <th class="px-3 md:px-6 py-3 md:py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 w-12">
                         </th>
                         <th class="px-3 md:px-6 py-3 md:py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">
@@ -152,14 +155,18 @@
                         <th class="px-3 md:px-6 py-3 md:py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">
                             {{ __('ETA') }}
                         </th>
-                        <th class="px-3 md:px-6 py-3 md:py-4 text-center text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">
+                        <th class="px-3 md:px-6 py-3 md:py-4 text-center text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 w-32">
                             {{ __('Actions') }}
                         </th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200/50 dark:divide-gray-700/50">
-                    @forelse($schedules as $schedule)
+                    @forelse($schedules as $index => $schedule)
                         <tr class="group transition-all duration-200 hover:bg-gradient-to-r hover:from-blue-50/50 hover:to-teal-50/50 dark:hover:from-blue-900/10 dark:hover:to-teal-900/10">
+                            <!-- S/N -->
+                            <td class="whitespace-nowrap px-3 md:px-6 py-3 md:py-5 text-center">
+                                <span class="text-xs md:text-sm font-semibold text-gray-600 dark:text-gray-400">{{ $schedules->firstItem() + $index }}</span>
+                            </td>
                             <!-- Expand/Collapse Button -->
                             <td class="whitespace-nowrap px-3 md:px-6 py-3 md:py-5">
                                 <button @click="toggleSchedule({{ $schedule->id }})" type="button" class="flex items-center justify-center rounded-lg p-1.5 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-gray-800 dark:hover:text-gray-300">
@@ -192,13 +199,13 @@
                             <td class="px-3 md:px-6 py-3 md:py-5">
                                 <div class="flex flex-wrap gap-1.5">
                                     @if($schedule->carrier1)
-                                        <flux:badge color="blue" size="sm" class="text-xs whitespace-normal break-words">{{ $schedule->carrier1->company_name }}</flux:badge>
-                                    @endif
-                                    @if($schedule->carrier2)
-                                        <flux:badge color="cyan" size="sm" class="text-xs whitespace-normal break-words">{{ $schedule->carrier2->company_name }}</flux:badge>
-                                    @endif
-                                    @if($schedule->carrier3)
-                                        <flux:badge color="teal" size="sm" class="text-xs whitespace-normal break-words">{{ $schedule->carrier3->company_name }}</flux:badge>
+                                        <flux:badge color="blue" size="sm" class="text-xs whitespace-normal break-words">{{ $schedule->carrier1->line_name }}</flux:badge>
+                                        @endif
+                                        @if($schedule->carrier2)
+                                        <flux:badge color="cyan" size="sm" class="text-xs whitespace-normal break-words">{{ $schedule->carrier2->line_name }}</flux:badge>
+                                        @endif
+                                        @if($schedule->carrier3)
+                                        <flux:badge color="teal" size="sm" class="text-xs whitespace-normal break-words">{{ $schedule->carrier3->line_name }}</flux:badge>
                                     @endif
                                     @if(!$schedule->carrier1 && !$schedule->carrier2 && !$schedule->carrier3)
                                         <span class="text-xs text-gray-400 dark:text-gray-500">{{ __('No carriers') }}</span>
@@ -229,12 +236,12 @@
                                     <svg class="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                     </svg>
-                                    <span class="text-xs md:text-sm text-gray-900 dark:text-white">{{ $schedule->eta }}</span>
+                                    <span class="text-xs md:text-sm text-gray-900 dark:text-white">{{ $schedule->eta ? $schedule->eta->format('M d, Y') : 'N/A' }}</span>
                                 </div>
                             </td>
 
                             <!-- Actions -->
-                            <td class="whitespace-nowrap px-3 md:px-6 py-3 md:py-5">
+                            <td class="whitespace-nowrap px-3 md:px-6 py-3 md:py-5 w-32">
                                 <div class="flex justify-center items-center gap-1.5 md:gap-2">
                                     @php
                                         $currentUser = auth()->user();
@@ -362,7 +369,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="px-3 md:px-6 py-12 text-center">
+                            <td colspan="7" class="px-3 md:px-6 py-12 text-center">
                                 <div class="flex flex-col items-center gap-3">
                                     <div class="flex h-16 w-16 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800">
                                         <svg class="h-8 w-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -412,7 +419,7 @@
                             </div>
                             <div>
                                 <span class="font-semibold text-gray-700 dark:text-gray-300">{{ __('ETA:') }}</span>
-                                <span class="text-gray-900 dark:text-white">{{ $schedule->eta }}</span>
+                                <span class="text-gray-900 dark:text-white">{{ $schedule->eta ? $schedule->eta->format('M d, Y') : 'N/A' }}</span>
                             </div>
                             @if($schedule->stopovers->count() > 0)
                                 <div>

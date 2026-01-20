@@ -1,5 +1,8 @@
-@props(['user'])
+@props(['user', 'index'])
 <tr class="group transition-all duration-200 hover:bg-gradient-to-r hover:from-blue-50/50 hover:to-teal-50/50 dark:hover:from-blue-900/10 dark:hover:to-teal-900/10">
+    <td class="whitespace-nowrap px-3 md:px-6 py-3 md:py-5 text-center">
+        <span class="text-xs md:text-sm font-semibold text-gray-600 dark:text-gray-400">{{ $index ?? '' }}</span>
+    </td>
     <td class="whitespace-nowrap px-3 md:px-6 py-3 md:py-5">
         <div class="flex items-center">
             <div class="relative size-10 md:size-12 flex-shrink-0">
@@ -43,6 +46,18 @@
         </flux:badge>
     </td>
     <td class="whitespace-nowrap px-3 md:px-6 py-3 md:py-5 hidden md:table-cell">
+        @if($user->vendor)
+            <div class="flex flex-col gap-0.5">
+                <span class="text-xs font-bold text-gray-900 dark:text-white">{{ $user->vendor->name }}</span>
+                @if($user->vendor->address)
+                    <span class="text-[10px] md:text-xs text-gray-400 dark:text-gray-500">{{ $user->vendor->address }}</span>
+                @endif
+            </div>
+        @else
+            <span class="text-xs md:text-sm text-gray-400 dark:text-gray-500">-</span>
+        @endif
+    </td>
+    <td class="whitespace-nowrap px-3 md:px-6 py-3 md:py-5 hidden md:table-cell">
         @if($user->phone)
             <div class="flex items-center gap-1.5 md:gap-2">
                 <svg class="h-3.5 w-3.5 md:h-4 md:w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -66,7 +81,7 @@
             <span class="text-xs text-gray-500 dark:text-gray-400">{{ $user->updated_at->format('h:i A') }}</span>
         </div>
     </td>
-    <td class="whitespace-nowrap px-3 md:px-6 py-3 md:py-5">
+    <td class="whitespace-nowrap px-3 md:px-6 py-3 md:py-5 w-32">
         <div class="flex justify-center items-center gap-1.5 md:gap-2">
             @php
                 $currentUser = auth()->user();

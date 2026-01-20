@@ -38,7 +38,7 @@
                             <div class="flex items-center gap-3">
                                 <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 shadow-lg">
                                     <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9l9-6 9 6v9a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2V9" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                                     </svg>
                                 </div>
                                 <div>
@@ -61,104 +61,23 @@
                     <!-- Form -->
                     <form wire:submit="save" class="relative flex-1 overflow-y-auto">
                         <div class="space-y-6 p-6">
-                            <!-- Company Name -->
+                            <!-- Line Name -->
                             <div>
-                                <flux:input wire:model="company_name" label="{{ __('Company Name') }}" placeholder="{{ __('Enter company name') }}" required />
-                                @error('company_name')
+                                <flux:input wire:model="line_name" label="{{ __('Shipping Company Name') }}" placeholder="{{ __('Enter shipping company name') }}" required />
+                                @error('line_name')
                                     <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                                 @enderror
                             </div>
 
-                            <!-- Company Name JP -->
+                            <!-- Status -->
                             <div>
-                                <flux:input wire:model="company_name_jp" label="{{ __('Company Name (Japanese)') }}" placeholder="{{ __('Enter company name in Japanese (optional)') }}" />
-                                @error('company_name_jp')
-                                    <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
-                                @enderror
-                            </div>
-
-                            <!-- Company Type -->
-                            <div>
-                                <flux:select wire:model="company_type" label="{{ __('Company Type') }}" required>
-                                    <option value="Transporter">{{ __('Transporter') }}</option>
-                                    <option value="Shipping Line">{{ __('Shipping Line') }}</option>
-                                    <option value="Workshop">{{ __('Workshop') }}</option>
-                                    <option value="PROVIDER">{{ __('PROVIDER') }}</option>
-                                    <option value="EXPENSE">{{ __('EXPENSE') }}</option>
-                                    <option value="COURIER">{{ __('COURIER') }}</option>
-                                </flux:select>
-                                @error('company_type')
-                                    <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
-                                @enderror
-                            </div>
-
-                            <!-- Company Status -->
-                            <div>
-                                <flux:select wire:model="company_status" label="{{ __('Company Status') }}">
+                                <flux:select wire:model="status" label="{{ __('Status') }}">
                                     <option value="Active">{{ __('Active') }}</option>
                                     <option value="Inactive">{{ __('Inactive') }}</option>
                                 </flux:select>
-                                @error('company_status')
+                                @error('status')
                                     <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                                 @enderror
-                            </div>
-
-                            <!-- Pricing -->
-                            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                                <div>
-                                    <flux:input type="number" wire:model="per_m3" label="{{ __('Per m³') }}" placeholder="{{ __('Enter price per m³') }}" min="0" />
-                                    @error('per_m3')
-                                        <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
-                                    @enderror
-                                </div>
-                                <div>
-                                    <flux:input type="number" wire:model="per_container" label="{{ __('Per Container') }}" placeholder="{{ __('Enter price per container') }}" min="0" />
-                                    @error('per_container')
-                                        <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
-                                    @enderror
-                                </div>
-                            </div>
-
-                            <!-- Address Fields -->
-                            <div class="space-y-4">
-                                <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300">{{ __('Address Information') }}</h3>
-                                
-                                <div>
-                                    <flux:input wire:model="address" label="{{ __('Address') }}" placeholder="{{ __('Enter street address') }}" />
-                                    @error('address')
-                                        <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
-                                    @enderror
-                                </div>
-
-                                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                                    <div>
-                                        <flux:input wire:model="city" label="{{ __('City') }}" placeholder="{{ __('Enter city') }}" />
-                                        @error('city')
-                                            <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
-                                        @enderror
-                                    </div>
-                                    <div>
-                                        <flux:input wire:model="state" label="{{ __('State/Province') }}" placeholder="{{ __('Enter state or province') }}" />
-                                        @error('state')
-                                            <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
-                                        @enderror
-                                    </div>
-                                </div>
-
-                                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                                    <div>
-                                        <flux:input wire:model="zip" label="{{ __('ZIP/Postal Code') }}" placeholder="{{ __('Enter ZIP or postal code') }}" />
-                                        @error('zip')
-                                            <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
-                                        @enderror
-                                    </div>
-                                    <div>
-                                        <flux:input wire:model="country_name" label="{{ __('Country') }}" placeholder="{{ __('Enter country name') }}" />
-                                        @error('country_name')
-                                            <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
-                                        @enderror
-                                    </div>
-                                </div>
                             </div>
                         </div>
 

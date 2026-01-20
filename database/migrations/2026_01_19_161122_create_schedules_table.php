@@ -15,12 +15,12 @@ return new class extends Migration
             $table->id();
             $table->string('vessel_name');
             $table->string('voyage_no');
-            $table->foreignId('carrier_1_id')->nullable()->constrained('shipping_companies')->nullOnDelete();
-            $table->foreignId('carrier_2_id')->nullable()->constrained('shipping_companies')->nullOnDelete();
-            $table->foreignId('carrier_3_id')->nullable()->constrained('shipping_companies')->nullOnDelete();
+            $table->foreignId('carrier_1_id')->nullable()->constrained('tbl_ship_line')->nullOnDelete();
+            $table->foreignId('carrier_2_id')->nullable()->constrained('tbl_ship_line')->nullOnDelete();
+            $table->foreignId('carrier_3_id')->nullable()->constrained('tbl_ship_line')->nullOnDelete();
             $table->foreignId('start_port_id')->constrained('ports')->cascadeOnDelete();
             $table->foreignId('end_port_id')->constrained('ports')->cascadeOnDelete();
-            $table->string('eta');
+            $table->date('eta');
             $table->enum('status', ['Waiting', 'Loading', 'On-Sea', 'Stop Over', 'Destination'])->default('Waiting');
             $table->text('comment')->nullable();
             $table->foreignId('added_by')->constrained('users')->cascadeOnDelete();

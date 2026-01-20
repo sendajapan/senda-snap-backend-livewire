@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Livewire\ShipmentSchedule;
 
 use App\Models\Port;
-use App\Models\ShippingCompany;
+use App\Models\ShipLine;
 use App\Services\ScheduleService;
 use Illuminate\View\View;
 use Livewire\Attributes\On;
@@ -122,9 +122,8 @@ class Index extends Component
 
     public function getProvidersProperty()
     {
-        return ShippingCompany::where('company_type', 'PROVIDER')
-            ->where('company_status', 'Active')
-            ->orderBy('company_name', 'asc')
+        return ShipLine::where('status', 'Active')
+            ->orderBy('line_name', 'asc')
             ->get();
     }
 

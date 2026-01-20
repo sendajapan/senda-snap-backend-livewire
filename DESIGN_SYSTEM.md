@@ -1362,6 +1362,60 @@ $this->dispatch('notify', message: 'Operation successful!', type: 'success');
 
 ## 🎨 Tables
 
+### **Table Structure Standards**
+
+All tables in the application follow these standards:
+
+1. **S/N Column (Serial Number)**
+   - Always the first column in every table
+   - Width: `w-16` (fixed)
+   - Alignment: `text-center`
+   - Displays paginated index: `$items->firstItem() + $index`
+   - Styling: `text-xs md:text-sm font-semibold text-gray-600 dark:text-gray-400`
+
+2. **Actions Column**
+   - Always the last column in every table
+   - Width: `w-32` (fixed) - prevents excessive space usage
+   - Alignment: `text-center`
+   - Contains action buttons (View, Edit, Delete) with consistent spacing
+
+### **S/N Column Implementation**
+
+```blade
+<!-- Table Header -->
+<th class="px-3 md:px-6 py-3 md:py-4 text-center text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 w-16">
+    {{ __('S/N') }}
+</th>
+
+<!-- Table Row -->
+<td class="whitespace-nowrap px-3 md:px-6 py-3 md:py-5 text-center">
+    <span class="text-xs md:text-sm font-semibold text-gray-600 dark:text-gray-400">{{ $items->firstItem() + $index }}</span>
+</td>
+
+<!-- In Blade Loop -->
+@forelse($items as $index => $item)
+    <x-item-table-row :item="$item" :index="$items->firstItem() + $index" wire:key="item-{{ $item->id }}" />
+@empty
+    <!-- Empty state -->
+@endforelse
+```
+
+### **Actions Column Implementation**
+
+```blade
+<!-- Table Header -->
+<th class="px-3 md:px-6 py-3 md:py-4 text-center text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 w-32">
+    {{ __('Actions') }}
+</th>
+
+<!-- Table Row -->
+<td class="whitespace-nowrap px-3 md:px-6 py-3 md:py-5 w-32">
+    <div class="flex justify-center items-center gap-1.5 md:gap-2">
+        <!-- Action buttons -->
+    </div>
+</td>
+```
+
 ### **Table Container**
 ```blade
 <div class="overflow-x-auto border rounded-xl bg-white/50 backdrop-blur-sm dark:bg-gray-800/50">
@@ -1404,6 +1458,81 @@ $this->dispatch('notify', message: 'Operation successful!', type: 'success');
     </td>
 </tr>
 ```
+
+---
+
+## 📄 Pagination
+
+### **Overview**
+Pagination uses a **blue color scheme** throughout the application for consistency. The pagination views are published to `resources/views/vendor/livewire/` for Livewire components and `resources/views/vendor/pagination/` for standard Laravel pagination.
+
+### **Selected/Active Page Styling**
+The selected page index uses a solid blue background with white text:
+
+```blade
+<!-- Active page number -->
+<span class="relative inline-flex items-center px-4 py-2 -ml-px text-sm font-bold text-white bg-blue-600 border border-blue-600 leading-5 dark:bg-blue-600 dark:border-blue-600">
+    {{ $page }}
+</span>
+```
+
+### **Non-Selected Page Styling**
+Non-active pages have white background with hover states:
+
+```blade
+<!-- Inactive page number -->
+<button class="relative inline-flex items-center px-4 py-2 -ml-px text-sm font-medium text-gray-700 bg-white border border-gray-300 leading-5 hover:bg-blue-50 hover:text-blue-700 hover:border-blue-300 focus:z-10 focus:outline-none focus:border-blue-300 focus:ring ring-blue-300 active:bg-blue-100 active:text-blue-700 transition ease-in-out duration-150 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-400 dark:hover:bg-blue-900/20 dark:hover:text-blue-300 dark:hover:border-blue-700 dark:active:bg-blue-900/30 dark:focus:border-blue-800">
+    {{ $page }}
+</button>
+```
+
+### **Previous/Next Button Styling**
+Navigation buttons use blue text with matching hover states:
+
+```blade
+<!-- Active Previous/Next button -->
+<button class="relative inline-flex items-center px-2 py-2 text-sm font-medium text-blue-600 bg-white border border-gray-300 rounded-l-md leading-5 hover:bg-blue-50 hover:text-blue-700 hover:border-blue-300 focus:z-10 focus:outline-none focus:border-blue-300 focus:ring ring-blue-300 active:bg-blue-100 active:text-blue-700 transition ease-in-out duration-150 dark:bg-gray-800 dark:border-gray-600 dark:text-blue-400 dark:hover:bg-blue-900/20 dark:active:bg-blue-900/30 dark:focus:border-blue-800">
+    <!-- Arrow SVG -->
+</button>
+
+<!-- Disabled Previous/Next (on first/last page) -->
+<span class="relative inline-flex items-center px-2 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 cursor-default rounded-l-md leading-5 dark:bg-gray-800 dark:border-gray-600">
+    <!-- Arrow SVG -->
+</span>
+```
+
+### **Color Reference Table**
+
+| Element | Light Mode | Dark Mode |
+|---------|-----------|-----------|
+| Active Page BG | `bg-blue-600` | `dark:bg-blue-600` |
+| Active Page Border | `border-blue-600` | `dark:border-blue-600` |
+| Active Page Text | `text-white font-bold` | `text-white` |
+| Inactive Hover BG | `hover:bg-blue-50` | `dark:hover:bg-blue-900/20` |
+| Inactive Hover Text | `hover:text-blue-700` | `dark:hover:text-blue-300` |
+| Inactive Hover Border | `hover:border-blue-300` | `dark:hover:border-blue-700` |
+| Focus Ring | `ring-blue-300` | `ring-blue-300` |
+| Nav Button Text | `text-blue-600` | `dark:text-blue-400` |
+
+### **Published View Files**
+- **Livewire pagination**: `resources/views/vendor/livewire/tailwind.blade.php`
+- **Livewire simple pagination**: `resources/views/vendor/livewire/simple-tailwind.blade.php`
+- **Laravel pagination**: `resources/views/vendor/pagination/tailwind.blade.php`
+- **Laravel simple pagination**: `resources/views/vendor/pagination/simple-tailwind.blade.php`
+
+### **Usage in Blade Views**
+```blade
+<!-- Standard Livewire pagination (uses published views automatically) -->
+<div class="mt-4">
+    {{ $items->links() }}
+</div>
+```
+
+### **Important Notes**
+1. **Do NOT use emerald/green colors** for pagination - always use blue
+2. All pagination buttons should have `cursor-pointer` for clickable states
+3. Disabled states use `cursor-default` with muted gray colors
+4. Always include dark mode variants for all states
 
 ---
 
@@ -2138,6 +2267,7 @@ When creating a new page, ensure:
 - Tables use compact padding (`px-4 py-3`) for dashboard context
 - Efficient use of empty space at bottom of chart canvas
 - Hover effects on table rows match chart card variant colors
+- Chart canvas and status labels sit inside a flex container with `lg:justify-center lg:gap-16` to keep both elements centered with an even, generous gap on large screens
 - Example: Task Status chart with upcoming tasks table
 
 ### Role Counts Section
@@ -2187,6 +2317,26 @@ For dashboard cards displaying user/member data, show role counts above the main
 - Members card showing team composition
 - User management pages
 - Any dashboard section displaying role-based statistics
+
+### Members Card Vendor Column (Dashboard)
+The dashboard **Members** card now shows per-user vendor information alongside role and email.
+
+- **Query**: Members are loaded with vendor using `User::with('vendor')->latest()->limit(5)->get()`.
+- **Desktop table layout (lg+)**:
+  - Columns: **Member**, **Role**, **Vendor**, **Email**
+  - Member column shows avatar, name, and **Member since** in `text-xs text-gray-500`.
+  - Role column uses the standard role badge pattern: `flux:badge` with `size="sm"` and `class="font-semibold text-xs w-20 justify-center"`.
+  - Vendor column:
+    - Shows vendor name in `text-xs text-gray-900 dark:text-white`.
+    - Falls back to a muted dash (`-`) in `text-gray-400 dark:text-gray-500` when no vendor is assigned.
+- **Mobile / stacked layout (below lg)**:
+  - Header still shows name + “Member since”.
+  - Detail row shows:
+    - Email with envelope icon.
+    - Role badge using the standard role badge pattern.
+    - Vendor name (when present) with a small building icon and `text-xs text-gray-600 dark:text-gray-400`.
+
+This pattern should be reused for any future dashboard cards that need to surface vendor context without losing the original “Member since” metadata.
 
 ### Responsive Card Layout Pattern
 For data tables that need better readability on intermediate screen sizes, implement a three-tier layout system:

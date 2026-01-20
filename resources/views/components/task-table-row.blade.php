@@ -1,7 +1,10 @@
 @php use Carbon\Carbon; @endphp
-@props(['task', 'showWorkDate' => false, 'showTimeFirst' => false])
+@props(['task', 'showWorkDate' => false, 'showTimeFirst' => false, 'index' => null])
 
 <tr class="group transition-all duration-200 hover:bg-gradient-to-r hover:from-emerald-50/50 hover:to-teal-50/50 dark:hover:from-emerald-900/10 dark:hover:to-teal-900/10">
+    <td class="whitespace-nowrap px-3 md:px-6 py-3 md:py-5 text-center">
+        <span class="text-xs md:text-sm font-semibold text-gray-600 dark:text-gray-400">{{ $index ?? '' }}</span>
+    </td>
     @if($showTimeFirst)
         <td class="whitespace-nowrap px-3 md:px-6 py-3 md:py-5">
             @if($task->work_time)
@@ -179,7 +182,7 @@
             @endif
         </td>
     @endif
-    <td class="whitespace-nowrap px-3 md:px-6 py-3 md:py-5">
+    <td class="whitespace-nowrap px-3 md:px-6 py-3 md:py-5 w-32">
         <div class="flex items-center gap-1.5 md:gap-2">
             <!-- View Button -->
             <button @click="openPreview({{ $task->id }})" type="button" class="group relative flex items-center justify-center rounded-lg border-2 border-emerald-700/60 bg-emerald-500/10 p-1.5 transition-all duration-200 hover:border-emerald-700 hover:bg-emerald-500/20 hover:shadow-lg hover:shadow-emerald-700/30" title="{{ __('View Task') }}">

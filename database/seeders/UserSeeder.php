@@ -15,6 +15,13 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
+        // If there are already users in the system, do not modify or seed any user data.
+        // This ensures running `php artisan migrate:fresh --seed` against an existing
+        // database backup does not alter production users.
+        if (User::query()->exists()) {
+            return;
+        }
+
         // Get Autocraft vendor
         $autocraftVendor = Vendor::where('email', 'info@autocraftjapan.com')->first();
 
@@ -109,7 +116,7 @@ class UserSeeder extends Seeder
             User::firstOrCreate(
                 ['email' => 'acj.morita@gmail.com'],
                 [
-                    'name' => 'Sho Morita San',
+                    'name' => 'Sho Morita',
                     'password' => Hash::make('morita2025'),
                     'role' => 'employee',
                     'vendor_id' => $autocraftVendor->id,
@@ -122,7 +129,7 @@ class UserSeeder extends Seeder
             User::firstOrCreate(
                 ['email' => 'acj.cucho@gmail.com'],
                 [
-                    'name' => 'Cucho San',
+                    'name' => 'Cucho',
                     'password' => Hash::make('cucho2025'),
                     'role' => 'employee',
                     'vendor_id' => $autocraftVendor->id,
@@ -135,7 +142,7 @@ class UserSeeder extends Seeder
             User::firstOrCreate(
                 ['email' => 'acj.niyatov@gmail.com'],
                 [
-                    'name' => 'Niyatov San',
+                    'name' => 'Niyatov',
                     'password' => Hash::make('niyatov2025'),
                     'role' => 'employee',
                     'vendor_id' => $autocraftVendor->id,

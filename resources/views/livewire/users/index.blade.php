@@ -48,6 +48,9 @@
             <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                 <thead>
                 <tr class="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900">
+                    <th class="px-3 md:px-6 py-3 md:py-4 text-center text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 w-16">
+                        {{ __('S/N') }}
+                    </th>
                     <th class="px-3 md:px-6 py-3 md:py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">
                         {{ __('Name') }}
                     </th>
@@ -58,6 +61,9 @@
                         {{ __('Role') }}
                     </th>
                     <th class="px-3 md:px-6 py-3 md:py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 hidden md:table-cell">
+                        {{ __('Vendor') }}
+                    </th>
+                    <th class="px-3 md:px-6 py-3 md:py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 hidden md:table-cell">
                         {{ __('Phone') }}
                     </th>
                     <th class="px-3 md:px-6 py-3 md:py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 hidden md:table-cell">
@@ -66,17 +72,17 @@
                     <th class="px-3 md:px-6 py-3 md:py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 hidden lg:table-cell">
                         {{ __('Updated At') }}
                     </th>
-                    <th class="px-3 md:px-6 py-3 md:py-4 text-center text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">
+                    <th class="px-3 md:px-6 py-3 md:py-4 text-center text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 w-32">
                         {{ __('Actions') }}
                     </th>
                 </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200/50 dark:divide-gray-700/50">
-                @forelse($users as $user)
-                    <x-user-table-row :user="$user"/>
+                @forelse($users as $index => $user)
+                    <x-user-table-row :user="$user" :index="$users->firstItem() + $index"/>
                 @empty
                     <tr>
-                        <td colspan="7" class="px-3 md:px-6 py-12 text-center">
+                        <td colspan="9" class="px-3 md:px-6 py-12 text-center">
                             <div class="flex flex-col items-center gap-3">
                                 <div
                                     class="flex h-16 w-16 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800">

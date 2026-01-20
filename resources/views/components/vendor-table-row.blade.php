@@ -1,5 +1,8 @@
-@props(['vendor'])
+@props(['vendor', 'index'])
 <tr class="group transition-all duration-200 hover:bg-gradient-to-r hover:from-violet-50/50 hover:to-purple-50/50 dark:hover:from-violet-900/10 dark:hover:to-purple-900/10">
+    <td class="whitespace-nowrap px-3 md:px-6 py-3 md:py-5 text-center">
+        <span class="text-xs md:text-sm font-semibold text-gray-600 dark:text-gray-400">{{ $index ?? '' }}</span>
+    </td>
     <td class="whitespace-nowrap px-3 md:px-6 py-3 md:py-5">
         <div class="flex items-center">
             <div class="flex h-10 md:h-12 w-10 md:w-12 items-center justify-center rounded-xl bg-violet-400/20 shadow-lg ring-2 ring-violet-300 dark:ring-violet-800 flex-shrink-0">
@@ -45,7 +48,7 @@
             <span class="text-[10px] md:text-xs text-gray-500 dark:text-gray-400">{{ $vendor->created_at->format('h:i A') }}</span>
         </div>
     </td>
-    <td class="whitespace-nowrap px-3 md:px-6 py-3 md:py-5">
+    <td class="whitespace-nowrap px-3 md:px-6 py-3 md:py-5 w-32">
         <div class="flex justify-center items-center gap-1.5 md:gap-2">
             @php
                 $currentUser = auth()->user();

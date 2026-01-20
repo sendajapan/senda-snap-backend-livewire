@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Livewire\ShippingCompanies;
 
-use App\Models\ShippingCompany;
-use App\Services\ShippingCompanyService;
+use App\Models\ShipLine;
+use App\Services\ShipLineService;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\On;
 use Livewire\Component;
@@ -14,13 +14,13 @@ class ShippingCompanyPreview extends Component
 {
     public bool $open = false;
 
-    public ?ShippingCompany $shippingCompany = null;
+    public ?ShipLine $shippingCompany = null;
 
     #[On('open-shipping-company-preview')]
-    public function openPreview(?int $shippingCompanyId, ShippingCompanyService $shippingCompanyService): void
+    public function openPreview(?int $shippingCompanyId, ShipLineService $shipLineService): void
     {
         if ($shippingCompanyId) {
-            $this->shippingCompany = $shippingCompanyService->getById($shippingCompanyId);
+            $this->shippingCompany = $shipLineService->getById($shippingCompanyId);
         } else {
             $this->shippingCompany = null;
         }
@@ -42,11 +42,11 @@ class ShippingCompanyPreview extends Component
         }
     }
 
-    public function deleteShippingCompany(ShippingCompanyService $shippingCompanyService): void
+    public function deleteShippingCompany(ShipLineService $shipLineService): void
     {
         if ($this->shippingCompany) {
             try {
-                $shippingCompanyService->delete($this->shippingCompany);
+                $shipLineService->delete($this->shippingCompany);
                 $this->dispatch('shipping-company-saved');
                 $this->dispatch('notify', message: __('Shipping company deleted successfully.'), type: 'success');
                 $this->closePreview();

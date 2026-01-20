@@ -7,72 +7,23 @@
                 <div class="flex items-center gap-3">
                     <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-400/20 shadow-lg ring-2 ring-indigo-300 dark:ring-indigo-800 flex-shrink-0">
                         <svg class="h-5 w-5 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9l9-6 9 6v9a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2V9" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                         </svg>
                     </div>
                     <div class="min-w-0 flex-1">
-                        <h3 class="text-base font-bold text-gray-900 dark:text-white break-words whitespace-nowrap truncate">{{ $shippingCompany->company_name }}</h3>
-                        @if($shippingCompany->company_name_jp)
-                            <p class="text-xs text-gray-500 dark:text-gray-400 truncate">{{ $shippingCompany->company_name_jp }}</p>
-                        @endif
+                        <h3 class="text-base font-bold text-gray-900 dark:text-white break-words whitespace-nowrap truncate">{{ $shippingCompany->line_name }}</h3>
                     </div>
                 </div>
             </div>
             <div class="flex flex-col items-end gap-2 flex-shrink-0">
-                <flux:badge :color="$shippingCompany->company_status === 'Active' ? 'green' : 'gray'" size="sm" class="font-semibold">
-                    {{ $shippingCompany->company_status }}
-                </flux:badge>
-                <flux:badge color="indigo" size="sm" class="font-semibold">
-                    {{ $shippingCompany->company_type }}
+                <flux:badge :color="$shippingCompany->status === 'Active' ? 'green' : 'gray'" size="sm" class="font-semibold">
+                    {{ $shippingCompany->status }}
                 </flux:badge>
             </div>
         </div>
 
         <!-- Details Grid -->
         <div class="grid grid-cols-1 gap-3">
-            <!-- Location -->
-            @if($shippingCompany->city || $shippingCompany->country_name)
-                <div class="flex items-center gap-2">
-                    <svg class="h-4 w-4 flex-shrink-0 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
-                    <div class="min-w-0 flex-1">
-                        <p class="text-xs text-gray-500 dark:text-gray-400 whitespace-nowrap">{{ __('Location') }}</p>
-                        <p class="text-sm font-semibold text-gray-900 dark:text-white truncate">
-                            @if($shippingCompany->city && $shippingCompany->country_name)
-                                {{ $shippingCompany->city }}, {{ $shippingCompany->country_name }}
-                            @elseif($shippingCompany->city)
-                                {{ $shippingCompany->city }}
-                            @elseif($shippingCompany->country_name)
-                                {{ $shippingCompany->country_name }}
-                            @endif
-                        </p>
-                    </div>
-                </div>
-            @endif
-
-            <!-- Pricing -->
-            @if($shippingCompany->per_m3 || $shippingCompany->per_container)
-                <div class="flex items-center gap-2">
-                    <svg class="h-4 w-4 flex-shrink-0 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    <div>
-                        <p class="text-xs text-gray-500 dark:text-gray-400 whitespace-nowrap">{{ __('Pricing') }}</p>
-                        <p class="text-sm font-semibold text-gray-900 dark:text-white whitespace-nowrap">
-                            @if($shippingCompany->per_m3 && $shippingCompany->per_container)
-                                {{ __('m³: :m3, Container: :container', ['m3' => number_format($shippingCompany->per_m3), 'container' => number_format($shippingCompany->per_container)]) }}
-                            @elseif($shippingCompany->per_m3)
-                                {{ __('Per m³: :m3', ['m3' => number_format($shippingCompany->per_m3)]) }}
-                            @elseif($shippingCompany->per_container)
-                                {{ __('Per Container: :container', ['container' => number_format($shippingCompany->per_container)]) }}
-                            @endif
-                        </p>
-                    </div>
-                </div>
-            @endif
-
             <!-- Created At -->
             <div class="flex items-center gap-2">
                 <svg class="h-4 w-4 flex-shrink-0 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -110,11 +61,11 @@
 
                 <!-- Delete Button -->
                 @if($canDelete)
-                    <button @click="window.confirmDelete({{ $shippingCompany->id }}, '{{ addslashes($shippingCompany->company_name) }}').then((result) => { if (result.isConfirmed) { $wire.$dispatch('delete-shipping-company', { shippingCompanyId: {{ $shippingCompany->id }} }) } })" type="button" class="group relative flex items-center justify-center rounded-lg border-2 border-red-700/60 bg-red-500/10 p-2 transition-all duration-200 hover:border-red-700 hover:bg-red-500/20 hover:shadow-lg hover:shadow-red-700/30 opacity-50 transition-opacity group-hover:opacity-100" title="{{ __('Delete Shipping Company') }}">
+                    <button @click="window.confirmDelete({{ $shippingCompany->id }}, '{{ addslashes($shippingCompany->line_name) }}').then((result) => { if (result.isConfirmed) { $wire.$dispatch('delete-shipping-company', { shippingCompanyId: {{ $shippingCompany->id }} }) } })" type="button" class="group relative flex items-center justify-center rounded-lg border-2 border-red-700/60 bg-red-500/10 p-2 transition-all duration-200 hover:border-red-700 hover:bg-red-500/20 hover:shadow-lg hover:shadow-red-700/30 opacity-50 transition-opacity group-hover:opacity-100" title="{{ __('Delete Shipping Company') }}">
                         <svg class="h-4 w-4 text-red-700 transition-all duration-200 group-hover:text-red-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
-                        </svg>
-                    </button>
+                    </svg>
+                </button>
                 @endif
             </div>
         </div>

@@ -7,7 +7,7 @@ namespace App\Livewire\ShipmentSchedule;
 use App\Models\Port;
 use App\Models\Schedule;
 use App\Models\ScheduleStopover;
-use App\Models\ShippingCompany;
+use App\Models\ShipLine;
 use App\Services\ScheduleService;
 use App\Services\ScheduleStopoverService;
 use Livewire\Attributes\On;
@@ -36,7 +36,7 @@ class ScheduleModal extends Component
 
     public ?int $end_port_id = null;
 
-    public string $eta = '';
+    public ?string $eta = null;
 
     public ?string $comment = null;
 
@@ -58,12 +58,12 @@ class ScheduleModal extends Component
         return [
             'vessel_name' => ['required', 'string', 'max:255'],
             'voyage_no' => ['required', 'string', 'max:255'],
-            'carrier_1_id' => ['nullable', 'exists:shipping_companies,id'],
-            'carrier_2_id' => ['nullable', 'exists:shipping_companies,id'],
-            'carrier_3_id' => ['nullable', 'exists:shipping_companies,id'],
+            'carrier_1_id' => ['nullable', 'exists:tbl_ship_line,id'],
+            'carrier_2_id' => ['nullable', 'exists:tbl_ship_line,id'],
+            'carrier_3_id' => ['nullable', 'exists:tbl_ship_line,id'],
             'start_port_id' => ['required', 'exists:ports,id'],
             'end_port_id' => ['required', 'exists:ports,id'],
-            'eta' => ['required', 'string', 'max:255'],
+            'eta' => ['required', 'date'],
             'comment' => ['nullable', 'string'],
         ];
     }
@@ -78,6 +78,7 @@ class ScheduleModal extends Component
             'end_port_id.required' => 'End port is required.',
             'end_port_id.exists' => 'Selected end port does not exist.',
             'eta.required' => 'ETA is required.',
+            'eta.date' => 'ETA must be a valid date.',
             'carrier_1_id.exists' => 'Selected carrier 1 does not exist.',
             'carrier_2_id.exists' => 'Selected carrier 2 does not exist.',
             'carrier_3_id.exists' => 'Selected carrier 3 does not exist.',
@@ -99,7 +100,7 @@ class ScheduleModal extends Component
             $this->carrier_3_id = $this->schedule->carrier_3_id;
             $this->start_port_id = $this->schedule->start_port_id;
             $this->end_port_id = $this->schedule->end_port_id;
-            $this->eta = $this->schedule->eta;
+            $this->eta = $this->schedule->eta ? $this->schedule->eta->format('Y-m-d') : null;
             $this->comment = $this->schedule->comment;
             $this->loadExistingStopovers();
         } else {
@@ -126,7 +127,7 @@ class ScheduleModal extends Component
         $this->carrier_3_id = null;
         $this->start_port_id = null;
         $this->end_port_id = null;
-        $this->eta = '';
+        $this->eta = null;
         $this->comment = null;
         $this->stopovers = [];
         $this->showingAddStopover = false;
@@ -251,7 +252,7 @@ class ScheduleModal extends Component
                 'carrier_3_id' => $this->carrier_3_id,
                 'start_port_id' => $this->start_port_id,
                 'end_port_id' => $this->end_port_id,
-                'eta' => $this->eta,
+                'eta' => $this->eta ? date('Y-m-d', strtotime($this->eta)) : null,
                 'comment' => $this->comment,
             ];
 
@@ -314,9 +315,8 @@ class ScheduleModal extends Component
 
     public function getProvidersProperty()
     {
-        return ShippingCompany::where('company_type', 'PROVIDER')
-            ->where('company_status', 'Active')
-            ->orderBy('company_name', 'asc')
+        return ShipLine::where('status', 'Active')
+            ->orderBy('line_name', 'asc')
             ->get();
     }
 

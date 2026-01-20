@@ -1,7 +1,8 @@
 @php
     $totalUsers = \App\Models\User::count();
     $totalTasks = \App\Models\Task::count();
-    $totalVehicles = \App\Models\Vehicle::count();
+    $totalShippingCompanies = \App\Models\ShipLine::count();
+    $totalPorts = \App\Models\Port::count();
 
     $taskPending = \App\Models\Task::where('status', 'pending')->count();
     $taskRunning = \App\Models\Task::where('status', 'running')->count();
@@ -22,7 +23,7 @@
         ->limit(3)
         ->get();
 
-    $members = \App\Models\User::latest()->limit(5)->get();
+    $members = \App\Models\User::with('vendor')->latest()->limit(5)->get();
 
     $adminCount = \App\Models\User::where('role', 'admin')->count();
     $managerCount = \App\Models\User::where('role', 'manager')->count();
@@ -157,20 +158,21 @@
                 </x-slot:icon>
             </x-stats-card>
 
-            <!-- Vehicles Card -->
-            <x-stats-card :title="__('Total Vehicles')" :count="$totalVehicles" :description="__('In inventory')" variant="amber">
+            <!-- Shipping Companies Card -->
+            <x-stats-card :title="__('Total Shipping Companies')" :count="$totalShippingCompanies" :description="__('Active shipping lines')" variant="amber">
                 <x-slot:icon>
                     <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                     </svg>
                 </x-slot:icon>
             </x-stats-card>
 
-            <!-- Notifications Card -->
-            <x-stats-card :title="__('Notifications')" :count="$totalVehicles" :description="__('From Tasks')" variant="violet">
+            <!-- Ports Card -->
+            <x-stats-card :title="__('Total Ports')" :count="$totalPorts" :description="__('All registered ports')" variant="violet">
                 <x-slot:icon>
                     <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                     </svg>
                 </x-slot:icon>
             </x-stats-card>
@@ -179,7 +181,7 @@
         <!-- Charts Section -->
         <div class="grid gap-3 sm:gap-4 lg:grid-cols-1 xl:grid-cols-2">
             <!-- Task Status Donut Chart - Following Design System -->
-            <div class="group relative overflow-hidden rounded-xl sm:rounded-2xl border border-emerald-300/50 bg-white/60 p-4 sm:p-6 shadow-xl shadow-emerald-200/40 backdrop-blur-xl transition-all duration-300 hover:border-emerald-400/60 hover:shadow-2xl hover:shadow-emerald-300/50 dark:border-emerald-800/50 dark:bg-gray-800/60 dark:shadow-emerald-900/30 dark:hover:border-emerald-700 dark:hover:shadow-emerald-800/40">
+            <div class="group relative overflow-visible rounded-xl sm:rounded-2xl border border-emerald-300/50 bg-white/60 p-4 sm:p-6 shadow-xl shadow-emerald-200/40 backdrop-blur-xl transition-all duration-300 hover:border-emerald-400/60 hover:shadow-2xl hover:shadow-emerald-300/50 dark:border-emerald-800/50 dark:bg-gray-800/60 dark:shadow-emerald-900/30 dark:hover:border-emerald-700 dark:hover:shadow-emerald-800/40">
                 <!-- Decorative blur circles - larger and more spread -->
                 <div class="pointer-events-none absolute -right-6 sm:-right-12 -top-6 sm:-top-12 h-24 sm:h-48 w-24 sm:w-48 rounded-full bg-gradient-to-br from-emerald-400/30 to-teal-400/30 blur-3xl"></div>
                 <div class="pointer-events-none absolute -bottom-6 sm:-bottom-12 -left-6 sm:-left-12 h-24 sm:h-48 w-24 sm:w-48 rounded-full bg-gradient-to-br from-teal-400/30 to-emerald-400/30 blur-3xl"></div>
@@ -201,20 +203,20 @@
                     </div>
 
                     <!-- Chart Container - Centered Layout -->
-                    <div class="flex flex-col items-center gap-4 sm:gap-6 lg:flex-row lg:justify-center">
+                    <div class="flex flex-col items-center gap-4 sm:gap-6 lg:flex-row lg:justify-center lg:items-center lg:gap-16 overflow-visible">
                         <!-- Chart Canvas -->
-                        <div class="relative flex items-center justify-center w-full sm:w-auto">
+                        <div class="relative flex items-center justify-center w-full sm:w-auto overflow-visible">
                             <canvas id="taskChart" class="relative z-10 max-w-full"></canvas>
                         </div>
 
                         <!-- Status Labels - Compact Glass with Gradient Stroke -->
-                        <div class="w-full max-w-xs space-y-1 sm:space-y-1.5">
+                        <div class="w-[220px] space-y-1 sm:space-y-1.5">
                             <!-- Pending -->
-                            <div class="group relative flex items-center justify-between overflow-hidden rounded-xl border border-amber-400/50 bg-gradient-to-r from-amber-500/10 via-amber-400/5 to-white/40 px-3 py-2 shadow-md shadow-amber-500/10 backdrop-blur-xl transition-all duration-300 hover:scale-[1.02] hover:border-amber-400 hover:shadow-lg hover:shadow-amber-500/15 dark:border-amber-500/30 dark:from-amber-500/20 dark:via-amber-400/10 dark:to-gray-900/40">
+                            <div class="group relative flex items-center justify-between overflow-hidden rounded-xl border border-amber-400/50 bg-gradient-to-r from-amber-500/10 via-amber-400/5 to-white/40 px-2 py-2 shadow-md shadow-amber-500/10 backdrop-blur-xl transition-all duration-300 hover:scale-[1.02] hover:border-amber-400 hover:shadow-lg hover:shadow-amber-500/15 dark:border-amber-500/30 dark:from-amber-500/20 dark:via-amber-400/10 dark:to-gray-900/40">
                                 <div class="absolute -left-3 top-1/2 h-12 w-12 -translate-y-1/2 rounded-full bg-amber-500/20 blur-xl transition-all group-hover:bg-amber-500/40"></div>
                                 <div class="relative flex items-center gap-2">
-                                    <div class="flex h-6 w-6 items-center justify-center rounded-lg bg-gradient-to-br from-amber-400 to-orange-500 shadow-md shadow-amber-500/50">
-                                        <svg class="h-3 w-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <div class="flex h-4 w-4 items-center justify-center rounded-lg bg-gradient-to-br from-amber-400 to-orange-500 shadow-md shadow-amber-500/50">
+                                        <svg class="h-2 w-2 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                                         </svg>
                                     </div>
@@ -224,11 +226,11 @@
                             </div>
 
                             <!-- Running -->
-                            <div class="group relative flex items-center justify-between overflow-hidden rounded-xl border border-blue-400/50 bg-gradient-to-r from-blue-500/10 via-blue-400/5 to-white/40 px-3 py-2 shadow-md shadow-blue-500/10 backdrop-blur-xl transition-all duration-300 hover:scale-[1.02] hover:border-blue-400 hover:shadow-lg hover:shadow-blue-500/15 dark:border-blue-500/30 dark:from-blue-500/20 dark:via-blue-400/10 dark:to-gray-900/40">
+                            <div class="group relative flex items-center justify-between overflow-hidden rounded-xl border border-blue-400/50 bg-gradient-to-r from-blue-500/10 via-blue-400/5 to-white/40 px-2 py-2 shadow-md shadow-blue-500/10 backdrop-blur-xl transition-all duration-300 hover:scale-[1.02] hover:border-blue-400 hover:shadow-lg hover:shadow-blue-500/15 dark:border-blue-500/30 dark:from-blue-500/20 dark:via-blue-400/10 dark:to-gray-900/40">
                                 <div class="absolute -left-3 top-1/2 h-12 w-12 -translate-y-1/2 rounded-full bg-blue-500/20 blur-xl transition-all group-hover:bg-blue-500/40"></div>
                                 <div class="relative flex items-center gap-2">
-                                    <div class="flex h-6 w-6 items-center justify-center rounded-lg bg-gradient-to-br from-blue-400 to-indigo-500 shadow-md shadow-blue-500/50">
-                                        <svg class="h-3 w-3 animate-spin text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <div class="flex h-4 w-4 items-center justify-center rounded-lg bg-gradient-to-br from-blue-400 to-indigo-500 shadow-md shadow-blue-500/50">
+                                        <svg class="h-2 w-2 animate-spin text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
                                         </svg>
                                     </div>
@@ -238,11 +240,11 @@
                             </div>
 
                             <!-- Completed -->
-                            <div class="group relative flex items-center justify-between overflow-hidden rounded-xl border border-emerald-400/50 bg-gradient-to-r from-emerald-500/10 via-emerald-400/5 to-white/40 px-3 py-2 shadow-md shadow-emerald-500/10 backdrop-blur-xl transition-all duration-300 hover:scale-[1.02] hover:border-emerald-400 hover:shadow-lg hover:shadow-emerald-500/15 dark:border-emerald-500/30 dark:from-emerald-500/20 dark:via-emerald-400/10 dark:to-gray-900/40">
+                            <div class="group relative flex items-center justify-between overflow-hidden rounded-xl border border-emerald-400/50 bg-gradient-to-r from-emerald-500/10 via-emerald-400/5 to-white/40 px-2 py-2 shadow-md shadow-emerald-500/10 backdrop-blur-xl transition-all duration-300 hover:scale-[1.02] hover:border-emerald-400 hover:shadow-lg hover:shadow-emerald-500/15 dark:border-emerald-500/30 dark:from-emerald-500/20 dark:via-emerald-400/10 dark:to-gray-900/40">
                                 <div class="absolute -left-3 top-1/2 h-12 w-12 -translate-y-1/2 rounded-full bg-emerald-500/20 blur-xl transition-all group-hover:bg-emerald-500/40"></div>
                                 <div class="relative flex items-center gap-2">
-                                    <div class="flex h-6 w-6 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-400 to-green-500 shadow-md shadow-emerald-500/50">
-                                        <svg class="h-3 w-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <div class="flex h-4 w-4 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-400 to-green-500 shadow-md shadow-emerald-500/50">
+                                        <svg class="h-2 w-2 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                                         </svg>
                                     </div>
@@ -252,11 +254,11 @@
                             </div>
 
                             <!-- Cancelled -->
-                            <div class="group relative flex items-center justify-between overflow-hidden rounded-xl border border-red-400/50 bg-gradient-to-r from-red-500/10 via-red-400/5 to-white/40 px-3 py-2 shadow-md shadow-red-500/10 backdrop-blur-xl transition-all duration-300 hover:scale-[1.02] hover:border-red-400 hover:shadow-lg hover:shadow-red-500/15 dark:border-red-500/30 dark:from-red-500/20 dark:via-red-400/10 dark:to-gray-900/40">
+                            <div class="group relative flex items-center justify-between overflow-hidden rounded-xl border border-red-400/50 bg-gradient-to-r from-red-500/10 via-red-400/5 to-white/40 px-2 py-2 shadow-md shadow-red-500/10 backdrop-blur-xl transition-all duration-300 hover:scale-[1.02] hover:border-red-400 hover:shadow-lg hover:shadow-red-500/15 dark:border-red-500/30 dark:from-red-500/20 dark:via-red-400/10 dark:to-gray-900/40">
                                 <div class="absolute -left-3 top-1/2 h-12 w-12 -translate-y-1/2 rounded-full bg-red-500/20 blur-xl transition-all group-hover:bg-red-500/40"></div>
                                 <div class="relative flex items-center gap-2">
-                                    <div class="flex h-6 w-6 items-center justify-center rounded-lg bg-gradient-to-br from-red-400 to-rose-500 shadow-md shadow-red-500/50">
-                                        <svg class="h-3 w-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <div class="flex h-4 w-4 items-center justify-center rounded-lg bg-gradient-to-br from-red-400 to-rose-500 shadow-md shadow-red-500/50">
+                                        <svg class="h-2 w-2 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                                         </svg>
                                     </div>
@@ -532,15 +534,24 @@
                                                     </div>
                                                     <div>
                                                         <div class="text-sm font-bold text-gray-900 dark:text-white">{{ $member->name }}</div>
-                                                        <div class="text-xs text-gray-500 dark:text-gray-400">{{ __('Member since :date', ['date' => $member->created_at->format('M Y')]) }}</div>
+                                                        <div class="text-xs text-gray-500 dark:text-gray-400">
+                                                            {{ __('Member since :date', ['date' => $member->created_at->format('M Y')]) }}
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </td>
                                             <td class="whitespace-nowrap p-4">
-                                                <div class="flex justify-center">
-                                                    <flux:badge class="font-semibold w-20 text-center" :color="match($member->role) { 'admin' => 'red', 'manager' => 'blue', 'employee' => 'green', default => 'gray' }" size="sm">
-                                                        {{ ucfirst($member->role) }}
-                                                    </flux:badge>
+                                                <flux:badge class="font-semibold text-xs w-20 justify-center" :color="match($member->role) { 'admin' => 'red', 'manager' => 'blue', 'employee' => 'green', default => 'gray' }" size="sm">
+                                                    {{ ucfirst($member->role) }}
+                                                </flux:badge>
+                                            </td>
+                                            <td class="whitespace-nowrap p-4">
+                                                <div class="text-xs text-gray-900 dark:text-white">
+                                                    @if($member->vendor)
+                                                        {{ $member->vendor->name }}
+                                                    @else
+                                                        <span class="text-gray-400 dark:text-gray-500">-</span>
+                                                    @endif
                                                 </div>
                                             </td>
                                             <td class="whitespace-nowrap p-4">
@@ -575,7 +586,9 @@
                                             </div>
                                             <div class="flex-1">
                                                 <div class="text-sm font-bold text-gray-900 dark:text-white">{{ $member->name }}</div>
-                                                <div class="text-xs text-gray-500 dark:text-gray-400">{{ __('Member since :date', ['date' => $member->created_at->format('M Y')]) }}</div>
+                                                <div class="text-xs text-gray-500 dark:text-gray-400">
+                                                    {{ __('Member since :date', ['date' => $member->created_at->format('M Y')]) }}
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="flex flex-wrap items-center gap-2 text-xs">
@@ -588,6 +601,14 @@
                                             <flux:badge :color="match($member->role) { 'admin' => 'red', 'manager' => 'blue', 'employee' => 'green', default => 'gray' }" size="sm" class="font-semibold">
                                                 {{ ucfirst($member->role) }}
                                             </flux:badge>
+                                            @if($member->vendor)
+                                                <span class="flex items-center gap-1 text-gray-600 dark:text-gray-400">
+                                                    <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                                                    </svg>
+                                                    {{ $member->vendor->name }}
+                                                </span>
+                                            @endif
                                             @if($member->phone)
                                                 <span class="flex items-center gap-1 text-gray-600 dark:text-gray-400">
                                                     <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -712,12 +733,19 @@
                             duration: 800,
                             easing: 'easeOutQuart'
                         },
+                        interaction: {
+                            intersect: false,
+                            mode: 'nearest'
+                        },
                         plugins: {
                             legend: {
                                 display: false
                             },
                             tooltip: {
                                 enabled: true,
+                                position: 'average',
+                                xAlign: 'center',
+                                yAlign: 'center',
                                 backgroundColor: 'rgba(15, 23, 42, 0.9)',
                                 titleColor: '#fff',
                                 bodyColor: '#e2e8f0',

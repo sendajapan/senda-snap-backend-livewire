@@ -48,7 +48,7 @@ class UserService
 
     public function getPaginated(array $filters = [], int $perPage = 10)
     {
-        $query = User::query();
+        $query = User::query()->with('vendor');
         $this->scopeByVendor($query);
 
         if (! empty($filters['search'])) {

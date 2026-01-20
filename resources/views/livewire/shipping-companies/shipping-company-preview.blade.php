@@ -42,79 +42,21 @@
                                     <div class="flex items-center gap-3">
                                         <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-purple-500 shadow-lg">
                                             <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9l9-6 9 6v9a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2V9" />
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                                             </svg>
                                         </div>
                                         <div>
-                                            <h4 class="text-xl font-bold text-gray-900 dark:text-white">{{ $shippingCompany->company_name }}</h4>
-                                            @if($shippingCompany->company_name_jp)
-                                                <p class="text-xs text-gray-500 dark:text-gray-400">{{ $shippingCompany->company_name_jp }}</p>
-                                            @endif
+                                            <h4 class="text-xl font-bold text-gray-900 dark:text-white">{{ $shippingCompany->line_name }}</h4>
                                         </div>
                                     </div>
                                     <div class="flex flex-col items-end gap-2">
-                                        <flux:badge :color="$shippingCompany->company_status === 'Active' ? 'green' : 'gray'" size="sm" class="font-semibold">
-                                            {{ $shippingCompany->company_status }}
-                                        </flux:badge>
-                                        <flux:badge color="indigo" size="sm" class="font-semibold">
-                                            {{ $shippingCompany->company_type }}
+                                        <flux:badge :color="$shippingCompany->status === 'Active' ? 'green' : 'gray'" size="sm" class="font-semibold">
+                                            {{ $shippingCompany->status }}
                                         </flux:badge>
                                     </div>
                                 </div>
 
                                 <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                                    <!-- Company Type -->
-                                    <div class="flex items-center gap-2 rounded-lg bg-white/50 p-3 backdrop-blur-sm dark:bg-gray-800/50">
-                                        <svg class="h-5 w-5 flex-shrink-0 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-                                        </svg>
-                                        <div>
-                                            <p class="text-xs text-gray-500 dark:text-gray-400">{{ __('Company Type') }}</p>
-                                            <p class="text-sm font-semibold text-gray-900 dark:text-white">{{ $shippingCompany->company_type }}</p>
-                                        </div>
-                                    </div>
-
-                                    <!-- Pricing -->
-                                    @if($shippingCompany->per_m3 || $shippingCompany->per_container)
-                                        <div class="flex items-center gap-2 rounded-lg bg-white/50 p-3 backdrop-blur-sm dark:bg-gray-800/50">
-                                            <svg class="h-5 w-5 flex-shrink-0 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                            </svg>
-                                            <div>
-                                                <p class="text-xs text-gray-500 dark:text-gray-400">{{ __('Pricing') }}</p>
-                                                <p class="text-sm font-semibold text-gray-900 dark:text-white">
-                                                    @if($shippingCompany->per_m3 && $shippingCompany->per_container)
-                                                        {{ __('Per m³: :m3, Per Container: :container', ['m3' => number_format($shippingCompany->per_m3), 'container' => number_format($shippingCompany->per_container)]) }}
-                                                    @elseif($shippingCompany->per_m3)
-                                                        {{ __('Per m³: :m3', ['m3' => number_format($shippingCompany->per_m3)]) }}
-                                                    @elseif($shippingCompany->per_container)
-                                                        {{ __('Per Container: :container', ['container' => number_format($shippingCompany->per_container)]) }}
-                                                    @endif
-                                                </p>
-                                            </div>
-                                        </div>
-                                    @endif
-
-                                    <!-- Address -->
-                                    @if($shippingCompany->address || $shippingCompany->city || $shippingCompany->state || $shippingCompany->country_name)
-                                        <div class="flex items-start gap-2 rounded-lg bg-white/50 p-3 backdrop-blur-sm dark:bg-gray-800/50 sm:col-span-2">
-                                            <svg class="h-5 w-5 flex-shrink-0 text-indigo-600 dark:text-indigo-400 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                                            </svg>
-                                            <div>
-                                                <p class="text-xs text-gray-500 dark:text-gray-400">{{ __('Address') }}</p>
-                                                <p class="text-sm font-semibold text-gray-900 dark:text-white">
-                                                    @if($shippingCompany->address){{ $shippingCompany->address }}, @endif
-                                                    @if($shippingCompany->city){{ $shippingCompany->city }}, @endif
-                                                    @if($shippingCompany->state){{ $shippingCompany->state }} @endif
-                                                    @if($shippingCompany->zip){{ $shippingCompany->zip }} @endif
-                                                    @if($shippingCompany->country_name){{ $shippingCompany->country_name }}@endif
-                                                </p>
-                                            </div>
-                                        </div>
-                                    @endif
-
                                     <!-- Created At -->
                                     <div class="flex items-center gap-2 rounded-lg bg-white/50 p-3 backdrop-blur-sm dark:bg-gray-800/50">
                                         <svg class="h-5 w-5 flex-shrink-0 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -153,7 +95,7 @@
                     <div class="flex items-center justify-center gap-2">
                         <!-- Delete Button (red, conditional) -->
                         @if($this->canDelete())
-                            <button @click="window.confirmDelete({{ $shippingCompany->id }}, '{{ addslashes($shippingCompany->company_name) }}').then((result) => { if (result.isConfirmed) { $wire.deleteShippingCompany() } })" type="button" class="group relative flex items-center justify-center rounded-lg border-2 border-red-500/70 bg-red-600/20 backdrop-blur-sm px-3 py-2 transition-all duration-200 hover:border-red-400 hover:bg-red-500/30 hover:shadow-lg hover:shadow-red-500/50">
+                            <button @click="window.confirmDelete({{ $shippingCompany->id }}, '{{ addslashes($shippingCompany->line_name) }}').then((result) => { if (result.isConfirmed) { $wire.deleteShippingCompany() } })" type="button" class="group relative flex items-center justify-center rounded-lg border-2 border-red-500/70 bg-red-600/20 backdrop-blur-sm px-3 py-2 transition-all duration-200 hover:border-red-400 hover:bg-red-500/30 hover:shadow-lg hover:shadow-red-500/50">
                                 <svg class="h-4 w-4 text-red-700 dark:text-red-200 transition-all duration-200 group-hover:text-red-900 dark:group-hover:text-red-100 group-hover:drop-shadow-[0_0_6px_rgba(239,68,68,0.9)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
                                 </svg>

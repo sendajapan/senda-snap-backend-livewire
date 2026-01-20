@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Livewire\ShippingCompanies;
 
-use App\Services\ShippingCompanyService;
+use App\Services\ShipLineService;
 use Illuminate\View\View;
 use Livewire\Attributes\On;
 use Livewire\Component;
@@ -16,9 +16,7 @@ class Index extends Component
 
     public ?string $search = null;
 
-    public ?string $companyTypeFilter = null;
-
-    public ?string $companyStatusFilter = null;
+    public ?string $statusFilter = null;
 
     public function updatedSearch($value): void
     {
@@ -26,23 +24,16 @@ class Index extends Component
         $this->resetPage();
     }
 
-    public function updatedCompanyTypeFilter($value): void
+    public function updatedStatusFilter($value): void
     {
-        $this->companyTypeFilter = ($value === '' || $value === null) ? null : $value;
-        $this->resetPage();
-    }
-
-    public function updatedCompanyStatusFilter($value): void
-    {
-        $this->companyStatusFilter = ($value === '' || $value === null) ? null : $value;
+        $this->statusFilter = ($value === '' || $value === null) ? null : $value;
         $this->resetPage();
     }
 
     public function clearFilters(): void
     {
         $this->search = null;
-        $this->companyTypeFilter = null;
-        $this->companyStatusFilter = null;
+        $this->statusFilter = null;
         $this->resetPage();
     }
 
@@ -53,13 +44,13 @@ class Index extends Component
     }
 
     #[On('delete-shipping-company')]
-    public function deleteShippingCompany(array $payload, ShippingCompanyService $shippingCompanyService): void
+    public function deleteShippingCompany(array $payload, ShipLineService $shipLineService): void
     {
-        $shippingCompanyId = $payload['shippingCompanyId'] ?? null;
-        if ($shippingCompanyId) {
+        $shipLineId = $payload['shippingCompanyId'] ?? null;
+        if ($shipLineId) {
             try {
-                $shippingCompany = $shippingCompanyService->getById($shippingCompanyId);
-                $shippingCompanyService->delete($shippingCompany);
+                $shipLine = $shipLineService->getById($shipLineId);
+                $shipLineService->delete($shipLine);
                 $this->dispatch('notify', message: __('Shipping company deleted successfully.'), type: 'success');
             } catch (\Exception $e) {
                 \Log::error('Shipping company delete error: '.$e->getMessage());
@@ -68,20 +59,17 @@ class Index extends Component
         }
     }
 
-    public function render(ShippingCompanyService $shippingCompanyService): View
+    public function render(ShipLineService $shipLineService): View
     {
         $filters = [];
         if ($this->search !== null && $this->search !== '') {
             $filters['search'] = $this->search;
         }
-        if ($this->companyTypeFilter !== null && $this->companyTypeFilter !== '') {
-            $filters['company_type'] = $this->companyTypeFilter;
-        }
-        if ($this->companyStatusFilter !== null && $this->companyStatusFilter !== '') {
-            $filters['company_status'] = $this->companyStatusFilter;
+        if ($this->statusFilter !== null && $this->statusFilter !== '') {
+            $filters['status'] = $this->statusFilter;
         }
 
-        $shippingCompanies = $shippingCompanyService->list($filters, 15);
+        $shippingCompanies = $shipLineService->list($filters, 15);
 
         return view('livewire.shipping-companies.index', [
             'shippingCompanies' => $shippingCompanies,

@@ -61,58 +61,54 @@
                     <!-- Form -->
                     <form wire:submit="save" class="relative flex-1 overflow-y-auto">
                         <div class="space-y-6 p-6">
-                            <!-- Vessel Name -->
-                            <div>
-                                <flux:input wire:model="vessel_name" label="{{ __('Vessel Name') }}" placeholder="{{ __('Enter vessel name') }}" required />
-                                @error('vessel_name')
-                                    <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
-                                @enderror
-                            </div>
+                            <!-- Vessel Name and Voyage No (60-40 ratio) -->
+                            <div class="grid grid-cols-5 gap-4">
+                                <div class="col-span-3">
+                                    <flux:input wire:model="vessel_name" label="{{ __('Vessel Name') }}" placeholder="{{ __('Enter vessel name') }}" required />
+                                    @error('vessel_name')
+                                        <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                                    @enderror
+                                </div>
 
-                            <!-- Voyage No -->
-                            <div>
-                                <flux:input wire:model="voyage_no" label="{{ __('Voyage No') }}" placeholder="{{ __('Enter voyage number') }}" required />
-                                @error('voyage_no')
-                                    <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
-                                @enderror
+                                <div class="col-span-2">
+                                    <flux:input wire:model="voyage_no" label="{{ __('Voyage No') }}" placeholder="{{ __('Enter voyage number') }}" required />
+                                    @error('voyage_no')
+                                        <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                                    @enderror
+                                </div>
                             </div>
 
                             <!-- Carriers -->
-                            <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                            <div>
+                                <flux:select wire:model="carrier_1_id" label="{{ __('Carrier 1') }}">
+                                    <option value="">{{ __('Select Carrier') }}</option>
+                                    @foreach($providers as $provider)
+                                        <option value="{{ $provider->id }}">{{ $provider->line_name }}</option>
+                                    @endforeach
+                                </flux:select>
+                                @error('carrier_1_id')
+                                    <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <!-- Carrier 2 and 3 (Disabled for now) -->
+                            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 opacity-50 pointer-events-none">
                                 <div>
-                                    <flux:select wire:model="carrier_1_id" label="{{ __('Carrier 1') }}">
+                                    <flux:select wire:model="carrier_2_id" label="{{ __('Carrier 2') }}" disabled>
                                         <option value="">{{ __('Select Carrier') }}</option>
                                         @foreach($providers as $provider)
-                                            <option value="{{ $provider->id }}">{{ $provider->company_name }}</option>
+                                            <option value="{{ $provider->id }}">{{ $provider->line_name }}</option>
                                         @endforeach
                                     </flux:select>
-                                    @error('carrier_1_id')
-                                        <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
-                                    @enderror
                                 </div>
 
                                 <div>
-                                    <flux:select wire:model="carrier_2_id" label="{{ __('Carrier 2') }}">
+                                    <flux:select wire:model="carrier_3_id" label="{{ __('Carrier 3') }}" disabled>
                                         <option value="">{{ __('Select Carrier') }}</option>
                                         @foreach($providers as $provider)
-                                            <option value="{{ $provider->id }}">{{ $provider->company_name }}</option>
+                                            <option value="{{ $provider->id }}">{{ $provider->line_name }}</option>
                                         @endforeach
                                     </flux:select>
-                                    @error('carrier_2_id')
-                                        <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
-                                    @enderror
-                                </div>
-
-                                <div>
-                                    <flux:select wire:model="carrier_3_id" label="{{ __('Carrier 3') }}">
-                                        <option value="">{{ __('Select Carrier') }}</option>
-                                        @foreach($providers as $provider)
-                                            <option value="{{ $provider->id }}">{{ $provider->company_name }}</option>
-                                        @endforeach
-                                    </flux:select>
-                                    @error('carrier_3_id')
-                                        <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
-                                    @enderror
                                 </div>
                             </div>
 
@@ -145,7 +141,7 @@
 
                             <!-- ETA -->
                             <div>
-                                <flux:input wire:model="eta" label="{{ __('ETA') }}" placeholder="{{ __('Enter ETA') }}" required />
+                                <flux:input type="date" wire:model="eta" label="{{ __('ETA') }}" required />
                                 @error('eta')
                                     <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                                 @enderror

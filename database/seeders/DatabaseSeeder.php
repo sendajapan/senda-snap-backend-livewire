@@ -12,7 +12,7 @@ class DatabaseSeeder extends Seeder
             VendorSeeder::class,          // 100 vendors (including AUTOCRAFT JAPAN LTD)
             UserSeeder::class,
             PortSeeder::class,            // 100 ports
-            ShippingCompanySeeder::class, // 100 shipping companies
+            ShipLineSeeder::class,        // Ship lines from JSON
             TaskSeeder::class,
         ]);
     }

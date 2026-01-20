@@ -6,9 +6,12 @@ use App\Services\TaskService;
 use Illuminate\View\View;
 use Livewire\Attributes\On;
 use Livewire\Component;
+use Livewire\WithPagination;
 
 class AllTasks extends Component
 {
+    use WithPagination;
+
     public ?string $search = null;
 
     public ?string $statusFilter = null;
@@ -24,13 +27,13 @@ class AllTasks extends Component
     }
 
     #[On('delete-task')]
-    public function deleteTask($taskId = null, TaskService $taskService): void
+    public function deleteTask($taskId, TaskService $taskService): void
     {
         // Handle both direct taskId parameter and object with taskId property
         if (is_array($taskId) || is_object($taskId)) {
             $taskId = is_array($taskId) ? ($taskId['taskId'] ?? null) : ($taskId->taskId ?? null);
         }
-        
+
         if ($taskId) {
             try {
                 $task = $taskService->getTaskById($taskId);
@@ -47,24 +50,28 @@ class AllTasks extends Component
     {
         // Trim and reset to null if empty
         $this->search = trim($value) === '' ? null : trim($value);
+        $this->resetPage();
     }
 
     public function updatedStatusFilter($value): void
     {
         // Reset to null if empty string is selected, otherwise keep the value
         $this->statusFilter = ($value === '' || $value === null) ? null : $value;
+        $this->resetPage();
     }
 
     public function updatedFromDate($value): void
     {
         // Reset to null if empty
         $this->fromDate = ($value === '' || $value === null) ? null : $value;
+        $this->resetPage();
     }
 
     public function updatedToDate($value): void
     {
         // Reset to null if empty
         $this->toDate = ($value === '' || $value === null) ? null : $value;
+        $this->resetPage();
     }
 
     public function clearFilters(): void
@@ -73,6 +80,7 @@ class AllTasks extends Component
         $this->statusFilter = null;
         $this->fromDate = null;
         $this->toDate = null;
+        $this->resetPage();
     }
 
     public function render(TaskService $taskService): View
@@ -96,18 +104,8 @@ class AllTasks extends Component
             $filters['to_date'] = $this->toDate;
         }
 
-        // Get all tasks with filters
-        $tasks = $taskService->getAllTasksFilteredAll($filters);
-
-        // Debug logging (can be removed after testing)
-        \Log::info('AllTasks Filters', [
-            'search' => $this->search,
-            'statusFilter' => $this->statusFilter,
-            'fromDate' => $this->fromDate,
-            'toDate' => $this->toDate,
-            'applied_filters' => $filters,
-            'task_count' => $tasks->count(),
-        ]);
+        // Get all tasks with filters (paginated)
+        $tasks = $taskService->getAllTasksFiltered($filters, 15);
 
         return view('livewire.tasks.all-tasks', [
             'tasks' => $tasks,

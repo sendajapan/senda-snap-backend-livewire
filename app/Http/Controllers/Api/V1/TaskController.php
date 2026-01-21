@@ -33,7 +33,7 @@ class TaskController extends Controller
             'user_vendor_id' => $user?->vendor_id,
             'user_role' => $user?->role,
             'total_tasks_in_db' => Task::count(),
-            'tasks_with_user_vendor' => $user?->vendor_id ? Task::where('vendor_id', $user->vendor_id)->count() : null,
+            'scoped_tasks_count' => Task::forUserRole($user)->count(),
         ]);
 
         // we only use from_date and to_date for filtering tasks
@@ -241,8 +241,8 @@ class TaskController extends Controller
 
     public function stats(): JsonResponse
     {
-        // Apply vendor scoping for stats
-        $query = Task::forCurrentVendor();
+        // Apply role-based scoping for stats
+        $query = Task::forUserRole();
 
         $stats = [
             'pending' => (clone $query)->where('status', 'pending')->count(),
@@ -264,35 +264,39 @@ class TaskController extends Controller
             return $this->errorResponse('User not authenticated', [], 401);
         }
 
-        $userVendorId = $user->vendor_id;
         $totalTasks = Task::count();
-        $tasksWithUserVendor = $userVendorId ? Task::where('vendor_id', $userVendorId)->count() : null;
-        $tasksWithoutVendor = Task::whereNull('vendor_id')->count();
-        $scopedQuery = Task::forCurrentVendor();
+        $scopedQuery = Task::forUserRole($user);
         $scopedCount = $scopedQuery->count();
 
-        // Get vendor distribution
-        $vendorDistribution = Task::selectRaw('vendor_id, COUNT(*) as count')
-            ->groupBy('vendor_id')
+        // Get task distribution by creator's vendor
+        $vendorDistribution = Task::selectRaw('users.vendor_id, COUNT(*) as count')
+            ->join('users', 'tasks.created_by', '=', 'users.id')
+            ->groupBy('users.vendor_id')
             ->get()
             ->map(fn($item) => [
                 'vendor_id' => $item->vendor_id,
                 'count' => $item->count,
             ]);
 
+        // Get tasks created by user
+        $tasksCreatedByUser = Task::where('created_by', $user->id)->count();
+
+        // Get tasks assigned to user
+        $tasksAssignedToUser = Task::whereHas('assignedUsers', fn($q) => $q->where('users.id', $user->id))->count();
+
         return $this->successResponse('Debug information retrieved successfully', [
             'user' => [
                 'id' => $user->id,
                 'email' => $user->email,
                 'role' => $user->role,
-                'vendor_id' => $userVendorId,
+                'vendor_id' => $user->vendor_id,
             ],
             'tasks' => [
                 'total_in_database' => $totalTasks,
-                'with_user_vendor_id' => $tasksWithUserVendor,
-                'without_vendor_id' => $tasksWithoutVendor,
                 'scoped_count' => $scopedCount,
-                'vendor_distribution' => $vendorDistribution,
+                'created_by_user' => $tasksCreatedByUser,
+                'assigned_to_user' => $tasksAssignedToUser,
+                'vendor_distribution_by_creator' => $vendorDistribution,
             ],
         ]);
     }

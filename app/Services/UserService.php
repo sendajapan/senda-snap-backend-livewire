@@ -177,9 +177,9 @@ class UserService
     {
         $user->load(['assignedTasks', 'createdTasks']);
 
-        // Apply vendor scoping to task queries
-        $assignedTasksQuery = $user->assignedTasks()->forCurrentVendor();
-        $createdTasksQuery = $user->createdTasks()->forCurrentVendor();
+        // Apply role-based scoping to task queries
+        $assignedTasksQuery = $user->assignedTasks()->forUserRole($user);
+        $createdTasksQuery = $user->createdTasks()->forUserRole($user);
 
         return [
             'assigned_tasks' => [

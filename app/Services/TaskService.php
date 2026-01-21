@@ -12,8 +12,10 @@ use Illuminate\Support\Facades\Storage;
 /**
  * Task Service
  *
- * Tasks belong to vendors. Users can only see tasks within their vendor.
- * Admin users can see all tasks.
+ * Task visibility rules:
+ * - Admin: sees all tasks
+ * - Manager: sees all tasks from their vendor (via creator or assigned users)
+ * - Regular users: see tasks they created OR tasks assigned to them
  */
 class TaskService
 {
@@ -24,7 +26,7 @@ class TaskService
     public function list(array $filters = [], int $perPage = 100): LengthAwarePaginator
     {
         $query = Task::with(['assignedUsers', 'creator', 'attachments'])
-            ->forCurrentVendor();
+            ->forUserRole();
 
         $this->applyFilters($query, $filters);
 
@@ -34,14 +36,14 @@ class TaskService
     public function getTaskById(int $taskId): Task
     {
         return Task::with(['assignedUsers', 'creator', 'attachments'])
-            ->forCurrentVendor()
+            ->forUserRole()
             ->findOrFail($taskId);
     }
 
     public function getMyTasks(int $userId, array $filters = [], int $perPage = 15): LengthAwarePaginator
     {
         $query = Task::with(['assignedUsers', 'creator', 'attachments'])
-            ->forCurrentVendor()
+            ->forUserRole()
             ->where('created_by', $userId);
 
         if (! empty($filters['status'])) {
@@ -58,7 +60,7 @@ class TaskService
     public function getAssignedTasks(int $userId, array $filters = [], int $perPage = 15): LengthAwarePaginator
     {
         $query = Task::with(['assignedUsers', 'creator', 'attachments'])
-            ->forCurrentVendor()
+            ->forUserRole()
             ->whereHas('assignedUsers', fn ($q) => $q->where('users.id', $userId));
 
         if (! empty($filters['status'])) {
@@ -75,7 +77,7 @@ class TaskService
     public function getTodayTasks(array $filters = [], int $perPage = 5): LengthAwarePaginator
     {
         $query = Task::with(['assignedUsers', 'creator', 'attachments'])
-            ->forCurrentVendor()
+            ->forUserRole()
             ->whereDate('work_date', today());
 
         $this->applyBasicFilters($query, $filters);
@@ -89,7 +91,7 @@ class TaskService
     public function getTodayTasksAll(array $filters = []): Collection
     {
         $query = Task::with(['assignedUsers', 'creator', 'attachments'])
-            ->forCurrentVendor()
+            ->forUserRole()
             ->whereDate('work_date', today());
 
         $this->applyBasicFilters($query, $filters);
@@ -103,7 +105,7 @@ class TaskService
     public function getAllTasksFiltered(array $filters = [], int $perPage = 50, string $pageName = 'allTasksPage'): LengthAwarePaginator
     {
         $query = Task::with(['assignedUsers', 'creator', 'attachments'])
-            ->forCurrentVendor();
+            ->forUserRole();
 
         $this->applyFilters($query, $filters);
 
@@ -116,7 +118,7 @@ class TaskService
     public function getAllTasksFilteredAll(array $filters = []): Collection
     {
         $query = Task::with(['assignedUsers', 'creator', 'attachments'])
-            ->forCurrentVendor();
+            ->forUserRole();
 
         $this->applyFilters($query, $filters);
 
@@ -129,7 +131,7 @@ class TaskService
     public function getTasksGroupedByStatus(array $filters = []): array
     {
         $query = Task::with(['assignedUsers', 'creator', 'attachments'])
-            ->forCurrentVendor();
+            ->forUserRole();
 
         $this->applyFilters($query, $filters, ['status']);
 
@@ -149,10 +151,6 @@ class TaskService
 
     public function create(array $data, array $assignedUserIds = []): Task
     {
-        // Auto-assign vendor_id from current user
-        $user = auth()->user();
-        $vendorId = $data['vendor_id'] ?? $user?->vendor_id;
-
         $task = Task::create([
             'title' => $data['title'],
             'description' => $data['description'] ?? null,
@@ -162,7 +160,6 @@ class TaskService
             'status' => $data['status'] ?? 'pending',
             'created_by' => $data['created_by'],
             'due_date' => $data['due_date'] ?? null,
-            'vendor_id' => $vendorId,
         ]);
 
         if (! empty($assignedUserIds)) {

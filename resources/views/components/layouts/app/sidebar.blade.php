@@ -378,12 +378,40 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         // Custom delete confirmation with SweetAlert2
-        window.confirmDelete = function (taskId, taskTitle = null) {
+        window.confirmDelete = function (itemId, itemTitle = null, warnings = null) {
+            // Ensure warnings is an array
+            if (warnings && !Array.isArray(warnings)) {
+                warnings = null;
+            }
+            
+            let htmlContent = '';
+            
+            if (itemTitle) {
+                htmlContent += `<p class="mb-2 font-semibold text-gray-900 dark:text-white">${itemTitle}</p>`;
+            }
+            
+            // Add warnings about child records if provided
+            if (warnings && Array.isArray(warnings) && warnings.length > 0) {
+                htmlContent += `<div class="mb-3 rounded-lg border-2 border-amber-300 bg-amber-50/50 p-3 dark:border-amber-700 dark:bg-amber-900/20">`;
+                htmlContent += `<p class="mb-2 text-sm font-semibold text-amber-900 dark:text-amber-200">{{ __('Warning: This will also delete the following:') }}</p>`;
+                htmlContent += `<ul class="list-disc list-inside space-y-1 text-xs text-amber-800 dark:text-amber-300">`;
+                warnings.forEach(warning => {
+                    htmlContent += `<li>${warning}</li>`;
+                });
+                htmlContent += `</ul>`;
+                htmlContent += `</div>`;
+            }
+            
+            // Always show the warning message
+            if (!htmlContent) {
+                htmlContent = `<p class="text-sm text-gray-600 dark:text-gray-400">{{ __('Are you sure you want to delete this item? This action cannot be undone!') }}</p>`;
+            } else {
+                htmlContent += `<p class="text-sm text-gray-600 dark:text-gray-400 mt-3">{{ __('This action cannot be undone!') }}</p>`;
+            }
+            
             return Swal.fire({
                 title: '{{ __('Are you sure?') }}',
-                html: taskTitle
-                    ? `<p class="mb-2 font-semibold">${taskTitle}</p><p class="text-sm text-gray-600 dark:text-gray-400">{{ __('This action cannot be undone!') }}</p>`
-                    : '{{ __('Are you sure you want to delete this task? This action cannot be undone!') }}',
+                html: htmlContent,
                 iconHtml: '<div class="flex items-center justify-center p-4"><svg class="h-12 w-12 text-red-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg></div>',
                 showCancelButton: true,
                 confirmButtonColor: '#dc2626',

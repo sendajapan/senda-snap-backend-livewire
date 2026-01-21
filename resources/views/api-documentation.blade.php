@@ -70,6 +70,37 @@
                             format</p>
                     </div>
                 </div>
+
+                <!-- Multi-Vendor Support Note -->
+                <div class="mt-6 rounded-xl border-2 border-amber-200 bg-amber-50/50 p-6 dark:border-amber-900/50 dark:bg-amber-900/20">
+                    <div class="flex items-start gap-3">
+                        <svg class="h-6 w-6 flex-shrink-0 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        <div>
+                            <h4 class="mb-2 font-bold text-amber-900 dark:text-amber-200">Multi-Vendor Support</h4>
+                            <p class="text-sm text-amber-800 dark:text-amber-300 mb-2">
+                                This API supports multi-vendor architecture. The following resources are vendor-scoped and automatically filtered based on the authenticated user's vendor:
+                            </p>
+                            <ul class="list-disc list-inside space-y-1 text-xs text-amber-800 dark:text-amber-300">
+                                <li><strong>Tasks</strong> - Users only see tasks from their vendor</li>
+                                <li><strong>Vehicles</strong> - Users only see vehicles from their vendor</li>
+                                <li><strong>Users</strong> - Users only see users from their vendor (admins see all)</li>
+                            </ul>
+                            <p class="text-sm text-amber-800 dark:text-amber-300 mt-2">
+                                <strong>Global Resources:</strong> The following resources are shared across all vendors:
+                            </p>
+                            <ul class="list-disc list-inside space-y-1 text-xs text-amber-800 dark:text-amber-300">
+                                <li><strong>Schedules</strong> - All users can view all schedules</li>
+                                <li><strong>Ports</strong> - All users can view all ports</li>
+                                <li><strong>Shipping Companies</strong> - All users can view all shipping companies</li>
+                            </ul>
+                            <p class="text-sm text-amber-800 dark:text-amber-300 mt-2">
+                                <strong>Admin Users:</strong> Users with <code class="text-amber-900 dark:text-amber-100 bg-amber-200/50 px-1 rounded">admin</code> role can access all resources regardless of vendor restrictions.
+                            </p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </x-table-card>
 
@@ -144,11 +175,27 @@
                                             "created_at": "2024-01-01T08:00:00.000000Z",
                                             "updated_at": "2024-01-01T08:00:00.000000Z"
                                         },
+                                        "vendor": {
+                                            "id": 1,
+                                            "name": "ABC Company",
+                                            "email": "contact@abccompany.com",
+                                            "phone": "+1234567890",
+                                            "address": "123 Main St",
+                                            "status": "active",
+                                            "created_at": "2024-01-01T08:00:00.000000Z",
+                                            "updated_at": "2024-01-01T08:00:00.000000Z"
+                                        },
                                         "token": "1|abc123..."
                                     }
                                 }
                             </code>
                         </pre>
+                    </div>
+
+                    <div class="space-y-2">
+                        <p class="text-sm text-gray-600 dark:text-gray-400">
+                            <strong>Note:</strong> The <code class="text-emerald-400">vendor</code> field will be <code class="text-amber-400">null</code> for admin users or if the user doesn't belong to a vendor. For users with a vendor, the complete vendor information is included.
+                        </p>
                     </div>
                 </div>
 
@@ -205,11 +252,27 @@
                                             "created_at": "2024-01-01T08:00:00.000000Z",
                                             "updated_at": "2024-01-15T10:30:00.000000Z"
                                         },
+                                        "vendor": {
+                                            "id": 1,
+                                            "name": "ABC Company",
+                                            "email": "contact@abccompany.com",
+                                            "phone": "+1234567890",
+                                            "address": "123 Main St",
+                                            "status": "active",
+                                            "created_at": "2024-01-01T08:00:00.000000Z",
+                                            "updated_at": "2024-01-01T08:00:00.000000Z"
+                                        },
                                         "token": "2|xyz789..."
                                     }
                                 }
                             </code>
                         </pre>
+                    </div>
+
+                    <div class="space-y-2">
+                        <p class="text-sm text-gray-600 dark:text-gray-400">
+                            <strong>Note:</strong> The <code class="text-emerald-400">vendor</code> field will be <code class="text-amber-400">null</code> for admin users who don't belong to a specific vendor. For users with a vendor, the complete vendor information is included.
+                        </p>
                     </div>
                 </div>
 
@@ -1277,6 +1340,327 @@ Content-Type: multipart/form-data</code></pre>
                             class="rounded-lg bg-red-100 px-3 py-1 text-xs font-bold text-red-800 dark:bg-red-900/30 dark:text-red-400">DELETE</span>
                     </div>
                     <code class="block rounded-lg bg-gray-900 px-4 py-2 text-sm text-emerald-400 dark:bg-gray-950">/api/v1/vendors/{vendor_id}</code>
+                </div>
+            </div>
+        </x-table-card>
+
+        <!-- Schedules Section -->
+        <x-table-card variant="blue">
+            <div class="space-y-6">
+                <div class="flex items-center gap-3">
+                    <div
+                        class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-cyan-600 shadow-lg">
+                        <svg class="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white">Shipment Schedules</h3>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">Manage shipment schedules and stopovers</p>
+                    </div>
+                </div>
+
+                <!-- Get All Schedules -->
+                <div
+                    class="space-y-3 rounded-xl border border-blue-200 bg-white/50 p-6 dark:border-blue-900/50 dark:bg-gray-800/50">
+                    <div class="flex items-center justify-between">
+                        <h4 class="text-lg font-semibold text-gray-900 dark:text-white">Get All Schedules</h4>
+                        <span
+                            class="rounded-lg bg-blue-100 px-3 py-1 text-xs font-bold text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">GET</span>
+                    </div>
+                    <code class="block rounded-lg bg-gray-900 px-4 py-2 text-sm text-emerald-400 dark:bg-gray-950">/api/v1/schedules</code>
+
+                    <div class="space-y-2">
+                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Headers:</p>
+                        <pre
+                            class="overflow-x-auto rounded-lg bg-gray-900 p-4 text-xs text-gray-100 dark:bg-gray-950"><code>Authorization: Bearer {token}</code></pre>
+                    </div>
+
+                    <div class="space-y-2">
+                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Query Parameters:</p>
+                        <div class="rounded-lg bg-gray-900 p-4 dark:bg-gray-950">
+                            <ul class="space-y-1 text-xs text-gray-100">
+                                <li>• <code class="text-emerald-400">search</code> (optional): Search by vessel name or voyage number</li>
+                                <li>• <code class="text-emerald-400">vessel_name</code> (optional): Filter by vessel name</li>
+                                <li>• <code class="text-emerald-400">voyage_no</code> (optional): Filter by voyage number</li>
+                                <li>• <code class="text-emerald-400">carrier_id</code> (optional): Filter by carrier ID (matches carrier_1, carrier_2, or carrier_3)</li>
+                                <li>• <code class="text-emerald-400">start_port_id</code> (optional): Filter by start port ID</li>
+                                <li>• <code class="text-emerald-400">end_port_id</code> (optional): Filter by end port ID</li>
+                                <li>• <code class="text-emerald-400">per_page</code> (optional): Number of results per page (default: 15)</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Response (200):</p>
+                        <pre
+                            class="overflow-x-auto rounded-lg bg-gray-900 p-4 text-xs text-gray-100 dark:bg-gray-950"><code>{
+    "success": true,
+    "message": "Schedules retrieved successfully",
+    "data": {
+        "schedules": [
+            {
+                "id": 1,
+                "vessel_name": "MV Ocean Star",
+                "voyage_no": "V001",
+                "carrier_1": {
+                    "id": 1,
+                    "line_name": "Maersk Line"
+                },
+                "carrier_2": null,
+                "carrier_3": null,
+                "start_port": {
+                    "id": 1,
+                    "port_name": "Port of Los Angeles",
+                    "port_type": "Overseas Port",
+                    "port_address": "425 S Palos Verdes St, San Pedro, CA 90731"
+                },
+                "end_port": {
+                    "id": 2,
+                    "port_name": "Port of Tokyo",
+                    "port_type": "Overseas Port",
+                    "port_address": "Tokyo, Japan"
+                },
+                "eta": "2024-12-25",
+                "status": "Waiting",
+                "comment": "Expected arrival on time",
+                "stopovers": [
+                    {
+                        "id": 1,
+                        "schedule_id": 1,
+                        "port": {
+                            "id": 3,
+                            "port_name": "Port of Honolulu",
+                            "port_type": "Overseas Port"
+                        },
+                        "stopover_eta": "2024-12-20T10:00:00.000000Z",
+                        "stopover_etd": "2024-12-21T14:00:00.000000Z",
+                        "status": "Waiting"
+                    }
+                ],
+                "added_by": {
+                    "id": 1,
+                    "name": "John Doe",
+                    "email": "john@example.com"
+                },
+                "created_at": "2024-12-01T08:00:00.000000Z",
+                "updated_at": "2024-12-01T08:00:00.000000Z"
+            }
+        ],
+        "pagination": {
+            "current_page": 1,
+            "last_page": 1,
+            "per_page": 15,
+            "total": 1
+        }
+    }
+}</code></pre>
+                    </div>
+                </div>
+
+                <!-- Create Schedule -->
+                <div
+                    class="space-y-3 rounded-xl border border-blue-200 bg-white/50 p-6 dark:border-blue-900/50 dark:bg-gray-800/50">
+                    <div class="flex items-center justify-between">
+                        <h4 class="text-lg font-semibold text-gray-900 dark:text-white">Create Schedule</h4>
+                        <span
+                            class="rounded-lg bg-green-100 px-3 py-1 text-xs font-bold text-green-800 dark:bg-green-900/30 dark:text-green-400">POST</span>
+                    </div>
+                    <code class="block rounded-lg bg-gray-900 px-4 py-2 text-sm text-emerald-400 dark:bg-gray-950">/api/v1/schedules</code>
+
+                    <div class="space-y-2">
+                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Headers:</p>
+                        <pre
+                            class="overflow-x-auto rounded-lg bg-gray-900 p-4 text-xs text-gray-100 dark:bg-gray-950"><code>Authorization: Bearer {token}
+Content-Type: application/json</code></pre>
+                    </div>
+
+                    <div class="space-y-2">
+                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Request Body:</p>
+                        <pre class="overflow-x-auto rounded-lg bg-gray-900 p-4 text-xs text-gray-100 dark:bg-gray-950"><code>{
+    "vessel_name": "MV Ocean Star",
+    "voyage_no": "V001",
+    "carrier_1_id": 1,
+    "carrier_2_id": null,
+    "carrier_3_id": null,
+    "start_port_id": 1,
+    "end_port_id": 2,
+    "eta": "2024-12-25",
+    "status": "Waiting",
+    "comment": "Expected arrival on time"
+}</code></pre>
+                    </div>
+
+                    <div class="space-y-2">
+                        <p class="text-sm text-gray-600 dark:text-gray-400">
+                            <strong>Required Fields:</strong> <code class="text-emerald-400">vessel_name</code>, <code class="text-emerald-400">voyage_no</code>, <code class="text-emerald-400">start_port_id</code>, <code class="text-emerald-400">end_port_id</code>, <code class="text-emerald-400">eta</code>
+                        </p>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">
+                            <strong>Status Options:</strong> <code class="text-emerald-400">Waiting</code>, <code class="text-emerald-400">In Transit</code>, <code class="text-emerald-400">Arrived</code>, <code class="text-emerald-400">Completed</code>, <code class="text-emerald-400">Cancelled</code>
+                        </p>
+                    </div>
+
+                    <div class="space-y-2">
+                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Response (201):</p>
+                        <pre
+                            class="overflow-x-auto rounded-lg bg-gray-900 p-4 text-xs text-gray-100 dark:bg-gray-950"><code>{
+    "success": true,
+    "message": "Schedule created successfully",
+    "data": {
+        "schedule": {
+            "id": 1,
+            "vessel_name": "MV Ocean Star",
+            "voyage_no": "V001",
+            "eta": "2024-12-25",
+            "status": "Waiting",
+            ...
+        }
+    }
+}</code></pre>
+                    </div>
+                </div>
+
+                <!-- Get Single Schedule -->
+                <div
+                    class="space-y-3 rounded-xl border border-blue-200 bg-white/50 p-6 dark:border-blue-900/50 dark:bg-gray-800/50">
+                    <div class="flex items-center justify-between">
+                        <h4 class="text-lg font-semibold text-gray-900 dark:text-white">Get Single Schedule</h4>
+                        <span
+                            class="rounded-lg bg-blue-100 px-3 py-1 text-xs font-bold text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">GET</span>
+                    </div>
+                    <code class="block rounded-lg bg-gray-900 px-4 py-2 text-sm text-emerald-400 dark:bg-gray-950">/api/v1/schedules/{schedule_id}</code>
+
+                    <div class="space-y-2">
+                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Headers:</p>
+                        <pre
+                            class="overflow-x-auto rounded-lg bg-gray-900 p-4 text-xs text-gray-100 dark:bg-gray-950"><code>Authorization: Bearer {token}</code></pre>
+                    </div>
+                </div>
+
+                <!-- Update Schedule -->
+                <div
+                    class="space-y-3 rounded-xl border border-blue-200 bg-white/50 p-6 dark:border-blue-900/50 dark:bg-gray-800/50">
+                    <div class="flex items-center justify-between">
+                        <h4 class="text-lg font-semibold text-gray-900 dark:text-white">Update Schedule</h4>
+                        <span
+                            class="rounded-lg bg-amber-100 px-3 py-1 text-xs font-bold text-amber-800 dark:bg-amber-900/30 dark:text-amber-400">PUT</span>
+                    </div>
+                    <code class="block rounded-lg bg-gray-900 px-4 py-2 text-sm text-emerald-400 dark:bg-gray-950">/api/v1/schedules/{schedule_id}</code>
+
+                    <div class="space-y-2">
+                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Request Body (all fields optional):</p>
+                        <pre class="overflow-x-auto rounded-lg bg-gray-900 p-4 text-xs text-gray-100 dark:bg-gray-950"><code>{
+    "vessel_name": "MV Ocean Star Updated",
+    "voyage_no": "V001-A",
+    "carrier_1_id": 2,
+    "status": "In Transit",
+    "comment": "Updated comment"
+}</code></pre>
+                    </div>
+                </div>
+
+                <!-- Delete Schedule -->
+                <div
+                    class="space-y-3 rounded-xl border border-blue-200 bg-white/50 p-6 dark:border-blue-900/50 dark:bg-gray-800/50">
+                    <div class="flex items-center justify-between">
+                        <h4 class="text-lg font-semibold text-gray-900 dark:text-white">Delete Schedule</h4>
+                        <span
+                            class="rounded-lg bg-red-100 px-3 py-1 text-xs font-bold text-red-800 dark:bg-red-900/30 dark:text-red-400">DELETE</span>
+                    </div>
+                    <code class="block rounded-lg bg-gray-900 px-4 py-2 text-sm text-emerald-400 dark:bg-gray-950">/api/v1/schedules/{schedule_id}</code>
+
+                    <div class="space-y-2">
+                        <p class="text-sm text-gray-600 dark:text-gray-400">
+                            <strong>Authorization:</strong> Only users with <code class="text-emerald-400">admin</code> or <code class="text-emerald-400">manager</code> roles can delete schedules.
+                        </p>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">
+                            <strong>Warning:</strong> Deleting a schedule will also delete all associated stopovers.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Create Stopover -->
+                <div
+                    class="space-y-3 rounded-xl border border-blue-200 bg-white/50 p-6 dark:border-blue-900/50 dark:bg-gray-800/50">
+                    <div class="flex items-center justify-between">
+                        <h4 class="text-lg font-semibold text-gray-900 dark:text-white">Create Stopover</h4>
+                        <span
+                            class="rounded-lg bg-green-100 px-3 py-1 text-xs font-bold text-green-800 dark:bg-green-900/30 dark:text-green-400">POST</span>
+                    </div>
+                    <code class="block rounded-lg bg-gray-900 px-4 py-2 text-sm text-emerald-400 dark:bg-gray-950">/api/v1/schedules/{schedule_id}/stopovers</code>
+
+                    <div class="space-y-2">
+                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Headers:</p>
+                        <pre
+                            class="overflow-x-auto rounded-lg bg-gray-900 p-4 text-xs text-gray-100 dark:bg-gray-950"><code>Authorization: Bearer {token}
+Content-Type: application/json</code></pre>
+                    </div>
+
+                    <div class="space-y-2">
+                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Request Body:</p>
+                        <pre class="overflow-x-auto rounded-lg bg-gray-900 p-4 text-xs text-gray-100 dark:bg-gray-950"><code>{
+    "port_id": 3,
+    "stopover_eta": "2024-12-20T10:00:00Z",
+    "stopover_etd": "2024-12-21T14:00:00Z",
+    "status": "Waiting"
+}</code></pre>
+                    </div>
+
+                    <div class="space-y-2">
+                        <p class="text-sm text-gray-600 dark:text-gray-400">
+                            <strong>Note:</strong> The <code class="text-emerald-400">schedule_id</code> is taken from the URL path. You can also use the standalone endpoint <code class="text-emerald-400">/api/v1/stopovers</code> and include <code class="text-emerald-400">schedule_id</code> in the request body.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Get Single Stopover -->
+                <div
+                    class="space-y-3 rounded-xl border border-blue-200 bg-white/50 p-6 dark:border-blue-900/50 dark:bg-gray-800/50">
+                    <div class="flex items-center justify-between">
+                        <h4 class="text-lg font-semibold text-gray-900 dark:text-white">Get Single Stopover</h4>
+                        <span
+                            class="rounded-lg bg-blue-100 px-3 py-1 text-xs font-bold text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">GET</span>
+                    </div>
+                    <code class="block rounded-lg bg-gray-900 px-4 py-2 text-sm text-emerald-400 dark:bg-gray-950">/api/v1/stopovers/{stopover_id}</code>
+                </div>
+
+                <!-- Update Stopover -->
+                <div
+                    class="space-y-3 rounded-xl border border-blue-200 bg-white/50 p-6 dark:border-blue-900/50 dark:bg-gray-800/50">
+                    <div class="flex items-center justify-between">
+                        <h4 class="text-lg font-semibold text-gray-900 dark:text-white">Update Stopover</h4>
+                        <span
+                            class="rounded-lg bg-amber-100 px-3 py-1 text-xs font-bold text-amber-800 dark:bg-amber-900/30 dark:text-amber-400">PUT</span>
+                    </div>
+                    <code class="block rounded-lg bg-gray-900 px-4 py-2 text-sm text-emerald-400 dark:bg-gray-950">/api/v1/stopovers/{stopover_id}</code>
+
+                    <div class="space-y-2">
+                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Request Body (all fields optional):</p>
+                        <pre class="overflow-x-auto rounded-lg bg-gray-900 p-4 text-xs text-gray-100 dark:bg-gray-950"><code>{
+    "port_id": 4,
+    "stopover_eta": "2024-12-22T10:00:00Z",
+    "stopover_etd": "2024-12-23T14:00:00Z",
+    "status": "In Transit"
+}</code></pre>
+                    </div>
+                </div>
+
+                <!-- Delete Stopover -->
+                <div
+                    class="space-y-3 rounded-xl border border-blue-200 bg-white/50 p-6 dark:border-blue-900/50 dark:bg-gray-800/50">
+                    <div class="flex items-center justify-between">
+                        <h4 class="text-lg font-semibold text-gray-900 dark:text-white">Delete Stopover</h4>
+                        <span
+                            class="rounded-lg bg-red-100 px-3 py-1 text-xs font-bold text-red-800 dark:bg-red-900/30 dark:text-red-400">DELETE</span>
+                    </div>
+                    <code class="block rounded-lg bg-gray-900 px-4 py-2 text-sm text-emerald-400 dark:bg-gray-950">/api/v1/stopovers/{stopover_id}</code>
+
+                    <div class="space-y-2">
+                        <p class="text-sm text-gray-600 dark:text-gray-400">
+                            <strong>Authorization:</strong> Only users with <code class="text-emerald-400">admin</code> or <code class="text-emerald-400">manager</code> roles can delete stopovers.
+                        </p>
+                    </div>
                 </div>
             </div>
         </x-table-card>

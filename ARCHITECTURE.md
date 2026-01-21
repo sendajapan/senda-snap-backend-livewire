@@ -862,6 +862,7 @@ public function canDelete(): bool
 10. **Preview Components**: Use center dialog modals for read-only previews
 11. **Permission Checks**: Implement `canDelete()` methods for conditional UI rendering
 12. **Filter Refresh Pattern**: When implementing filters that update component state, always increment a `refreshKey` property in `updatedXxx()` methods to force view re-renders
+13. **Delete Event Listeners**: Use flexible parameter handling for `#[On('delete-*')]` event listeners to avoid dependency injection issues
 
 ### Filter Refresh Pattern (Critical for Livewire Components)
 
@@ -947,7 +948,188 @@ class KanbanBoard extends Component
 - Components with multiple filters (search, status, priority, date ranges, etc.)
 - Complex layouts (Kanban boards, grids, tables with filters)
 - Any component where filter changes must immediately reflect in the UI
+
+### Delete Event Listener Pattern (Critical for Livewire Event Handling)
+
+**Problem**: Livewire event listeners with `#[On('delete-*')]` attribute that receive array payloads cannot use dependency injection in the method signature. Livewire's container tries to resolve all parameters, but the payload comes from the event dispatch, not the container, causing `BindingResolutionException`.
+
+**Solution**: Use flexible parameter handling that accepts the ID in multiple formats and resolves services manually.
+
+**Implementation Pattern**:
+
+```php
+<?php
+
+namespace App\Livewire\ShipmentSchedule;
+
+use App\Services\ScheduleStopoverService;
+use Livewire\Attributes\On;
+use Livewire\Component;
+
+class Index extends Component
+{
+    #[On('delete-stopover')]
+    public function deleteStopover($stopoverId = null, ?ScheduleStopoverService $stopoverService = null): void
+    {
+        // Handle both direct stopoverId parameter and object/array with stopoverId property
+        if (is_array($stopoverId)) {
+            $stopoverId = $stopoverId['stopoverId'] ?? null;
+        } elseif (is_object($stopoverId)) {
+            $stopoverId = $stopoverId->stopoverId ?? null;
+        }
+
+        if (! $stopoverId) {
+            return;
+        }
+
+        try {
+            if (! $stopoverService) {
+                $stopoverService = app(ScheduleStopoverService::class);
+            }
+            $stopover = \App\Models\ScheduleStopover::findOrFail($stopoverId);
+            $stopoverService->delete($stopover);
+            $this->dispatch('notify', message: __('Stopover deleted successfully.'), type: 'success');
+        } catch (\Exception $e) {
+            \Log::error('Stopover delete error: '.$e->getMessage());
+            $this->dispatch('notify', message: __('An error occurred while deleting the stopover.'), type: 'error');
+        }
+    }
+}
+```
+
+**In Blade Template**:
+
+```blade
+<button @click="confirmDeleteStopover({{ $stopover->id }}, '{{ addslashes($stopover->port->port_name ?? 'N/A') }}').then((result) => { 
+    if (result.isConfirmed) { 
+        $wire.$dispatch('delete-stopover', { stopoverId: {{ $stopover->id }} }) 
+    } 
+})" type="button">
+    Delete
+</button>
+```
+
+**Key Points**:
+- ✅ Use flexible first parameter (`$id = null`) that can accept scalar, array, or object
+- ✅ Extract ID from different formats (array, object, or direct value)
+- ✅ Use optional nullable service parameter (`?Service $service = null`)
+- ✅ Resolve service manually using `app()` helper if not provided
+- ✅ Early return if ID is missing
+- ✅ Wrap in try-catch for error handling
+- ✅ Dispatch success/error notifications
+- ❌ Do NOT use strict `array $payload` type hint with dependency injection
+- ❌ Do NOT rely on container to resolve array payloads
+
+**When to Use**:
+- All `#[On('delete-*')]` event listeners in Livewire components
+- Event listeners that receive data from `$wire.$dispatch()` calls
+- Any event listener that needs service injection but receives payload data
+
+**Applied To**:
+- `deleteSchedule()` - ShipmentSchedule\Index
+- `deleteStopover()` - ShipmentSchedule\Index
+- `deletePort()` - Ports\Index
+- `deleteShippingCompany()` - ShippingCompanies\Index
+- `deleteVendor()` - Vendors\Index
+- `deleteUser()` - Users\Index
+- `deleteNotice()` - Notices\Index
+- `deleteTask()` - Tasks\AllTasks, Tasks\TodayTasks, Tasks\KanbanBoard
 - Components using `wire:model.live` for real-time filtering
+
+### Child Record Warning Pattern
+
+**Purpose**: Warn users before deleting parent records that have child records that will be cascade deleted, preventing accidental data loss.
+
+**Problem**: When deleting a parent record with cascade delete relationships, child records are automatically deleted without user awareness, which can lead to unintended data loss.
+
+**Solution**: Check for child records before deletion and display warnings in the delete confirmation dialog.
+
+**Implementation Pattern**:
+
+**1. Update JavaScript `confirmDelete` function** (`resources/views/components/layouts/app/sidebar.blade.php`):
+
+```javascript
+window.confirmDelete = function (itemId, itemTitle = null, warnings = null) {
+    let htmlContent = '';
+    
+    if (itemTitle) {
+        htmlContent += `<p class="mb-2 font-semibold text-gray-900 dark:text-white">${itemTitle}</p>`;
+    }
+    
+    // Add warnings about child records if provided
+    if (warnings && Array.isArray(warnings) && warnings.length > 0) {
+        htmlContent += `<div class="mb-3 rounded-lg border-2 border-amber-300 bg-amber-50/50 p-3 dark:border-amber-700 dark:bg-amber-900/20">`;
+        htmlContent += `<p class="mb-2 text-sm font-semibold text-amber-900 dark:text-amber-200">Warning: This will also delete the following:</p>`;
+        htmlContent += `<ul class="list-disc list-inside space-y-1 text-xs text-amber-800 dark:text-amber-300">`;
+        warnings.forEach(warning => {
+            htmlContent += `<li>${warning}</li>`;
+        });
+        htmlContent += `</ul>`;
+        htmlContent += `</div>`;
+    }
+    
+    htmlContent += `<p class="text-sm text-gray-600 dark:text-gray-400">This action cannot be undone!</p>`;
+    
+    return Swal.fire({
+        title: 'Are you sure?',
+        html: htmlContent,
+        // ... rest of SweetAlert2 configuration
+    });
+};
+```
+
+**2. Check child records in Blade template before deletion**:
+
+```blade
+@php
+    // Check for child records that will be cascade deleted
+    $stopoverCount = $schedule->stopovers()->count();
+    $warnings = [];
+    if ($stopoverCount > 0) {
+        $warnings[] = __(':count stopover(s)', ['count' => $stopoverCount]);
+    }
+@endphp
+
+<button @click="confirmDeleteSchedule({{ $schedule->id }}, '{{ addslashes($schedule->vessel_name) }}', @js($warnings)).then((result) => { 
+    if (result.isConfirmed) { 
+        $wire.$dispatch('delete-schedule', { scheduleId: {{ $schedule->id }} }) 
+    } 
+})" type="button">
+    Delete
+</button>
+```
+
+**3. Cascade Delete Relationships** (from database migrations):
+
+- **Schedule** → **ScheduleStopover** (`cascadeOnDelete`)
+- **Task** → **TaskAttachment** (`onDelete('cascade')`)
+- **Port** → **Schedule** (`cascadeOnDelete` for `start_port_id` and `end_port_id`)
+- **Port** → **ScheduleStopover** (`cascadeOnDelete`)
+- **User** → **Notice** (`onDelete('cascade')`)
+- **User** → **Schedule** (`cascadeOnDelete` for `added_by`)
+- **User** → **ScheduleStopover** (`cascadeOnDelete` for `added_by`)
+- **Vehicle** → **VehiclePhoto** (`onDelete('cascade')`)
+- **Vehicle** → **ConsigneeDetail** (`onDelete('cascade')`)
+
+**Key Points**:
+- ✅ Check child record counts in Blade templates before rendering delete buttons
+- ✅ Pass warnings array to `confirmDelete()` function using `@js()` helper
+- ✅ Display warnings in an amber-colored alert box within the confirmation dialog
+- ✅ Use translated warning messages with counts
+- ✅ Only show warnings for cascade delete relationships (not `nullOnDelete`)
+- ✅ Warnings are informational - deletion still proceeds if user confirms
+
+**When to Use**:
+- All delete buttons for parent records with cascade delete relationships
+- Any entity that has `hasMany` relationships with cascade delete constraints
+- Records that reference other records via foreign keys with cascade delete
+
+**Applied To**:
+- Schedule deletion (warns about stopovers)
+- Port deletion (warns about schedules and stopovers)
+- User deletion (warns about notices, schedules, stopovers)
+- Task deletion (warns about attachments)
+- Vehicle deletion (warns about photos and consignee details)
 
 ---
 

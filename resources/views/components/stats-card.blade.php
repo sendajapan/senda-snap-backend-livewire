@@ -67,7 +67,7 @@
     $v = $variants[$variant] ?? $variants['blue'];
 @endphp
 
-<div class="group relative overflow-hidden rounded-2xl border {{ $v['border'] }} bg-white/60 p-6 {{ $v['shadow'] }} backdrop-blur-xl transition-all duration-300 {{ $v['darkBorder'] }} dark:bg-gray-800/60 {{ $v['darkShadow'] }}">
+<div class="dashboard-card group relative overflow-hidden rounded-2xl border {{ $v['border'] }} bg-white/60 p-4 sm:p-5 lg:p-6 {{ $v['shadow'] }} backdrop-blur-xl transition-all duration-300 {{ $v['darkBorder'] }} dark:bg-gray-800/60 {{ $v['darkShadow'] }}">
     <style>
         @keyframes bubble-float {
             0%, 100% { transform: translateY(0) translateX(0) scale(1); opacity: 0.6; }
@@ -101,14 +101,14 @@
     <div class="relative z-10">
         <div class="flex items-center justify-between">
             <div>
-                <p class="text-sm font-medium {{ $v['subtext'] }}">{{ $title }}</p>
-                <h3 class="mt-2 text-4xl font-bold {{ $v['text'] }}">{{ $count }}</h3>
+                <p class="dashboard-text-sm text-xs sm:text-sm font-medium {{ $v['subtext'] }}">{{ $title }}</p>
+                <h3 class="stats-count dashboard-heading-xl mt-1.5 sm:mt-2 text-2xl sm:text-3xl lg:text-4xl font-bold {{ $v['text'] }}">{{ $count }}</h3>
             </div>
-            <div class="rounded-xl bg-gradient-to-br {{ $v['gradient'] }} p-3 shadow-md">
+            <div class="rounded-xl bg-gradient-to-br {{ $v['gradient'] }} p-2.5 sm:p-3 shadow-md">
                 {!! $icon !!}
             </div>
         </div>
-        <div class="mt-4 flex items-center text-sm {{ $v['subtext'] }}">
+        <div class="dashboard-text-sm mt-3 sm:mt-4 flex items-center text-xs sm:text-sm {{ $v['subtext'] }}">
             <svg class="mr-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
             </svg>

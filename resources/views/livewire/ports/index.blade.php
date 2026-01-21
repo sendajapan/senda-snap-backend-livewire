@@ -5,8 +5,8 @@
     openPreview(portId = null) {
         $wire.$dispatch('open-port-preview', { portId: portId })
     },
-    confirmDelete(portId, portName = null) {
-        return window.confirmDelete(portId, portName);
+    confirmDelete(portId, portName = null, warnings = null) {
+        return window.confirmDelete(portId, portName, warnings);
     }
 }">
     <!-- Header Section -->

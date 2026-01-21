@@ -32,19 +32,70 @@ class Index extends Component
     }
 
     #[On('delete-user')]
-    public function deleteUser(array $payload, UserService $userService): void
+    public function deleteUser($userId = null, ?UserService $userService = null): void
     {
-        $userId = $payload['userId'] ?? null;
-        if ($userId) {
-            try {
-                $user = $userService->getById($userId);
-                $userService->delete($user);
-                $this->dispatch('notify', message: __('User deleted successfully.'), type: 'success');
-            } catch (\Exception $e) {
-                \Log::error('User delete error: '.$e->getMessage());
-                $this->dispatch('notify', message: __('An error occurred while deleting the user.'), type: 'error');
-            }
+        // Handle both direct userId parameter and object/array with userId property
+        if (is_array($userId)) {
+            $userId = $userId['userId'] ?? null;
+        } elseif (is_object($userId)) {
+            $userId = $userId->userId ?? null;
         }
+
+        if (! $userId) {
+            return;
+        }
+
+        try {
+            if (! $userService) {
+                $userService = app(UserService::class);
+            }
+            $user = $userService->getById($userId);
+
+            // Check for child records that will be cascade deleted
+            $noticeCount = \App\Models\Notice::where('created_by', $userId)->count();
+            $scheduleCount = \App\Models\Schedule::where('added_by', $userId)->count();
+            $stopoverCount = \App\Models\ScheduleStopover::where('added_by', $userId)->count();
+
+            $warnings = [];
+            if ($noticeCount > 0) {
+                $warnings[] = __(':count notice(s)', ['count' => $noticeCount]);
+            }
+            if ($scheduleCount > 0) {
+                $warnings[] = __(':count schedule(s)', ['count' => $scheduleCount]);
+            }
+            if ($stopoverCount > 0) {
+                $warnings[] = __(':count stopover(s)', ['count' => $stopoverCount]);
+            }
+
+            $userService->delete($user);
+            $this->dispatch('notify', message: __('User deleted successfully.'), type: 'success');
+        } catch (\Exception $e) {
+            \Log::error('User delete error: '.$e->getMessage());
+            $this->dispatch('notify', message: __('An error occurred while deleting the user.'), type: 'error');
+        }
+    }
+
+    /**
+     * Get child record warnings for a user
+     */
+    public function getUserWarnings(int $userId): array
+    {
+        $noticeCount = \App\Models\Notice::where('created_by', $userId)->count();
+        $scheduleCount = \App\Models\Schedule::where('added_by', $userId)->count();
+        $stopoverCount = \App\Models\ScheduleStopover::where('added_by', $userId)->count();
+
+        $warnings = [];
+        if ($noticeCount > 0) {
+            $warnings[] = __(':count notice(s)', ['count' => $noticeCount]);
+        }
+        if ($scheduleCount > 0) {
+            $warnings[] = __(':count schedule(s)', ['count' => $scheduleCount]);
+        }
+        if ($stopoverCount > 0) {
+            $warnings[] = __(':count stopover(s)', ['count' => $stopoverCount]);
+        }
+
+        return $warnings;
     }
 
     public function render(UserService $userService)

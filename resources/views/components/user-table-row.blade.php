@@ -105,10 +105,24 @@
             </button>
 
             <!-- Delete Button -->
-            <!-- Delete Button -->
             @if($canDelete)
+                @php
+                    $noticeCount = \App\Models\Notice::where('created_by', $user->id)->count();
+                    $scheduleCount = \App\Models\Schedule::where('added_by', $user->id)->count();
+                    $stopoverCount = \App\Models\ScheduleStopover::where('added_by', $user->id)->count();
+                    $warnings = [];
+                    if ($noticeCount > 0) {
+                        $warnings[] = __(':count notice(s)', ['count' => $noticeCount]);
+                    }
+                    if ($scheduleCount > 0) {
+                        $warnings[] = __(':count schedule(s)', ['count' => $scheduleCount]);
+                    }
+                    if ($stopoverCount > 0) {
+                        $warnings[] = __(':count stopover(s)', ['count' => $stopoverCount]);
+                    }
+                @endphp
                 <button
-                    @click="window.confirmDelete({{ $user->id }}, '{{ addslashes($user->name) }}').then((result) => { if (result.isConfirmed) { $wire.$dispatch('delete-user', { userId: {{ $user->id }} }) } })"
+                    @click="window.confirmDelete({{ $user->id }}, '{{ addslashes($user->name) }}', @js($warnings)).then((result) => { if (result.isConfirmed) { $wire.$dispatch('delete-user', { userId: {{ $user->id }} }) } })"
                     type="button"
                     class="group relative flex items-center justify-center rounded-lg border-2 border-red-700/60 bg-red-500/10 p-1.5 transition-all duration-200 hover:border-red-700 hover:bg-red-500/20 hover:shadow-lg hover:shadow-red-700/30"
                     title="{{ __('Delete User') }}">

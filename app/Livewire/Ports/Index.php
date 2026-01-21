@@ -44,19 +44,66 @@ class Index extends Component
     }
 
     #[On('delete-port')]
-    public function deletePort(array $payload, PortService $portService): void
+    public function deletePort($portId = null, ?PortService $portService = null): void
     {
-        $portId = $payload['portId'] ?? null;
-        if ($portId) {
-            try {
-                $port = $portService->getById($portId);
-                $portService->delete($port);
-                $this->dispatch('notify', message: __('Port deleted successfully.'), type: 'success');
-            } catch (\Exception $e) {
-                \Log::error('Port delete error: '.$e->getMessage());
-                $this->dispatch('notify', message: __('An error occurred while deleting the port.'), type: 'error');
-            }
+        // Handle both direct portId parameter and object/array with portId property
+        if (is_array($portId)) {
+            $portId = $portId['portId'] ?? null;
+        } elseif (is_object($portId)) {
+            $portId = $portId->portId ?? null;
         }
+
+        if (! $portId) {
+            return;
+        }
+
+        try {
+            if (! $portService) {
+                $portService = app(PortService::class);
+            }
+            $port = $portService->getById($portId);
+
+            // Check for child records (schedules and stopovers that reference this port)
+            $scheduleCount = \App\Models\Schedule::where('start_port_id', $portId)
+                ->orWhere('end_port_id', $portId)
+                ->count();
+            $stopoverCount = \App\Models\ScheduleStopover::where('port_id', $portId)->count();
+
+            $warnings = [];
+            if ($scheduleCount > 0) {
+                $warnings[] = __(':count schedule(s)', ['count' => $scheduleCount]);
+            }
+            if ($stopoverCount > 0) {
+                $warnings[] = __(':count stopover(s)', ['count' => $stopoverCount]);
+            }
+
+            $portService->delete($port);
+            $this->dispatch('notify', message: __('Port deleted successfully.'), type: 'success');
+        } catch (\Exception $e) {
+            \Log::error('Port delete error: '.$e->getMessage());
+            $this->dispatch('notify', message: __('An error occurred while deleting the port.'), type: 'error');
+        }
+    }
+
+    /**
+     * Get child record warnings for a port
+     */
+    public function getPortWarnings(int $portId): array
+    {
+        $scheduleCount = \App\Models\Schedule::where('start_port_id', $portId)
+            ->orWhere('end_port_id', $portId)
+            ->count();
+        $stopoverCount = \App\Models\ScheduleStopover::where('port_id', $portId)->count();
+
+        $warnings = [];
+        if ($scheduleCount > 0) {
+            $warnings[] = __(':count schedule(s)', ['count' => $scheduleCount]);
+        }
+        if ($stopoverCount > 0) {
+            $warnings[] = __(':count stopover(s)', ['count' => $stopoverCount]);
+        }
+
+        return $warnings;
     }
 
     public function render(PortService $portService): View

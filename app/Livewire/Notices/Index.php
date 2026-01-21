@@ -38,18 +38,29 @@ class Index extends Component
     }
 
     #[On('delete-notice')]
-    public function deleteNotice(array $payload, NoticeService $noticeService): void
+    public function deleteNotice($noticeId = null, ?NoticeService $noticeService = null): void
     {
-        $noticeId = $payload['noticeId'] ?? null;
-        if ($noticeId) {
-            try {
-                $notice = $noticeService->getById($noticeId);
-                $noticeService->delete($notice);
-                $this->dispatch('notify', message: __('Notice deleted successfully.'), type: 'success');
-            } catch (\Exception $e) {
-                \Log::error('Notice delete error: '.$e->getMessage());
-                $this->dispatch('notify', message: __('An error occurred while deleting the notice.'), type: 'error');
+        // Handle both direct noticeId parameter and object/array with noticeId property
+        if (is_array($noticeId)) {
+            $noticeId = $noticeId['noticeId'] ?? null;
+        } elseif (is_object($noticeId)) {
+            $noticeId = $noticeId->noticeId ?? null;
+        }
+
+        if (! $noticeId) {
+            return;
+        }
+
+        try {
+            if (! $noticeService) {
+                $noticeService = app(NoticeService::class);
             }
+            $notice = $noticeService->getById($noticeId);
+            $noticeService->delete($notice);
+            $this->dispatch('notify', message: __('Notice deleted successfully.'), type: 'success');
+        } catch (\Exception $e) {
+            \Log::error('Notice delete error: '.$e->getMessage());
+            $this->dispatch('notify', message: __('An error occurred while deleting the notice.'), type: 'error');
         }
     }
 

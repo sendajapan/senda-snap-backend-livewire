@@ -3,6 +3,8 @@
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\PortController;
 use App\Http\Controllers\Api\V1\ProfileController;
+use App\Http\Controllers\Api\V1\ScheduleController;
+use App\Http\Controllers\Api\V1\ScheduleStopoverController;
 use App\Http\Controllers\Api\V1\ShippingCompanyController;
 use App\Http\Controllers\Api\V1\TaskController;
 use App\Http\Controllers\Api\V1\UsersController;
@@ -90,5 +92,26 @@ Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
         Route::get('{vendor}', [VendorController::class, 'show']);
         Route::put('{vendor}', [VendorController::class, 'update']);
         Route::delete('{vendor}', [VendorController::class, 'destroy']);
+    });
+
+    // Schedule routes
+    Route::prefix('schedules')->group(function () {
+        Route::get('/', [ScheduleController::class, 'index']);
+        Route::post('/', [ScheduleController::class, 'store']);
+        Route::get('{schedule}', [ScheduleController::class, 'show']);
+        Route::put('{schedule}', [ScheduleController::class, 'update']);
+        Route::delete('{schedule}', [ScheduleController::class, 'destroy']);
+
+        // Stopover routes nested under schedules
+        Route::prefix('{schedule}/stopovers')->group(function () {
+            Route::post('/', [ScheduleStopoverController::class, 'store']);
+        });
+    });
+
+    // Stopover routes (standalone)
+    Route::prefix('stopovers')->group(function () {
+        Route::get('{stopover}', [ScheduleStopoverController::class, 'show']);
+        Route::put('{stopover}', [ScheduleStopoverController::class, 'update']);
+        Route::delete('{stopover}', [ScheduleStopoverController::class, 'destroy']);
     });
 });

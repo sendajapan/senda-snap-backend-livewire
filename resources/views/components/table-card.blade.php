@@ -45,7 +45,7 @@
     $classes = $variants[$variant] ?? $variants['emerald'];
 @endphp
 
-<div class="group relative rounded-2xl border {{ $classes['border'] }} {{ $classes['bg'] }} {{ $classes['shadow'] }} p-6 ring-1 ring-white/20 transition-all duration-300 dark:ring-white/10 {{ $classes['hoverShadow'] }} {{ $classes['hoverBorder'] }}">
+<div class="page-card group relative rounded-2xl border {{ $classes['border'] }} {{ $classes['bg'] }} {{ $classes['shadow'] }} p-4 sm:p-5 lg:p-6 ring-1 ring-white/20 transition-all duration-300 dark:ring-white/10 {{ $classes['hoverShadow'] }} {{ $classes['hoverBorder'] }}">
     <!-- Decorative Elements Container (with overflow-hidden to clip decorative elements) -->
     <div class="absolute inset-0 overflow-hidden rounded-2xl pointer-events-none">
         <div class="absolute -right-8 -top-8 h-32 w-32 rounded-full {{ $classes['decorTop'] }} blur-2xl"></div>

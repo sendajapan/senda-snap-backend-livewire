@@ -46,6 +46,21 @@ class AllTasks extends Component
         }
     }
 
+    /**
+     * Get child record warnings for a task
+     */
+    public function getTaskWarnings(int $taskId): array
+    {
+        $task = \App\Models\Task::withCount('attachments')->findOrFail($taskId);
+        $warnings = [];
+
+        if ($task->attachments_count > 0) {
+            $warnings[] = __(':count attachment(s)', ['count' => $task->attachments_count]);
+        }
+
+        return $warnings;
+    }
+
     public function updatedSearch($value): void
     {
         // Trim and reset to null if empty

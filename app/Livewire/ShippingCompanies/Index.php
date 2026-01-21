@@ -44,18 +44,29 @@ class Index extends Component
     }
 
     #[On('delete-shipping-company')]
-    public function deleteShippingCompany(array $payload, ShipLineService $shipLineService): void
+    public function deleteShippingCompany($shippingCompanyId = null, ?ShipLineService $shipLineService = null): void
     {
-        $shipLineId = $payload['shippingCompanyId'] ?? null;
-        if ($shipLineId) {
-            try {
-                $shipLine = $shipLineService->getById($shipLineId);
-                $shipLineService->delete($shipLine);
-                $this->dispatch('notify', message: __('Shipping company deleted successfully.'), type: 'success');
-            } catch (\Exception $e) {
-                \Log::error('Shipping company delete error: '.$e->getMessage());
-                $this->dispatch('notify', message: __('An error occurred while deleting the shipping company.'), type: 'error');
+        // Handle both direct shippingCompanyId parameter and object/array with shippingCompanyId property
+        if (is_array($shippingCompanyId)) {
+            $shippingCompanyId = $shippingCompanyId['shippingCompanyId'] ?? null;
+        } elseif (is_object($shippingCompanyId)) {
+            $shippingCompanyId = $shippingCompanyId->shippingCompanyId ?? null;
+        }
+
+        if (! $shippingCompanyId) {
+            return;
+        }
+
+        try {
+            if (! $shipLineService) {
+                $shipLineService = app(ShipLineService::class);
             }
+            $shipLine = $shipLineService->getById($shippingCompanyId);
+            $shipLineService->delete($shipLine);
+            $this->dispatch('notify', message: __('Shipping company deleted successfully.'), type: 'success');
+        } catch (\Exception $e) {
+            \Log::error('Shipping company delete error: '.$e->getMessage());
+            $this->dispatch('notify', message: __('An error occurred while deleting the shipping company.'), type: 'error');
         }
     }
 

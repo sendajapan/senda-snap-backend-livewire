@@ -18,13 +18,13 @@ class TodayTasks extends Component
     }
 
     #[On('delete-task')]
-    public function deleteTask($taskId = null, TaskService $taskService): void
+    public function deleteTask($taskId, TaskService $taskService): void
     {
         // Handle both direct taskId parameter and object with taskId property
         if (is_array($taskId) || is_object($taskId)) {
             $taskId = is_array($taskId) ? ($taskId['taskId'] ?? null) : ($taskId->taskId ?? null);
         }
-        
+
         if ($taskId) {
             try {
                 $task = $taskService->getTaskById($taskId);
@@ -35,6 +35,21 @@ class TodayTasks extends Component
                 $this->dispatch('notify', message: __('An error occurred while deleting the task.'), type: 'error');
             }
         }
+    }
+
+    /**
+     * Get child record warnings for a task
+     */
+    public function getTaskWarnings(int $taskId): array
+    {
+        $task = \App\Models\Task::withCount('attachments')->findOrFail($taskId);
+        $warnings = [];
+
+        if ($task->attachments_count > 0) {
+            $warnings[] = __(':count attachment(s)', ['count' => $task->attachments_count]);
+        }
+
+        return $warnings;
     }
 
     public function updatedStatusFilter($value): void

@@ -200,7 +200,14 @@
 
                             <!-- Delete Button (red, conditional) -->
                             @if($this->canDelete())
-                                <button @click="window.confirmDelete({{ $task->id }}, '{{ addslashes($task->title) }}').then((result) => { if (result.isConfirmed) { $wire.deleteTask() } })" type="button" class="group relative flex items-center justify-center rounded-lg border-2 border-red-500/70 bg-red-600/20 backdrop-blur-sm px-3 py-2 transition-all duration-200 hover:border-red-400 hover:bg-red-500/30 hover:shadow-lg hover:shadow-red-500/50">
+                                @php
+                                    $attachmentCount = $task->attachments()->count();
+                                    $warnings = [];
+                                    if ($attachmentCount > 0) {
+                                        $warnings[] = __(':count attachment(s)', ['count' => $attachmentCount]);
+                                    }
+                                @endphp
+                                <button @click="window.confirmDelete({{ $task->id }}, '{{ addslashes($task->title) }}', @js($warnings)).then((result) => { if (result.isConfirmed) { $wire.deleteTask() } })" type="button" class="group relative flex items-center justify-center rounded-lg border-2 border-red-500/70 bg-red-600/20 backdrop-blur-sm px-3 py-2 transition-all duration-200 hover:border-red-400 hover:bg-red-500/30 hover:shadow-lg hover:shadow-red-500/50">
                                     <svg class="h-4 w-4 text-red-700 dark:text-red-200 transition-all duration-200 group-hover:text-red-900 dark:group-hover:text-red-100 group-hover:drop-shadow-[0_0_6px_rgba(239,68,68,0.9)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
                                     </svg>

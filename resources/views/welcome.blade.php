@@ -7,7 +7,7 @@
     <body class="min-h-screen bg-white antialiased dark:bg-linear-to-b dark:from-neutral-950 dark:to-neutral-900">
         <!-- Top Navigation -->
         <nav class="fixed top-0 left-0 right-0 z-50 border-b border-gray-200/50 bg-white/95 backdrop-blur-md dark:border-gray-800/50 dark:bg-gray-900/95 shadow-sm" x-data="{ mobileMenuOpen: false }">
-            <div class="mx-auto max-w-7xl px-6 py-2">
+            <div class="mx-auto max-w-[1600px] px-4 sm:px-6 lg:px-8 xl:px-10 2xl:px-12 py-3 sm:py-4">
                 <div class="flex items-center justify-between">
                     <div class="flex items-center gap-8">
                         <a href="{{ route('home') }}" class="flex items-center group">
@@ -89,30 +89,30 @@
         </nav>
 
         <!-- Hero Section -->
-        <div class="relative h-screen max-h-[1080px] pt-24 pb-12">
+        <div class="relative min-h-screen max-h-[100vh] pt-24 pb-12 overflow-hidden">
             <!-- Particle Background -->
             <canvas id="particle-canvas" class="fixed inset-0 -z-10 pointer-events-none"></canvas>
 
-            <div class="mx-auto max-w-7xl h-full px-4 sm:px-6 lg:px-8">
+            <div class="mx-auto max-w-[1600px] 2xl:max-w-none h-full px-4 sm:px-6 lg:px-8 xl:px-10 2xl:px-12 main-content-padding">
                 <!-- Hero Content -->
-                <div class="text-center mb-4 sm:mb-6 mt-8 sm:mt-12">
-                    <h1 class="mb-2 sm:mb-3 text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white lg:text-4xl">
+                <div class="text-center mb-6 sm:mb-8 lg:mb-10 mt-8 sm:mt-12 lg:mt-16">
+                    <h1 class="mb-3 sm:mb-4 lg:mb-5 text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white">
                         {{ __('Manage Vehicles & Tasks') }}
                         <span class="block bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">
                             {{ __('Seamlessly') }}
                         </span>
                     </h1>
-                    <p class="mx-auto max-w-2xl text-sm sm:text-base lg:text-lg text-gray-600 dark:text-gray-400">
+                    <p class="mx-auto max-w-3xl text-base sm:text-lg lg:text-xl text-gray-600 dark:text-gray-400 px-4">
                         {{ __('Comprehensive web dashboard and Android app for vehicle management, task scheduling, and team collaboration.') }}
                     </p>
                 </div>
 
                 <!-- Features and Screenshots Side by Side -->
-                <div class="relative grid gap-6 sm:gap-8 lg:grid-cols-2 lg:gap-20 items-start lg:items-center h-[calc(100%-180px)] sm:h-[calc(100%-200px)]">
+                <div class="relative grid gap-8 sm:gap-10 lg:grid-cols-2 lg:gap-12 xl:gap-16 items-start lg:items-center min-h-[500px] sm:min-h-[600px] lg:min-h-[650px]">
                     <!-- Features Section (Left) -->
-                    <div class="relative z-20 space-y-4 sm:space-y-5 lg:space-y-6">
+                    <div class="relative z-20 space-y-5 sm:space-y-6 lg:space-y-8">
                         <!-- Web Features -->
-                        <div class="rounded-2xl border border-violet-200 bg-gradient-to-br from-white via-violet-50/30 to-purple-50/30 p-4 sm:p-5 lg:p-6 shadow-xl dark:border-violet-900/50 dark:from-gray-900 dark:via-violet-900/20 dark:to-purple-900/20">
+                        <div class="rounded-2xl border border-violet-200 bg-gradient-to-br from-white via-violet-50/30 to-purple-50/30 p-5 sm:p-6 lg:p-7 xl:p-8 shadow-xl dark:border-violet-900/50 dark:from-gray-900 dark:via-violet-900/20 dark:to-purple-900/20">
                             <div class="mb-3 flex items-center gap-3">
                                 <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 shadow-lg">
                                     <svg class="h-4 w-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -150,7 +150,7 @@
                         </div>
 
                         <!-- Android Features -->
-                        <div class="rounded-2xl border border-emerald-200 bg-gradient-to-br from-white via-emerald-50/30 to-teal-50/30 p-4 sm:p-5 lg:p-6 shadow-xl dark:border-emerald-900/50 dark:from-gray-900 dark:via-emerald-900/20 dark:to-teal-900/20">
+                        <div class="rounded-2xl border border-emerald-200 bg-gradient-to-br from-white via-emerald-50/30 to-teal-50/30 p-5 sm:p-6 lg:p-7 xl:p-8 shadow-xl dark:border-emerald-900/50 dark:from-gray-900 dark:via-emerald-900/20 dark:to-teal-900/20">
                             <div class="mb-3 flex items-center gap-3">
                                 <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 shadow-lg">
                                     <svg class="h-4 w-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -191,7 +191,7 @@
                         <a href="https://play.google.com/store/apps/details?id=com.sendajapan.sendasnap" 
                            target="_blank"
                            rel="noopener noreferrer"
-                           class="group block rounded-2xl border border-emerald-200 bg-gradient-to-br from-white via-emerald-50/30 to-teal-50/30 p-4 sm:p-6 lg:p-8 shadow-xl transition-all hover:scale-[1.02] hover:shadow-2xl hover:shadow-emerald-500/20 dark:border-emerald-900/50 dark:from-gray-900 dark:via-emerald-900/20 dark:to-teal-900/20 dark:hover:shadow-emerald-500/10">
+                           class="group block rounded-2xl border border-emerald-200 bg-gradient-to-br from-white via-emerald-50/30 to-teal-50/30 p-5 sm:p-6 lg:p-7 xl:p-8 shadow-xl transition-all hover:scale-[1.02] hover:shadow-2xl hover:shadow-emerald-500/20 dark:border-emerald-900/50 dark:from-gray-900 dark:via-emerald-900/20 dark:to-teal-900/20 dark:hover:shadow-emerald-500/10">
                             <div class="flex flex-col items-center text-center">
                                 <!-- App Icon -->
                                 <div class="mb-4 sm:mb-5 lg:mb-6 flex h-20 w-20 sm:h-24 sm:w-24 lg:h-28 lg:w-28 items-center justify-center transition-transform group-hover:scale-110 relative">
@@ -293,6 +293,13 @@
                 position: relative;
             }
 
+            @media (min-width: 1920px) {
+                .monitor-frame {
+                    width: 600px;
+                    padding: 16px;
+                }
+            }
+
             .dark .monitor-frame {
                 background: #f5f5f5;
                 box-shadow:
@@ -381,6 +388,12 @@
                 padding: 0;
                 box-shadow: none;
                 position: relative;
+            }
+
+            @media (min-width: 1920px) {
+                .phone-frame {
+                    width: 280px;
+                }
             }
 
             .phone-frame::before {

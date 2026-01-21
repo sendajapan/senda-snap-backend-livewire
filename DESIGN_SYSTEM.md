@@ -1086,7 +1086,17 @@ When no `image` prop is provided, displays a white background with centered icon
 
         <!-- Delete Button (conditional) -->
         @if($canDelete)
-            <button @click="window.confirmDelete({{ $item->id }}, '{{ addslashes($item->name) }}').then((result) => { if (result.isConfirmed) { $wire.$dispatch('delete-item', { itemId: {{ $item->id }} }) } })" type="button" class="group relative flex items-center justify-center rounded-lg border-2 border-red-700/60 bg-red-500/10 p-1.5 transition-all duration-200 hover:border-red-700 hover:bg-red-500/20 hover:shadow-lg hover:shadow-red-700/30" title="{{ __('Delete') }}">
+            @php
+                // Check for child records that will be cascade deleted
+                // Example for Schedule:
+                // $stopoverCount = $item->stopovers()->count();
+                // $warnings = [];
+                // if ($stopoverCount > 0) {
+                //     $warnings[] = __(':count stopover(s)', ['count' => $stopoverCount]);
+                // }
+                $warnings = []; // Calculate warnings based on cascade relationships
+            @endphp
+            <button @click="window.confirmDelete({{ $item->id }}, '{{ addslashes($item->name) }}', @js($warnings)).then((result) => { if (result.isConfirmed) { $wire.$dispatch('delete-item', { itemId: {{ $item->id }} }) } })" type="button" class="group relative flex items-center justify-center rounded-lg border-2 border-red-700/60 bg-red-500/10 p-1.5 transition-all duration-200 hover:border-red-700 hover:bg-red-500/20 hover:shadow-lg hover:shadow-red-700/30" title="{{ __('Delete') }}">
                 <svg class="h-3.5 w-3.5 md:h-4 md:w-4 text-red-700 transition-all duration-200 group-hover:text-red-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
                 </svg>
@@ -1103,10 +1113,21 @@ When no `image` prop is provided, displays a white background with centered icon
 - **Delete Tasks**: Only `admin` or `manager` can delete
 - **UI Visibility**: Delete buttons are hidden if user doesn't have permission
 
+**Child Record Warnings**:
+- Before deletion, check for child records that will be cascade deleted
+- Pass warnings array to `confirmDelete()` function using `@js()` helper
+- Warnings are displayed in an amber-colored alert box within the SweetAlert2 confirmation dialog
+- Example warning messages:
+  - `__(':count stopover(s)', ['count' => $stopoverCount])`
+  - `__(':count attachment(s)', ['count' => $attachmentCount])`
+  - `__(':count schedule(s)', ['count' => $scheduleCount])`
+- Warnings are informational - deletion still proceeds if user confirms
+
 **Key Features**:
 - Small icon-only buttons in table rows (`p-1.5`, `h-3.5 w-3.5 md:h-4 md:w-4`)
 - Outline border style with semi-transparent background
 - Hover effects: border color change, background opacity increase, shadow
+- Integrated with SweetAlert2 for delete confirmation with child record warnings
 - No opacity transitions (opacity-100 by default)
 - No inner shadow effects on icons
 - Integrated with SweetAlert2 for delete confirmation
@@ -1114,6 +1135,51 @@ When no `image` prop is provided, displays a white background with centered icon
 
 **Card View Pattern**:
 Same button structure but with slightly larger padding (`p-2`) and icon size (`h-4 w-4`) for better touch targets.
+
+**Delete Event Listener Pattern**:
+When implementing delete functionality, use flexible parameter handling in Livewire event listeners to avoid dependency injection issues:
+
+```php
+#[On('delete-item')]
+public function deleteItem($itemId = null, ?ItemService $itemService = null): void
+{
+    // Handle both direct itemId parameter and object/array with itemId property
+    if (is_array($itemId)) {
+        $itemId = $itemId['itemId'] ?? null;
+    } elseif (is_object($itemId)) {
+        $itemId = $itemId->itemId ?? null;
+    }
+
+    if (! $itemId) {
+        return;
+    }
+
+    try {
+        if (! $itemService) {
+            $itemService = app(ItemService::class);
+        }
+        $item = $itemService->getById($itemId);
+        $itemService->delete($item);
+        $this->dispatch('notify', message: __('Item deleted successfully.'), type: 'success');
+    } catch (\Exception $e) {
+        \Log::error('Item delete error: '.$e->getMessage());
+        $this->dispatch('notify', message: __('An error occurred while deleting the item.'), type: 'error');
+    }
+}
+```
+
+**Key Points**:
+- ✅ Use flexible first parameter that accepts scalar, array, or object
+- ✅ Extract ID from different formats
+- ✅ Use optional nullable service parameter
+- ✅ Resolve service manually if not provided
+- ✅ Early return if ID is missing
+- ✅ Wrap in try-catch for error handling
+- ❌ Do NOT use strict `array $payload` type hint with dependency injection
+
+**Applied To**:
+- All delete event listeners in Livewire Index components
+- See ARCHITECTURE.md for complete implementation details
 
 ---
 

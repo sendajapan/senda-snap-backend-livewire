@@ -19,7 +19,7 @@
             </div>
 
             <!-- Main Content -->
-            <div class="flex w-full max-w-7xl mx-auto flex-col gap-4">
+            <div class="flex w-full max-w-7xl 2xl:max-w-none mx-auto flex-col gap-4 px-4 sm:px-6 lg:px-8 xl:px-10 2xl:px-12 main-content-padding">
                 {{ $slot }}
             </div>
         </div>

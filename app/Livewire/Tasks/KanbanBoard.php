@@ -61,6 +61,21 @@ class KanbanBoard extends Component
     }
 
     /**
+     * Get child record warnings for a task
+     */
+    public function getTaskWarnings(int $taskId): array
+    {
+        $task = \App\Models\Task::withCount('attachments')->findOrFail($taskId);
+        $warnings = [];
+
+        if ($task->attachments_count > 0) {
+            $warnings[] = __(':count attachment(s)', ['count' => $task->attachments_count]);
+        }
+
+        return $warnings;
+    }
+
+    /**
      * Update task status when dragged to a new column
      */
     public function updateTaskStatus(int $taskId, string $newStatus, TaskService $taskService): void

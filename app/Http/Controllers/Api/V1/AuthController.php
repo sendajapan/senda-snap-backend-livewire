@@ -40,8 +40,13 @@ class AuthController extends Controller
 
         $result = $this->authService->register($data);
 
+        // Load vendor relationship
+        $user = $result['user'];
+        $user->load('vendor');
+
         return $this->successResponse('User registered successfully', [
-            'user' => new UserResource($result['user']),
+            'user' => new UserResource($user),
+            'vendor' => $user->vendor ? new \App\Http\Resources\VendorResource($user->vendor) : null,
             'token' => $result['token'],
         ]);
     }
@@ -78,8 +83,13 @@ class AuthController extends Controller
         try {
             $result = $this->authService->login($request->only('email', 'password'));
 
+            // Load vendor relationship
+            $user = $result['user'];
+            $user->load('vendor');
+
             return $this->successResponse('Login successful', [
-                'user' => new UserResource($result['user']),
+                'user' => new UserResource($user),
+                'vendor' => $user->vendor ? new \App\Http\Resources\VendorResource($user->vendor) : null,
                 'token' => $result['token'],
             ]);
         } catch (\InvalidArgumentException $e) {
@@ -110,8 +120,12 @@ class AuthController extends Controller
 
     public function me(Request $request): JsonResponse
     {
+        $user = $request->user();
+        $user->load('vendor');
+
         return $this->successResponse('User retrieved successfully', [
-            'user' => new UserResource($request->user()),
+            'user' => new UserResource($user),
+            'vendor' => $user->vendor ? new \App\Http\Resources\VendorResource($user->vendor) : null,
         ]);
     }
 

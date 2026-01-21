@@ -1,0 +1,1209 @@
+{
+  "feature_name": "Shipment Schedule Management",
+  "version": "1.0",
+  "description": "Complete implementation guide for Shipment Schedule feature in Android app with multi-vendor support",
+  "base_url": "https://your-domain.com/api/v1",
+  
+  "authentication": {
+    "updated_login_api": {
+      "endpoint": "/auth/login",
+      "method": "POST",
+      "description": "Login endpoint now includes vendor information in response",
+      "request": {
+        "headers": {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        "body": {
+          "email": "user@example.com",
+          "password": "password123"
+        }
+      },
+      "response_success": {
+        "success": true,
+        "message": "Login successful",
+        "data": {
+          "user": {
+            "id": 1,
+            "name": "John Doe",
+            "email": "user@example.com",
+            "phone": "+1234567890",
+            "role": "manager",
+            "avis_id": null,
+            "avatar": null,
+            "avatar_url": null,
+            "email_verified_at": "2024-01-01T08:00:00.000000Z",
+            "created_at": "2024-01-01T08:00:00.000000Z",
+            "updated_at": "2024-01-01T08:00:00.000000Z"
+          },
+          "vendor": {
+            "id": 1,
+            "name": "ABC Company",
+            "email": "contact@abccompany.com",
+            "phone": "+1234567890",
+            "address": "123 Main St",
+            "city": "New York",
+            "state": "NY",
+            "country": "USA",
+            "zip": "10001",
+            "website": "https://abccompany.com",
+            "status": "active",
+            "created_at": "2024-01-01T08:00:00.000000Z",
+            "updated_at": "2024-01-01T08:00:00.000000Z"
+          },
+          "token": "2|xyz789..."
+        }
+      },
+      "response_error": {
+        "success": false,
+        "message": "Invalid credentials",
+        "data": []
+      },
+      "notes": [
+        "The 'vendor' field will be null for admin users who don't belong to a specific vendor",
+        "Store the vendor information in SharedPreferences or your app's local storage",
+        "Display vendor name in the app header/navigation drawer",
+        "Use the token in Authorization header for all subsequent API calls: 'Bearer {token}'"
+      ]
+    },
+    "me_endpoint": {
+      "endpoint": "/auth/me",
+      "method": "GET",
+      "description": "Get current authenticated user with vendor information",
+      "headers": {
+        "Authorization": "Bearer {token}",
+        "Accept": "application/json"
+      },
+      "response": {
+        "success": true,
+        "message": "User retrieved successfully",
+        "data": {
+          "user": { "same_structure_as_login" },
+          "vendor": { "same_structure_as_login" }
+        }
+      }
+    }
+  },
+
+  "data_models": {
+    "schedule": {
+      "id": "integer",
+      "vessel_name": "string (required, max:255)",
+      "voyage_no": "string (required, max:255)",
+      "carrier_1": {
+        "id": "integer",
+        "line_name": "string"
+      },
+      "carrier_2": {
+        "id": "integer",
+        "line_name": "string"
+      },
+      "carrier_3": {
+        "id": "integer",
+        "line_name": "string"
+      },
+      "start_port": {
+        "id": "integer",
+        "port_name": "string",
+        "port_type": "string (Local Port/Overseas Port)",
+        "port_address": "string"
+      },
+      "end_port": {
+        "id": "integer",
+        "port_name": "string",
+        "port_type": "string",
+        "port_address": "string"
+      },
+      "eta": "string (date format: YYYY-MM-DD)",
+      "status": "string (Waiting/In Transit/Arrived/Completed/Cancelled)",
+      "comment": "string (nullable)",
+      "stopovers": "array of stopover objects",
+      "added_by": {
+        "id": "integer",
+        "name": "string",
+        "email": "string"
+      },
+      "created_at": "string (ISO 8601)",
+      "updated_at": "string (ISO 8601)"
+    },
+    "stopover": {
+      "id": "integer",
+      "schedule_id": "integer",
+      "port": {
+        "id": "integer",
+        "port_name": "string",
+        "port_type": "string",
+        "port_address": "string"
+      },
+      "stopover_eta": "string (ISO 8601 datetime, nullable)",
+      "stopover_etd": "string (ISO 8601 datetime, nullable)",
+      "status": "string (Waiting/In Transit/Arrived/Completed/Cancelled)",
+      "added_by": {
+        "id": "integer",
+        "name": "string",
+        "email": "string"
+      },
+      "created_at": "string (ISO 8601)",
+      "updated_at": "string (ISO 8601)"
+    },
+    "port": {
+      "id": "integer",
+      "port_name": "string",
+      "port_type": "string (Local Port/Overseas Port)",
+      "port_address": "string",
+      "created_at": "string (ISO 8601)",
+      "updated_at": "string (ISO 8601)"
+    },
+    "shipping_company": {
+      "id": "integer",
+      "line_name": "string",
+      "status": "string (Active/Inactive)"
+    }
+  },
+
+  "api_endpoints": {
+    "schedules": {
+      "list": {
+        "endpoint": "/schedules",
+        "method": "GET",
+        "description": "Get paginated list of schedules with optional filters",
+        "headers": {
+          "Authorization": "Bearer {token}",
+          "Accept": "application/json"
+        },
+        "query_parameters": {
+          "search": "string (optional) - Search in vessel_name and voyage_no",
+          "vessel_name": "string (optional) - Filter by vessel name",
+          "voyage_no": "string (optional) - Filter by voyage number",
+          "carrier_id": "integer (optional) - Filter by carrier ID",
+          "start_port_id": "integer (optional) - Filter by start port ID",
+          "end_port_id": "integer (optional) - Filter by end port ID",
+          "per_page": "integer (optional, default: 15) - Items per page",
+          "page": "integer (optional, default: 1) - Page number"
+        },
+        "response": {
+          "success": true,
+          "message": "Schedules retrieved successfully",
+          "data": {
+            "schedules": [
+              {
+                "id": 1,
+                "vessel_name": "MV Ocean Star",
+                "voyage_no": "VOY-2024-001",
+                "carrier_1": {
+                  "id": 1,
+                  "line_name": "Maersk Line"
+                },
+                "carrier_2": null,
+                "carrier_3": null,
+                "start_port": {
+                  "id": 1,
+                  "port_name": "Port of Los Angeles",
+                  "port_type": "Local Port",
+                  "port_address": "Los Angeles, CA"
+                },
+                "end_port": {
+                  "id": 2,
+                  "port_name": "Port of New York",
+                  "port_type": "Local Port",
+                  "port_address": "New York, NY"
+                },
+                "eta": "2024-02-15",
+                "status": "Waiting",
+                "comment": "First voyage of the year",
+                "stopovers": [
+                  {
+                    "id": 1,
+                    "schedule_id": 1,
+                    "port": {
+                      "id": 3,
+                      "port_name": "Port of Miami",
+                      "port_type": "Local Port",
+                      "port_address": "Miami, FL"
+                    },
+                    "stopover_eta": "2024-02-10T08:00:00.000000Z",
+                    "stopover_etd": "2024-02-12T18:00:00.000000Z",
+                    "status": "Waiting",
+                    "added_by": {
+                      "id": 1,
+                      "name": "John Doe",
+                      "email": "john@example.com"
+                    },
+                    "created_at": "2024-01-15T10:00:00.000000Z",
+                    "updated_at": "2024-01-15T10:00:00.000000Z"
+                  }
+                ],
+                "added_by": {
+                  "id": 1,
+                  "name": "John Doe",
+                  "email": "john@example.com"
+                },
+                "created_at": "2024-01-15T10:00:00.000000Z",
+                "updated_at": "2024-01-15T10:00:00.000000Z"
+              }
+            ],
+            "pagination": {
+              "current_page": 1,
+              "last_page": 5,
+              "per_page": 15,
+              "total": 67
+            }
+          }
+        }
+      },
+      "create": {
+        "endpoint": "/schedules",
+        "method": "POST",
+        "description": "Create a new shipment schedule",
+        "headers": {
+          "Authorization": "Bearer {token}",
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        "request_body": {
+          "vessel_name": "MV Ocean Star",
+          "voyage_no": "VOY-2024-001",
+          "carrier_1_id": 1,
+          "carrier_2_id": null,
+          "carrier_3_id": null,
+          "start_port_id": 1,
+          "end_port_id": 2,
+          "eta": "2024-02-15",
+          "status": "Waiting",
+          "comment": "First voyage of the year"
+        },
+        "validation_rules": {
+          "vessel_name": "required|string|max:255",
+          "voyage_no": "required|string|max:255",
+          "carrier_1_id": "nullable|integer|exists in shipping_companies",
+          "carrier_2_id": "nullable|integer|exists in shipping_companies",
+          "carrier_3_id": "nullable|integer|exists in shipping_companies",
+          "start_port_id": "required|integer|exists in ports",
+          "end_port_id": "required|integer|exists in ports",
+          "eta": "required|date (YYYY-MM-DD)",
+          "status": "optional|string|in:Waiting,In Transit,Arrived,Completed,Cancelled",
+          "comment": "nullable|string"
+        },
+        "response_success": {
+          "success": true,
+          "message": "Schedule created successfully",
+          "data": {
+            "schedule": { "same_structure_as_list_response" }
+          }
+        },
+        "response_error": {
+          "success": false,
+          "message": "Validation failed",
+          "data": {
+            "vessel_name": ["Vessel name is required."],
+            "start_port_id": ["Start port is required."]
+          }
+        }
+      },
+      "show": {
+        "endpoint": "/schedules/{schedule_id}",
+        "method": "GET",
+        "description": "Get a single schedule with all relationships loaded",
+        "headers": {
+          "Authorization": "Bearer {token}",
+          "Accept": "application/json"
+        },
+        "response": {
+          "success": true,
+          "message": "Schedule retrieved successfully",
+          "data": {
+            "schedule": { "same_structure_as_list_response" }
+          }
+        }
+      },
+      "update": {
+        "endpoint": "/schedules/{schedule_id}",
+        "method": "PUT",
+        "description": "Update an existing schedule",
+        "headers": {
+          "Authorization": "Bearer {token}",
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        "request_body": {
+          "vessel_name": "MV Ocean Star Updated",
+          "voyage_no": "VOY-2024-001",
+          "carrier_1_id": 1,
+          "start_port_id": 1,
+          "end_port_id": 2,
+          "eta": "2024-02-20",
+          "status": "In Transit",
+          "comment": "Updated comment"
+        },
+        "validation_rules": {
+          "all_fields_are_optional_but_must_be_valid_if_provided": "same_as_create_validation"
+        },
+        "response": {
+          "success": true,
+          "message": "Schedule updated successfully",
+          "data": {
+            "schedule": { "same_structure_as_list_response" }
+          }
+        }
+      },
+      "delete": {
+        "endpoint": "/schedules/{schedule_id}",
+        "method": "DELETE",
+        "description": "Delete a schedule (only admin and manager roles)",
+        "headers": {
+          "Authorization": "Bearer {token}",
+          "Accept": "application/json"
+        },
+        "response_success": {
+          "success": true,
+          "message": "Schedule deleted successfully",
+          "data": []
+        },
+        "response_error_unauthorized": {
+          "success": false,
+          "message": "Unauthorized. Only admin or manager can delete schedules.",
+          "data": []
+        }
+      }
+    },
+    "stopovers": {
+      "create": {
+        "endpoint": "/schedules/{schedule_id}/stopovers",
+        "method": "POST",
+        "description": "Create a new stopover for a schedule",
+        "headers": {
+          "Authorization": "Bearer {token}",
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        "request_body": {
+          "port_id": 3,
+          "stopover_eta": "2024-02-10",
+          "stopover_etd": "2024-02-12",
+          "status": "Waiting"
+        },
+        "validation_rules": {
+          "port_id": "required|integer|exists in ports",
+          "stopover_eta": "nullable|date (YYYY-MM-DD)",
+          "stopover_etd": "nullable|date (YYYY-MM-DD, must be >= stopover_eta)",
+          "status": "optional|string|in:Waiting,In Transit,Arrived,Completed,Cancelled"
+        },
+        "response": {
+          "success": true,
+          "message": "Stopover created successfully",
+          "data": {
+            "stopover": { "same_structure_as_stopover_model" }
+          }
+        }
+      },
+      "show": {
+        "endpoint": "/stopovers/{stopover_id}",
+        "method": "GET",
+        "description": "Get a single stopover",
+        "headers": {
+          "Authorization": "Bearer {token}",
+          "Accept": "application/json"
+        },
+        "response": {
+          "success": true,
+          "message": "Stopover retrieved successfully",
+          "data": {
+            "stopover": { "same_structure_as_stopover_model" }
+          }
+        }
+      },
+      "update": {
+        "endpoint": "/stopovers/{stopover_id}",
+        "method": "PUT",
+        "description": "Update an existing stopover",
+        "headers": {
+          "Authorization": "Bearer {token}",
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        "request_body": {
+          "port_id": 3,
+          "stopover_eta": "2024-02-11",
+          "stopover_etd": "2024-02-13",
+          "status": "In Transit"
+        },
+        "response": {
+          "success": true,
+          "message": "Stopover updated successfully",
+          "data": {
+            "stopover": { "same_structure_as_stopover_model" }
+          }
+        }
+      },
+      "delete": {
+        "endpoint": "/stopovers/{stopover_id}",
+        "method": "DELETE",
+        "description": "Delete a stopover (only admin and manager roles)",
+        "headers": {
+          "Authorization": "Bearer {token}",
+          "Accept": "application/json"
+        },
+        "response": {
+          "success": true,
+          "message": "Stopover deleted successfully",
+          "data": []
+        }
+      }
+    },
+    "ports": {
+      "list": {
+        "endpoint": "/ports",
+        "method": "GET",
+        "description": "Get list of ports for dropdowns (read-only, no CRUD needed)",
+        "headers": {
+          "Authorization": "Bearer {token}",
+          "Accept": "application/json"
+        },
+        "query_parameters": {
+          "search": "string (optional) - Search in port_name and port_address",
+          "port_type": "string (optional) - Filter by port_type (Local Port/Overseas Port)",
+          "per_page": "integer (optional, default: 15) - For pagination, or use large number to get all",
+          "page": "integer (optional, default: 1)"
+        },
+        "response": {
+          "success": true,
+          "message": "Ports retrieved successfully",
+          "data": {
+            "ports": [
+              {
+                "id": 1,
+                "port_name": "Port of Los Angeles",
+                "port_type": "Local Port",
+                "port_address": "Los Angeles, CA",
+                "created_at": "2024-01-01T08:00:00.000000Z",
+                "updated_at": "2024-01-01T08:00:00.000000Z"
+              }
+            ],
+            "pagination": {
+              "current_page": 1,
+              "last_page": 1,
+              "per_page": 15,
+              "total": 10
+            }
+          }
+        },
+        "usage_notes": [
+          "Use this endpoint to populate dropdowns for Start Port, End Port, and Stopover Port selection",
+          "For Start Port and End Port dropdowns, filter by port_type='Local Port'",
+          "For Stopover Port dropdowns, include both 'Local Port' and 'Overseas Port'",
+          "Cache the port list locally to reduce API calls"
+        ]
+      }
+    },
+    "shipping_companies": {
+      "list": {
+        "endpoint": "/shipping-companies",
+        "method": "GET",
+        "description": "Get list of shipping companies/carriers for dropdowns (read-only, no CRUD needed)",
+        "headers": {
+          "Authorization": "Bearer {token}",
+          "Accept": "application/json"
+        },
+        "query_parameters": {
+          "search": "string (optional) - Search in line_name",
+          "status": "string (optional) - Filter by status (Active/Inactive), use 'Active' for dropdowns",
+          "per_page": "integer (optional, default: 15) - Use large number to get all active carriers",
+          "page": "integer (optional, default: 1)"
+        },
+        "response": {
+          "success": true,
+          "message": "Shipping companies retrieved successfully",
+          "data": {
+            "shipping_companies": [
+              {
+                "id": 1,
+                "line_name": "Maersk Line",
+                "status": "Active"
+              }
+            ],
+            "pagination": {
+              "current_page": 1,
+              "last_page": 1,
+              "per_page": 15,
+              "total": 5
+            }
+          }
+        },
+        "usage_notes": [
+          "Use this endpoint to populate Carrier 1, Carrier 2, Carrier 3 dropdowns",
+          "Filter by status='Active' to show only active carriers",
+          "Cache the shipping companies list locally to reduce API calls"
+        ]
+      }
+    }
+  },
+
+  "ui_flow": {
+    "navigation": {
+      "menu_item": {
+        "title": "Shipment Schedule",
+        "icon": "ship/calendar icon",
+        "location": "Side drawer menu",
+        "order": "After existing menu items"
+      }
+    },
+    "screens": {
+      "schedule_list_screen": {
+        "name": "ScheduleListActivity/Fragment",
+        "description": "Main screen displaying list of schedules",
+        "components": [
+          {
+            "type": "Toolbar",
+            "content": "Shipment Schedules",
+            "actions": [
+              {
+                "icon": "search",
+                "action": "Open search/filter dialog"
+              },
+              {
+                "icon": "add/fab",
+                "action": "Navigate to CreateScheduleScreen",
+                "visibility": "Always visible"
+              }
+            ]
+          },
+          {
+            "type": "SearchBar",
+            "placeholder": "Search by vessel name or voyage number",
+            "action": "Call API with search parameter"
+          },
+          {
+            "type": "FilterChips",
+            "filters": [
+              "By Carrier",
+              "By Start Port",
+              "By End Port",
+              "By Status"
+            ],
+            "action": "Open filter bottom sheet/dialog"
+          },
+          {
+            "type": "RecyclerView/ListView",
+            "item_layout": "schedule_item_card.xml",
+            "item_fields": [
+              "Vessel Name (bold, large)",
+              "Voyage No (medium)",
+              "Start Port → End Port (with arrow icon)",
+              "ETA (formatted date)",
+              "Status (colored badge/chip)",
+              "Carrier 1 name (if available)",
+              "Stopover count badge (if > 0)"
+            ],
+            "click_action": "Navigate to ScheduleDetailScreen",
+            "long_press_action": "Show context menu (Edit/Delete)",
+            "swipe_action": "Delete (if user is admin/manager)"
+          },
+          {
+            "type": "Pagination",
+            "implementation": "Load more on scroll or pagination controls",
+            "api_parameter": "page"
+          },
+          {
+            "type": "EmptyState",
+            "message": "No schedules found",
+            "icon": "empty calendar icon",
+            "action_button": "Create First Schedule"
+          }
+        ],
+        "api_calls": [
+          "GET /schedules with filters and pagination",
+          "GET /ports (for filter dropdowns)",
+          "GET /shipping-companies (for filter dropdowns)"
+        ]
+      },
+      "schedule_detail_screen": {
+        "name": "ScheduleDetailActivity/Fragment",
+        "description": "Display full schedule details with expandable stopovers",
+        "components": [
+          {
+            "type": "Toolbar",
+            "content": "Schedule Details",
+            "actions": [
+              {
+                "icon": "edit",
+                "action": "Navigate to EditScheduleScreen",
+                "visibility": "Always visible"
+              },
+              {
+                "icon": "delete",
+                "action": "Show delete confirmation dialog",
+                "visibility": "Only for admin/manager"
+              }
+            ]
+          },
+          {
+            "type": "ScrollView",
+            "sections": [
+              {
+                "section_title": "Basic Information",
+                "fields": [
+                  "Vessel Name",
+                  "Voyage No",
+                  "Start Port (with port type badge)",
+                  "End Port (with port type badge)",
+                  "ETA (formatted)",
+                  "Status (colored badge)",
+                  "Comment (if available)"
+                ]
+              },
+              {
+                "section_title": "Carriers",
+                "fields": [
+                  "Carrier 1 (if available)",
+                  "Carrier 2 (if available)",
+                  "Carrier 3 (if available)"
+                ],
+                "layout": "Horizontal chips or list"
+              },
+              {
+                "section_title": "Stopovers",
+                "type": "ExpandableSection",
+                "header": "Stopovers (count)",
+                "expandable_content": {
+                  "type": "RecyclerView",
+                  "item_layout": "stopover_item.xml",
+                  "item_fields": [
+                    "Port Name (with port type)",
+                    "Arrival (ETA) - formatted date",
+                    "Departure (ETD) - formatted date",
+                    "Status badge"
+                  ],
+                  "click_action": "Navigate to EditStopoverScreen",
+                  "long_press_action": "Delete stopover (if admin/manager)"
+                },
+                "add_button": {
+                  "text": "Add Stopover",
+                  "action": "Navigate to CreateStopoverScreen with schedule_id"
+                }
+              },
+              {
+                "section_title": "Metadata",
+                "fields": [
+                  "Added By (user name)",
+                  "Created At (formatted)",
+                  "Updated At (formatted)"
+                ],
+                "style": "Small text, gray color"
+              }
+            ]
+          }
+        ],
+        "api_calls": [
+          "GET /schedules/{schedule_id} (with all relationships)"
+        ]
+      },
+      "create_schedule_screen": {
+        "name": "CreateScheduleActivity/Fragment",
+        "description": "Form to create a new schedule",
+        "components": [
+          {
+            "type": "Toolbar",
+            "content": "Create Schedule",
+            "actions": [
+              {
+                "icon": "close/cancel",
+                "action": "Close/Dismiss"
+              }
+            ]
+          },
+          {
+            "type": "Form",
+            "fields": [
+              {
+                "name": "vessel_name",
+                "type": "TextInput",
+                "label": "Vessel Name",
+                "hint": "Enter vessel name",
+                "required": true,
+                "validation": "Required, max 255 characters"
+              },
+              {
+                "name": "voyage_no",
+                "type": "TextInput",
+                "label": "Voyage No",
+                "hint": "Enter voyage number",
+                "required": true,
+                "validation": "Required, max 255 characters"
+              },
+              {
+                "name": "carrier_1_id",
+                "type": "Spinner/Dropdown",
+                "label": "Carrier 1",
+                "required": false,
+                "data_source": "GET /shipping-companies?status=Active",
+                "display_field": "line_name",
+                "value_field": "id"
+              },
+              {
+                "name": "carrier_2_id",
+                "type": "Spinner/Dropdown",
+                "label": "Carrier 2 (Optional)",
+                "required": false,
+                "data_source": "GET /shipping-companies?status=Active",
+                "display_field": "line_name",
+                "value_field": "id",
+                "note": "Can be disabled/hidden if not needed"
+              },
+              {
+                "name": "carrier_3_id",
+                "type": "Spinner/Dropdown",
+                "label": "Carrier 3 (Optional)",
+                "required": false,
+                "data_source": "GET /shipping-companies?status=Active",
+                "display_field": "line_name",
+                "value_field": "id",
+                "note": "Can be disabled/hidden if not needed"
+              },
+              {
+                "name": "start_port_id",
+                "type": "Spinner/Dropdown",
+                "label": "Start Port",
+                "required": true,
+                "data_source": "GET /ports?port_type=Local Port",
+                "display_field": "port_name",
+                "value_field": "id",
+                "searchable": true
+              },
+              {
+                "name": "end_port_id",
+                "type": "Spinner/Dropdown",
+                "label": "End Port",
+                "required": true,
+                "data_source": "GET /ports?port_type=Local Port",
+                "display_field": "port_name",
+                "value_field": "id",
+                "searchable": true
+              },
+              {
+                "name": "eta",
+                "type": "DatePicker",
+                "label": "ETA (Estimated Time of Arrival)",
+                "required": true,
+                "validation": "Required, valid date"
+              },
+              {
+                "name": "status",
+                "type": "Spinner/Dropdown",
+                "label": "Status",
+                "required": false,
+                "options": [
+                  "Waiting",
+                  "In Transit",
+                  "Arrived",
+                  "Completed",
+                  "Cancelled"
+                ],
+                "default": "Waiting"
+              },
+              {
+                "name": "comment",
+                "type": "MultiLineTextInput",
+                "label": "Comment",
+                "hint": "Enter comment (optional)",
+                "required": false,
+                "lines": 3
+              }
+            ]
+          },
+          {
+            "type": "ActionButtons",
+            "buttons": [
+              {
+                "text": "Cancel",
+                "style": "Outlined",
+                "action": "Dismiss/Go back"
+              },
+              {
+                "text": "Create Schedule",
+                "style": "Primary/Filled",
+                "action": "Validate and POST /schedules",
+                "loading_state": "Show progress indicator"
+              }
+            ]
+          }
+        ],
+        "api_calls": [
+          "GET /ports?port_type=Local Port (on screen load)",
+          "GET /shipping-companies?status=Active (on screen load)",
+          "POST /schedules (on submit)"
+        ],
+        "validation": [
+          "Validate all required fields before submission",
+          "Show error messages below each field",
+          "Disable submit button during API call",
+          "Show success message and navigate to ScheduleDetailScreen on success",
+          "Show error toast/alert on failure"
+        ]
+      },
+      "edit_schedule_screen": {
+        "name": "EditScheduleActivity/Fragment",
+        "description": "Form to edit an existing schedule (same as create but pre-filled)",
+        "components": [
+          "Same as CreateScheduleScreen but:",
+          "- Pre-fill all fields with existing schedule data",
+          "- Change title to 'Edit Schedule'",
+          "- Change submit button text to 'Update Schedule'",
+          "- Use PUT /schedules/{schedule_id} instead of POST"
+        ],
+        "api_calls": [
+          "GET /schedules/{schedule_id} (on screen load to populate form)",
+          "PUT /schedules/{schedule_id} (on submit)"
+        ]
+      },
+      "create_stopover_screen": {
+        "name": "CreateStopoverActivity/Fragment",
+        "description": "Form to add a stopover to a schedule",
+        "components": [
+          {
+            "type": "Toolbar",
+            "content": "Add Stopover",
+            "actions": [
+              {
+                "icon": "close/cancel",
+                "action": "Close/Dismiss"
+              }
+            ]
+          },
+          {
+            "type": "Form",
+            "fields": [
+              {
+                "name": "port_id",
+                "type": "Spinner/Dropdown",
+                "label": "Port",
+                "required": true,
+                "data_source": "GET /ports?port_type=Local Port,Overseas Port (or fetch all and filter client-side)",
+                "display_field": "port_name (with port_type in parentheses)",
+                "value_field": "id",
+                "searchable": true
+              },
+              {
+                "name": "stopover_eta",
+                "type": "DatePicker",
+                "label": "Arrival (ETA)",
+                "required": false,
+                "validation": "Valid date if provided"
+              },
+              {
+                "name": "stopover_etd",
+                "type": "DatePicker",
+                "label": "Departure (ETD)",
+                "required": false,
+                "validation": "Valid date if provided, must be >= stopover_eta"
+              },
+              {
+                "name": "status",
+                "type": "Spinner/Dropdown",
+                "label": "Status",
+                "required": false,
+                "options": [
+                  "Waiting",
+                  "In Transit",
+                  "Arrived",
+                  "Completed",
+                  "Cancelled"
+                ],
+                "default": "Waiting"
+              }
+            ]
+          },
+          {
+            "type": "ActionButtons",
+            "buttons": [
+              {
+                "text": "Cancel",
+                "style": "Outlined",
+                "action": "Dismiss/Go back"
+              },
+              {
+                "text": "Add Stopover",
+                "style": "Primary/Filled",
+                "action": "Validate and POST /schedules/{schedule_id}/stopovers",
+                "loading_state": "Show progress indicator"
+              }
+            ]
+          }
+        ],
+        "api_calls": [
+          "GET /ports (on screen load)",
+          "POST /schedules/{schedule_id}/stopovers (on submit)"
+        ],
+        "notes": [
+          "schedule_id comes from navigation parameter/intent extra",
+          "After successful creation, refresh ScheduleDetailScreen or navigate back with result"
+        ]
+      },
+      "edit_stopover_screen": {
+        "name": "EditStopoverActivity/Fragment",
+        "description": "Form to edit an existing stopover",
+        "components": [
+          "Same as CreateStopoverScreen but:",
+          "- Pre-fill all fields with existing stopover data",
+          "- Change title to 'Edit Stopover'",
+          "- Change submit button text to 'Update Stopover'",
+          "- Use PUT /stopovers/{stopover_id} instead of POST"
+        ],
+        "api_calls": [
+          "GET /stopovers/{stopover_id} (on screen load to populate form)",
+          "PUT /stopovers/{stopover_id} (on submit)"
+        ]
+      }
+    }
+  },
+
+  "implementation_steps": {
+    "step_1": {
+      "title": "Update Authentication",
+      "description": "Update login flow to handle vendor information",
+      "tasks": [
+        "Update login API call to parse vendor object from response",
+        "Store vendor information in SharedPreferences or local database",
+        "Update user model/data class to include vendor field",
+        "Display vendor name in navigation drawer/header",
+        "Update 'me' endpoint call to refresh vendor information"
+      ],
+      "code_example": {
+        "language": "kotlin",
+        "snippet": "// Example: Update User data class\n data class User(\n     val id: Int,\n     val name: String,\n     val email: String,\n     val role: String,\n     val vendor: Vendor? = null\n )\n\n data class Vendor(\n     val id: Int,\n     val name: String,\n     val email: String?,\n     val phone: String?,\n     val address: String?,\n     val status: String\n )"
+      }
+    },
+    "step_2": {
+      "title": "Create Data Models",
+      "description": "Create data classes for Schedule and Stopover",
+      "tasks": [
+        "Create Schedule data class with all fields",
+        "Create Stopover data class with all fields",
+        "Create Port data class (if not exists)",
+        "Create ShippingCompany data class (if not exists)",
+        "Use Retrofit/Gson/Moshi for JSON parsing",
+        "Handle nullable fields properly"
+      ],
+      "code_example": {
+        "language": "kotlin",
+        "snippet": "// Example: Schedule data class\n data class Schedule(\n     @SerializedName(\"id\") val id: Int,\n     @SerializedName(\"vessel_name\") val vesselName: String,\n     @SerializedName(\"voyage_no\") val voyageNo: String,\n     @SerializedName(\"carrier_1\") val carrier1: Carrier?,\n     @SerializedName(\"carrier_2\") val carrier2: Carrier?,\n     @SerializedName(\"carrier_3\") val carrier3: Carrier?,\n     @SerializedName(\"start_port\") val startPort: Port,\n     @SerializedName(\"end_port\") val endPort: Port,\n     @SerializedName(\"eta\") val eta: String,\n     @SerializedName(\"status\") val status: String,\n     @SerializedName(\"comment\") val comment: String?,\n     @SerializedName(\"stopovers\") val stopovers: List<Stopover>,\n     @SerializedName(\"added_by\") val addedBy: User?,\n     @SerializedName(\"created_at\") val createdAt: String,\n     @SerializedName(\"updated_at\") val updatedAt: String\n )\n\n data class Carrier(\n     @SerializedName(\"id\") val id: Int,\n     @SerializedName(\"line_name\") val lineName: String\n )"
+      }
+    },
+    "step_3": {
+      "title": "Create API Service Interface",
+      "description": "Define Retrofit interface for schedule endpoints",
+      "tasks": [
+        "Create ScheduleApiService interface",
+        "Define all endpoint methods with proper annotations",
+        "Handle request/response types",
+        "Include error handling"
+      ],
+      "code_example": {
+        "language": "kotlin",
+        "snippet": "// Example: Retrofit interface\n interface ScheduleApiService {\n     @GET(\"schedules\")\n     suspend fun getSchedules(\n         @Query(\"search\") search: String? = null,\n         @Query(\"vessel_name\") vesselName: String? = null,\n         @Query(\"carrier_id\") carrierId: Int? = null,\n         @Query(\"start_port_id\") startPortId: Int? = null,\n         @Query(\"end_port_id\") endPortId: Int? = null,\n         @Query(\"per_page\") perPage: Int = 15,\n         @Query(\"page\") page: Int = 1\n     ): Response<ApiResponse<ScheduleListResponse>>\n\n     @POST(\"schedules\")\n     suspend fun createSchedule(\n         @Body request: CreateScheduleRequest\n     ): Response<ApiResponse<ScheduleResponse>>\n\n     @GET(\"schedules/{id}\")\n     suspend fun getSchedule(\n         @Path(\"id\") id: Int\n     ): Response<ApiResponse<ScheduleResponse>>\n\n     @PUT(\"schedules/{id}\")\n     suspend fun updateSchedule(\n         @Path(\"id\") id: Int,\n         @Body request: UpdateScheduleRequest\n     ): Response<ApiResponse<ScheduleResponse>>\n\n     @DELETE(\"schedules/{id}\")\n     suspend fun deleteSchedule(\n         @Path(\"id\") id: Int\n     ): Response<ApiResponse<EmptyResponse>>\n }"
+      }
+    },
+    "step_4": {
+      "title": "Add Navigation Menu Item",
+      "description": "Add 'Shipment Schedule' to side drawer menu",
+      "tasks": [
+        "Add menu item to navigation drawer XML",
+        "Set icon (ship/calendar icon)",
+        "Set title: 'Shipment Schedule'",
+        "Handle click to navigate to ScheduleListScreen",
+        "Update navigation graph if using Navigation Component"
+      ]
+    },
+    "step_5": {
+      "title": "Implement Schedule List Screen",
+      "description": "Create the main list screen",
+      "tasks": [
+        "Create ScheduleListActivity/Fragment",
+        "Implement RecyclerView with ScheduleAdapter",
+        "Create schedule_item_card.xml layout",
+        "Implement search functionality",
+        "Implement filter bottom sheet/dialog",
+        "Implement pagination (load more on scroll)",
+        "Handle empty state",
+        "Handle loading state",
+        "Handle error state",
+        "Implement pull-to-refresh",
+        "Handle item click to navigate to detail screen",
+        "Handle long press for context menu (Edit/Delete)"
+      ]
+    },
+    "step_6": {
+      "title": "Implement Schedule Detail Screen",
+      "description": "Create detail screen with expandable stopovers",
+      "tasks": [
+        "Create ScheduleDetailActivity/Fragment",
+        "Design layout with sections",
+        "Implement expandable stopovers section",
+        "Create stopover_item.xml layout",
+        "Handle edit button click",
+        "Handle delete button click (with confirmation)",
+        "Handle add stopover button click",
+        "Handle stopover item click to edit",
+        "Handle stopover long press to delete"
+      ]
+    },
+    "step_7": {
+      "title": "Implement Create/Edit Schedule Screen",
+      "description": "Create form screen for schedule creation/editing",
+      "tasks": [
+        "Create CreateScheduleActivity/Fragment",
+        "Create EditScheduleActivity/Fragment (or reuse with mode parameter)",
+        "Design form layout with all fields",
+        "Implement dropdowns for ports and carriers",
+        "Load ports and carriers data on screen load",
+        "Cache ports and carriers data locally",
+        "Implement date picker for ETA",
+        "Implement form validation",
+        "Handle form submission",
+        "Show loading state during API call",
+        "Handle success/error responses",
+        "Navigate to detail screen on success"
+      ]
+    },
+    "step_8": {
+      "title": "Implement Create/Edit Stopover Screen",
+      "description": "Create form screen for stopover creation/editing",
+      "tasks": [
+        "Create CreateStopoverActivity/Fragment",
+        "Create EditStopoverActivity/Fragment (or reuse with mode parameter)",
+        "Design form layout",
+        "Load ports data (Local + Overseas)",
+        "Implement date pickers for ETA and ETD",
+        "Implement validation (ETD >= ETA)",
+        "Handle form submission",
+        "Refresh detail screen on success"
+      ]
+    },
+    "step_9": {
+      "title": "Implement Repository Pattern",
+      "description": "Create repository for data management",
+      "tasks": [
+        "Create ScheduleRepository",
+        "Implement caching strategy",
+        "Handle API calls",
+        "Handle error cases",
+        "Implement offline support (optional)"
+      ]
+    },
+    "step_10": {
+      "title": "Testing and Polish",
+      "description": "Test all functionality and polish UI",
+      "tasks": [
+        "Test all CRUD operations",
+        "Test error handling",
+        "Test loading states",
+        "Test empty states",
+        "Test pagination",
+        "Test search and filters",
+        "Test stopover management",
+        "Polish UI/UX",
+        "Add animations/transitions",
+        "Test on different screen sizes"
+      ]
+    }
+  },
+
+  "ui_guidelines": {
+    "colors": {
+      "status_waiting": "#F59E0B (amber/orange)",
+      "status_in_transit": "#3B82F6 (blue)",
+      "status_arrived": "#10B981 (green)",
+      "status_completed": "#6B7280 (gray)",
+      "status_cancelled": "#EF4444 (red)"
+    },
+    "icons": {
+      "schedule": "ship/calendar icon",
+      "vessel": "ship icon",
+      "port": "location/map pin icon",
+      "carrier": "truck/transport icon",
+      "stopover": "waypoint/marker icon",
+      "eta": "clock/calendar icon",
+      "add": "plus icon",
+      "edit": "pencil icon",
+      "delete": "trash icon"
+    },
+    "typography": {
+      "vessel_name": "Bold, 18-20sp",
+      "voyage_no": "Medium, 14-16sp",
+      "port_names": "Regular, 14sp",
+      "dates": "Regular, 12-14sp",
+      "status_badges": "Medium, 12sp"
+    },
+    "spacing": {
+      "card_padding": "16dp",
+      "item_spacing": "8-12dp",
+      "section_spacing": "24dp"
+    }
+  },
+
+  "error_handling": {
+    "network_errors": {
+      "no_internet": "Show 'No internet connection' message",
+      "timeout": "Show 'Request timeout' message",
+      "server_error": "Show 'Server error' message"
+    },
+    "api_errors": {
+      "401_unauthorized": "Redirect to login screen",
+      "403_forbidden": "Show 'You don't have permission' message",
+      "404_not_found": "Show 'Schedule not found' message",
+      "422_validation": "Show field-specific error messages",
+      "500_server_error": "Show 'Server error, please try again' message"
+    },
+    "user_feedback": {
+      "success_messages": "Show success toast/snackbar",
+      "error_messages": "Show error toast/snackbar with retry option",
+      "loading_indicators": "Show progress bar/dialog during API calls"
+    }
+  },
+
+  "best_practices": {
+    "api_calls": [
+      "Use Retrofit with Coroutines for async API calls",
+      "Implement proper error handling",
+      "Show loading indicators during API calls",
+      "Cache frequently accessed data (ports, carriers)",
+      "Implement pagination for large lists",
+      "Use proper HTTP methods (GET, POST, PUT, DELETE)"
+    ],
+    "ui_ux": [
+      "Show empty states when no data",
+      "Show loading states during data fetch",
+      "Implement pull-to-refresh",
+      "Use Material Design components",
+      "Follow Android design guidelines",
+      "Handle back navigation properly",
+      "Show confirmation dialogs for destructive actions"
+    ],
+    "data_management": [
+      "Use ViewModel for UI-related data",
+      "Use Repository pattern for data access",
+      "Cache data locally when appropriate",
+      "Handle offline scenarios gracefully",
+      "Sync data when connection is restored"
+    ],
+    "security": [
+      "Store authentication token securely",
+      "Never log sensitive data",
+      "Validate all user inputs",
+      "Handle token expiration gracefully"
+    ]
+  },
+
+  "notes": [
+    "Schedules are global resources - all users can see all schedules (not vendor-scoped)",
+    "Ports and Shipping Companies are also global resources",
+    "Only admin and manager roles can delete schedules and stopovers",
+    "All users can create and edit schedules",
+    "Vendor information is only for display purposes (showing company name in UI)",
+    "The app doesn't need CRUD for ports and shipping companies - only read access for dropdowns",
+    "Use proper date formatting (YYYY-MM-DD for API, user-friendly format for display)",
+    "Handle timezone properly for date/time fields",
+    "Implement proper validation on client side before API calls",
+    "Show user-friendly error messages",
+    "Consider implementing offline support for better UX"
+  ]
+}

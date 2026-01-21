@@ -6,8 +6,8 @@
     openStopoverModal(stopoverId = null, scheduleId = null) {
         $wire.$dispatch('open-stopover-modal', { stopoverId: stopoverId, scheduleId: scheduleId })
     },
-    confirmDeleteSchedule(scheduleId, vesselName = null) {
-        return window.confirmDelete(scheduleId, vesselName);
+    confirmDeleteSchedule(scheduleId, vesselName = null, warnings = null) {
+        return window.confirmDelete(scheduleId, vesselName, warnings);
     },
     confirmDeleteStopover(stopoverId, portName = null) {
         return window.confirmDelete(stopoverId, portName);
@@ -162,7 +162,7 @@
                 </thead>
                 <tbody class="divide-y divide-gray-200/50 dark:divide-gray-700/50">
                     @forelse($schedules as $index => $schedule)
-                        <tr class="group transition-all duration-200 hover:bg-gradient-to-r hover:from-blue-50/50 hover:to-teal-50/50 dark:hover:from-blue-900/10 dark:hover:to-teal-900/10">
+                        <tr wire:key="schedule-row-{{ $schedule->id }}" class="group transition-all duration-200 hover:bg-gradient-to-r hover:from-blue-50/50 hover:to-teal-50/50 dark:hover:from-blue-900/10 dark:hover:to-teal-900/10">
                             <!-- S/N -->
                             <td class="whitespace-nowrap px-3 md:px-6 py-3 md:py-5 text-center">
                                 <span class="text-xs md:text-sm font-semibold text-gray-600 dark:text-gray-400">{{ $schedules->firstItem() + $index }}</span>
@@ -257,7 +257,14 @@
 
                                     <!-- Delete Button -->
                                     @if($canDelete)
-                                        <button @click="confirmDeleteSchedule({{ $schedule->id }}, '{{ addslashes($schedule->vessel_name) }}').then((result) => { if (result.isConfirmed) { $wire.$dispatch('delete-schedule', { scheduleId: {{ $schedule->id }} }) } })" type="button" class="group relative flex items-center justify-center rounded-lg border-2 border-red-700/60 bg-red-500/10 p-1.5 transition-all duration-200 hover:border-red-700 hover:bg-red-500/20 hover:shadow-lg hover:shadow-red-700/30" title="{{ __('Delete Schedule') }}">
+                                        @php
+                                            $stopoverCount = $schedule->stopovers()->count();
+                                            $warnings = [];
+                                            if ($stopoverCount > 0) {
+                                                $warnings[] = __(':count stopover(s)', ['count' => $stopoverCount]);
+                                            }
+                                        @endphp
+                                        <button @click="confirmDeleteSchedule({{ $schedule->id }}, '{{ addslashes($schedule->vessel_name) }}', @js($warnings)).then((result) => { if (result.isConfirmed) { $wire.$dispatch('delete-schedule', { scheduleId: {{ $schedule->id }} }) } })" type="button" class="group relative flex items-center justify-center rounded-lg border-2 border-red-700/60 bg-red-500/10 p-1.5 transition-all duration-200 hover:border-red-700 hover:bg-red-500/20 hover:shadow-lg hover:shadow-red-700/30" title="{{ __('Delete Schedule') }}">
                                             <svg class="h-3.5 w-3.5 md:h-4 md:w-4 text-red-700 transition-all duration-200 group-hover:text-red-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
                                             </svg>
@@ -268,8 +275,8 @@
                         </tr>
 
                         <!-- Expandable Stopovers Row -->
-                        <tr x-show="isExpanded({{ $schedule->id }})" x-collapse class="bg-gray-50/50 dark:bg-gray-800/30">
-                            <td colspan="6" class="px-3 md:px-6 py-4">
+                        <tr wire:key="schedule-expand-{{ $schedule->id }}" x-show="isExpanded({{ $schedule->id }})" x-collapse class="bg-gray-50/50 dark:bg-gray-800/30">
+                            <td colspan="7" class="px-3 md:px-6 py-4">
                                 <div class="ml-8 md:ml-12 border-l-2 border-blue-300 dark:border-blue-700 pl-4 md:pl-6">
                                     <div class="flex items-center justify-between mb-3">
                                         <div class="flex items-center gap-2">
@@ -298,7 +305,7 @@
                                             </thead>
                                             <tbody class="divide-y divide-gray-200/50 dark:divide-gray-700/50">
                                                 @forelse($schedule->stopovers as $stopover)
-                                                    <tr class="hover:bg-gray-100/50 dark:hover:bg-gray-700/30">
+                                                    <tr wire:key="stopover-{{ $stopover->id }}" class="hover:bg-gray-100/50 dark:hover:bg-gray-700/30">
                                                         <td class="px-3 py-2 whitespace-nowrap">
                                                             <div class="flex items-center gap-2">
                                                                 <svg class="h-4 w-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">

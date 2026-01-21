@@ -54,18 +54,29 @@ class Index extends Component
     }
 
     #[On('delete-vendor')]
-    public function deleteVendor(array $payload, VendorService $vendorService): void
+    public function deleteVendor($vendorId = null, ?VendorService $vendorService = null): void
     {
-        $vendorId = $payload['vendorId'] ?? null;
-        if ($vendorId) {
-            try {
-                $vendor = $vendorService->getById($vendorId);
-                $vendorService->delete($vendor);
-                $this->dispatch('notify', message: __('Vendor deleted successfully.'), type: 'success');
-            } catch (\Exception $e) {
-                \Log::error('Vendor delete error: '.$e->getMessage());
-                $this->dispatch('notify', message: __('An error occurred while deleting the vendor.'), type: 'error');
+        // Handle both direct vendorId parameter and object/array with vendorId property
+        if (is_array($vendorId)) {
+            $vendorId = $vendorId['vendorId'] ?? null;
+        } elseif (is_object($vendorId)) {
+            $vendorId = $vendorId->vendorId ?? null;
+        }
+
+        if (! $vendorId) {
+            return;
+        }
+
+        try {
+            if (! $vendorService) {
+                $vendorService = app(VendorService::class);
             }
+            $vendor = $vendorService->getById($vendorId);
+            $vendorService->delete($vendor);
+            $this->dispatch('notify', message: __('Vendor deleted successfully.'), type: 'success');
+        } catch (\Exception $e) {
+            \Log::error('Vendor delete error: '.$e->getMessage());
+            $this->dispatch('notify', message: __('An error occurred while deleting the vendor.'), type: 'error');
         }
     }
 

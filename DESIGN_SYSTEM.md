@@ -43,7 +43,66 @@ The design system uses 4 primary color variants:
 
 All cards and containers use a consistent shadow system with colored shadows for visual depth.
 
-### **Standard Card Shadow Pattern**
+### **Standard Dashboard Card Shadow Pattern** ⭐ (Recommended)
+
+All dashboard cards (Task Status Chart, Members Card, Stats Cards, Date/Time Card) use this standardized shadow pattern:
+
+```blade
+<!-- Base shadow with colored tint -->
+shadow-xl shadow-{color}-200/40 dark:shadow-{color}-900/30
+
+<!-- Hover state shadow -->
+hover:shadow-2xl hover:shadow-{color}-300/50 dark:hover:shadow-{color}-800/40
+```
+
+### **Shadow by Variant**
+
+| Variant | Default Shadow | Hover Shadow |
+|---------|---------------|--------------|
+| Blue | `shadow-xl shadow-blue-200/40` | `hover:shadow-2xl hover:shadow-blue-300/50` |
+| Emerald | `shadow-xl shadow-emerald-200/40` | `hover:shadow-2xl hover:shadow-emerald-300/50` |
+| Violet | `shadow-xl shadow-violet-200/40` | `hover:shadow-2xl hover:shadow-violet-300/50` |
+| Amber | `shadow-xl shadow-amber-200/40` | `hover:shadow-2xl hover:shadow-amber-300/50` |
+| Indigo | `shadow-xl shadow-indigo-200/40` | `hover:shadow-2xl hover:shadow-indigo-300/50` |
+| Gray (neutral) | `shadow-xl shadow-gray-200/40` | `hover:shadow-2xl hover:shadow-gray-300/50` |
+
+### **Dark Mode Shadows**
+
+```blade
+<!-- Dark mode default -->
+dark:shadow-{color}-900/30
+
+<!-- Dark mode hover -->
+dark:hover:shadow-{color}-800/40
+```
+
+### **Standard Dashboard Card Structure**
+
+All dashboard cards follow this consistent structure:
+
+```blade
+<div class="dashboard-card group relative overflow-hidden rounded-xl sm:rounded-2xl border border-{color}-300/50 bg-white/60 p-4 sm:p-5 lg:p-6 shadow-xl shadow-{color}-200/40 backdrop-blur-xl transition-all duration-300 hover:border-{color}-400/60 hover:shadow-2xl hover:shadow-{color}-300/50 dark:border-{color}-800/50 dark:bg-gray-800/60 dark:shadow-{color}-900/30 dark:hover:border-{color}-700 dark:hover:shadow-{color}-800/40">
+    <!-- Decorative blur circles - larger and more spread -->
+    <div class="pointer-events-none absolute -right-6 sm:-right-12 -top-6 sm:-top-12 h-24 sm:h-48 w-24 sm:w-48 rounded-full bg-gradient-to-br from-{color}-400/30 to-{color2}-400/30 blur-3xl"></div>
+    <div class="pointer-events-none absolute -bottom-6 sm:-bottom-12 -left-6 sm:-left-12 h-24 sm:h-48 w-24 sm:w-48 rounded-full bg-gradient-to-br from-{color2}-400/30 to-{color}-400/30 blur-3xl"></div>
+    
+    <div class="relative z-10">
+        <!-- Card content -->
+    </div>
+</div>
+```
+
+**Key Features**:
+- **Shadow**: `shadow-xl` (not `shadow-md`) with `/40` opacity for stronger depth
+- **Hover Shadow**: `hover:shadow-2xl` (not `hover:shadow-lg`) with `/50` opacity
+- **Decorative Blur Circles**: Larger (`h-24 sm:h-48 w-24 sm:w-48`) with `blur-3xl` (not `blur-2xl`)
+- **Border Opacity**: `/50` for borders, `/60` on hover
+- **Background**: `bg-white/60` with `backdrop-blur-xl` for glass morphism effect
+- **Consistent Spacing**: All cards use same padding pattern `p-4 sm:p-5 lg:p-6`
+
+### **Legacy Card Pattern** (Deprecated)
+
+For non-dashboard cards, the lighter shadow pattern may still be used:
 
 ```blade
 <!-- Base shadow with colored tint -->
@@ -53,33 +112,26 @@ shadow-md shadow-{color}-100/50 dark:shadow-{color}-900/20
 hover:shadow-lg hover:shadow-{color}-200/50 dark:hover:shadow-{color}-800/30
 ```
 
-### **Shadow by Variant**
+**Note**: New dashboard cards should use the standard pattern above, not the legacy pattern.
 
-| Variant | Default Shadow | Hover Shadow |
-|---------|---------------|--------------|
-| Blue | `shadow-md shadow-blue-100/50` | `hover:shadow-lg hover:shadow-blue-200/50` |
-| Emerald | `shadow-md shadow-emerald-100/50` | `hover:shadow-lg hover:shadow-emerald-200/50` |
-| Violet | `shadow-md shadow-violet-100/50` | `hover:shadow-lg hover:shadow-violet-200/50` |
-| Amber | `shadow-md shadow-amber-100/50` | `hover:shadow-lg hover:shadow-amber-200/50` |
-| Gray (neutral) | `shadow-md shadow-gray-100/50` | `hover:shadow-lg hover:shadow-gray-200/50` |
+### **Standardized Dashboard Cards**
 
-### **Dark Mode Shadows**
+All dashboard cards have been refactored to use the same shadow, border, and decorative blur circle patterns:
 
-```blade
-<!-- Dark mode default -->
-dark:shadow-{color}-900/20
+| Card | Status | Variant | Notes |
+|------|--------|---------|-------|
+| Task Status Donut Chart | ✅ Standardized | Emerald | Uses standard shadow pattern |
+| Members Card | ✅ Standardized | Blue | Uses standard shadow pattern |
+| Stats Cards (`<x-stats-card>`) | ✅ Standardized | Blue/Emerald/Amber/Violet | Component updated for all variants |
+| Date & Time Card | ✅ Standardized | Indigo | Uses standard shadow pattern |
+| Welcome Card | ✅ Standardized | Blue | Gradient background (special case) |
 
-<!-- Dark mode hover -->
-dark:hover:shadow-{color}-800/30
-```
-
-### **Complete Card Example**
-
-```blade
-<div class="group relative overflow-hidden rounded-2xl border border-{color}-200 bg-white/50 p-6 shadow-md shadow-{color}-100/50 backdrop-blur-sm transition-all duration-300 hover:border-{color}-300 hover:shadow-lg hover:shadow-{color}-200/50 dark:border-{color}-900/50 dark:bg-gray-800/50 dark:shadow-{color}-900/20 dark:hover:border-{color}-800 dark:hover:shadow-{color}-800/30">
-    <!-- Card content -->
-</div>
-```
+**All cards now share**:
+- Same shadow: `shadow-xl shadow-{color}-200/40` → `hover:shadow-2xl hover:shadow-{color}-300/50`
+- Same border opacity: `border-{color}-300/50` → `hover:border-{color}-400/60`
+- Same decorative blur circles: `h-24 sm:h-48 w-24 sm:w-48` with `blur-3xl`
+- Same dark mode shadows: `dark:shadow-{color}-900/30` → `dark:hover:shadow-{color}-800/40`
+- Same background: `bg-white/60` with `backdrop-blur-xl` (except Welcome Card which uses gradient)
 
 ### **Small Element Shadows (Status indicators, badges)**
 
@@ -412,13 +464,26 @@ Three levels of blur and shadow intensity for different visual hierarchy needs.
 </div>
 ```
 
-### **Level 2: Enhanced Cards** (Recommended for Dashboard)
+### **Level 2: Enhanced Cards** ⭐ (Standard for Dashboard - REQUIRED)
+
+**All dashboard cards must use this pattern** (Task Status Chart, Members Card, Stats Cards, Date/Time Card).
 
 ```blade
-<div class="... border-{color}-300/50 bg-white/60 shadow-xl shadow-{color}-200/40 backdrop-blur-xl hover:shadow-2xl hover:shadow-{color}-300/50 ...">
-    <div class="... h-48 w-48 ... blur-3xl"></div>
+<div class="dashboard-card group relative overflow-hidden rounded-xl sm:rounded-2xl border border-{color}-300/50 bg-white/60 p-4 sm:p-5 lg:p-6 shadow-xl shadow-{color}-200/40 backdrop-blur-xl transition-all duration-300 hover:border-{color}-400/60 hover:shadow-2xl hover:shadow-{color}-300/50 dark:border-{color}-800/50 dark:bg-gray-800/60 dark:shadow-{color}-900/30 dark:hover:border-{color}-700 dark:hover:shadow-{color}-800/40">
+    <!-- Decorative blur circles - larger and more spread -->
+    <div class="pointer-events-none absolute -right-6 sm:-right-12 -top-6 sm:-top-12 h-24 sm:h-48 w-24 sm:w-48 rounded-full bg-gradient-to-br from-{color}-400/30 to-{color2}-400/30 blur-3xl"></div>
+    <div class="pointer-events-none absolute -bottom-6 sm:-bottom-12 -left-6 sm:-left-12 h-24 sm:h-48 w-24 sm:w-48 rounded-full bg-gradient-to-br from-{color2}-400/30 to-{color}-400/30 blur-3xl"></div>
+    <div class="relative z-10">
+        <!-- Card content -->
+    </div>
 </div>
 ```
+
+**Standardized Cards**:
+- ✅ Task Status Donut Chart
+- ✅ Members Card
+- ✅ Stats Cards (`<x-stats-card>`)
+- ✅ Date & Time Card
 
 ### **Level 3: Premium Cards** (Hero Sections)
 

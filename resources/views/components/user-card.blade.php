@@ -15,7 +15,7 @@
                             </span>
                         </div>
                     @endif
-                    <div class="absolute -bottom-1 -right-1 h-4 w-4 rounded-full border-2 border-white bg-green-500 dark:border-gray-900"></div>
+                    <div class="absolute -bottom-1 -right-1 h-4 w-4 rounded-full border-2 border-white bg-emerald-500 dark:border-gray-900"></div>
                 </div>
                 <div class="min-w-0 flex-1">
                     <div class="text-base font-bold text-gray-900 dark:text-white whitespace-nowrap truncate">
@@ -25,7 +25,7 @@
                         <flux:badge :color="match($user->role) {
                             'admin' => 'red',
                             'manager' => 'blue',
-                            'employee' => 'green',
+                            'employee' => 'emerald',
                             default => 'gray',
                         }" size="sm" class="font-semibold whitespace-nowrap">
                             {{ ucfirst($user->role) }}

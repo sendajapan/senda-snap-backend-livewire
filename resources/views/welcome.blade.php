@@ -4,10 +4,16 @@
         @include('partials.head')
         <title>{{ config('app.name') }} - Vehicle Management & Task Scheduling</title>
     </head>
-    <body class="min-h-screen bg-white antialiased dark:bg-linear-to-b dark:from-neutral-950 dark:to-neutral-900">
+    <body class="landing-page min-h-screen bg-white antialiased dark:bg-zinc-800">
+        <!-- Mouse Spotlight Effect (Dark Mode Only) -->
+        <div id="mouse-spotlight" class="fixed pointer-events-none" style="z-index: 9999;"></div>
+        
+        <!-- Vintage Dark Corners Overlay (Dark Mode Only) -->
+        <div id="vintage-corners" class="fixed inset-0 pointer-events-none z-10 opacity-0 dark:opacity-100 transition-opacity duration-300"></div>
+        
         <!-- Top Navigation -->
-        <nav class="fixed top-0 left-0 right-0 z-50 border-b border-gray-200/50 bg-white/95 backdrop-blur-md dark:border-gray-800/50 dark:bg-gray-900/95 shadow-sm" x-data="{ mobileMenuOpen: false }">
-            <div class="mx-auto max-w-[1600px] px-4 sm:px-6 lg:px-8 xl:px-10 2xl:px-12 py-3 sm:py-4">
+        <nav class="fixed top-0 left-0 right-0 z-50 border-b border-gray-200/50 bg-white/95 backdrop-blur-md dark:border-zinc-700/50 dark:bg-zinc-900/95 shadow-sm" x-data="{ mobileMenuOpen: false }">
+            <div class="mx-auto max-w-[1600px] 2xl:max-w-[1920px] landing-nav-container px-4 sm:px-6 lg:px-8 xl:px-10 2xl:px-12 py-3 sm:py-4">
                 <div class="flex items-center justify-between">
                     <div class="flex items-center gap-8">
                         <a href="{{ route('home') }}" class="flex items-center group">
@@ -89,100 +95,102 @@
         </nav>
 
         <!-- Hero Section -->
-        <div class="relative min-h-screen max-h-[100vh] pt-24 pb-12 overflow-hidden">
+        <div class="relative min-h-screen w-full landing-hero pt-20 sm:pt-24 pb-8 sm:pb-12 lg:pb-16 overflow-hidden">
             <!-- Particle Background -->
             <canvas id="particle-canvas" class="fixed inset-0 -z-10 pointer-events-none"></canvas>
+            <!-- Dark smoke particles canvas -->
+            <canvas id="smoke-canvas" class="fixed inset-0 -z-5 pointer-events-none"></canvas>
 
-            <div class="mx-auto max-w-[1600px] 2xl:max-w-none h-full px-4 sm:px-6 lg:px-8 xl:px-10 2xl:px-12 main-content-padding">
+            <div class="mx-auto max-w-[1600px] 2xl:max-w-[1920px] landing-container h-full px-4 sm:px-6 lg:px-8 xl:px-10 2xl:px-12 relative z-20">
                 <!-- Hero Content -->
-                <div class="text-center mb-6 sm:mb-8 lg:mb-10 mt-8 sm:mt-12 lg:mt-16">
-                    <h1 class="mb-3 sm:mb-4 lg:mb-5 text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white">
+                <div class="text-center mb-4 sm:mb-5 lg:mb-6 landing-hero-content mt-8 sm:mt-10 lg:mt-12 xl:mt-16">
+                    <h1 class="mb-2 sm:mb-3 landing-title text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white leading-tight">
                         {{ __('Manage Vehicles & Tasks') }}
                         <span class="block bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">
                             {{ __('Seamlessly') }}
                         </span>
                     </h1>
-                    <p class="mx-auto max-w-3xl text-base sm:text-lg lg:text-xl text-gray-600 dark:text-gray-400 px-4">
+                    <p class="mx-auto max-w-2xl landing-subtitle text-sm sm:text-base lg:text-lg text-gray-600 dark:text-gray-400 px-4 leading-relaxed">
                         {{ __('Comprehensive web dashboard and Android app for vehicle management, task scheduling, and team collaboration.') }}
                     </p>
                 </div>
 
                 <!-- Features and Screenshots Side by Side -->
-                <div class="relative grid gap-8 sm:gap-10 lg:grid-cols-2 lg:gap-12 xl:gap-16 items-start lg:items-center min-h-[500px] sm:min-h-[600px] lg:min-h-[650px]">
+                <div class="relative grid gap-4 sm:gap-5 lg:gap-6 landing-grid lg:grid-cols-2 items-center justify-items-center">
                     <!-- Features Section (Left) -->
-                    <div class="relative z-20 space-y-5 sm:space-y-6 lg:space-y-8">
+                    <div class="relative z-20 max-w-lg landing-features space-y-3 sm:space-y-4 lg:space-y-5 w-full flex flex-col">
                         <!-- Web Features -->
-                        <div class="rounded-2xl border border-violet-200 bg-gradient-to-br from-white via-violet-50/30 to-purple-50/30 p-5 sm:p-6 lg:p-7 xl:p-8 shadow-xl dark:border-violet-900/50 dark:from-gray-900 dark:via-violet-900/20 dark:to-purple-900/20">
-                            <div class="mb-3 flex items-center gap-3">
-                                <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 shadow-lg">
-                                    <svg class="h-4 w-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div class="rounded-2xl border border-violet-200 bg-gradient-to-br from-white via-violet-50/30 to-purple-50/30 p-5 sm:p-6 lg:p-7 shadow-xl dark:border-violet-900/50 dark:from-gray-900 dark:via-violet-900/20 dark:to-purple-900/20 landing-feature-card">
+                            <div class="mb-2 sm:mb-3 flex items-center gap-2">
+                                <div class="flex h-8 w-8 sm:h-9 sm:w-9 lg:h-10 lg:w-10 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 shadow-lg">
+                                    <svg class="h-4 w-4 sm:h-4 sm:w-4 lg:h-5 lg:w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                                     </svg>
                                 </div>
-                                <h2 class="text-lg font-bold text-gray-900 dark:text-white">{{ __('Web Dashboard') }}</h2>
+                                <h2 class="text-base sm:text-lg lg:text-xl font-bold text-gray-900 dark:text-white">{{ __('Web Dashboard') }}</h2>
                             </div>
-                            <ul class="space-y-1.5 text-sm text-gray-700 dark:text-gray-300">
-                                <li class="flex items-start gap-2">
-                                    <svg class="h-4 w-4 flex-shrink-0 mt-0.5 text-violet-600 dark:text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <ul class="space-y-1.5 text-xs sm:text-sm lg:text-base text-gray-700 dark:text-gray-300">
+                                <li class="flex items-start gap-1.5">
+                                    <svg class="h-3.5 w-3.5 sm:h-4 sm:w-4 flex-shrink-0 mt-0.5 text-violet-600 dark:text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                                     </svg>
-                                    <span>{{ __('Comprehensive dashboard with real-time statistics and charts') }}</span>
+                                    <span class="leading-relaxed">{{ __('Comprehensive dashboard with real-time statistics and charts') }}</span>
                                 </li>
-                                <li class="flex items-start gap-2">
-                                    <svg class="h-4 w-4 flex-shrink-0 mt-0.5 text-violet-600 dark:text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <li class="flex items-start gap-1.5">
+                                    <svg class="h-3.5 w-3.5 sm:h-4 sm:w-4 flex-shrink-0 mt-0.5 text-violet-600 dark:text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                                     </svg>
-                                    <span>{{ __('User, task, and vehicle management with advanced filtering') }}</span>
+                                    <span class="leading-relaxed">{{ __('User, task, and vehicle management with advanced filtering') }}</span>
                                 </li>
-                                <li class="flex items-start gap-2">
-                                    <svg class="h-4 w-4 flex-shrink-0 mt-0.5 text-violet-600 dark:text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <li class="flex items-start gap-1.5">
+                                    <svg class="h-3.5 w-3.5 sm:h-4 sm:w-4 flex-shrink-0 mt-0.5 text-violet-600 dark:text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                                     </svg>
-                                    <span>{{ __('Role-based access control and permissions') }}</span>
+                                    <span class="leading-relaxed">{{ __('Role-based access control and permissions') }}</span>
                                 </li>
-                                <li class="flex items-start gap-2">
-                                    <svg class="h-4 w-4 flex-shrink-0 mt-0.5 text-violet-600 dark:text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <li class="flex items-start gap-1.5">
+                                    <svg class="h-3.5 w-3.5 sm:h-4 sm:w-4 flex-shrink-0 mt-0.5 text-violet-600 dark:text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                                     </svg>
-                                    <span>{{ __('File attachments and document management') }}</span>
+                                    <span class="leading-relaxed">{{ __('File attachments and document management') }}</span>
                                 </li>
                             </ul>
                         </div>
 
                         <!-- Android Features -->
-                        <div class="rounded-2xl border border-emerald-200 bg-gradient-to-br from-white via-emerald-50/30 to-teal-50/30 p-5 sm:p-6 lg:p-7 xl:p-8 shadow-xl dark:border-emerald-900/50 dark:from-gray-900 dark:via-emerald-900/20 dark:to-teal-900/20">
-                            <div class="mb-3 flex items-center gap-3">
-                                <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 shadow-lg">
-                                    <svg class="h-4 w-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div class="rounded-2xl border border-emerald-200 bg-gradient-to-br from-white via-emerald-50/30 to-teal-50/30 p-5 sm:p-6 lg:p-7 shadow-xl dark:border-emerald-900/50 dark:from-gray-900 dark:via-emerald-900/20 dark:to-teal-900/20 landing-feature-card">
+                            <div class="mb-2 sm:mb-3 flex items-center gap-2">
+                                <div class="flex h-8 w-8 sm:h-9 sm:w-9 lg:h-10 lg:w-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 shadow-lg">
+                                    <svg class="h-4 w-4 sm:h-4 sm:w-4 lg:h-5 lg:w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
                                     </svg>
                                 </div>
-                                <h2 class="text-lg font-bold text-gray-900 dark:text-white">{{ __('Android App') }}</h2>
+                                <h2 class="text-base sm:text-lg lg:text-xl font-bold text-gray-900 dark:text-white">{{ __('Android App') }}</h2>
                             </div>
-                            <ul class="space-y-1.5 text-sm text-gray-700 dark:text-gray-300">
-                                <li class="flex items-start gap-2">
-                                    <svg class="h-4 w-4 flex-shrink-0 mt-0.5 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <ul class="space-y-1.5 text-xs sm:text-sm lg:text-base text-gray-700 dark:text-gray-300">
+                                <li class="flex items-start gap-1.5">
+                                    <svg class="h-3.5 w-3.5 sm:h-4 sm:w-4 flex-shrink-0 mt-0.5 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                                     </svg>
-                                    <span>{{ __('Vehicle search and management on the go') }}</span>
+                                    <span class="leading-relaxed">{{ __('Vehicle search and management on the go') }}</span>
                                 </li>
-                                <li class="flex items-start gap-2">
-                                    <svg class="h-4 w-4 flex-shrink-0 mt-0.5 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <li class="flex items-start gap-1.5">
+                                    <svg class="h-3.5 w-3.5 sm:h-4 sm:w-4 flex-shrink-0 mt-0.5 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                                     </svg>
-                                    <span>{{ __('Task and schedule management with notifications') }}</span>
+                                    <span class="leading-relaxed">{{ __('Task and schedule management with notifications') }}</span>
                                 </li>
-                                <li class="flex items-start gap-2">
-                                    <svg class="h-4 w-4 flex-shrink-0 mt-0.5 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <li class="flex items-start gap-1.5">
+                                    <svg class="h-3.5 w-3.5 sm:h-4 sm:w-4 flex-shrink-0 mt-0.5 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                                     </svg>
-                                    <span>{{ __('Real-time team chat and communication') }}</span>
+                                    <span class="leading-relaxed">{{ __('Real-time team chat and communication') }}</span>
                                 </li>
-                                <li class="flex items-start gap-2">
-                                    <svg class="h-4 w-4 flex-shrink-0 mt-0.5 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <li class="flex items-start gap-1.5">
+                                    <svg class="h-3.5 w-3.5 sm:h-4 sm:w-4 flex-shrink-0 mt-0.5 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                                     </svg>
-                                    <span>{{ __('Camera integration for vehicle documentation') }}</span>
+                                    <span class="leading-relaxed">{{ __('Camera integration for vehicle documentation') }}</span>
                                 </li>
                             </ul>
                         </div>
@@ -191,31 +199,33 @@
                         <a href="https://play.google.com/store/apps/details?id=com.sendajapan.sendasnap" 
                            target="_blank"
                            rel="noopener noreferrer"
-                           class="group block rounded-2xl border border-emerald-200 bg-gradient-to-br from-white via-emerald-50/30 to-teal-50/30 p-5 sm:p-6 lg:p-7 xl:p-8 shadow-xl transition-all hover:scale-[1.02] hover:shadow-2xl hover:shadow-emerald-500/20 dark:border-emerald-900/50 dark:from-gray-900 dark:via-emerald-900/20 dark:to-teal-900/20 dark:hover:shadow-emerald-500/10">
+                           class="group block rounded-2xl border border-emerald-200 bg-gradient-to-br from-white via-emerald-50/30 to-teal-50/30 p-5 sm:p-6 lg:p-7 shadow-xl transition-all hover:scale-[1.02] hover:shadow-2xl hover:shadow-emerald-500/20 dark:border-emerald-900/50 dark:from-gray-900 dark:via-emerald-900/20 dark:to-teal-900/20 dark:hover:shadow-emerald-500/10 landing-feature-card">
                             <div class="flex flex-col items-center text-center">
                                 <!-- App Icon -->
                                 <div class="mb-4 sm:mb-5 lg:mb-6 flex h-20 w-20 sm:h-24 sm:w-24 lg:h-28 lg:w-28 items-center justify-center transition-transform group-hover:scale-110 relative">
+                                    <!-- Faded white smoke background -->
+                                    <div class="absolute inset-0 rounded-3xl bg-gradient-to-br from-white/40 via-white/30 to-white/20 dark:from-white/50 dark:via-white/40 dark:to-white/30 backdrop-blur-sm shadow-lg"></div>
                                     <img src="https://play-lh.googleusercontent.com/WXLRHhKAqge_MSE5lTZewLN53eVVwQGwS-3mT6eb0rzAeVz2Pp5mrw_3sDk1dxUPZkOopFGW1qEfTz5e5WRT=w480-h960-rw" 
                                          alt="{{ __('Senda Snap App Icon') }}"
-                                         class="h-full w-full rounded-3xl object-cover app-icon-fade">
+                                         class="relative h-full w-full rounded-3xl object-cover app-icon-fade dark:brightness-125 dark:contrast-110 z-10">
                                 </div>
                                 
                                 <!-- App Information -->
                                 <h3 class="mb-1 sm:mb-2 text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 dark:text-white">{{ __('Senda Snap') }}</h3>
-                                <p class="mb-3 sm:mb-4 text-xs sm:text-sm text-gray-600 dark:text-gray-400">
+                                <p class="mb-3 sm:mb-4 text-xs sm:text-sm lg:text-base text-gray-600 dark:text-gray-400 px-2">
                                     {{ __('Your Complete Vehicle Image Management & Team Collaboration Solution') }}
                                 </p>
                                 
                                 <!-- App Details -->
-                                <div class="mb-4 sm:mb-5 lg:mb-6 flex flex-wrap items-center justify-center gap-3 sm:gap-4 text-xs text-gray-500 dark:text-gray-400">
+                                <div class="mb-4 sm:mb-5 lg:mb-6 flex flex-wrap items-center justify-center gap-3 sm:gap-4 text-xs sm:text-sm text-gray-500 dark:text-gray-400">
                                     <div class="flex items-center gap-1">
-                                        <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
+                                        <svg class="h-4 w-4 sm:h-5 sm:w-5" fill="currentColor" viewBox="0 0 24 24">
                                             <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4M12,6A6,6 0 0,0 6,12A6,6 0 0,0 12,18A6,6 0 0,0 18,12A6,6 0 0,0 12,6M12,8A4,4 0 0,1 16,12A4,4 0 0,1 12,16A4,4 0 0,1 8,12A4,4 0 0,1 12,8Z" />
                                         </svg>
                                         <span>{{ __('10+ Downloads') }}</span>
                                     </div>
                                     <div class="flex items-center gap-1">
-                                        <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
+                                        <svg class="h-4 w-4 sm:h-5 sm:w-5" fill="currentColor" viewBox="0 0 24 24">
                                             <path d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.46,13.97L5.82,21L12,17.27Z" />
                                         </svg>
                                         <span>{{ __('Everyone') }}</span>
@@ -228,8 +238,8 @@
                                          alt="{{ __('Get it on Google Play') }}"
                                          class="h-10 sm:h-12 lg:h-14 transition-transform group-hover:scale-105"
                                          onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                                    <div class="hidden items-center gap-2 rounded-lg bg-gradient-to-r from-emerald-600 to-teal-600 px-6 py-3 text-sm font-semibold text-white shadow-md transition-all group-hover:from-emerald-700 group-hover:to-teal-700 group-hover:shadow-lg">
-                                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+                                    <div class="hidden items-center gap-2 rounded-lg bg-gradient-to-r from-emerald-600 to-teal-600 px-4 sm:px-6 py-2 sm:py-3 text-xs sm:text-sm lg:text-base font-semibold text-white shadow-md transition-all group-hover:from-emerald-700 group-hover:to-teal-700 group-hover:shadow-lg">
+                                        <svg class="h-5 w-5 sm:h-6 sm:w-6" viewBox="0 0 24 24" fill="currentColor">
                                             <path d="M3,20.5V3.5C3,2.91 3.34,2.39 3.84,2.15L13.69,12L3.84,21.85C3.34,21.6 3,21.09 3,20.5M16.81,15.12L6.05,21.34L14.54,12.85L16.81,15.12M20.16,10.81C20.5,11.08 20.75,11.5 20.75,12C20.75,12.5 20.5,12.92 20.16,13.19L17.19,15.53L15.12,13.46L17.47,12L15.12,10.54L17.19,8.47L20.16,10.81M6.05,2.66L16.81,8.88L14.54,11.15L6.05,2.66Z" />
                                         </svg>
                                         <span>{{ __('Get it on Google Play') }}</span>
@@ -240,9 +250,9 @@
                     </div>
 
                     <!-- Screenshots Section (Right) -->
-                    <div class="relative flex items-center justify-center lg:justify-end">
+                    <div class="relative flex items-center justify-center w-full z-30">
                         <!-- Monitor Mockup -->
-                        <div class="relative z-0 -mr-12 hidden lg:block">
+                        <div class="relative z-30 -mr-12 hidden lg:block">
                             <div class="monitor-mockup">
                                 <div class="monitor-frame">
                                     <div class="monitor-screen">
@@ -255,7 +265,7 @@
                         </div>
 
                         <!-- Mobile Mockup (Overlapping) -->
-                        <div class="relative z-10">
+                        <div class="relative z-40">
                             <div class="phone-mockup">
                                 <div class="phone-frame">
                                     <div class="phone-screen">
@@ -281,11 +291,11 @@
             }
 
             .monitor-frame {
-                width: 540px;
+                width: 480px;
                 max-width: 100%;
                 background: #ffffff;
                 border-radius: 12px;
-                padding: 14px;
+                padding: 12px;
                 box-shadow:
                     0 4px 20px rgba(0, 0, 0, 0.1),
                     0 0 0 1px rgba(0, 0, 0, 0.05),
@@ -293,19 +303,36 @@
                 position: relative;
             }
 
-            @media (min-width: 1920px) {
+            /* FHD: Compact sizing */
+            @media (min-width: 1920px) and (max-width: 2559px) {
+                .monitor-frame {
+                    width: 450px;
+                    padding: 10px;
+                }
+            }
+
+            /* 2K and 4K: Larger sizing */
+            @media (min-width: 2560px) {
                 .monitor-frame {
                     width: 600px;
                     padding: 16px;
                 }
             }
 
+            @media (min-width: 3840px) {
+                .monitor-frame {
+                    width: 700px;
+                    padding: 18px;
+                }
+            }
+
             .dark .monitor-frame {
-                background: #f5f5f5;
+                background: rgba(245, 245, 245, 0.95);
+                backdrop-filter: blur(10px);
                 box-shadow:
                     0 4px 20px rgba(0, 0, 0, 0.3),
-                    0 0 0 1px rgba(255, 255, 255, 0.1),
-                    inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+                    0 0 0 1px rgba(255, 255, 255, 0.2),
+                    inset 0 0 0 1px rgba(255, 255, 255, 0.1);
             }
 
             .monitor-frame::before {
@@ -381,7 +408,7 @@
             }
 
             .phone-frame {
-                width: 250px;
+                width: 220px;
                 max-width: 100%;
                 background: transparent;
                 border-radius: 32px;
@@ -390,9 +417,23 @@
                 position: relative;
             }
 
-            @media (min-width: 1920px) {
+            /* FHD: Compact sizing */
+            @media (min-width: 1920px) and (max-width: 2559px) {
+                .phone-frame {
+                    width: 200px;
+                }
+            }
+
+            /* 2K and 4K: Larger sizing */
+            @media (min-width: 2560px) {
                 .phone-frame {
                     width: 280px;
+                }
+            }
+
+            @media (min-width: 3840px) {
+                .phone-frame {
+                    width: 320px;
                 }
             }
 
@@ -460,6 +501,19 @@
                     width: 180px;
                 }
             }
+
+            /* Custom breakpoints for 2K and 4K */
+            @media (min-width: 2560px) {
+                .phone-mockup {
+                    padding: 16px;
+                }
+            }
+
+            @media (min-width: 3840px) {
+                .phone-mockup {
+                    padding: 20px;
+                }
+            }
         </style>
 
         <script>
@@ -504,14 +558,28 @@
                     }
                 };
 
+                // Mouse position tracking
+                let mouseX = canvas.width / 2;
+                let mouseY = canvas.height / 2;
+                let isMouseMoving = false;
+
+                document.addEventListener('mousemove', (e) => {
+                    mouseX = e.clientX;
+                    mouseY = e.clientY;
+                    isMouseMoving = true;
+                    setTimeout(() => { isMouseMoving = false; }, 2000);
+                });
+
                 class Particle {
                     constructor() {
                         this.x = Math.random() * canvas.width;
                         this.y = Math.random() * canvas.height;
                         this.size = Math.random() * 2 + 0.5;
-                        this.speedX = (Math.random() - 0.5) * 0.5;
-                        this.speedY = (Math.random() - 0.5) * 0.5;
+                        this.speedX = (Math.random() - 0.5) * 1.0;
+                        this.speedY = (Math.random() - 0.5) * 1.0;
                         this.opacity = Math.random() * 0.5 + 0.2;
+                        this.baseX = this.x;
+                        this.baseY = this.y;
 
                         const isDark = document.documentElement.classList.contains('dark');
                         const palette = isDark ? colorPalettes.dark : colorPalettes.light;
@@ -520,9 +588,33 @@
                     }
 
                     update() {
+                        // Mouse interaction - particles move away from mouse
+                        const dx = this.x - mouseX;
+                        const dy = this.y - mouseY;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+                        const maxDistance = 150;
+                        const repulsionStrength = 0.3;
+
+                        if (distance < maxDistance && isMouseMoving) {
+                            const force = (maxDistance - distance) / maxDistance;
+                            const angle = Math.atan2(dy, dx);
+                            this.speedX += Math.cos(angle) * force * repulsionStrength;
+                            this.speedY += Math.sin(angle) * force * repulsionStrength;
+                        }
+
+                        // Continuous automatic movement - apply speed with minimal damping
                         this.x += this.speedX;
                         this.y += this.speedY;
+                        this.speedX *= 0.99;
+                        this.speedY *= 0.99;
 
+                        // If speed gets too low, add some random movement
+                        if (Math.abs(this.speedX) < 0.1 && Math.abs(this.speedY) < 0.1) {
+                            this.speedX += (Math.random() - 0.5) * 0.2;
+                            this.speedY += (Math.random() - 0.5) * 0.2;
+                        }
+
+                        // Wrap around edges
                         if (this.x > canvas.width) this.x = 0;
                         if (this.x < 0) this.x = canvas.width;
                         if (this.y > canvas.height) this.y = 0;
@@ -552,14 +644,15 @@
                             const dy = particles[i].y - particles[j].y;
                             const distance = Math.sqrt(dx * dx + dy * dy);
 
-                            if (distance < 120) {
+                            if (distance < 150) {
                                 ctx.beginPath();
                                 const gradient = ctx.createLinearGradient(
                                     particles[i].x, particles[i].y,
                                     particles[j].x, particles[j].y
                                 );
-                                gradient.addColorStop(0, `rgba(${particles[i].color}, ${0.3 * (1 - distance / 120)})`);
-                                gradient.addColorStop(1, `rgba(${particles[j].color}, ${0.3 * (1 - distance / 120)})`);
+                                const opacity = 0.4 * (1 - distance / 150);
+                                gradient.addColorStop(0, `rgba(${particles[i].color}, ${opacity})`);
+                                gradient.addColorStop(1, `rgba(${particles[j].color}, ${opacity})`);
                                 ctx.strokeStyle = gradient;
                                 ctx.lineWidth = 0.5;
                                 ctx.moveTo(particles[i].x, particles[i].y);
@@ -573,12 +666,13 @@
                 function animate() {
                     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+                    // Draw connections first so particles appear on top
+                    drawConnections();
+
                     particles.forEach(particle => {
                         particle.update();
                         particle.draw();
                     });
-
-                    drawConnections();
 
                     animationId = requestAnimationFrame(animate);
                 }
@@ -592,6 +686,309 @@
                     }
                 });
             });
+
+            // Dark Smoke Particles Animation (React to Mouse)
+            document.addEventListener('DOMContentLoaded', function() {
+                const smokeCanvas = document.getElementById('smoke-canvas');
+                if (!smokeCanvas) return;
+
+                const ctx = smokeCanvas.getContext('2d');
+                let smokeParticles = [];
+                let animationId;
+                let mouseX = window.innerWidth / 2;
+                let mouseY = window.innerHeight / 2;
+
+                function resizeCanvas() {
+                    smokeCanvas.width = window.innerWidth;
+                    smokeCanvas.height = window.innerHeight;
+                }
+                resizeCanvas();
+                window.addEventListener('resize', resizeCanvas);
+
+                // Track mouse position
+                document.addEventListener('mousemove', (e) => {
+                    mouseX = e.clientX;
+                    mouseY = e.clientY;
+                });
+
+                class SmokeParticle {
+                    constructor() {
+                        this.x = Math.random() * smokeCanvas.width;
+                        this.y = Math.random() * smokeCanvas.height;
+                        this.size = Math.random() * 80 + 40;
+                        this.speedX = (Math.random() - 0.5) * 0.3;
+                        this.speedY = (Math.random() - 0.5) * 0.3;
+                        this.opacity = Math.random() * 0.08 + 0.02;
+                        this.baseX = this.x;
+                        this.baseY = this.y;
+                    }
+
+                    update() {
+                        // Mouse interaction - smoke moves away from mouse
+                        const dx = this.x - mouseX;
+                        const dy = this.y - mouseY;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+                        const maxDistance = 200;
+                        const repulsionStrength = 0.5;
+
+                        if (distance < maxDistance) {
+                            const force = (maxDistance - distance) / maxDistance;
+                            const angle = Math.atan2(dy, dx);
+                            this.speedX += Math.cos(angle) * force * repulsionStrength;
+                            this.speedY += Math.sin(angle) * force * repulsionStrength;
+                        }
+
+                        // Apply speed with damping
+                        this.x += this.speedX;
+                        this.y += this.speedY;
+                        this.speedX *= 0.95;
+                        this.speedY *= 0.95;
+
+                        // Wrap around edges
+                        if (this.x > smokeCanvas.width + this.size) this.x = -this.size;
+                        if (this.x < -this.size) this.x = smokeCanvas.width + this.size;
+                        if (this.y > smokeCanvas.height + this.size) this.y = -this.size;
+                        if (this.y < -this.size) this.y = smokeCanvas.height + this.size;
+                    }
+
+                    draw() {
+                        ctx.beginPath();
+                        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                        const gradient = ctx.createRadialGradient(
+                            this.x, this.y, 0,
+                            this.x, this.y, this.size
+                        );
+                        gradient.addColorStop(0, `rgba(0, 0, 0, ${this.opacity * 0.5})`);
+                        gradient.addColorStop(0.5, `rgba(0, 0, 0, ${this.opacity * 0.25})`);
+                        gradient.addColorStop(1, `rgba(0, 0, 0, 0)`);
+                        ctx.fillStyle = gradient;
+                        ctx.fill();
+                    }
+                }
+
+                function initSmokeParticles() {
+                    smokeParticles = [];
+                    const particleCount = Math.floor((smokeCanvas.width * smokeCanvas.height) / 20000);
+                    for (let i = 0; i < particleCount; i++) {
+                        smokeParticles.push(new SmokeParticle());
+                    }
+                }
+
+                function animate() {
+                    ctx.clearRect(0, 0, smokeCanvas.width, smokeCanvas.height);
+
+                    smokeParticles.forEach(particle => {
+                        particle.update();
+                        particle.draw();
+                    });
+
+                    animationId = requestAnimationFrame(animate);
+                }
+
+                // Only show smoke in dark mode
+                function checkDarkMode() {
+                    const isDark = document.documentElement.classList.contains('dark');
+                    smokeCanvas.style.opacity = isDark ? '1' : '0';
+                }
+
+                checkDarkMode();
+                const observer = new MutationObserver(checkDarkMode);
+                observer.observe(document.documentElement, {
+                    attributes: true,
+                    attributeFilter: ['class']
+                });
+
+                initSmokeParticles();
+                animate();
+
+                window.addEventListener('beforeunload', () => {
+                    if (animationId) {
+                        cancelAnimationFrame(animationId);
+                    }
+                });
+            });
+
+            // Mouse Spotlight Script (Dark Mode Only) for Landing Page
+            (function() {
+                const spotlight = document.getElementById('mouse-spotlight');
+                if (!spotlight) return;
+
+                let mouseX = 0;
+                let mouseY = 0;
+                let isDarkMode = false;
+                let currentColor = null;
+
+                // Color mappings for spotlight gradients (matching design system)
+                const colorMappings = {
+                    'blue': {
+                        primary: '96, 165, 250',
+                        secondary: '34, 211, 238',
+                        opacity: 0.2
+                    },
+                    'emerald': {
+                        primary: '52, 211, 153',
+                        secondary: '45, 212, 191',
+                        opacity: 0.2
+                    },
+                    'amber': {
+                        primary: '251, 191, 36',
+                        secondary: '251, 146, 60',
+                        opacity: 0.2
+                    },
+                    'violet': {
+                        primary: '167, 139, 250',
+                        secondary: '192, 132, 252',
+                        opacity: 0.2
+                    },
+                    'indigo': {
+                        primary: '129, 140, 248',
+                        secondary: '167, 139, 250',
+                        opacity: 0.2
+                    },
+                    'red': {
+                        primary: '248, 113, 113',
+                        secondary: '251, 113, 133',
+                        opacity: 0.2
+                    },
+                    'cyan': {
+                        primary: '34, 211, 238',
+                        secondary: '96, 165, 250',
+                        opacity: 0.2
+                    },
+                    'teal': {
+                        primary: '45, 212, 191',
+                        secondary: '52, 211, 153',
+                        opacity: 0.2
+                    },
+                    'purple': {
+                        primary: '192, 132, 252',
+                        secondary: '167, 139, 250',
+                        opacity: 0.2
+                    },
+                    'orange': {
+                        primary: '251, 146, 60',
+                        secondary: '251, 191, 36',
+                        opacity: 0.2
+                    },
+                    'rose': {
+                        primary: '251, 113, 133',
+                        secondary: '248, 113, 113',
+                        opacity: 0.2
+                    },
+                    'default': {
+                        primary: '255, 255, 255',
+                        secondary: '255, 255, 255',
+                        opacity: 0.15
+                    }
+                };
+
+                // Detect color from element classes
+                function detectColor(element) {
+                    if (!element) return null;
+
+                    let current = element;
+                    let depth = 0;
+                    const maxDepth = 5;
+
+                    while (current && depth < maxDepth) {
+                        const classes = current.className || '';
+                        
+                        const colorMatch = classes.match(/border-(blue|emerald|amber|violet|indigo|red|cyan|teal|purple|orange|rose)-\d+/);
+                        if (colorMatch) {
+                            return colorMatch[1];
+                        }
+
+                        const bgMatch = classes.match(/bg-(blue|emerald|amber|violet|indigo|red|cyan|teal|purple|orange|rose)-\d+/);
+                        if (bgMatch) {
+                            return bgMatch[1];
+                        }
+
+                        const textMatch = classes.match(/text-(blue|emerald|amber|violet|indigo|red|cyan|teal|purple|orange|rose)-\d+/);
+                        if (textMatch) {
+                            return textMatch[1];
+                        }
+
+                        const shadowMatch = classes.match(/shadow-(blue|emerald|amber|violet|indigo|red|cyan|teal|purple|orange|rose)-\d+/);
+                        if (shadowMatch) {
+                            return shadowMatch[1];
+                        }
+
+                        current = current.parentElement;
+                        depth++;
+                    }
+
+                    return null;
+                }
+
+                // Update spotlight color
+                function updateSpotlightColor(color) {
+                    if (currentColor === color) return;
+                    currentColor = color;
+
+                    const colorConfig = colorMappings[color] || colorMappings['default'];
+                    const gradient = `radial-gradient(circle, rgba(${colorConfig.primary}, ${colorConfig.opacity}) 0%, rgba(${colorConfig.secondary}, ${colorConfig.opacity * 0.6}) 30%, transparent 70%)`;
+                    spotlight.style.background = gradient;
+                }
+
+                // Check if dark mode is active
+                function checkDarkMode() {
+                    isDarkMode = document.documentElement.classList.contains('dark');
+                    if (!isDarkMode) {
+                        spotlight.style.opacity = '0';
+                    } else {
+                        spotlight.style.opacity = '1';
+                    }
+                }
+
+                // Update spotlight position and color
+                function updateSpotlight(e) {
+                    if (!isDarkMode) return;
+                    
+                    mouseX = e.clientX;
+                    mouseY = e.clientY;
+                    
+                    spotlight.style.left = mouseX + 'px';
+                    spotlight.style.top = mouseY + 'px';
+
+                    // Detect color from element under cursor
+                    const elementUnderCursor = document.elementFromPoint(mouseX, mouseY);
+                    const detectedColor = detectColor(elementUnderCursor);
+                    updateSpotlightColor(detectedColor);
+                }
+
+                // Hide spotlight when mouse leaves window
+                function hideSpotlight() {
+                    if (spotlight) {
+                        spotlight.style.opacity = '0';
+                        currentColor = null;
+                    }
+                }
+
+                // Show spotlight when mouse enters window
+                function showSpotlight() {
+                    if (spotlight && isDarkMode) {
+                        spotlight.style.opacity = '1';
+                    }
+                }
+
+                // Initialize with default color
+                updateSpotlightColor(null);
+
+                // Initialize
+                checkDarkMode();
+                
+                // Listen for mouse movement
+                document.addEventListener('mousemove', updateSpotlight);
+                document.addEventListener('mouseenter', showSpotlight);
+                document.addEventListener('mouseleave', hideSpotlight);
+                
+                // Watch for dark mode changes
+                const observer = new MutationObserver(checkDarkMode);
+                observer.observe(document.documentElement, {
+                    attributes: true,
+                    attributeFilter: ['class']
+                });
+            })();
         </script>
         @fluxScripts
     </body>

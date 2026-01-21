@@ -1,18 +1,26 @@
 <?php
 
-use App\Models\Task;
 use App\Models\User;
 use App\Models\Vehicle;
+use App\Services\TaskService;
 use Livewire\Volt\Component;
 
-new class extends Component {
+new class extends Component
+{
     public string $title = '';
+
     public string $description = '';
+
     public string $work_date = '';
+
     public string $work_time = '';
+
     public string $priority = 'medium';
+
     public string $vehicle_id = '';
+
     public string $assigned_to = '';
+
     public string $due_date = '';
 
     public function rules(): array
@@ -31,17 +39,38 @@ new class extends Component {
 
     public function with(): array
     {
+        $user = auth()->user();
+        $usersQuery = User::query();
+
+        // Scope users by vendor (admin can see all)
+        if ($user && $user->role !== 'admin' && $user->vendor_id) {
+            $usersQuery->where('vendor_id', $user->vendor_id);
+        }
+
         return [
             'vehicles' => Vehicle::orderBy('serial_number')->get(),
-            'users' => User::orderBy('name')->get(),
+            'users' => $usersQuery->orderBy('name')->get(),
         ];
     }
 
-    public function save(): void
+    public function save(TaskService $taskService): void
     {
         $validated = $this->validate();
-        $validated['created_by'] = auth()->id();
-        Task::create($validated);
+
+        $data = [
+            'title' => $validated['title'],
+            'description' => $validated['description'] ?? null,
+            'work_date' => $validated['work_date'],
+            'work_time' => $validated['work_time'],
+            'priority' => $validated['priority'],
+            'due_date' => $validated['due_date'] ?? null,
+            'created_by' => auth()->id(),
+        ];
+
+        $assignedUserIds = $validated['assigned_to'] ? [$validated['assigned_to']] : [];
+
+        $taskService->create($data, $assignedUserIds);
+
         session()->flash('success', 'Task created successfully.');
         $this->redirect(route('tasks.index'), navigate: true);
     }

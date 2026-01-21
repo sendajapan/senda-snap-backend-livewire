@@ -277,14 +277,14 @@
                         <!-- Expandable Stopovers Row -->
                         <tr wire:key="schedule-expand-{{ $schedule->id }}" x-show="isExpanded({{ $schedule->id }})" x-collapse class="bg-gray-50/50 dark:bg-gray-800/30">
                             <td colspan="7" class="px-3 md:px-6 py-4">
-                                <div class="ml-8 md:ml-12 border-l-2 border-blue-300 dark:border-blue-700 pl-4 md:pl-6">
+                                <div class="ml-8 md:ml-12 border-l-2 border-dashed border-amber-400 dark:border-amber-600 pl-4 md:pl-6">
                                     <div class="flex items-center justify-between mb-3">
                                         <div class="flex items-center gap-2">
-                                            <svg class="h-5 w-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <svg class="h-5 w-5 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                                             </svg>
-                                            <h4 class="text-sm font-bold text-gray-900 dark:text-white">{{ __('Stopovers') }}</h4>
+                                            <h4 class="text-sm font-bold text-amber-900 dark:text-amber-200">{{ __('Stopovers') }}</h4>
                                         </div>
                                         @if($schedule->stopovers->count() === 0)
                                             <flux:button @click="openStopoverModal(null, {{ $schedule->id }})" size="sm" variant="outline" icon="plus">
@@ -293,22 +293,26 @@
                                         @endif
                                     </div>
 
-                                    <div class="overflow-x-auto">
+                                    <div class="overflow-x-auto rounded-lg border-2 border-amber-300 bg-amber-50 dark:border-amber-700 dark:bg-amber-900/20 p-3 shadow-md shadow-amber-200/50 dark:shadow-amber-900/30">
                                         <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                                             <thead>
-                                                <tr class="bg-gray-100/50 dark:bg-gray-700/50">
+                                                <tr class="bg-amber-200/70 dark:bg-amber-800/50">
+                                                    <th class="px-3 py-2 text-center text-xs font-semibold uppercase text-gray-700 dark:text-gray-300 w-16">{{ __('S/N') }}</th>
                                                     <th class="px-3 py-2 text-left text-xs font-semibold uppercase text-gray-700 dark:text-gray-300">{{ __('Port') }}</th>
                                                     <th class="px-3 py-2 text-left text-xs font-semibold uppercase text-gray-700 dark:text-gray-300">{{ __('Arrival (ETA)') }}</th>
                                                     <th class="px-3 py-2 text-left text-xs font-semibold uppercase text-gray-700 dark:text-gray-300">{{ __('Departure (ETD)') }}</th>
-                                                    <th class="px-3 py-2 text-center text-xs font-semibold uppercase text-gray-700 dark:text-gray-300">{{ __('Actions') }}</th>
+                                                    <th class="px-3 py-2 text-center text-xs font-semibold uppercase text-gray-700 dark:text-gray-300 w-32">{{ __('Actions') }}</th>
                                                 </tr>
                                             </thead>
-                                            <tbody class="divide-y divide-gray-200/50 dark:divide-gray-700/50">
-                                                @forelse($schedule->stopovers as $stopover)
-                                                    <tr wire:key="stopover-{{ $stopover->id }}" class="hover:bg-gray-100/50 dark:hover:bg-gray-700/30">
+                                            <tbody class="divide-y divide-gray-200/50 dark:divide-gray-700/50 bg-white/50 dark:bg-gray-800/20">
+                                                @forelse($schedule->stopovers as $stopoverIndex => $stopover)
+                                                    <tr wire:key="stopover-{{ $stopover->id }}" class="hover:bg-amber-100/70 dark:hover:bg-amber-800/40">
+                                                        <td class="px-3 py-2 whitespace-nowrap text-center">
+                                                            <span class="text-xs font-semibold text-gray-600 dark:text-gray-400">{{ $stopoverIndex + 1 }}</span>
+                                                        </td>
                                                         <td class="px-3 py-2 whitespace-nowrap">
                                                             <div class="flex items-center gap-2">
-                                                                <svg class="h-4 w-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <svg class="h-4 w-4 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                                                                 </svg>
@@ -318,7 +322,7 @@
                                                         <td class="px-3 py-2 whitespace-nowrap">
                                                             @if($stopover->stopover_eta)
                                                                 <div class="flex items-center gap-1.5">
-                                                                    <svg class="h-4 w-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                    <svg class="h-4 w-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                                                                     </svg>
                                                                     <span class="text-xs md:text-sm text-gray-900 dark:text-white">{{ $stopover->stopover_eta->format('M d, Y') }}</span>
@@ -339,7 +343,7 @@
                                                                 <span class="text-xs text-gray-400 dark:text-gray-500">{{ __('Not set') }}</span>
                                                             @endif
                                                         </td>
-                                                        <td class="px-3 py-2 whitespace-nowrap">
+                                                        <td class="px-3 py-2 whitespace-nowrap w-32">
                                                             <div class="flex justify-center items-center gap-1.5">
                                                                 <button @click="openStopoverModal({{ $stopover->id }}, {{ $schedule->id }})" type="button" class="rounded-lg border-2 border-cyan-700/60 bg-cyan-500/10 p-1.5 text-cyan-700 transition-all hover:bg-cyan-500/20" title="{{ __('Edit Stopover') }}">
                                                                     <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -358,7 +362,7 @@
                                                     </tr>
                                                 @empty
                                                     <tr>
-                                                        <td colspan="4" class="px-3 py-6 text-center">
+                                                        <td colspan="5" class="px-3 py-6 text-center">
                                                             <div class="flex flex-col items-center gap-3">
                                                                 <p class="text-sm text-gray-500 dark:text-gray-400">{{ __('No stopovers added yet') }}</p>
                                                                 <flux:button @click="openStopoverModal(null, {{ $schedule->id }})" size="sm" variant="outline" icon="plus">

@@ -62,7 +62,7 @@
                                             {{ ucfirst($task->priority) }}
                                         </flux:badge>
                                         <flux:badge :color="match($task->status) {
-                                            'completed' => 'green',
+                                            'completed' => 'emerald',
                                             'running' => 'blue',
                                             'cancelled' => 'red',
                                             default => 'gray',

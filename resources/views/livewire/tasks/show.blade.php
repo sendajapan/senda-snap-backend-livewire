@@ -99,7 +99,7 @@ new class extends Component {
                         <div>
                             <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ __('Status') }}</dt>
                             <dd class="mt-1">
-                                <flux:badge :color="match($task->status) { 'completed' => 'green', 'running' => 'blue', 'cancelled' => 'red', default => 'gray' }">
+                                <flux:badge :color="match($task->status) { 'completed' => 'emerald', 'running' => 'blue', 'cancelled' => 'red', default => 'gray' }">
                                     {{ ucfirst($task->status) }}
                                 </flux:badge>
                             </dd>

@@ -133,7 +133,7 @@
                                 </svg>
                             </button>
                             <span
-                                class="rounded-lg bg-green-100 px-3 py-1 text-xs font-bold text-green-800 dark:bg-green-900/30 dark:text-green-400">POST</span>
+                                class="rounded-lg bg-emerald-100 px-3 py-1 text-xs font-bold text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400">POST</span>
                         </div>
                     </div>
                     <code class="block rounded-lg bg-gray-900 px-4 py-2 text-sm text-emerald-400 dark:bg-gray-950">/api/v1/auth/register</code>
@@ -214,7 +214,7 @@
                                 </svg>
                             </button>
                             <span
-                                class="rounded-lg bg-green-100 px-3 py-1 text-xs font-bold text-green-800 dark:bg-green-900/30 dark:text-green-400">POST</span>
+                                class="rounded-lg bg-emerald-100 px-3 py-1 text-xs font-bold text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400">POST</span>
                         </div>
                     </div>
                     <code class="block rounded-lg bg-gray-900 px-4 py-2 text-sm text-emerald-400 dark:bg-gray-950">/api/v1/auth/login</code>
@@ -291,7 +291,7 @@
                                 </svg>
                             </button>
                             <span
-                                class="rounded-lg bg-green-100 px-3 py-1 text-xs font-bold text-green-800 dark:bg-green-900/30 dark:text-green-400">POST</span>
+                                class="rounded-lg bg-emerald-100 px-3 py-1 text-xs font-bold text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400">POST</span>
                         </div>
                     </div>
                     <code class="block rounded-lg bg-gray-900 px-4 py-2 text-sm text-emerald-400 dark:bg-gray-950">/api/v1/auth/logout</code>
@@ -516,7 +516,7 @@
                                 </svg>
                             </button>
                             <span
-                                class="rounded-lg bg-green-100 px-3 py-1 text-xs font-bold text-green-800 dark:bg-green-900/30 dark:text-green-400">POST</span>
+                                class="rounded-lg bg-emerald-100 px-3 py-1 text-xs font-bold text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400">POST</span>
                         </div>
                     </div>
                     <code class="block rounded-lg bg-gray-900 px-4 py-2 text-sm text-emerald-400 dark:bg-gray-950">/api/v1/tasks</code>
@@ -1052,7 +1052,7 @@ Content-Type: multipart/form-data</code></pre>
                                 </svg>
                             </button>
                             <span
-                                class="rounded-lg bg-green-100 px-3 py-1 text-xs font-bold text-green-800 dark:bg-green-900/30 dark:text-green-400">POST</span>
+                                class="rounded-lg bg-emerald-100 px-3 py-1 text-xs font-bold text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400">POST</span>
                         </div>
                     </div>
                     <code class="block rounded-lg bg-gray-900 px-4 py-2 text-sm text-emerald-400 dark:bg-gray-950">/api/v1/vehicles/upload-images</code>

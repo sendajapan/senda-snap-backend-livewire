@@ -177,26 +177,30 @@ class UserService
     {
         $user->load(['assignedTasks', 'createdTasks']);
 
+        // Apply vendor scoping to task queries
+        $assignedTasksQuery = $user->assignedTasks()->forCurrentVendor();
+        $createdTasksQuery = $user->createdTasks()->forCurrentVendor();
+
         return [
             'assigned_tasks' => [
-                'total' => $user->assignedTasks()->count(),
-                'pending' => $user->assignedTasks()->where('status', 'pending')->count(),
-                'running' => $user->assignedTasks()->where('status', 'running')->count(),
-                'completed' => $user->assignedTasks()->where('status', 'completed')->count(),
-                'cancelled' => $user->assignedTasks()->where('status', 'cancelled')->count(),
+                'total' => (clone $assignedTasksQuery)->count(),
+                'pending' => (clone $assignedTasksQuery)->where('status', 'pending')->count(),
+                'running' => (clone $assignedTasksQuery)->where('status', 'running')->count(),
+                'completed' => (clone $assignedTasksQuery)->where('status', 'completed')->count(),
+                'cancelled' => (clone $assignedTasksQuery)->where('status', 'cancelled')->count(),
             ],
             'created_tasks' => [
-                'total' => $user->createdTasks()->count(),
-                'pending' => $user->createdTasks()->where('status', 'pending')->count(),
-                'running' => $user->createdTasks()->where('status', 'running')->count(),
-                'completed' => $user->createdTasks()->where('status', 'completed')->count(),
-                'cancelled' => $user->createdTasks()->where('status', 'cancelled')->count(),
+                'total' => (clone $createdTasksQuery)->count(),
+                'pending' => (clone $createdTasksQuery)->where('status', 'pending')->count(),
+                'running' => (clone $createdTasksQuery)->where('status', 'running')->count(),
+                'completed' => (clone $createdTasksQuery)->where('status', 'completed')->count(),
+                'cancelled' => (clone $createdTasksQuery)->where('status', 'cancelled')->count(),
             ],
             'priority_breakdown' => [
-                'low' => $user->assignedTasks()->where('priority', 'low')->count(),
-                'medium' => $user->assignedTasks()->where('priority', 'medium')->count(),
-                'high' => $user->assignedTasks()->where('priority', 'high')->count(),
-                'urgent' => $user->assignedTasks()->where('priority', 'urgent')->count(),
+                'low' => (clone $assignedTasksQuery)->where('priority', 'low')->count(),
+                'medium' => (clone $assignedTasksQuery)->where('priority', 'medium')->count(),
+                'high' => (clone $assignedTasksQuery)->where('priority', 'high')->count(),
+                'urgent' => (clone $assignedTasksQuery)->where('priority', 'urgent')->count(),
             ],
         ];
     }

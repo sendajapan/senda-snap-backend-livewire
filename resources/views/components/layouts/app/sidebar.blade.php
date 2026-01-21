@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
 
 <head>
     @include('partials.head')
@@ -18,6 +18,9 @@
     @if ($showParticles)
         <canvas id="particle-canvas" class="fixed inset-0 -z-10 pointer-events-none"></canvas>
     @endif
+
+    <!-- Mouse Spotlight Effect (Dark Mode Only) -->
+    <div id="mouse-spotlight" class="fixed pointer-events-none" style="z-index: 9999;"></div>
 
     <flux:sidebar sticky stashable class="border-e border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
         <flux:sidebar.toggle class="lg:hidden" icon="x-mark" />
@@ -234,6 +237,37 @@
     <x-toast-notification />
 
     @fluxScripts
+    
+    <!-- Prevent table and card flashing in dark mode -->
+    <script>
+        (function() {
+            // Add class to body once page is loaded to allow transitions
+            function addPageLoadedClass() {
+                setTimeout(function() {
+                    document.body.classList.add('page-loaded');
+                }, 100);
+            }
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', addPageLoadedClass);
+            } else {
+                addPageLoadedClass();
+            }
+
+            // Handle Livewire navigation - disable transitions during navigation
+            document.addEventListener('livewire:navigating', function() {
+                document.body.classList.remove('page-loaded');
+            });
+
+            // Re-enable transitions after Livewire navigation completes
+            document.addEventListener('livewire:navigated', function() {
+                setTimeout(function() {
+                    document.body.classList.add('page-loaded');
+                }, 150);
+            });
+        })();
+    </script>
+    
     @if ($showParticles)
         <script>
             (function () {
@@ -428,6 +462,194 @@
                 reverseButtons: true
             });
         };
+    </script>
+    <!-- Mouse Spotlight Script (Dark Mode Only) -->
+    <script>
+        (function() {
+            const spotlight = document.getElementById('mouse-spotlight');
+            if (!spotlight) return;
+
+            let mouseX = 0;
+            let mouseY = 0;
+            let isDarkMode = false;
+            let currentColor = null;
+
+            // Color mappings for spotlight gradients (matching design system)
+            const colorMappings = {
+                'blue': {
+                    primary: '96, 165, 250',    // blue-400
+                    secondary: '34, 211, 238',  // cyan-400
+                    opacity: 0.15
+                },
+                'emerald': {
+                    primary: '52, 211, 153',    // emerald-400
+                    secondary: '45, 212, 191',  // teal-400
+                    opacity: 0.15
+                },
+                'amber': {
+                    primary: '251, 191, 36',    // amber-400
+                    secondary: '251, 146, 60',  // orange-400
+                    opacity: 0.15
+                },
+                'violet': {
+                    primary: '167, 139, 250',   // violet-400
+                    secondary: '192, 132, 252', // purple-400
+                    opacity: 0.15
+                },
+                'indigo': {
+                    primary: '129, 140, 248',   // indigo-400
+                    secondary: '167, 139, 250', // violet-400
+                    opacity: 0.15
+                },
+                'red': {
+                    primary: '248, 113, 113',   // red-400
+                    secondary: '251, 113, 133', // rose-400
+                    opacity: 0.15
+                },
+                'cyan': {
+                    primary: '34, 211, 238',    // cyan-400
+                    secondary: '96, 165, 250',  // blue-400
+                    opacity: 0.15
+                },
+                'teal': {
+                    primary: '45, 212, 191',    // teal-400
+                    secondary: '52, 211, 153',  // emerald-400
+                    opacity: 0.15
+                },
+                'purple': {
+                    primary: '192, 132, 252',   // purple-400
+                    secondary: '167, 139, 250', // violet-400
+                    opacity: 0.15
+                },
+                'orange': {
+                    primary: '251, 146, 60',    // orange-400
+                    secondary: '251, 191, 36',  // amber-400
+                    opacity: 0.15
+                },
+                'rose': {
+                    primary: '251, 113, 133',   // rose-400
+                    secondary: '248, 113, 113', // red-400
+                    opacity: 0.15
+                },
+                'default': {
+                    primary: '255, 255, 255',   // white
+                    secondary: '255, 255, 255', // white
+                    opacity: 0.1
+                }
+            };
+
+            // Detect color from element classes
+            function detectColor(element) {
+                if (!element) return null;
+
+                // Check element and its parents for color classes
+                let current = element;
+                let depth = 0;
+                const maxDepth = 5; // Limit search depth
+
+                while (current && depth < maxDepth) {
+                    const classes = current.className || '';
+                    
+                    // Check for border color classes (most common indicator)
+                    const colorMatch = classes.match(/border-(blue|emerald|amber|violet|indigo|red|cyan|teal|purple|orange|rose)-\d+/);
+                    if (colorMatch) {
+                        return colorMatch[1];
+                    }
+
+                    // Check for background color classes
+                    const bgMatch = classes.match(/bg-(blue|emerald|amber|violet|indigo|red|cyan|teal|purple|orange|rose)-\d+/);
+                    if (bgMatch) {
+                        return bgMatch[1];
+                    }
+
+                    // Check for text color classes
+                    const textMatch = classes.match(/text-(blue|emerald|amber|violet|indigo|red|cyan|teal|purple|orange|rose)-\d+/);
+                    if (textMatch) {
+                        return textMatch[1];
+                    }
+
+                    // Check for shadow color classes
+                    const shadowMatch = classes.match(/shadow-(blue|emerald|amber|violet|indigo|red|cyan|teal|purple|orange|rose)-\d+/);
+                    if (shadowMatch) {
+                        return shadowMatch[1];
+                    }
+
+                    current = current.parentElement;
+                    depth++;
+                }
+
+                return null;
+            }
+
+            // Update spotlight color
+            function updateSpotlightColor(color) {
+                if (currentColor === color) return;
+                currentColor = color;
+
+                const colorConfig = colorMappings[color] || colorMappings['default'];
+                const gradient = `radial-gradient(circle, rgba(${colorConfig.primary}, ${colorConfig.opacity}) 0%, rgba(${colorConfig.secondary}, ${colorConfig.opacity * 0.6}) 30%, transparent 70%)`;
+                spotlight.style.background = gradient;
+            }
+
+            // Check if dark mode is active
+            function checkDarkMode() {
+                isDarkMode = document.documentElement.classList.contains('dark');
+                if (!isDarkMode) {
+                    spotlight.style.opacity = '0';
+                } else {
+                    spotlight.style.opacity = '1';
+                }
+            }
+
+            // Update spotlight position and color
+            function updateSpotlight(e) {
+                if (!isDarkMode) return;
+                
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+                
+                spotlight.style.left = mouseX + 'px';
+                spotlight.style.top = mouseY + 'px';
+
+                // Detect color from element under cursor
+                const elementUnderCursor = document.elementFromPoint(mouseX, mouseY);
+                const detectedColor = detectColor(elementUnderCursor);
+                updateSpotlightColor(detectedColor);
+            }
+
+            // Hide spotlight when mouse leaves window
+            function hideSpotlight() {
+                if (spotlight) {
+                    spotlight.style.opacity = '0';
+                    currentColor = null;
+                }
+            }
+
+            // Show spotlight when mouse enters window
+            function showSpotlight() {
+                if (spotlight && isDarkMode) {
+                    spotlight.style.opacity = '1';
+                }
+            }
+
+            // Initialize with default color
+            updateSpotlightColor(null);
+
+            // Initialize
+            checkDarkMode();
+            
+            // Listen for mouse movement
+            document.addEventListener('mousemove', updateSpotlight);
+            document.addEventListener('mouseenter', showSpotlight);
+            document.addEventListener('mouseleave', hideSpotlight);
+            
+            // Watch for dark mode changes
+            const observer = new MutationObserver(checkDarkMode);
+            observer.observe(document.documentElement, {
+                attributes: true,
+                attributeFilter: ['class']
+            });
+        })();
     </script>
     @stack('scripts')
 </body>

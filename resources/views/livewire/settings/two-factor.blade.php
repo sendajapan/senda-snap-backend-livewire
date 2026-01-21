@@ -9,7 +9,7 @@
             @if ($twoFactorEnabled)
                 <div class="space-y-4">
                     <div class="flex items-center gap-3">
-                        <flux:badge color="green">{{ __('Enabled') }}</flux:badge>
+                        <flux:badge color="emerald">{{ __('Enabled') }}</flux:badge>
                     </div>
 
                     <flux:text>
@@ -195,7 +195,7 @@
                                     <flux:icon.check
                                         x-show="copied"
                                         variant="solid"
-                                        class="text-green-500"
+                                        class="text-emerald-500"
                                     ></flux:icon>
                                 </button>
                             @endempty

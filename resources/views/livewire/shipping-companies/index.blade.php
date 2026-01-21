@@ -60,7 +60,7 @@
                     <flux:badge color="violet" size="sm">{{ __('Search:') }} "{{ $search }}"</flux:badge>
                 @endif
                 @if($statusFilter)
-                    <flux:badge color="green" size="sm">{{ __('Status:') }} {{ $statusFilter }}</flux:badge>
+                    <flux:badge color="emerald" size="sm">{{ __('Status:') }} {{ $statusFilter }}</flux:badge>
                 @endif
             </div>
         @endif

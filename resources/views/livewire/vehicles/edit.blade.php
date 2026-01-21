@@ -1,24 +1,27 @@
 <?php
 
-use App\Models\Vehicle;
+use App\Services\VehicleService;
 use Livewire\Volt\Component;
 
-new class extends Component {
-    public Vehicle $vehicle;
+new class extends Component
+{
+    public \App\Models\Vehicle $vehicle;
+
     public array $form = [];
 
-    public function mount(Vehicle $vehicle): void
+    public function mount(int $vehicle, VehicleService $vehicleService): void
     {
-        $this->vehicle = $vehicle;
-        $this->form = $vehicle->only(['serial_number', 'make', 'model', 'chassis_model', 'cc', 'year', 'color', 'vehicle_buy_date', 'auction_ship_number', 'net_weight', 'area', 'length', 'width', 'height', 'plate_number', 'buying_price', 'expected_yard_date', 'rikso_from', 'rikso_to', 'rikso_cost', 'rikso_company', 'status']);
-        $this->form['vehicle_buy_date'] = $vehicle->vehicle_buy_date->format('Y-m-d');
-        $this->form['expected_yard_date'] = $vehicle->expected_yard_date->format('Y-m-d');
+        // Use service to ensure vendor scoping
+        $this->vehicle = $vehicleService->getById($vehicle);
+        $this->form = $this->vehicle->only(['serial_number', 'make', 'model', 'chassis_model', 'cc', 'year', 'color', 'vehicle_buy_date', 'auction_ship_number', 'net_weight', 'area', 'length', 'width', 'height', 'plate_number', 'buying_price', 'expected_yard_date', 'rikso_from', 'rikso_to', 'rikso_cost', 'rikso_company', 'status']);
+        $this->form['vehicle_buy_date'] = $this->vehicle->vehicle_buy_date->format('Y-m-d');
+        $this->form['expected_yard_date'] = $this->vehicle->expected_yard_date->format('Y-m-d');
     }
 
-    public function save(): void
+    public function save(VehicleService $vehicleService): void
     {
         $validated = $this->validate([
-            'form.serial_number' => 'required|string|unique:vehicles,serial_number,' . $this->vehicle->id,
+            'form.serial_number' => 'required|string|unique:vehicles,serial_number,'.$this->vehicle->id,
             'form.make' => 'required|string',
             'form.model' => 'required|string',
             'form.chassis_model' => 'required|string',
@@ -42,7 +45,7 @@ new class extends Component {
             'form.status' => 'required|in:pending,in_yard,ready,sold',
         ]);
 
-        $this->vehicle->update($validated['form']);
+        $vehicleService->update($this->vehicle, $validated['form']);
         session()->flash('success', 'Vehicle updated successfully.');
         $this->redirect(route('vehicles.index'), navigate: true);
     }

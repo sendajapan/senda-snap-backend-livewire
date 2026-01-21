@@ -1,14 +1,17 @@
 <?php
 
-use App\Models\Vehicle;
+use App\Services\VehicleService;
 use Livewire\Volt\Component;
 
-new class extends Component {
-    public Vehicle $vehicle;
+new class extends Component
+{
+    public \App\Models\Vehicle $vehicle;
 
-    public function mount(Vehicle $vehicle): void
+    public function mount(int $vehicle, VehicleService $vehicleService): void
     {
-        $this->vehicle = $vehicle->load(['creator', 'photos', 'consignee', 'tasks']);
+        // Use service to ensure vendor scoping
+        $this->vehicle = $vehicleService->getById($vehicle);
+        $this->vehicle->load(['creator', 'photos', 'consignee', 'tasks']);
     }
 }; ?>
 
@@ -57,7 +60,7 @@ new class extends Component {
             <div class="space-y-6">
                 <div class="rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-900">
                     <h3 class="mb-4 text-lg font-semibold text-gray-900 dark:text-white">{{ __('Status') }}</h3>
-                    <flux:badge :color="match($vehicle->status) { 'sold' => 'green', 'ready' => 'blue', 'in_yard' => 'yellow', default => 'gray' }" size="lg">
+                    <flux:badge :color="match($vehicle->status) { 'sold' => 'emerald', 'ready' => 'blue', 'in_yard' => 'yellow', default => 'gray' }" size="lg">
                         {{ ucfirst(str_replace('_', ' ', $vehicle->status)) }}
                     </flux:badge>
                 </div>

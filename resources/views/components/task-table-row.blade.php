@@ -8,14 +8,14 @@
     @if($showTimeFirst)
         <td class="whitespace-nowrap px-3 md:px-6 py-3 md:py-5">
             @if($task->work_time)
-                <div class="inline-flex items-center gap-1 md:gap-2 rounded-sm bg-accent/90 px-1.5 md:px-2 py-1 shadow-sm">
+                <div class="inline-flex items-center gap-1 md:gap-2 rounded-sm bg-accent/90 dark:bg-emerald-600/90 px-1.5 md:px-2 py-1 shadow-sm">
                     <svg class="h-4 w-4 md:h-5 md:w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
                     <span class="text-xs md:text-sm font-semibold text-white">{{ Carbon::parse($task->work_time)->format('h:i A') }}</span>
                 </div>
             @else
-                <div class="inline-flex items-center gap-1 md:gap-2 rounded-sm bg-zinc-400 px-1.5 md:px-2 py-1 shadow-sm">
+                <div class="inline-flex items-center gap-1 md:gap-2 rounded-sm bg-zinc-400 dark:bg-zinc-600 px-1.5 md:px-2 py-1 shadow-sm">
                     <svg class="h-4 w-4 md:h-5 md:w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
@@ -134,7 +134,7 @@
     </td>
     <td class="whitespace-nowrap px-3 md:px-6 py-3 md:py-5">
         <flux:badge :color="match($task->status) {
-                'completed' => 'green',
+                'completed' => 'emerald',
                 'running' => 'blue',
                 'cancelled' => 'red',
                 default => 'gray',

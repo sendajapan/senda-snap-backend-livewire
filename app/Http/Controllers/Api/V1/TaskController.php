@@ -62,6 +62,8 @@ class TaskController extends Controller
 
     public function show(Task $task): JsonResponse
     {
+        // Use service method to ensure vendor scoping
+        $task = $this->taskService->getTaskById($task->id);
         $task->load(['assignedUsers', 'creator', 'attachments']);
 
         return $this->successResponse('Task retrieved successfully', [
@@ -71,6 +73,9 @@ class TaskController extends Controller
 
     public function update(UpdateTaskRequest $request, Task $task): JsonResponse
     {
+        // Use service method to ensure vendor scoping
+        $task = $this->taskService->getTaskById($task->id);
+
         $data = $request->validated();
         $assignedUserIds = $request->has('assigned_to') ? $request->get('assigned_to') : null;
 
@@ -96,6 +101,8 @@ class TaskController extends Controller
             return $this->errorResponse('Unauthorized. Only admin or manager can delete tasks.', [], 403);
         }
 
+        // Use service method to ensure vendor scoping
+        $task = $this->taskService->getTaskById($task->id);
         $this->taskService->delete($task);
 
         return $this->successResponse('Task deleted successfully');
@@ -112,6 +119,8 @@ class TaskController extends Controller
             return $this->errorResponse('Validation failed', $validator->errors()->toArray(), 422);
         }
 
+        // Use service method to ensure vendor scoping
+        $task = $this->taskService->getTaskById($task->id);
         $task = $this->taskService->assign($task, $request->assigned_to);
 
         return $this->successResponse('Task assigned successfully', [
@@ -129,6 +138,8 @@ class TaskController extends Controller
             return $this->errorResponse('Validation failed', $validator->errors()->toArray(), 422);
         }
 
+        // Use service method to ensure vendor scoping
+        $task = $this->taskService->getTaskById($task->id);
         $task = $this->taskService->updateStatus($task, $request->status);
 
         return $this->successResponse('Task status updated successfully', [
@@ -147,6 +158,9 @@ class TaskController extends Controller
             return $this->errorResponse('Validation failed', $validator->errors()->toArray(), 422);
         }
 
+        // Use service method to ensure vendor scoping
+        $task = $this->taskService->getTaskById($task->id);
+
         $file = $request->file('file');
         $fileName = $request->get('file_name');
 
@@ -159,6 +173,9 @@ class TaskController extends Controller
 
     public function deleteAttachment(Task $task, TaskAttachment $attachment): JsonResponse
     {
+        // Use service method to ensure vendor scoping
+        $task = $this->taskService->getTaskById($task->id);
+
         if ($attachment->task_id !== $task->id) {
             return $this->errorResponse('Attachment not found for this task', [], 404);
         }
@@ -210,11 +227,14 @@ class TaskController extends Controller
 
     public function stats(): JsonResponse
     {
+        // Apply vendor scoping for stats
+        $query = Task::forCurrentVendor();
+
         $stats = [
-            'pending' => Task::where('status', 'pending')->count(),
-            'running' => Task::where('status', 'running')->count(),
-            'completed' => Task::where('status', 'completed')->count(),
-            'cancelled' => Task::where('status', 'cancelled')->count(),
+            'pending' => (clone $query)->where('status', 'pending')->count(),
+            'running' => (clone $query)->where('status', 'running')->count(),
+            'completed' => (clone $query)->where('status', 'completed')->count(),
+            'cancelled' => (clone $query)->where('status', 'cancelled')->count(),
         ];
 
         return $this->successResponse('Task statistics retrieved successfully', [

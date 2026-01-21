@@ -25,18 +25,18 @@
                  x-transition:leave="transform transition ease-in-out duration-500"
                  x-transition:leave-start="translate-x-0"
                  x-transition:leave-end="translate-x-full"
-                 class="w-screen max-w-full md:max-w-xl bg-white/90">
+                 class="w-screen max-w-full md:max-w-xl bg-white/60 backdrop-blur-xl dark:bg-gray-800/60">
 
-                <div class="flex h-full flex-col overflow-y-auto border-l border-emerald-200 bg-gradient-to-br from-white via-emerald-50/30 to-teal-50/30 shadow-2xl dark:border-emerald-900/50 dark:from-gray-900 dark:via-emerald-900/20 dark:to-teal-900/20">
+                <div class="flex h-full flex-col overflow-y-auto border-l border-emerald-300/50 bg-white/60 shadow-xl shadow-emerald-200/40 backdrop-blur-xl dark:border-emerald-800/50 dark:bg-gray-800/60 dark:shadow-emerald-900/30">
                     <!-- Decorative Elements -->
                     <div class="pointer-events-none absolute -right-8 -top-8 h-64 w-64 rounded-full bg-gradient-to-br from-emerald-400/20 to-teal-400/20 blur-3xl"></div>
                     <div class="pointer-events-none absolute -bottom-8 -left-8 h-64 w-64 rounded-full bg-gradient-to-br from-teal-400/20 to-emerald-400/20 blur-3xl"></div>
 
                     <!-- Header -->
-                    <div class="relative border-b border-gray-200/50 bg-white/50 px-4 md:px-6 py-4 md:py-6 backdrop-blur-sm dark:border-gray-700/50 dark:bg-gray-900/50">
+                    <div class="relative border-b border-gray-200/50 bg-white/50 px-4 md:px-6 py-4 md:py-6 backdrop-blur-sm dark:border-gray-700/50 dark:bg-gray-800/60">
                         <div class="flex items-center justify-between">
                             <div class="flex items-center gap-2 md:gap-3">
-                                <div class="flex h-10 w-10 md:h-12 md:w-12 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-green-400 shadow-lg">
+                                <div class="flex h-10 w-10 md:h-12 md:w-12 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-400 shadow-lg">
                                     <svg class="h-5 w-5 md:h-6 md:w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                                     </svg>
@@ -265,7 +265,7 @@
                         </div>
 
                         <!-- Footer Actions -->
-                        <div class="border-t border-gray-200/50 px-4 md:px-6 py-3 md:py-4 backdrop-blur-sm dark:border-gray-700/50">
+                        <div class="border-t border-gray-200/50 px-4 md:px-6 py-3 md:py-4 backdrop-blur-sm dark:border-gray-700/50 dark:bg-gray-800/60">
                             <div class="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2 md:gap-3">
                                 <flux:button type="button" wire:click="closeModal" variant="ghost" class="w-full sm:w-auto">
                                     {{ __('Cancel') }}

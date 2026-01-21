@@ -47,7 +47,7 @@
                                 <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:text-white">{{ $vehicle->color }}</td>
                                 <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:text-white">${{ number_format($vehicle->buying_price, 2) }}</td>
                                 <td class="whitespace-nowrap px-6 py-4">
-                                    <flux:badge :color="match($vehicle->status) { 'sold' => 'green', 'ready' => 'blue', 'in_yard' => 'yellow', default => 'gray' }">
+                                    <flux:badge :color="match($vehicle->status) { 'sold' => 'emerald', 'ready' => 'blue', 'in_yard' => 'yellow', default => 'gray' }">
                                         {{ ucfirst(str_replace('_', ' ', $vehicle->status)) }}
                                     </flux:badge>
                                 </td>

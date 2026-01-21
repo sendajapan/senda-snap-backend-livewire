@@ -18,7 +18,7 @@
         </div>
     </td>
     <td class="whitespace-nowrap px-3 md:px-6 py-3 md:py-5">
-        <flux:badge :color="$shippingCompany->status === 'Active' ? 'green' : 'gray'" size="sm" class="font-semibold text-xs">
+        <flux:badge :color="$shippingCompany->status === 'Active' ? 'emerald' : 'gray'" size="sm" class="font-semibold text-xs">
             {{ $shippingCompany->status }}
         </flux:badge>
     </td>

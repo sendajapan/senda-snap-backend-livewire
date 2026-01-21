@@ -20,7 +20,7 @@
         ->with(['assignedUsers', 'creator'])
         ->orderBy('work_date', 'ASC')
         ->orderBy('work_time', 'ASC')
-        ->limit(3)
+        ->limit(2)
         ->get();
 
     $members = \App\Models\User::with('vendor')->latest()->limit(5)->get();
@@ -52,7 +52,7 @@
         <!-- Welcome Header -->
         <div class="grid gap-3 sm:gap-4 lg:gap-5 lg:grid-cols-1 xl:grid-cols-2">
             <!-- Main Welcome Card - Simple Design -->
-            <div class="welcome-card dashboard-card group relative overflow-hidden rounded-xl sm:rounded-2xl border border-blue-300/50 bg-gradient-to-br from-blue-600 to-cyan-600 p-4 sm:p-5 md:p-6 lg:p-7 shadow-md shadow-blue-200/20 backdrop-blur-xl transition-all duration-300 hover:border-blue-400/60 hover:shadow-lg hover:shadow-blue-300/25 dark:border-blue-700/50 dark:from-blue-700 dark:to-cyan-700 dark:shadow-blue-900/15 dark:hover:border-blue-600 dark:hover:shadow-blue-800/20">
+            <div class="welcome-card dashboard-card group relative overflow-hidden rounded-xl sm:rounded-2xl border border-blue-300/50 bg-gradient-to-br from-blue-600 to-cyan-600 p-4 sm:p-5 md:p-6 lg:p-7 shadow-xl shadow-blue-200/40 backdrop-blur-xl transition-all duration-300 hover:border-blue-400/60 hover:shadow-2xl hover:shadow-blue-300/50 dark:border-blue-800/50 dark:from-blue-700 dark:to-cyan-700 dark:shadow-blue-900/30 dark:hover:border-blue-700 dark:hover:shadow-blue-800/40">
                 <!-- Content -->
                 <div class="relative z-10">
                     <div class="mb-2 sm:mb-3 inline-flex rounded-full bg-white/25 px-2.5 sm:px-3 py-1 sm:py-1.5 backdrop-blur-md">
@@ -66,10 +66,10 @@
             </div>
 
             <!-- Date & Time Card - Glass Morphism with Single Color -->
-            <div class="dashboard-card group relative overflow-hidden rounded-xl sm:rounded-2xl border border-indigo-300/50 bg-white/60 p-4 sm:p-5 md:p-6 lg:p-7 shadow-md shadow-indigo-200/20 backdrop-blur-xl transition-all duration-300 hover:border-indigo-400/60 hover:shadow-lg hover:shadow-indigo-300/25 dark:border-indigo-700/50 dark:bg-gray-800/60 dark:shadow-indigo-900/15 dark:hover:border-indigo-600 dark:hover:shadow-indigo-800/20">
-                <!-- Decorative blur circles -->
-                <div class="pointer-events-none absolute -right-4 sm:-right-8 -top-4 sm:-top-8 h-16 sm:h-32 w-16 sm:w-32 rounded-full bg-indigo-400/20 blur-2xl"></div>
-                <div class="pointer-events-none absolute -bottom-4 sm:-bottom-8 -left-4 sm:-left-8 h-16 sm:h-32 w-16 sm:w-32 rounded-full bg-indigo-400/20 blur-2xl"></div>
+            <div class="dashboard-card group relative overflow-hidden rounded-xl sm:rounded-2xl border border-indigo-300/50 bg-white/60 p-4 sm:p-5 md:p-6 lg:p-7 shadow-xl shadow-indigo-200/40 backdrop-blur-xl transition-all duration-300 hover:border-indigo-400/60 hover:shadow-2xl hover:shadow-indigo-300/50 dark:border-indigo-800/50 dark:bg-gray-800/60 dark:shadow-indigo-900/30 dark:hover:border-indigo-700 dark:hover:shadow-indigo-800/40">
+                <!-- Decorative blur circles - larger and more spread -->
+                <div class="pointer-events-none absolute -right-6 sm:-right-12 -top-6 sm:-top-12 h-24 sm:h-48 w-24 sm:w-48 rounded-full bg-gradient-to-br from-indigo-400/30 to-purple-400/30 blur-3xl"></div>
+                <div class="pointer-events-none absolute -bottom-6 sm:-bottom-12 -left-6 sm:-left-12 h-24 sm:h-48 w-24 sm:w-48 rounded-full bg-gradient-to-br from-purple-400/30 to-indigo-400/30 blur-3xl"></div>
                 <!-- Date & Time Section -->
                 <div class="mb-2 flex items-center gap-2 sm:gap-3 border-b border-gray-200 pb-2 sm:pb-2.5 dark:border-gray-700">
                     <div class="flex h-9 w-9 sm:h-10 sm:w-10 md:h-11 md:w-11 flex-col items-center justify-center rounded-xl sm:rounded-2xl bg-gradient-to-br from-indigo-100 to-purple-100 dark:from-indigo-900 dark:to-purple-900 flex-shrink-0">
@@ -181,7 +181,7 @@
         <!-- Charts Section -->
         <div class="grid gap-3 sm:gap-4 lg:gap-5 lg:grid-cols-1 xl:grid-cols-2">
             <!-- Task Status Donut Chart - Following Design System -->
-            <div class="dashboard-card group relative overflow-visible rounded-xl sm:rounded-2xl border border-emerald-300/50 bg-white/60 p-4 sm:p-5 lg:p-6 shadow-xl shadow-emerald-200/40 backdrop-blur-xl transition-all duration-300 hover:border-emerald-400/60 hover:shadow-2xl hover:shadow-emerald-300/50 dark:border-emerald-800/50 dark:bg-gray-800/60 dark:shadow-emerald-900/30 dark:hover:border-emerald-700 dark:hover:shadow-emerald-800/40">
+            <div class="dashboard-card group relative overflow-hidden rounded-xl sm:rounded-2xl border border-emerald-300/50 bg-white/60 p-4 sm:p-5 lg:p-6 shadow-xl shadow-emerald-200/40 backdrop-blur-xl transition-all duration-300 hover:border-emerald-400/60 hover:shadow-2xl hover:shadow-emerald-300/50 dark:border-emerald-800/50 dark:bg-gray-800/60 dark:shadow-emerald-900/30 dark:hover:border-emerald-700 dark:hover:shadow-emerald-800/40">
                 <!-- Decorative blur circles - larger and more spread -->
                 <div class="pointer-events-none absolute -right-6 sm:-right-12 -top-6 sm:-top-12 h-24 sm:h-48 w-24 sm:w-48 rounded-full bg-gradient-to-br from-emerald-400/30 to-teal-400/30 blur-3xl"></div>
                 <div class="pointer-events-none absolute -bottom-6 sm:-bottom-12 -left-6 sm:-left-12 h-24 sm:h-48 w-24 sm:w-48 rounded-full bg-gradient-to-br from-teal-400/30 to-emerald-400/30 blur-3xl"></div>
@@ -203,7 +203,7 @@
                     </div>
 
                     <!-- Chart Container - Centered Layout -->
-                    <div class="flex flex-col items-center gap-4 sm:gap-6 lg:flex-row lg:justify-center lg:items-center lg:gap-16 overflow-visible">
+                    <div class="flex flex-col items-center gap-6 sm:gap-8 lg:flex-row lg:justify-center lg:items-center lg:gap-20 xl:gap-24 overflow-visible">
                         <!-- Chart Canvas -->
                         <div class="relative flex items-center justify-center w-full sm:w-auto overflow-visible">
                             <canvas id="taskChart" class="relative z-10 max-w-full"></canvas>
@@ -243,7 +243,7 @@
                             <div class="group relative flex items-center justify-between overflow-hidden rounded-xl border border-emerald-400/50 bg-gradient-to-r from-emerald-500/10 via-emerald-400/5 to-white/40 px-1.5 sm:px-2 py-1.5 sm:py-2 shadow-md shadow-emerald-500/10 backdrop-blur-xl transition-all duration-300 hover:scale-[1.02] hover:border-emerald-400 hover:shadow-lg hover:shadow-emerald-500/15 dark:border-emerald-500/30 dark:from-emerald-500/20 dark:via-emerald-400/10 dark:to-gray-900/40">
                                 <div class="absolute -left-3 top-1/2 h-12 w-12 -translate-y-1/2 rounded-full bg-emerald-500/20 blur-xl transition-all group-hover:bg-emerald-500/40"></div>
                                 <div class="relative flex items-center gap-2">
-                                    <div class="flex h-4 w-4 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-400 to-green-500 shadow-md shadow-emerald-500/50">
+                                    <div class="flex h-4 w-4 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-400 to-emerald-500 shadow-md shadow-emerald-500/50">
                                         <svg class="h-2 w-2 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                                         </svg>
@@ -271,9 +271,9 @@
                     </div>
 
                     <!-- Upcoming Tasks Table -->
-                    @if($upcomingTasks->count() > 0)
-                        <div class="mt-3 sm:mt-4 lg:mt-5">
-                            <h4 class="dashboard-heading-md my-1.5 sm:my-2 text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300">{{ __('Upcoming Tasks') }}</h4>
+                    <div class="mt-3 sm:mt-4 lg:mt-5">
+                        <h4 class="dashboard-heading-md my-1.5 sm:my-2 text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300">{{ __('Upcoming Tasks') }}</h4>
+                        @if($upcomingTasks->count() > 0)
                             <!-- Table View: Large screens only -->
                             <div class="hidden lg:block overflow-x-auto border rounded-xl bg-white/50 backdrop-blur-sm dark:border-gray-700/50 dark:bg-gray-900/20">
                                 <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
@@ -295,7 +295,7 @@
                                                     </flux:badge>
                                                 </td>
                                                 <td class="whitespace-nowrap px-3 py-2 sm:px-4 sm:py-2.5">
-                                                    <flux:badge :color="match($task->status) { 'completed' => 'green', 'running' => 'blue', 'cancelled' => 'red', default => 'gray' }" size="sm" class="font-semibold">
+                                                    <flux:badge :color="match($task->status) { 'completed' => 'emerald', 'running' => 'blue', 'cancelled' => 'red', default => 'gray' }" size="sm" class="font-semibold">
                                                         {{ ucfirst($task->status) }}
                                                     </flux:badge>
                                                 </td>
@@ -378,7 +378,7 @@
                                                 <flux:badge :color="match($task->priority) { 'urgent' => 'red', 'high' => 'orange', 'medium' => 'yellow', default => 'gray' }" size="sm" class="font-semibold">
                                                     {{ ucfirst($task->priority) }}
                                                 </flux:badge>
-                                                <flux:badge :color="match($task->status) { 'completed' => 'green', 'running' => 'blue', 'cancelled' => 'red', default => 'gray' }" size="sm" class="font-semibold">
+                                                <flux:badge :color="match($task->status) { 'completed' => 'emerald', 'running' => 'blue', 'cancelled' => 'red', default => 'gray' }" size="sm" class="font-semibold">
                                                     {{ ucfirst($task->status) }}
                                                 </flux:badge>
                                                 @if($task->work_date)
@@ -415,8 +415,16 @@
                                     @endforeach
                                 </div>
                             </div>
-                        </div>
-                    @endif
+                        @else
+                            <!-- Empty State -->
+                            <div class="rounded-xl border border-gray-200 bg-white/50 p-4 sm:p-6 text-center backdrop-blur-sm dark:border-gray-700/50 dark:bg-gray-900/20">
+                                <svg class="mx-auto h-8 w-8 sm:h-12 sm:w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+                                </svg>
+                                <p class="mt-2 sm:mt-3 text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-400">{{ __('No upcoming tasks') }}</p>
+                            </div>
+                        @endif
+                    </div>
                 </div>
             </div>
 
@@ -446,10 +454,10 @@
                         <!-- Role Counts Section - Neon Glow Cards Style -->
                         <div class="mb-3 sm:mb-4 lg:mb-5 grid grid-cols-2 gap-2 sm:gap-2.5 md:gap-3 md:grid-cols-4">
                             <!-- Admin Count -->
-                            <div class="group relative flex items-center justify-between overflow-hidden rounded-lg sm:rounded-xl border border-red-400/50 px-2 sm:px-2.5 md:px-3 py-1.5 sm:py-2 shadow-lg shadow-red-500/20 backdrop-blur-xl transition-all duration-300 hover:scale-[1.03] hover:border-red-400 hover:shadow-xl hover:shadow-red-500/30 dark:border-red-500/30">
+                            <div class="group relative flex items-center justify-between overflow-hidden rounded-lg sm:rounded-xl border border-red-400/50 px-2 sm:px-2.5 md:px-3 py-1.5 sm:py-2 shadow-sm shadow-red-500/10 backdrop-blur-xl transition-all duration-300 hover:scale-[1.03] hover:border-red-400 hover:shadow-md hover:shadow-red-500/15 dark:border-red-500/30">
                                 <div class="absolute -left-2 sm:-left-4 top-1/2 h-8 sm:h-16 w-8 sm:w-16 -translate-y-1/2 rounded-full bg-red-500/30 blur-2xl transition-all group-hover:bg-red-500/50"></div>
                                 <div class="relative flex items-center gap-1.5 sm:gap-2 md:gap-3 min-w-0 flex-1">
-                                    <div class="relative flex h-6 w-6 sm:h-7 sm:w-7 md:h-8 md:w-8 items-center justify-center rounded-lg bg-gradient-to-br from-red-400 to-rose-500 shadow-lg shadow-red-500/50 flex-shrink-0">
+                                    <div class="relative flex h-6 w-6 sm:h-7 sm:w-7 md:h-8 md:w-8 items-center justify-center rounded-lg bg-gradient-to-br from-red-400 to-rose-500 shadow-md shadow-red-500/20 flex-shrink-0">
                                         <svg class="h-3 w-3 sm:h-3.5 sm:w-3.5 md:h-4 md:w-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
                                         </svg>
@@ -459,14 +467,14 @@
                                         <p class="dashboard-text-xs text-[10px] sm:text-xs text-red-600/80 dark:text-red-400/70 truncate hidden sm:block">{{ __('Full Access') }}</p>
                                     </div>
                                 </div>
-                                <span class="relative rounded-full border border-red-400/50 px-1.5 sm:px-2 py-0.5 text-xs font-bold text-red-900 dark:text-red-200 shadow-lg shadow-red-500/20 backdrop-blur-xl flex-shrink-0">{{ $adminCount }}</span>
+                                <span class="relative rounded-full border border-red-400/50 px-1.5 sm:px-2 py-0.5 text-xs font-bold text-red-900 dark:text-red-200 shadow-sm shadow-red-500/10 backdrop-blur-xl flex-shrink-0">{{ $adminCount }}</span>
                             </div>
 
                             <!-- Manager Count -->
-                            <div class="group relative flex items-center justify-between overflow-hidden rounded-lg sm:rounded-xl border border-blue-400/50 px-2 sm:px-2.5 md:px-3 py-1.5 sm:py-2 shadow-lg shadow-blue-500/20 backdrop-blur-xl transition-all duration-300 hover:scale-[1.03] hover:border-blue-400 hover:shadow-xl hover:shadow-blue-500/30 dark:border-blue-500/30">
+                            <div class="group relative flex items-center justify-between overflow-hidden rounded-lg sm:rounded-xl border border-blue-400/50 px-2 sm:px-2.5 md:px-3 py-1.5 sm:py-2 shadow-sm shadow-blue-500/10 backdrop-blur-xl transition-all duration-300 hover:scale-[1.03] hover:border-blue-400 hover:shadow-md hover:shadow-blue-500/15 dark:border-blue-500/30">
                                 <div class="absolute -left-2 sm:-left-4 top-1/2 h-8 sm:h-16 w-8 sm:w-16 -translate-y-1/2 rounded-full bg-blue-500/30 blur-2xl transition-all group-hover:bg-blue-500/50"></div>
                                 <div class="relative flex items-center gap-1.5 sm:gap-2 md:gap-2.5 min-w-0 flex-1">
-                                    <div class="relative flex h-5 w-5 sm:h-6 sm:w-6 md:h-7 md:w-7 items-center justify-center rounded-lg bg-gradient-to-br from-blue-400 to-indigo-500 shadow-lg shadow-blue-500/50 flex-shrink-0">
+                                    <div class="relative flex h-5 w-5 sm:h-6 sm:w-6 md:h-7 md:w-7 items-center justify-center rounded-lg bg-gradient-to-br from-blue-400 to-indigo-500 shadow-md shadow-blue-500/20 flex-shrink-0">
                                         <svg class="h-2.5 w-2.5 sm:h-3 sm:w-3 md:h-3.5 md:w-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
                                         </svg>
@@ -476,14 +484,14 @@
                                         <p class="dashboard-text-xs text-[10px] sm:text-xs text-blue-600/80 dark:text-blue-400/70 truncate hidden sm:block">{{ __('Team Lead') }}</p>
                                     </div>
                                 </div>
-                                <span class="relative rounded-full border border-blue-400/50 px-1.5 sm:px-2 py-0.5 text-xs font-bold text-blue-900 dark:text-blue-200 shadow-lg shadow-blue-500/20 backdrop-blur-xl flex-shrink-0">{{ $managerCount }}</span>
+                                <span class="relative rounded-full border border-blue-400/50 px-1.5 sm:px-2 py-0.5 text-xs font-bold text-blue-900 dark:text-blue-200 shadow-sm shadow-blue-500/10 backdrop-blur-xl flex-shrink-0">{{ $managerCount }}</span>
                             </div>
 
                             <!-- Employee Count -->
-                            <div class="group relative flex items-center justify-between overflow-hidden rounded-lg sm:rounded-xl border border-emerald-400/50 px-2 sm:px-2.5 md:px-3 py-1.5 sm:py-2 shadow-lg shadow-emerald-500/20 backdrop-blur-xl transition-all duration-300 hover:scale-[1.03] hover:border-emerald-400 hover:shadow-xl hover:shadow-emerald-500/30 dark:border-emerald-500/30">
+                            <div class="group relative flex items-center justify-between overflow-hidden rounded-lg sm:rounded-xl border border-emerald-400/50 px-2 sm:px-2.5 md:px-3 py-1.5 sm:py-2 shadow-sm shadow-emerald-500/10 backdrop-blur-xl transition-all duration-300 hover:scale-[1.03] hover:border-emerald-400 hover:shadow-md hover:shadow-emerald-500/15 dark:border-emerald-500/30">
                                 <div class="absolute -left-2 sm:-left-4 top-1/2 h-8 sm:h-16 w-8 sm:w-16 -translate-y-1/2 rounded-full bg-emerald-500/30 blur-2xl transition-all group-hover:bg-emerald-500/50"></div>
                                 <div class="relative flex items-center gap-1.5 sm:gap-2 md:gap-2.5 min-w-0 flex-1">
-                                    <div class="relative flex h-5 w-5 sm:h-6 sm:w-6 md:h-7 md:w-7 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-400 to-green-500 shadow-lg shadow-emerald-500/50 flex-shrink-0">
+                                    <div class="relative flex h-5 w-5 sm:h-6 sm:w-6 md:h-7 md:w-7 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-400 to-emerald-500 shadow-md shadow-emerald-500/20 flex-shrink-0">
                                         <svg class="h-2.5 w-2.5 sm:h-3 sm:w-3 md:h-3.5 md:w-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
                                         </svg>
@@ -493,14 +501,14 @@
                                         <p class="dashboard-text-xs text-[10px] sm:text-xs text-emerald-600/80 dark:text-emerald-400/70 truncate hidden sm:block">{{ __('Staff') }}</p>
                                     </div>
                                 </div>
-                                <span class="relative rounded-full border border-emerald-400/50 px-1.5 sm:px-2 py-0.5 text-xs font-bold text-emerald-900 dark:text-emerald-200 shadow-lg shadow-emerald-500/20 backdrop-blur-xl flex-shrink-0">{{ $employeeCount }}</span>
+                                <span class="relative rounded-full border border-emerald-400/50 px-1.5 sm:px-2 py-0.5 text-xs font-bold text-emerald-900 dark:text-emerald-200 shadow-sm shadow-emerald-500/10 backdrop-blur-xl flex-shrink-0">{{ $employeeCount }}</span>
                             </div>
 
                             <!-- Client Count -->
-                            <div class="group relative flex items-center justify-between overflow-hidden rounded-lg sm:rounded-xl border border-violet-400/50 px-2 sm:px-2.5 md:px-3 py-1.5 sm:py-2 shadow-lg shadow-violet-500/20 backdrop-blur-xl transition-all duration-300 hover:scale-[1.03] hover:border-violet-400 hover:shadow-xl hover:shadow-violet-500/30 dark:border-violet-500/30">
+                            <div class="group relative flex items-center justify-between overflow-hidden rounded-lg sm:rounded-xl border border-violet-400/50 px-2 sm:px-2.5 md:px-3 py-1.5 sm:py-2 shadow-sm shadow-violet-500/10 backdrop-blur-xl transition-all duration-300 hover:scale-[1.03] hover:border-violet-400 hover:shadow-md hover:shadow-violet-500/15 dark:border-violet-500/30">
                                 <div class="absolute -left-2 sm:-left-4 top-1/2 h-8 sm:h-16 w-8 sm:w-16 -translate-y-1/2 rounded-full bg-violet-500/30 blur-2xl transition-all group-hover:bg-violet-500/50"></div>
                                 <div class="relative flex items-center gap-1.5 sm:gap-2 md:gap-2.5 min-w-0 flex-1">
-                                    <div class="relative flex h-5 w-5 sm:h-6 sm:w-6 md:h-7 md:w-7 items-center justify-center rounded-lg bg-gradient-to-br from-violet-400 to-purple-500 shadow-lg shadow-violet-500/50 flex-shrink-0">
+                                    <div class="relative flex h-5 w-5 sm:h-6 sm:w-6 md:h-7 md:w-7 items-center justify-center rounded-lg bg-gradient-to-br from-violet-400 to-purple-500 shadow-md shadow-violet-500/20 flex-shrink-0">
                                         <svg class="h-2.5 w-2.5 sm:h-3 sm:w-3 md:h-3.5 md:w-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
                                         </svg>
@@ -510,7 +518,7 @@
                                         <p class="dashboard-text-xs text-[10px] sm:text-xs text-violet-600/80 dark:text-violet-400/70 truncate hidden sm:block">{{ __('Customer') }}</p>
                                     </div>
                                 </div>
-                                <span class="relative rounded-full border border-violet-400/50 px-1.5 sm:px-2 py-0.5 text-xs font-bold text-violet-900 dark:text-violet-200 shadow-lg shadow-violet-500/20 backdrop-blur-xl flex-shrink-0">{{ $clientCount }}</span>
+                                <span class="relative rounded-full border border-violet-400/50 px-1.5 sm:px-2 py-0.5 text-xs font-bold text-violet-900 dark:text-violet-200 shadow-sm shadow-violet-500/10 backdrop-blur-xl flex-shrink-0">{{ $clientCount }}</span>
                             </div>
                         </div>
 
@@ -530,7 +538,7 @@
                                                                 <span class="text-sm font-bold text-blue-900 dark:text-blue-200">{{ $member->initials() }}</span>
                                                             </div>
                                                         @endif
-                                                        <div class="absolute -bottom-1 -right-1 h-3 w-3 rounded-full border-2 border-white bg-green-500 dark:border-gray-900"></div>
+                                                        <div class="absolute -bottom-1 -right-1 h-3 w-3 rounded-full border-2 border-white bg-emerald-500 dark:border-gray-900"></div>
                                                     </div>
                                                     <div>
                                                         <div class="dashboard-text-sm text-xs sm:text-sm font-bold text-gray-900 dark:text-white">{{ $member->name }}</div>
@@ -541,7 +549,7 @@
                                                 </div>
                                             </td>
                                             <td class="whitespace-nowrap p-2.5 sm:p-3">
-                                                <flux:badge class="font-semibold text-xs w-20 justify-center" :color="match($member->role) { 'admin' => 'red', 'manager' => 'blue', 'employee' => 'green', default => 'gray' }" size="sm">
+                                                <flux:badge class="font-semibold text-xs w-20 justify-center" :color="match($member->role) { 'admin' => 'red', 'manager' => 'blue', 'employee' => 'emerald', default => 'gray' }" size="sm">
                                                     {{ ucfirst($member->role) }}
                                                 </flux:badge>
                                             </td>
@@ -582,7 +590,7 @@
                                                         <span class="text-sm font-bold text-blue-900 dark:text-blue-200">{{ $member->initials() }}</span>
                                                     </div>
                                                 @endif
-                                                <div class="absolute -bottom-1 -right-1 h-3 w-3 rounded-full border-2 border-white bg-green-500 dark:border-gray-900"></div>
+                                                <div class="absolute -bottom-1 -right-1 h-3 w-3 rounded-full border-2 border-white bg-emerald-500 dark:border-gray-900"></div>
                                             </div>
                                             <div class="flex-1">
                                                 <div class="dashboard-text-sm text-xs sm:text-sm font-bold text-gray-900 dark:text-white">{{ $member->name }}</div>
@@ -598,7 +606,7 @@
                                                 </svg>
                                                 {{ $member->email }}
                                             </span>
-                                            <flux:badge :color="match($member->role) { 'admin' => 'red', 'manager' => 'blue', 'employee' => 'green', default => 'gray' }" size="sm" class="font-semibold">
+                                            <flux:badge :color="match($member->role) { 'admin' => 'red', 'manager' => 'blue', 'employee' => 'emerald', default => 'gray' }" size="sm" class="font-semibold">
                                                 {{ ucfirst($member->role) }}
                                             </flux:badge>
                                             @if($member->vendor)

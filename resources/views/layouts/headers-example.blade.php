@@ -129,7 +129,7 @@
                         </div>
                     </div>
                     <div
-                        class="absolute -bottom-1 -right-1 h-6 w-6 rounded-full border-4 border-white bg-green-500">
+                        class="absolute -bottom-1 -right-1 h-6 w-6 rounded-full border-4 border-white bg-emerald-500">
                     </div>
                 </div>
 
@@ -172,7 +172,7 @@
         <div class="relative">
             <div
                 class="mb-4 inline-flex items-center gap-2 rounded-full bg-white/20 px-4 py-2 backdrop-blur-sm">
-                <div class="h-2 w-2 animate-pulse rounded-full bg-green-400"></div>
+                <div class="h-2 w-2 animate-pulse rounded-full bg-emerald-400"></div>
                 <span class="text-xs font-semibold text-white">Online</span>
             </div>
 

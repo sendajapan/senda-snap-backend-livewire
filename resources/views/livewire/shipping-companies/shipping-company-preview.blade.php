@@ -50,7 +50,7 @@
                                         </div>
                                     </div>
                                     <div class="flex flex-col items-end gap-2">
-                                        <flux:badge :color="$shippingCompany->status === 'Active' ? 'green' : 'gray'" size="sm" class="font-semibold">
+                                        <flux:badge :color="$shippingCompany->status === 'Active' ? 'emerald' : 'gray'" size="sm" class="font-semibold">
                                             {{ $shippingCompany->status }}
                                         </flux:badge>
                                     </div>

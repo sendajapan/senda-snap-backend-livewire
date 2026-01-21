@@ -1,9 +1,9 @@
 <?php
 
-use App\Models\Vehicle;
 use Livewire\Volt\Component;
 
-new class extends Component {
+new class extends Component
+{
     public array $form = [
         'serial_number' => '',
         'make' => '',
@@ -29,7 +29,7 @@ new class extends Component {
         'status' => 'pending',
     ];
 
-    public function save(): void
+    public function save(\App\Services\VehicleService $vehicleService): void
     {
         $validated = $this->validate([
             'form.serial_number' => 'required|string|unique:vehicles,serial_number',
@@ -56,7 +56,7 @@ new class extends Component {
             'form.status' => 'required|in:pending,in_yard,ready,sold',
         ]);
 
-        Vehicle::create([...$validated['form'], 'created_by' => auth()->id()]);
+        $vehicleService->create($validated['form'], auth()->id());
         session()->flash('success', 'Vehicle created successfully.');
         $this->redirect(route('vehicles.index'), navigate: true);
     }

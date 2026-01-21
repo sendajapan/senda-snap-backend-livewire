@@ -27,6 +27,11 @@
     --color-accent: var(--color-neutral-800);
     --color-accent-content: var(--color-neutral-800);
     --color-accent-foreground: var(--color-white);
+
+    /* Custom breakpoints for 2K and 4K screens */
+    --breakpoint-2xl: 1920px;
+    --breakpoint-3xl: 2560px;
+    --breakpoint-4xl: 3840px;
 }
 
 @layer theme {
@@ -76,8 +81,8 @@ flux-sidebar a[aria-current="page"],
 flux-sidebar a[aria-current="true"],
 flux-sidebar button[aria-current="page"],
 flux-sidebar button[aria-current="true"] {
-    background-color: rgba(209, 250, 229, 0.7) !important; /* emerald-50 with 70% opacity - matte faded green */
-    color: rgb(4, 120, 87) !important; /* emerald-700 - darker green text for contrast */
+    background-color: rgba(209, 250, 229, 0.7) !important; /* emerald-50 with 70% opacity - matte faded emerald */
+    color: rgb(4, 120, 87) !important; /* emerald-700 - darker emerald text for contrast */
     font-weight: 500 !important; /* medium weight for emphasis */
 }
 
@@ -89,8 +94,8 @@ flux-sidebar button[aria-current="true"] {
 .dark flux-sidebar a[aria-current="true"],
 .dark flux-sidebar button[aria-current="page"],
 .dark flux-sidebar button[aria-current="true"] {
-    background-color: rgba(6, 78, 59, 0.5) !important; /* emerald-950 with 50% opacity - dark matte faded green */
-    color: rgb(110, 231, 183) !important; /* emerald-300 - muted green text */
+    background-color: rgba(6, 78, 59, 0.5) !important; /* emerald-950 with 50% opacity - dark matte faded emerald */
+    color: rgb(110, 231, 183) !important; /* emerald-300 - muted emerald text */
     font-weight: 500 !important;
 }
 
@@ -115,7 +120,7 @@ flux-sidebar button[aria-current="true"]:hover {
 .dark flux-sidebar button[aria-current="page"]:hover,
 .dark flux-sidebar button[aria-current="true"]:hover {
     background-color: rgba(20, 83, 45, 0.6) !important; /* emerald-900 with 60% opacity */
-    color: rgb(125, 211, 252) !important; /* slightly brighter green on hover */
+    color: rgb(125, 211, 252) !important; /* slightly brighter emerald on hover */
 }
 
 /* Screen Size Optimizations */
@@ -403,6 +408,74 @@ flux-sidebar button[aria-current="true"]:hover {
     }
 }
 
+/* Prevent table flashing in dark mode - completely disable background transitions on initial load */
+.dark table tbody tr,
+.dark table tbody tr.group {
+    transition-property: transform, opacity, box-shadow, border-color !important;
+    transition-duration: 200ms !important;
+    transition-timing-function: ease-in-out !important;
+    background-color: transparent !important;
+    background-image: none !important;
+}
+
+/* Only allow background transitions on hover after page load */
+.dark table tbody tr:hover,
+.dark table tbody tr.group:hover {
+    transition-property: background-color, background-image, transform, opacity, box-shadow, border-color !important;
+    transition-duration: 200ms !important;
+    transition-timing-function: ease-in-out !important;
+}
+
+/* Prevent any background transition delays on page load */
+.dark table tbody tr * {
+    transition-property: transform, opacity, box-shadow, border-color, color !important;
+    transition-duration: 200ms !important;
+}
+
+/* Override transition-all for table rows in dark mode */
+.dark table tbody tr.transition-all {
+    transition-property: transform, opacity, box-shadow, border-color !important;
+}
+
+.dark table tbody tr.transition-all:hover {
+    transition-property: background-color, background-image, transform, opacity, box-shadow, border-color !important;
+}
+
+/* Only allow background transitions after page is fully loaded */
+.dark.page-loaded table tbody tr,
+.dark.page-loaded table tbody tr.group {
+    transition-property: transform, opacity, box-shadow, border-color, background-color, background-image !important;
+}
+
+/* Prevent card flashing in dark mode during Livewire navigation */
+.dark .dashboard-card,
+.dark .page-card,
+.dark .welcome-card {
+    transition-property: transform, opacity, box-shadow, border-color !important;
+    transition-duration: 300ms !important;
+    transition-timing-function: ease-in-out !important;
+}
+
+/* Only allow background transitions on hover after page load */
+.dark.page-loaded .dashboard-card:hover,
+.dark.page-loaded .page-card:hover,
+.dark.page-loaded .welcome-card:hover {
+    transition-property: background-color, background-image, transform, opacity, box-shadow, border-color !important;
+}
+
+/* Override transition-all for cards in dark mode */
+.dark .dashboard-card.transition-all,
+.dark .page-card.transition-all,
+.dark .welcome-card.transition-all {
+    transition-property: transform, opacity, box-shadow, border-color !important;
+}
+
+.dark.page-loaded .dashboard-card.transition-all:hover,
+.dark.page-loaded .page-card.transition-all:hover,
+.dark.page-loaded .welcome-card.transition-all:hover {
+    transition-property: background-color, background-image, transform, opacity, box-shadow, border-color !important;
+}
+
 /* Prevent content overflow */
 @media (min-width: 1920px) {
     body {
@@ -434,4 +507,336 @@ flux-sidebar button[aria-current="true"]:hover {
             padding-right: 2rem;
         }
     }
+}
+
+/* Landing page responsive optimizations - Scoped to .landing-page only */
+/* FHD: Compact sizing to fit everything on one page - following dashboard pattern */
+@media (min-width: 1920px) and (max-width: 2559px) {
+    /* FHD: Ensure content fits without overflow - reduced padding and margins */
+    .landing-page .landing-hero {
+        min-height: calc(100vh - 80px);
+        max-height: none;
+    }
+
+    .landing-page .landing-container {
+        max-width: 1600px;
+        padding-left: 1rem !important; /* Reduced from 1.5rem */
+        padding-right: 1rem !important; /* Reduced from 1.5rem */
+    }
+
+    .landing-page .landing-nav-container {
+        max-width: 1600px;
+        padding-left: 1rem !important; /* Reduced from 1.5rem */
+        padding-right: 1rem !important; /* Reduced from 1.5rem */
+        padding-top: 0.5rem !important; /* Reduced from py-3/4 */
+        padding-bottom: 0.5rem !important;
+    }
+
+    .landing-page .landing-title {
+        font-size: 2rem !important; /* 32px - smaller */
+        line-height: 1.2;
+        margin-bottom: 0.5rem !important; /* Reduced from mb-2/3 */
+    }
+
+    .landing-page .landing-subtitle {
+        font-size: 0.9375rem !important; /* 15px - compact */
+        max-width: 40rem;
+        margin-bottom: 0.75rem !important; /* Reduced */
+    }
+
+    /* Prevent subtitle wrapping on bigger screens */
+    @media (min-width: 1920px) {
+        .landing-page .landing-subtitle {
+            white-space: nowrap !important;
+            max-width: none !important;
+        }
+    }
+
+    .landing-page .landing-hero-content {
+        margin-top: 2rem !important; /* Increased for more top margin */
+        margin-bottom: 0.5rem !important; /* Reduced from 1rem */
+    }
+
+    /* Features section width - smaller, closer to content, centered */
+    .landing-page .landing-features {
+        max-width: 28rem !important; /* 448px - smaller width */
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
+
+    /* Gap between features section and mockups - reduced */
+    .landing-page .landing-grid {
+        gap: 1.5rem !important; /* Reduced gap between columns */
+    }
+
+    /* Gap between feature cards - increased (using space-y override) */
+    .landing-page .landing-features > * + * {
+        margin-top: 1rem !important; /* Increased gap between cards */
+    }
+
+    /* Feature card padding - increased */
+    .landing-page .landing-feature-card {
+        padding: 0.875rem !important; /* Increased padding */
+    }
+
+    /* Smaller feature card headings */
+    .landing-page .landing-grid h2 {
+        font-size: 1rem !important; /* 16px */
+        margin-bottom: 0.5rem !important; /* Reduced */
+    }
+
+    /* Feature list text - slightly bigger */
+    .landing-page .landing-grid ul {
+        font-size: 0.875rem !important; /* 14px - bigger */
+        gap: 0.25rem !important; /* Reduced spacing between items */
+    }
+
+    /* Smaller feature icons */
+    .landing-page .landing-grid .flex.h-8 {
+        height: 1.75rem !important; /* 28px */
+        width: 1.75rem !important;
+    }
+
+    .landing-page .landing-grid .flex.h-9 {
+        height: 2rem !important; /* 32px */
+        width: 2rem !important;
+    }
+
+    .landing-page .landing-grid .flex.h-10 {
+        height: 2.25rem !important; /* 36px */
+        width: 2.25rem !important;
+    }
+
+    /* Smaller monitor and phone mockups for FHD */
+    .landing-page .monitor-frame {
+        width: 420px !important; /* Reduced from 450px */
+        padding: 8px !important; /* Reduced from 10px */
+    }
+
+    .landing-page .phone-frame {
+        width: 180px !important; /* Reduced from 200px */
+    }
+
+    /* Smaller app icon in Play Store section */
+    .landing-page .landing-grid .h-20,
+    .landing-page .landing-grid .h-24,
+    .landing-page .landing-grid .h-28 {
+        height: 3.5rem !important; /* Reduced from 4rem to 56px */
+        width: 3.5rem !important;
+        margin-bottom: 0.5rem !important; /* Reduced */
+    }
+
+    /* Smaller Play Store badge */
+    .landing-page .landing-grid img[alt*="Google Play"] {
+        height: 2.25rem !important; /* Reduced from 2.5rem to 36px */
+    }
+
+    /* Smaller Play Store section heading */
+    .landing-page .landing-grid h3 {
+        font-size: 0.9375rem !important; /* Reduced from 1rem to 15px */
+        margin-bottom: 0.25rem !important; /* Reduced */
+    }
+
+    /* Smaller Play Store section text */
+    .landing-page .landing-grid p {
+        font-size: 0.75rem !important; /* 12px */
+        margin-bottom: 0.5rem !important; /* Reduced */
+    }
+
+    /* Gap between feature cards in features section */
+    .landing-page .landing-features > * + * {
+        margin-top: 1rem !important; /* Gap between cards */
+    }
+
+    /* Reduce nav padding */
+    .landing-page nav {
+        padding-top: 0.5rem !important;
+        padding-bottom: 0.5rem !important;
+    }
+}
+
+@media (min-width: 2560px) {
+    /* 2K and 4K: Larger, spacious sizing - following dashboard pattern */
+    .landing-page .landing-hero {
+        min-height: calc(100vh - 100px);
+    }
+
+    .landing-page .landing-container {
+        max-width: 1920px;
+        padding-left: 3rem;
+        padding-right: 3rem;
+    }
+
+    .landing-page .landing-nav-container {
+        max-width: 1920px;
+        padding-left: 3rem;
+        padding-right: 3rem;
+    }
+
+    .landing-page .landing-title {
+        font-size: 3rem !important; /* 48px - smaller */
+        line-height: 1.1;
+    }
+
+    .landing-page .landing-subtitle {
+        font-size: 1.125rem !important; /* 18px */
+        max-width: none !important;
+        white-space: nowrap !important;
+    }
+
+    .landing-page .landing-hero-content {
+        margin-top: 3rem !important; /* Increased top margin */
+        margin-bottom: 2rem;
+    }
+
+    /* Features section width for 2K/4K - centered, wider */
+    .landing-page .landing-features {
+        max-width: 42rem !important; /* 672px - wider for 2K/4K */
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
+
+    /* Prevent text wrapping in feature list items for 2K/4K */
+    .landing-page .landing-features ul li span {
+        white-space: nowrap !important;
+    }
+
+    /* Feature list text for 2K/4K - slightly bigger */
+    .landing-page .landing-features ul {
+        font-size: 0.875rem !important; /* 14px - bigger */
+    }
+
+    /* Gap between features section and mockups */
+    .landing-page .landing-grid {
+        gap: 2rem !important; /* Reduced from 2.5rem */
+    }
+
+    /* Gap between feature cards for 2K/4K */
+    .landing-page .landing-features > * + * {
+        margin-top: 1.25rem !important;
+    }
+}
+
+@media (min-width: 3840px) {
+    /* 4K: Larger but proportional */
+    .landing-page .landing-hero {
+        min-height: calc(100vh - 120px);
+    }
+
+    .landing-page .landing-container {
+        max-width: 2560px;
+        padding-left: 4rem;
+        padding-right: 4rem;
+    }
+
+    .landing-page .landing-nav-container {
+        max-width: 2560px;
+        padding-left: 4rem;
+        padding-right: 4rem;
+    }
+
+    .landing-page .landing-title {
+        font-size: 3.5rem !important; /* 56px - smaller */
+        line-height: 1.1;
+    }
+
+    .landing-page .landing-subtitle {
+        font-size: 1.25rem !important; /* 20px - smaller */
+        max-width: none !important;
+        white-space: nowrap !important;
+    }
+
+    .landing-page .landing-hero-content {
+        margin-top: 4rem !important; /* Increased top margin */
+        margin-bottom: 2.5rem;
+    }
+
+    /* Features section width for 4K - centered, wider */
+    .landing-page .landing-features {
+        max-width: 52rem !important; /* 832px - even wider for 4K */
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
+
+    /* Prevent text wrapping in feature list items for 4K */
+    .landing-page .landing-features ul li span {
+        white-space: nowrap !important;
+    }
+
+    /* Feature list text for 4K - slightly bigger */
+    .landing-page .landing-features ul {
+        font-size: 0.875rem !important; /* 14px - bigger */
+    }
+
+    /* Gap between features section and mockups for 4K */
+    .landing-page .landing-grid {
+        gap: 2.5rem !important;
+    }
+
+    /* Gap between feature cards for 4K */
+    .landing-page .landing-features > * + * {
+        margin-top: 1.5rem !important;
+    }
+}
+
+/* Landing page grid responsive spacing - handled in media queries above */
+
+/* Mouse Spotlight Effect (Dark Mode Only) */
+#mouse-spotlight {
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 30%, transparent 70%);
+    transform: translate(-50%, -50%);
+    filter: blur(50px);
+    pointer-events: none;
+    will-change: transform, background;
+    transition: opacity 0.3s ease, background 0.4s ease;
+    opacity: 0;
+}
+
+.dark #mouse-spotlight {
+    opacity: 1;
+}
+
+/* Vintage Dark Corners for Landing Page (Dark Mode Only) - Lighter to match dashboard */
+#vintage-corners {
+    background: 
+        /* Top-left corner - very subtle */
+        radial-gradient(ellipse 500px 500px at top left, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) 80%, rgba(0, 0, 0, 0.03) 95%, rgba(0, 0, 0, 0.05) 100%),
+        /* Top-right corner - very subtle */
+        radial-gradient(ellipse 500px 500px at top right, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) 80%, rgba(0, 0, 0, 0.03) 95%, rgba(0, 0, 0, 0.05) 100%),
+        /* Bottom-left corner - very subtle */
+        radial-gradient(ellipse 500px 500px at bottom left, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) 80%, rgba(0, 0, 0, 0.03) 95%, rgba(0, 0, 0, 0.05) 100%),
+        /* Bottom-right corner - very subtle */
+        radial-gradient(ellipse 500px 500px at bottom right, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) 80%, rgba(0, 0, 0, 0.03) 95%, rgba(0, 0, 0, 0.05) 100%);
+}
+
+/* Hero Section Background - Dark Radial Glow Effect */
+.landing-page .landing-hero {
+    background: transparent;
+    position: relative;
+}
+
+.dark .landing-page .landing-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background-image: radial-gradient(circle 500px at 50% 200px, rgba(120, 120, 120, 0.15), transparent);
+    pointer-events: none;
+}
+
+/* Ensure all content in hero section is above the glow */
+.dark .landing-page .landing-hero .landing-container {
+    position: relative !important;
+    z-index: 20 !important;
+}
+
+.dark .landing-page .landing-hero .landing-hero-content,
+.dark .landing-page .landing-hero .landing-grid,
+.dark .landing-page .landing-hero .landing-features,
+.dark .landing-page .landing-hero .landing-container > * {
+    position: relative !important;
+    z-index: 20 !important;
 }

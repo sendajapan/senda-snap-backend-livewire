@@ -127,6 +127,117 @@ public function create(array $data): Task
 3. Fill in vendor details
 4. Assign users to the vendor
 
+### Vendor Scoping Best Practices
+
+**⚠️ IMPORTANT: Always use Service methods instead of direct model access**
+
+When working with vendor-scoped models (Tasks, Vehicles), always use Service methods that apply `forCurrentVendor()` scope:
+
+✅ **Correct:**
+```php
+// In Livewire components
+$task = $taskService->getTaskById($taskId);
+$vehicle = $vehicleService->getById($vehicleId);
+
+// In API Controllers
+$task = $this->taskService->getTaskById($task->id);
+```
+
+❌ **Incorrect:**
+```php
+// Route model binding bypasses vendor scoping!
+$task = Task::findOrFail($taskId);  // ❌ No vendor filtering
+$vehicle = Vehicle::find($vehicleId);  // ❌ No vendor filtering
+```
+
+**Route Model Binding Considerations:**
+
+When using route model binding with vendor-scoped models, you must verify vendor access:
+
+```php
+// In routes/web.php - Pass ID instead of model
+Route::get('tasks/{task}', fn ($task) => view('livewire.tasks.show', ['task' => $task->id]));
+
+// In Livewire Volt component - Use service to enforce scoping
+public function mount(int $task, TaskService $taskService): void
+{
+    $this->task = $taskService->getTaskById($task);
+}
+```
+
+**Backfilling vendor_id for Existing Records:**
+
+If you have existing records without `vendor_id` set, run migrations to backfill:
+
+```php
+// Migration example
+DB::statement('
+    UPDATE tasks
+    INNER JOIN users ON tasks.created_by = users.id
+    SET tasks.vendor_id = users.vendor_id
+    WHERE tasks.vendor_id IS NULL
+    AND users.vendor_id IS NOT NULL
+');
+```
+
+Migrations have been created for:
+- `2026_01_21_113433_backfill_vendor_id_for_tasks` - Backfills vendor_id for tasks
+- `2026_01_21_113610_backfill_vendor_id_for_vehicles` - Backfills vendor_id for vehicles
+
+**API Controller Pattern:**
+
+All API controllers that use route model binding must verify vendor access:
+
+```php
+public function show(Task $task): JsonResponse
+{
+    // Use service method to ensure vendor scoping
+    $task = $this->taskService->getTaskById($task->id);
+    
+    return $this->successResponse('Task retrieved successfully', [
+        'task' => new TaskResource($task),
+    ]);
+}
+```
+
+**Livewire Component Pattern:**
+
+Always use Service methods in Livewire components:
+
+```php
+// ✅ Correct - Uses service with vendor scoping
+public function render(TaskService $taskService): View
+{
+    $tasks = $taskService->getAllTasksFiltered($filters, 15);
+    return view('livewire.tasks.all-tasks', ['tasks' => $tasks]);
+}
+
+// ❌ Incorrect - Direct model access bypasses vendor scoping
+public function render(): View
+{
+    $tasks = Task::paginate(15);  // No vendor filtering!
+    return view('livewire.tasks.all-tasks', ['tasks' => $tasks]);
+}
+```
+
+**Task Statistics with Vendor Scoping:**
+
+When calculating statistics, always apply vendor scoping:
+
+```php
+// ✅ Correct
+$query = Task::forCurrentVendor();
+$stats = [
+    'pending' => (clone $query)->where('status', 'pending')->count(),
+    'running' => (clone $query)->where('status', 'running')->count(),
+];
+
+// ❌ Incorrect - Counts all tasks globally
+$stats = [
+    'pending' => Task::where('status', 'pending')->count(),  // No vendor filter!
+];
+```
+
 ---
 
 ## 🏗️ Architecture Overview

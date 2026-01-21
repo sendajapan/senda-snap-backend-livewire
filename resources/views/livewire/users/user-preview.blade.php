@@ -56,7 +56,7 @@
                                         <flux:badge :color="match($user->role) {
                                             'admin' => 'red',
                                             'manager' => 'blue',
-                                            'employee' => 'green',
+                                            'employee' => 'emerald',
                                             default => 'gray',
                                         }" size="sm" class="font-semibold">
                                             {{ ucfirst($user->role) }}

@@ -235,11 +235,11 @@
                 @dragover.prevent="handleDragOver($event, 'completed')"
                 @dragleave="handleDragLeave($event)"
                 @drop.prevent="handleDrop($event, 'completed')">
-                <div class="flex-shrink-0 mb-3 rounded-lg border border-green-200 bg-green-50 p-3 shadow-md dark:border-green-900/50 dark:bg-green-900/20">
+                <div class="flex-shrink-0 mb-3 rounded-lg border border-emerald-200 bg-emerald-50 p-3 shadow-md dark:border-emerald-900/50 dark:bg-emerald-900/20">
                     <div class="flex items-center justify-between">
                         <div class="flex items-center gap-2">
-                            <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-green-500/20">
-                                <svg class="h-4 w-4 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/20">
+                                <svg class="h-4 w-4 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
                             </div>
@@ -259,7 +259,7 @@
                             <x-task-card-kanban :task="$task" status="completed" />
                         </div>
                     @empty
-                        <div class="flex items-center justify-center rounded-lg border-2 border-dashed border-green-200 bg-green-50/30 p-4 dark:border-green-900/50 dark:bg-green-900/10">
+                        <div class="flex items-center justify-center rounded-lg border-2 border-dashed border-emerald-200 bg-emerald-50/30 p-4 dark:border-emerald-900/50 dark:bg-emerald-900/10">
                             <p class="text-xs text-gray-500 dark:text-gray-400">{{ __('No tasks') }}</p>
                         </div>
                     @endforelse

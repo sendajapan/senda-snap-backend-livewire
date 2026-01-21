@@ -25,15 +25,15 @@
                  x-transition:leave="transform transition ease-in-out duration-500"
                  x-transition:leave-start="translate-x-0"
                  x-transition:leave-end="translate-x-full"
-                 class="w-screen max-w-2xl bg-white/90">
+                 class="w-screen max-w-2xl bg-white/60 backdrop-blur-xl dark:bg-gray-800/60">
 
-                <div class="flex h-full flex-col overflow-y-auto border-l border-indigo-200 bg-gradient-to-br from-white via-indigo-50/30 to-purple-50/30 shadow-2xl dark:border-indigo-900/50 dark:from-gray-900 dark:via-indigo-900/20 dark:to-purple-900/20">
+                <div class="flex h-full flex-col overflow-y-auto border-l border-indigo-300/50 bg-white/60 shadow-xl shadow-indigo-200/40 backdrop-blur-xl dark:border-indigo-800/50 dark:bg-gray-800/60 dark:shadow-indigo-900/30">
                     <!-- Decorative Elements -->
                     <div class="pointer-events-none absolute -right-8 -top-8 h-64 w-64 rounded-full bg-gradient-to-br from-indigo-400/20 to-purple-400/20 blur-3xl"></div>
                     <div class="pointer-events-none absolute -bottom-8 -left-8 h-64 w-64 rounded-full bg-gradient-to-br from-purple-400/20 to-indigo-400/20 blur-3xl"></div>
 
                     <!-- Header -->
-                    <div class="relative border-b border-gray-200/50 bg-white/50 px-6 py-6 backdrop-blur-sm dark:border-gray-700/50 dark:bg-gray-900/50">
+                    <div class="relative border-b border-gray-200/50 bg-white/50 px-6 py-6 backdrop-blur-sm dark:border-gray-700/50 dark:bg-gray-800/60">
                         <div class="flex items-center justify-between">
                             <div class="flex items-center gap-3">
                                 <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 shadow-lg">
@@ -82,7 +82,7 @@
                         </div>
 
                         <!-- Footer Actions -->
-                        <div class="border-t border-gray-200/50 px-6 py-4 backdrop-blur-sm dark:border-gray-700/50">
+                        <div class="border-t border-gray-200/50 px-6 py-4 backdrop-blur-sm dark:border-gray-700/50 dark:bg-gray-800/60">
                             <div class="flex items-center justify-end gap-3">
                                 <flux:button type="button" wire:click="closeModal" variant="ghost">
                                     {{ __('Cancel') }}

@@ -45,6 +45,7 @@ trait BelongsToVendor
         $user = auth()->user();
 
         // Admin users have no vendor restriction
+        // Users without vendor_id can see all records (legacy behavior)
         if (! $user || $user->role === 'admin' || ! $user->vendor_id) {
             return $query;
         }

@@ -49,6 +49,7 @@ Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
     Route::prefix('tasks')->group(function () {
         Route::get('/', [TaskController::class, 'index']);
         Route::get('stats', [TaskController::class, 'stats']);
+        Route::get('debug', [TaskController::class, 'debug']);
         Route::post('/', [TaskController::class, 'store']);
         Route::get('my-tasks', [TaskController::class, 'myTasks']);
         Route::get('assigned-to-me', [TaskController::class, 'assignedToMe']);

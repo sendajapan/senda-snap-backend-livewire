@@ -43,10 +43,10 @@ class UserService
             $query->select($filters['select']);
         }
 
-        return $query->where('email', 'NOT LIKE', '%test%')->orderBy($filters['sort_by'] ?? 'created_at', $filters['sort_direction'] ?? 'desc')->get();
+        return $query->orderBy($filters['sort_by'] ?? 'name', $filters['sort_direction'] ?? 'asc')->get();
     }
 
-    public function getPaginated(array $filters = [], int $perPage = 10)
+    public function getPaginated(array $filters = [], int $perPage = 25)
     {
         $query = User::query()->with('vendor');
         $this->scopeByVendor($query);

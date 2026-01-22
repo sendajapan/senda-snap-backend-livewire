@@ -2,10 +2,15 @@
 
 namespace App\Livewire\Users;
 
+use App\Models\Notice;
+use App\Models\Schedule;
+use App\Models\ScheduleStopover;
 use App\Services\UserService;
+use Exception;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Log;
 
 class Index extends Component
 {
@@ -52,9 +57,9 @@ class Index extends Component
             $user = $userService->getById($userId);
 
             // Check for child records that will be cascade deleted
-            $noticeCount = \App\Models\Notice::where('created_by', $userId)->count();
-            $scheduleCount = \App\Models\Schedule::where('added_by', $userId)->count();
-            $stopoverCount = \App\Models\ScheduleStopover::where('added_by', $userId)->count();
+            $noticeCount = Notice::where('created_by', $userId)->count();
+            $scheduleCount = Schedule::where('added_by', $userId)->count();
+            $stopoverCount = ScheduleStopover::where('added_by', $userId)->count();
 
             $warnings = [];
             if ($noticeCount > 0) {
@@ -69,8 +74,8 @@ class Index extends Component
 
             $userService->delete($user);
             $this->dispatch('notify', message: __('User deleted successfully.'), type: 'success');
-        } catch (\Exception $e) {
-            \Log::error('User delete error: '.$e->getMessage());
+        } catch (Exception $e) {
+            Log::error('User delete error: '.$e->getMessage());
             $this->dispatch('notify', message: __('An error occurred while deleting the user.'), type: 'error');
         }
     }
@@ -80,9 +85,9 @@ class Index extends Component
      */
     public function getUserWarnings(int $userId): array
     {
-        $noticeCount = \App\Models\Notice::where('created_by', $userId)->count();
-        $scheduleCount = \App\Models\Schedule::where('added_by', $userId)->count();
-        $stopoverCount = \App\Models\ScheduleStopover::where('added_by', $userId)->count();
+        $noticeCount = Notice::where('created_by', $userId)->count();
+        $scheduleCount = Schedule::where('added_by', $userId)->count();
+        $stopoverCount = ScheduleStopover::where('added_by', $userId)->count();
 
         $warnings = [];
         if ($noticeCount > 0) {
@@ -105,7 +110,7 @@ class Index extends Component
             'role' => $this->roleFilter,
         ];
 
-        $users = $userService->getPaginated($filters, 10);
+        $users = $userService->getPaginated($filters);
 
         return view('livewire.users.index', [
             'users' => $users,

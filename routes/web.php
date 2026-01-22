@@ -35,7 +35,7 @@ Route::get('privacy-policy', [PrivacyPolicyController::class, 'index'])->name('p
 Route::get('android-app-manual', [AndroidAppManualController::class, 'index'])->name('android.app.manual');
 
 //Github Webhook
-Route::post('/deploy/github', [DeployController::class, 'github']);
+Route::post('deploy/github', [DeployController::class, 'github']);
 
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])

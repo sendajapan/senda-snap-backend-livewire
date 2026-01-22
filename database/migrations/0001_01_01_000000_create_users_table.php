@@ -8,18 +8,6 @@ return new class extends Migration
 {
     public function up(): void
     {
-        // Create vendors table first (for multi-vendor support)
-        Schema::create('vendors', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->string('phone')->nullable();
-            $table->string('address')->nullable();
-            $table->string('website')->nullable();
-            $table->enum('status', ['active', 'inactive'])->default('active');
-            $table->timestamps();
-        });
-
         // Create users table
         Schema::create('users', function (Blueprint $table) {
             $table->id();
@@ -57,6 +45,5 @@ return new class extends Migration
         Schema::dropIfExists('sessions');
         Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('users');
-        Schema::dropIfExists('vendors');
     }
 };

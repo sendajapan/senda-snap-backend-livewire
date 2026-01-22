@@ -31,6 +31,21 @@ class VendorModal extends Component
 
     public string $status = 'active';
 
+    // External vehicle database configuration
+    public string $external_db_host = '';
+
+    public string $external_db_port = '3306';
+
+    public string $external_db_database = '';
+
+    public string $external_db_username = '';
+
+    public string $external_db_password = '';
+
+    public string $external_image_path = '';
+
+    public string $external_image_base_url = '';
+
     public function mount(): void
     {
         // Only admin can access vendors
@@ -41,14 +56,30 @@ class VendorModal extends Component
 
     protected function rules(): array
     {
-        return [
+        $rules = [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', \Illuminate\Validation\Rule::unique('vendors', 'email')->ignore($this->vendor->id ?? null)],
             'phone' => ['nullable', 'string', 'max:255'],
             'address' => ['nullable', 'string', 'max:255'],
             'website' => ['nullable', 'url', 'max:255'],
             'status' => ['required', 'in:active,inactive'],
+            // External vehicle database configuration
+            'external_db_host' => ['required', 'string', 'max:255'],
+            'external_db_port' => ['nullable', 'string', 'max:10'],
+            'external_db_database' => ['required', 'string', 'max:255'],
+            'external_db_username' => ['required', 'string', 'max:255'],
+            'external_image_path' => ['required', 'string', 'max:500'],
+            'external_image_base_url' => ['required', 'url', 'max:500'],
         ];
+
+        // Password is required for new vendors, optional for updates
+        if ($this->isEditing) {
+            $rules['external_db_password'] = ['nullable', 'string'];
+        } else {
+            $rules['external_db_password'] = ['required', 'string'];
+        }
+
+        return $rules;
     }
 
     protected function messages(): array
@@ -62,6 +93,14 @@ class VendorModal extends Component
             'website.url' => 'Website must be a valid URL.',
             'status.required' => 'Status is required.',
             'status.in' => 'Status must be either active or inactive.',
+            'external_db_host.required' => 'External database host is required.',
+            'external_db_database.required' => 'External database name is required.',
+            'external_db_username.required' => 'External database username is required.',
+            'external_db_password.required' => 'External database password is required.',
+            'external_db_password.nullable' => 'Leave password blank to keep current password.',
+            'external_image_path.required' => 'External image path is required.',
+            'external_image_base_url.required' => 'External image base URL is required.',
+            'external_image_base_url.url' => 'External image base URL must be a valid URL.',
         ];
     }
 
@@ -79,6 +118,14 @@ class VendorModal extends Component
             $this->address = $this->vendor->address ?? '';
             $this->website = $this->vendor->website ?? '';
             $this->status = $this->vendor->status;
+            $this->external_db_host = $this->vendor->external_db_host ?? '';
+            $this->external_db_port = $this->vendor->external_db_port ?? '3306';
+            $this->external_db_database = $this->vendor->external_db_database ?? '';
+            $this->external_db_username = $this->vendor->external_db_username ?? '';
+            // Don't populate password for security - user must re-enter if changing
+            $this->external_db_password = '';
+            $this->external_image_path = $this->vendor->external_image_path ?? '';
+            $this->external_image_base_url = $this->vendor->external_image_base_url ?? '';
         } else {
             $this->isEditing = false;
         }
@@ -102,6 +149,13 @@ class VendorModal extends Component
         $this->address = '';
         $this->website = '';
         $this->status = 'active';
+        $this->external_db_host = '';
+        $this->external_db_port = '3306';
+        $this->external_db_database = '';
+        $this->external_db_username = '';
+        $this->external_db_password = '';
+        $this->external_image_path = '';
+        $this->external_image_base_url = '';
         $this->resetValidation();
     }
 
@@ -117,6 +171,13 @@ class VendorModal extends Component
                 'address' => $this->address,
                 'website' => $this->website,
                 'status' => $this->status,
+                'external_db_host' => $this->external_db_host,
+                'external_db_port' => $this->external_db_port,
+                'external_db_database' => $this->external_db_database,
+                'external_db_username' => $this->external_db_username,
+                'external_db_password' => $this->external_db_password,
+                'external_image_path' => $this->external_image_path,
+                'external_image_base_url' => $this->external_image_base_url,
             ];
 
             if ($this->isEditing) {

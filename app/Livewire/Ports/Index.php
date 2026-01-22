@@ -115,6 +115,9 @@ class Index extends Component
         if ($this->portTypeFilter !== null && $this->portTypeFilter !== '') {
             $filters['port_type'] = $this->portTypeFilter;
         }
+        // Default sort by port_name
+        $filters['sort_by'] = 'port_name';
+        $filters['sort_direction'] = 'asc';
 
         $ports = $portService->list($filters, 15);
 

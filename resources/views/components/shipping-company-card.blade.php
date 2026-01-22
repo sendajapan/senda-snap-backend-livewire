@@ -61,7 +61,18 @@
 
                 <!-- Delete Button -->
                 @if($canDelete)
-                    <button @click="window.confirmDelete({{ $shippingCompany->id }}, '{{ addslashes($shippingCompany->line_name) }}').then((result) => { if (result.isConfirmed) { $wire.$dispatch('delete-shipping-company', { shippingCompanyId: {{ $shippingCompany->id }} }) } })" type="button" class="group relative flex items-center justify-center rounded-lg border-2 border-red-700/60 bg-red-500/10 p-2 transition-all duration-200 hover:border-red-700 hover:bg-red-500/20 hover:shadow-lg hover:shadow-red-700/30 opacity-50 transition-opacity group-hover:opacity-100" title="{{ __('Delete Shipping Company') }}">
+                    @php
+                        // Check for schedules that reference this shipping company
+                        $scheduleCount = \App\Models\Schedule::where('carrier_1_id', $shippingCompany->id)
+                            ->orWhere('carrier_2_id', $shippingCompany->id)
+                            ->orWhere('carrier_3_id', $shippingCompany->id)
+                            ->count();
+                        $warnings = [];
+                        if ($scheduleCount > 0) {
+                            $warnings[] = __(':count schedule(s) will have their carrier reference removed', ['count' => $scheduleCount]);
+                        }
+                    @endphp
+                    <button @click="window.confirmDelete({{ $shippingCompany->id }}, '{{ addslashes($shippingCompany->line_name) }}', @js($warnings)).then((result) => { if (result.isConfirmed) { $wire.$dispatch('delete-shipping-company', { shippingCompanyId: {{ $shippingCompany->id }} }) } })" type="button" class="group relative flex items-center justify-center rounded-lg border-2 border-red-700/60 bg-red-500/10 p-2 transition-all duration-200 hover:border-red-700 hover:bg-red-500/20 hover:shadow-lg hover:shadow-red-700/30 opacity-50 transition-opacity group-hover:opacity-100" title="{{ __('Delete Shipping Company') }}">
                         <svg class="h-4 w-4 text-red-700 transition-all duration-200 group-hover:text-red-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
                     </svg>

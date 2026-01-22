@@ -76,6 +76,29 @@ class VendorPreview extends Component
         return $currentUser->role === 'admin';
     }
 
+    /**
+     * Get child record warnings for a vendor
+     */
+    public function getVendorWarnings(): array
+    {
+        if (! $this->vendor) {
+            return [];
+        }
+
+        $userCount = $this->vendor->users()->count();
+        $vehicleCount = $this->vendor->vehicles()->count();
+
+        $warnings = [];
+        if ($userCount > 0) {
+            $warnings[] = __(':count user(s) will have their vendor association removed', ['count' => $userCount]);
+        }
+        if ($vehicleCount > 0) {
+            $warnings[] = __(':count vehicle(s) will have their vendor association removed', ['count' => $vehicleCount]);
+        }
+
+        return $warnings;
+    }
+
     public function render()
     {
         return view('livewire.vendors.vendor-preview');

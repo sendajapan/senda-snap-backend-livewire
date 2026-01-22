@@ -32,8 +32,8 @@ class PortService
             $query->where('port_type', $filters['port_type']);
         }
 
-        $sortBy = $filters['sort_by'] ?? 'created_at';
-        $sortDirection = $filters['sort_direction'] ?? 'desc';
+        $sortBy = $filters['sort_by'] ?? 'port_name';
+        $sortDirection = $filters['sort_direction'] ?? 'asc';
 
         return $query->orderBy($sortBy, $sortDirection)->paginate($perPage);
     }

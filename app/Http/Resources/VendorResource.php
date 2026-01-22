@@ -28,6 +28,14 @@ class VendorResource extends JsonResource
             'zip' => $this->zip,
             'website' => $this->website,
             'status' => $this->status,
+            // External vehicle config (exclude password for security)
+            'external_db_host' => $this->external_db_host,
+            'external_db_port' => $this->external_db_port,
+            'external_db_database' => $this->external_db_database,
+            'external_db_username' => $this->external_db_username,
+            // external_db_password is hidden in model
+            'external_image_path' => $this->external_image_path,
+            'external_image_base_url' => $this->external_image_base_url,
             'created_at' => $this->created_at?->toISOString(),
             'updated_at' => $this->updated_at?->toISOString(),
         ];

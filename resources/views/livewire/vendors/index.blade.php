@@ -86,6 +86,9 @@
                         <th class="px-3 md:px-6 py-3 md:py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">
                             {{ __('Status') }}
                         </th>
+                        <th class="px-3 md:px-6 py-3 md:py-4 text-center text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 hidden xl:table-cell">
+                            {{ __('Vehicle Config') }}
+                        </th>
                         <th class="px-3 md:px-6 py-3 md:py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 hidden lg:table-cell">
                             {{ __('Created At') }}
                         </th>
@@ -99,7 +102,7 @@
                         <x-vendor-table-row :vendor="$vendor" :index="$vendors->firstItem() + $index" wire:key="vendor-{{ $vendor->id }}" />
                     @empty
                         <tr>
-                            <td colspan="7" class="px-3 md:px-6 py-12 text-center">
+                            <td colspan="8" class="px-3 md:px-6 py-12 text-center">
                                 <div class="flex flex-col items-center gap-3">
                                     <div class="flex h-16 w-16 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800">
                                         <svg class="h-8 w-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -62,19 +62,39 @@ class VendorService
             'address' => $data['address'] ?? null,
             'website' => $data['website'] ?? null,
             'status' => $data['status'] ?? 'active',
+            'external_db_host' => $data['external_db_host'],
+            'external_db_port' => $data['external_db_port'] ?? '3306',
+            'external_db_database' => $data['external_db_database'],
+            'external_db_username' => $data['external_db_username'],
+            'external_db_password' => $data['external_db_password'], // Will be encrypted automatically
+            'external_image_path' => $data['external_image_path'],
+            'external_image_base_url' => $data['external_image_base_url'],
         ]);
     }
 
     public function update(Vendor $vendor, array $data): Vendor
     {
-        $vendor->update(array_filter([
+        $updateData = array_filter([
             'name' => $data['name'] ?? null,
             'email' => $data['email'] ?? null,
             'phone' => $data['phone'] ?? null,
             'address' => $data['address'] ?? null,
             'website' => $data['website'] ?? null,
             'status' => $data['status'] ?? null,
-        ], fn ($value) => $value !== null));
+            'external_db_host' => $data['external_db_host'] ?? null,
+            'external_db_port' => $data['external_db_port'] ?? null,
+            'external_db_database' => $data['external_db_database'] ?? null,
+            'external_db_username' => $data['external_db_username'] ?? null,
+            'external_image_path' => $data['external_image_path'] ?? null,
+            'external_image_base_url' => $data['external_image_base_url'] ?? null,
+        ], fn ($value) => $value !== null);
+
+        // Only update password if provided (not empty)
+        if (isset($data['external_db_password']) && ! empty($data['external_db_password'])) {
+            $updateData['external_db_password'] = $data['external_db_password']; // Will be encrypted automatically
+        }
+
+        $vendor->update($updateData);
 
         return $vendor->fresh();
     }

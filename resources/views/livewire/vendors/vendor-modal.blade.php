@@ -111,6 +111,81 @@
                                     <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                                 @enderror
                             </div>
+
+                            <!-- External Vehicle Database Configuration Section -->
+                            <div class="border-t border-gray-200 pt-6 dark:border-gray-700">
+                                <h3 class="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
+                                    {{ __('External Vehicle Database Configuration') }}
+                                </h3>
+                                <p class="mb-4 text-sm text-gray-600 dark:text-gray-400">
+                                    {{ __('Configure connection to external vehicle database and image storage for this vendor.') }}
+                                </p>
+
+                                <div class="space-y-4">
+                                    <!-- Database Host -->
+                                    <div>
+                                        <flux:input wire:model="external_db_host" label="{{ __('Database Host') }}" placeholder="{{ __('e.g., senda.us') }}" required />
+                                        @error('external_db_host')
+                                            <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                                        @enderror
+                                    </div>
+
+                                    <!-- Database Port -->
+                                    <div>
+                                        <flux:input wire:model="external_db_port" label="{{ __('Database Port') }}" placeholder="{{ __('e.g., 3306') }}" />
+                                        @error('external_db_port')
+                                            <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                                        @enderror
+                                    </div>
+
+                                    <!-- Database Name -->
+                                    <div>
+                                        <flux:input wire:model="external_db_database" label="{{ __('Database Name') }}" placeholder="{{ __('e.g., avis_03oct') }}" required />
+                                        @error('external_db_database')
+                                            <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                                        @enderror
+                                    </div>
+
+                                    <!-- Database Username -->
+                                    <div>
+                                        <flux:input wire:model="external_db_username" label="{{ __('Database Username') }}" placeholder="{{ __('Enter database username') }}" required />
+                                        @error('external_db_username')
+                                            <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                                        @enderror
+                                    </div>
+
+                                    <!-- Database Password -->
+                                    <div>
+                                        <flux:input type="password" wire:model="external_db_password" label="{{ __('Database Password') }}" placeholder="{{ $isEditing ? __('Leave blank to keep current password') : __('Enter database password') }}" :required="!$isEditing" />
+                                        @error('external_db_password')
+                                            <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                                        @enderror
+                                        @if($isEditing)
+                                            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">{{ __('Leave blank to keep the current password unchanged.') }}</p>
+                                        @else
+                                            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">{{ __('Database password is required for new vendors.') }}</p>
+                                        @endif
+                                    </div>
+
+                                    <!-- Image Path -->
+                                    <div>
+                                        <flux:input wire:model="external_image_path" label="{{ __('Image Path') }}" placeholder="{{ __('e.g., /home/kono/public_html/autocraft/avisnew/images/veh_images/') }}" required />
+                                        @error('external_image_path')
+                                            <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                                        @enderror
+                                        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">{{ __('Absolute path on the server where vehicle images are stored.') }}</p>
+                                    </div>
+
+                                    <!-- Image Base URL -->
+                                    <div>
+                                        <flux:input type="url" wire:model="external_image_base_url" label="{{ __('Image Base URL') }}" placeholder="{{ __('e.g., https://senda.us/autocraft/avisnew/images/veh_images/') }}" required />
+                                        @error('external_image_base_url')
+                                            <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                                        @enderror
+                                        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">{{ __('Base URL where vehicle images are publicly accessible.') }}</p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <!-- Footer Actions -->

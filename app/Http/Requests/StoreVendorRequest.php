@@ -34,6 +34,14 @@ class StoreVendorRequest extends FormRequest
             'zip' => ['nullable', 'string', 'max:255'],
             'website' => ['nullable', 'url', 'max:255'],
             'status' => ['nullable', 'in:active,inactive'],
+            // External vehicle database configuration (required)
+            'external_db_host' => ['required', 'string', 'max:255'],
+            'external_db_port' => ['nullable', 'string', 'max:10'],
+            'external_db_database' => ['required', 'string', 'max:255'],
+            'external_db_username' => ['required', 'string', 'max:255'],
+            'external_db_password' => ['required', 'string'],
+            'external_image_path' => ['required', 'string', 'max:500'],
+            'external_image_base_url' => ['required', 'url', 'max:500'],
         ];
     }
 
@@ -52,6 +60,13 @@ class StoreVendorRequest extends FormRequest
             'email.unique' => 'This email is already registered.',
             'website.url' => 'Website must be a valid URL.',
             'status.in' => 'Status must be either active or inactive.',
+            'external_db_host.required' => 'External database host is required.',
+            'external_db_database.required' => 'External database name is required.',
+            'external_db_username.required' => 'External database username is required.',
+            'external_db_password.required' => 'External database password is required.',
+            'external_image_path.required' => 'External image path is required.',
+            'external_image_base_url.required' => 'External image base URL is required.',
+            'external_image_base_url.url' => 'External image base URL must be a valid URL.',
         ];
     }
 }

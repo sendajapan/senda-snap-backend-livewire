@@ -79,6 +79,9 @@ class Index extends Component
         if ($this->statusFilter !== null && $this->statusFilter !== '') {
             $filters['status'] = $this->statusFilter;
         }
+        // Default sort by line_name
+        $filters['sort_by'] = 'line_name';
+        $filters['sort_direction'] = 'asc';
 
         $shippingCompanies = $shipLineService->list($filters, 15);
 

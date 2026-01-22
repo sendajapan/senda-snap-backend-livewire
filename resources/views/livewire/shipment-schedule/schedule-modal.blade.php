@@ -129,7 +129,7 @@
                                 <div>
                                     <flux:select wire:model="end_port_id" label="{{ __('End Port') }}" required>
                                         <option value="">{{ __('Select End Port') }}</option>
-                                        @foreach($localPorts as $port)
+                                        @foreach($endPorts as $port)
                                             <option value="{{ $port->id }}">{{ $port->port_name }}</option>
                                         @endforeach
                                     </flux:select>

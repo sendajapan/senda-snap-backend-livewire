@@ -4,22 +4,64 @@ namespace App\Services;
 
 use Illuminate\Database\Connection;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
+/**
+ * External Vehicle Service
+ *
+ * Handles queries to external vehicle databases and image management.
+ * Each instance is configured for a specific vendor's external database.
+ */
 class ExternalVehicleService
 {
     private ?Connection $connection = null;
 
+    public function __construct(
+        private string $dbHost,
+        private string $dbPort,
+        private string $dbDatabase,
+        private string $dbUsername,
+        private string $dbPassword,
+        private string $imagePath,
+        private string $imageBaseUrl
+    ) {}
+
+    /**
+     * Get database connection for this vendor's external database.
+     */
     private function getConnection(): Connection
     {
         if ($this->connection === null) {
-            $this->connection = DB::connection('external_mysql');
+            // Create a dynamic connection name based on vendor config
+            $connectionName = 'external_mysql_vendor_'.md5($this->dbHost.$this->dbDatabase);
+
+            // Configure the connection dynamically
+            Config::set("database.connections.{$connectionName}", [
+                'driver' => 'mariadb',
+                'host' => $this->dbHost,
+                'port' => $this->dbPort,
+                'database' => $this->dbDatabase,
+                'username' => $this->dbUsername,
+                'password' => $this->dbPassword,
+                'charset' => 'utf8mb4',
+                'collation' => 'utf8mb4_unicode_ci',
+                'prefix' => '',
+                'prefix_indexes' => true,
+                'strict' => true,
+                'engine' => null,
+            ]);
+
+            $this->connection = DB::connection($connectionName);
         }
 
         return $this->connection;
     }
 
+    /**
+     * Build WHERE clause for vehicle search.
+     */
     private function buildWhereClause(string $searchType, string $searchQuery): array
     {
         $allowed = [
@@ -37,6 +79,9 @@ class ExternalVehicleService
         return ["{$column} = ?", [$searchQuery]];
     }
 
+    /**
+     * Get vehicle details from external database.
+     */
     public function getVehicleDetails(string $searchType, string $searchQuery): array
     {
         [$where, $bindings] = $this->buildWhereClause($searchType, $searchQuery);
@@ -84,7 +129,7 @@ class ExternalVehicleService
                 $vehicleId = $vehicle['vehicle_id'] ?? null;
                 if ($vehicleId) {
                     $images = $connection->select('SELECT veh_image FROM tbl_vehicle_images WHERE vehicle_id = ?', [$vehicleId]);
-                    $vehicle['images'] = array_map(fn ($img) => 'https://senda.us/autocraft/avisnew/images/veh_images/'.$img->veh_image, $images);
+                    $vehicle['images'] = array_map(fn ($img) => rtrim($this->imageBaseUrl, '/').'/'.ltrim($img->veh_image, '/'), $images);
                 } else {
                     $vehicle['images'] = [];
                 }
@@ -97,12 +142,17 @@ class ExternalVehicleService
 
         } catch (QueryException $e) {
             Log::error('ExternalVehicleService query failed', [
+                'host' => $this->dbHost,
+                'database' => $this->dbDatabase,
                 'message' => $e->getMessage(),
             ]);
             throw $e;
         }
     }
 
+    /**
+     * Store vehicle images in external database.
+     */
     public function storeVehicleImages(int $vehicleId, array $imagePaths, int $createdBy = 0): array
     {
         $connection = $this->getConnection();
@@ -172,6 +222,8 @@ class ExternalVehicleService
         } catch (QueryException $e) {
             Log::error('ExternalVehicleService storeVehicleImages failed', [
                 'vehicle_id' => $vehicleId,
+                'host' => $this->dbHost,
+                'database' => $this->dbDatabase,
                 'message' => $e->getMessage(),
                 'sql' => $e->getSql() ?? null,
                 'bindings' => $e->getBindings() ?? [],
@@ -179,5 +231,21 @@ class ExternalVehicleService
 
             throw new \RuntimeException('Failed to store vehicle images: '.$e->getMessage(), 0, $e);
         }
+    }
+
+    /**
+     * Get image path for this vendor.
+     */
+    public function getImagePath(): string
+    {
+        return $this->imagePath;
+    }
+
+    /**
+     * Get image base URL for this vendor.
+     */
+    public function getImageBaseUrl(): string
+    {
+        return $this->imageBaseUrl;
     }
 }

@@ -327,6 +327,13 @@ class ScheduleModal extends Component
             ->get();
     }
 
+    public function getEndPortsProperty()
+    {
+        return Port::whereIn('port_type', ['Overseas Port', 'Local Port'])
+            ->orderBy('port_name', 'asc')
+            ->get();
+    }
+
     public function getStopoverPortsProperty()
     {
         return Port::whereIn('port_type', ['Overseas Port', 'Local Port'])
@@ -339,6 +346,7 @@ class ScheduleModal extends Component
         return view('livewire.shipment-schedule.schedule-modal', [
             'providers' => $this->providers,
             'localPorts' => $this->localPorts,
+            'endPorts' => $this->endPorts,
             'stopoverPorts' => $this->stopoverPorts,
         ]);
     }

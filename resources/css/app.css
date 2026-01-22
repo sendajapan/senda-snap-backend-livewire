@@ -476,6 +476,176 @@ flux-sidebar button[aria-current="true"]:hover {
     transition-property: background-color, background-image, transform, opacity, box-shadow, border-color !important;
 }
 
+/* Prevent table flashing in light mode - completely disable background, border, and shadow transitions on initial load */
+/* Apply to all tables when html does NOT have .dark class */
+html:not(.dark) table tbody tr,
+html:not(.dark) table tbody tr.group {
+    transition-property: transform, opacity !important;
+    transition-duration: 200ms !important;
+    transition-timing-function: ease-in-out !important;
+    background-color: transparent !important;
+    background-image: none !important;
+}
+
+/* Only allow background, border, and shadow transitions on hover after page load in light mode */
+html:not(.dark) .page-loaded table tbody tr:hover,
+html:not(.dark) .page-loaded table tbody tr.group:hover {
+    transition-property: background-color, background-image, transform, opacity, box-shadow, border-color !important;
+    transition-duration: 200ms !important;
+    transition-timing-function: ease-in-out !important;
+}
+
+/* Prevent any background, border, and shadow transition delays on page load in light mode */
+html:not(.dark) table tbody tr * {
+    transition-property: transform, opacity, color !important;
+    transition-duration: 200ms !important;
+}
+
+/* Allow border and shadow transitions after page is loaded in light mode */
+html:not(.dark) .page-loaded table tbody tr * {
+    transition-property: transform, opacity, box-shadow, border-color, color !important;
+}
+
+/* Override transition-all for table rows in light mode - disable border and shadow during load */
+html:not(.dark) table tbody tr.transition-all {
+    transition-property: transform, opacity !important;
+}
+
+/* Allow all transitions on hover after page is loaded in light mode */
+html:not(.dark) .page-loaded table tbody tr.transition-all:hover {
+    transition-property: background-color, background-image, transform, opacity, box-shadow, border-color !important;
+}
+
+/* Only allow background, border, and shadow transitions after page is fully loaded in light mode */
+html:not(.dark) .page-loaded table tbody tr,
+html:not(.dark) .page-loaded table tbody tr.group {
+    transition-property: transform, opacity, box-shadow, border-color, background-color, background-image !important;
+}
+
+/* Prevent card flashing in light mode during Livewire navigation - disable border and shadow transitions */
+html:not(.dark) .dashboard-card,
+html:not(.dark) .page-card,
+html:not(.dark) .welcome-card {
+    transition-property: transform, opacity !important;
+    transition-duration: 300ms !important;
+    transition-timing-function: ease-in-out !important;
+}
+
+/* Only allow border and shadow transitions after page is fully loaded in light mode */
+html:not(.dark) .page-loaded .dashboard-card,
+html:not(.dark) .page-loaded .page-card,
+html:not(.dark) .page-loaded .welcome-card {
+    transition-property: transform, opacity, box-shadow, border-color !important;
+}
+
+/* Only allow background transitions on hover after page load in light mode */
+html:not(.dark) .page-loaded .dashboard-card:hover,
+html:not(.dark) .page-loaded .page-card:hover,
+html:not(.dark) .page-loaded .welcome-card:hover {
+    transition-property: background-color, background-image, transform, opacity, box-shadow, border-color !important;
+}
+
+/* Override transition-all for cards in light mode - disable border and shadow during load */
+html:not(.dark) .dashboard-card.transition-all,
+html:not(.dark) .page-card.transition-all,
+html:not(.dark) .welcome-card.transition-all {
+    transition-property: transform, opacity !important;
+}
+
+/* Allow all transitions after page is loaded in light mode */
+html:not(.dark) .page-loaded .dashboard-card.transition-all,
+html:not(.dark) .page-loaded .page-card.transition-all,
+html:not(.dark) .page-loaded .welcome-card.transition-all {
+    transition-property: transform, opacity, box-shadow, border-color !important;
+}
+
+html:not(.dark) .page-loaded .dashboard-card.transition-all:hover,
+html:not(.dark) .page-loaded .page-card.transition-all:hover,
+html:not(.dark) .page-loaded .welcome-card.transition-all:hover {
+    transition-property: background-color, background-image, transform, opacity, box-shadow, border-color !important;
+}
+
+/* Prevent header flashing in light mode - disable border and shadow transitions on initial load */
+html:not(.dark) flux-header,
+html:not(.dark) [data-flux-header] {
+    transition-property: transform, opacity !important;
+    transition-duration: 200ms !important;
+    transition-timing-function: ease-in-out !important;
+}
+
+/* Only allow border and shadow transitions after page is fully loaded in light mode */
+html:not(.dark) .page-loaded flux-header,
+html:not(.dark) .page-loaded [data-flux-header] {
+    transition-property: transform, opacity, box-shadow, border-color, background-color, background-image !important;
+}
+
+/* Dark mode header - keep existing behavior */
+.dark flux-header,
+.dark [data-flux-header] {
+    transition-property: transform, opacity, box-shadow, border-color !important;
+    transition-duration: 200ms !important;
+    transition-timing-function: ease-in-out !important;
+}
+
+.dark .page-loaded flux-header,
+.dark .page-loaded [data-flux-header] {
+    transition-property: transform, opacity, box-shadow, border-color, background-color, background-image !important;
+}
+
+/* Prevent sidebar flashing in light mode - disable border and shadow transitions on initial load */
+html:not(.dark) flux-sidebar,
+html:not(.dark) [data-flux-sidebar] {
+    transition-property: transform, opacity !important;
+    transition-duration: 200ms !important;
+    transition-timing-function: ease-in-out !important;
+}
+
+/* Only allow border and shadow transitions after page is fully loaded in light mode */
+html:not(.dark) .page-loaded flux-sidebar,
+html:not(.dark) .page-loaded [data-flux-sidebar] {
+    transition-property: transform, opacity, box-shadow, border-color, background-color, background-image !important;
+}
+
+/* Dark mode sidebar - keep existing behavior */
+.dark flux-sidebar,
+.dark [data-flux-sidebar] {
+    transition-property: transform, opacity, box-shadow, border-color !important;
+    transition-duration: 200ms !important;
+    transition-timing-function: ease-in-out !important;
+}
+
+.dark .page-loaded flux-sidebar,
+.dark .page-loaded [data-flux-sidebar] {
+    transition-property: transform, opacity, box-shadow, border-color, background-color, background-image !important;
+}
+
+/* Prevent table header flashing in light mode - disable border and shadow transitions on initial load */
+html:not(.dark) table thead tr,
+html:not(.dark) table thead th {
+    transition-property: transform, opacity !important;
+    transition-duration: 200ms !important;
+    transition-timing-function: ease-in-out !important;
+}
+
+/* Only allow border and shadow transitions after page is fully loaded in light mode */
+html:not(.dark) .page-loaded table thead tr,
+html:not(.dark) .page-loaded table thead th {
+    transition-property: transform, opacity, box-shadow, border-color, background-color, background-image !important;
+}
+
+/* Dark mode table header - keep existing behavior */
+.dark table thead tr,
+.dark table thead th {
+    transition-property: transform, opacity, box-shadow, border-color !important;
+    transition-duration: 200ms !important;
+    transition-timing-function: ease-in-out !important;
+}
+
+.dark .page-loaded table thead tr,
+.dark .page-loaded table thead th {
+    transition-property: transform, opacity, box-shadow, border-color, background-color, background-image !important;
+}
+
 /* Prevent content overflow */
 @media (min-width: 1920px) {
     body {

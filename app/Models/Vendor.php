@@ -23,7 +23,25 @@ class Vendor extends Model
         'address',
         'website',
         'status',
+        'external_db_host',
+        'external_db_port',
+        'external_db_database',
+        'external_db_username',
+        'external_db_password',
+        'external_image_path',
+        'external_image_base_url',
     ];
+
+    protected $hidden = [
+        'external_db_password', // Hide encrypted password from JSON
+    ];
+
+    protected function casts(): array
+    {
+        return [
+            'external_db_password' => 'encrypted', // Automatically encrypt/decrypt
+        ];
+    }
 
     /**
      * Users belonging to this vendor.

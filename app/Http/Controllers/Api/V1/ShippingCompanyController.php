@@ -27,8 +27,8 @@ class ShippingCompanyController extends Controller
         $filters = [
             'search' => $request->input('search'),
             'status' => $request->input('status'),
-            'sort_by' => $request->input('sort_by', 'created_at'),
-            'sort_direction' => $request->input('sort_direction', 'desc'),
+            'sort_by' => $request->input('sort_by', 'line_name'),
+            'sort_direction' => $request->input('sort_direction', 'asc'),
         ];
 
         $perPage = (int) $request->input('per_page', 15);

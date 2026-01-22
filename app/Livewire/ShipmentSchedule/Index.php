@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Livewire\ShipmentSchedule;
 
 use App\Models\Port;
+use App\Models\ScheduleStopover;
 use App\Models\ShipLine;
 use App\Services\ScheduleService;
 use Illuminate\View\View;
@@ -152,7 +153,7 @@ class Index extends Component
         }
 
         try {
-            $stopover = \App\Models\ScheduleStopover::findOrFail($stopoverId);
+            $stopover = ScheduleStopover::findOrFail($stopoverId);
             if (! $stopoverService) {
                 $stopoverService = app(\App\Services\ScheduleStopoverService::class);
             }

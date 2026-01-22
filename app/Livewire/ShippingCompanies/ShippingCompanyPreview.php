@@ -68,6 +68,28 @@ class ShippingCompanyPreview extends Component
         return in_array($currentUser->role, ['admin', 'manager']);
     }
 
+    /**
+     * Get child record warnings for a shipping company
+     */
+    public function getShippingCompanyWarnings(): array
+    {
+        if (! $this->shippingCompany) {
+            return [];
+        }
+
+        $scheduleCount = \App\Models\Schedule::where('carrier_1_id', $this->shippingCompany->id)
+            ->orWhere('carrier_2_id', $this->shippingCompany->id)
+            ->orWhere('carrier_3_id', $this->shippingCompany->id)
+            ->count();
+
+        $warnings = [];
+        if ($scheduleCount > 0) {
+            $warnings[] = __(':count schedule(s) will have their carrier reference removed', ['count' => $scheduleCount]);
+        }
+
+        return $warnings;
+    }
+
     public function render()
     {
         return view('livewire.shipping-companies.shipping-company-preview');

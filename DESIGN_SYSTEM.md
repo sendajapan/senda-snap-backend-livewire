@@ -1152,14 +1152,37 @@ When no `image` prop is provided, displays a white background with centered icon
         <!-- Delete Button (conditional) -->
         @if($canDelete)
             @php
-                // Check for child records that will be cascade deleted
-                // Example for Schedule:
+                // Check for child records that will be cascade deleted OR have foreign keys set to null
+                
+                // Example 1: Cascade Delete (Schedule → Stopovers)
                 // $stopoverCount = $item->stopovers()->count();
                 // $warnings = [];
                 // if ($stopoverCount > 0) {
                 //     $warnings[] = __(':count stopover(s)', ['count' => $stopoverCount]);
                 // }
-                $warnings = []; // Calculate warnings based on cascade relationships
+                
+                // Example 2: Null On Delete (Vendor → Users/Vehicles)
+                // $userCount = $vendor->users()->count();
+                // $vehicleCount = $vendor->vehicles()->count();
+                // $warnings = [];
+                // if ($userCount > 0) {
+                //     $warnings[] = __(':count user(s) will have their vendor association removed', ['count' => $userCount]);
+                // }
+                // if ($vehicleCount > 0) {
+                //     $warnings[] = __(':count vehicle(s) will have their vendor association removed', ['count' => $vehicleCount]);
+                // }
+                
+                // Example 3: Multiple Column References (Shipping Company → Schedules)
+                // $scheduleCount = \App\Models\Schedule::where('carrier_1_id', $shippingCompany->id)
+                //     ->orWhere('carrier_2_id', $shippingCompany->id)
+                //     ->orWhere('carrier_3_id', $shippingCompany->id)
+                //     ->count();
+                // $warnings = [];
+                // if ($scheduleCount > 0) {
+                //     $warnings[] = __(':count schedule(s) will have their carrier reference removed', ['count' => $scheduleCount]);
+                // }
+                
+                $warnings = []; // Calculate warnings based on relationships
             @endphp
             <button @click="window.confirmDelete({{ $item->id }}, '{{ addslashes($item->name) }}', @js($warnings)).then((result) => { if (result.isConfirmed) { $wire.$dispatch('delete-item', { itemId: {{ $item->id }} }) } })" type="button" class="group relative flex items-center justify-center rounded-lg border-2 border-red-700/60 bg-red-500/10 p-1.5 transition-all duration-200 hover:border-red-700 hover:bg-red-500/20 hover:shadow-lg hover:shadow-red-700/30" title="{{ __('Delete') }}">
                 <svg class="h-3.5 w-3.5 md:h-4 md:w-4 text-red-700 transition-all duration-200 group-hover:text-red-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -1179,14 +1202,28 @@ When no `image` prop is provided, displays a white background with centered icon
 - **UI Visibility**: Delete buttons are hidden if user doesn't have permission
 
 **Child Record Warnings**:
-- Before deletion, check for child records that will be cascade deleted
+- Before deletion, check for child records that will be cascade deleted OR have foreign keys set to null
 - Pass warnings array to `confirmDelete()` function using `@js()` helper
 - Warnings are displayed in an amber-colored alert box within the SweetAlert2 confirmation dialog
-- Example warning messages:
+- Example warning messages for cascade delete:
   - `__(':count stopover(s)', ['count' => $stopoverCount])`
   - `__(':count attachment(s)', ['count' => $attachmentCount])`
   - `__(':count schedule(s)', ['count' => $scheduleCount])`
+- Example warning messages for nullOnDelete (data integrity):
+  - `__(':count user(s) will have their vendor association removed', ['count' => $userCount])`
+  - `__(':count vehicle(s) will have their vendor association removed', ['count' => $vehicleCount])`
+  - `__(':count schedule(s) will have their carrier reference removed', ['count' => $scheduleCount])`
 - Warnings are informational - deletion still proceeds if user confirms
+- Warnings apply to both cascade delete relationships AND nullOnDelete relationships (for data integrity awareness)
+
+**Entities with Delete Warnings**:
+- **Schedule deletion**: Warns about stopovers (cascade delete)
+- **Port deletion**: Warns about schedules and stopovers (cascade delete)
+- **User deletion**: Warns about notices, schedules, stopovers (cascade delete)
+- **Task deletion**: Warns about attachments (cascade delete)
+- **Vehicle deletion**: Warns about photos and consignee details (cascade delete)
+- **Vendor deletion**: Warns about users and vehicles that will have vendor_id set to null (nullOnDelete)
+- **Shipping Company deletion**: Warns about schedules that reference the company as a carrier (nullOnDelete)
 
 **Key Features**:
 - Small icon-only buttons in table rows (`p-1.5`, `h-3.5 w-3.5 md:h-4 md:w-4`)
@@ -1916,6 +1953,75 @@ Modern animated particle background with connecting lines, perfect for documenta
 ---
 
 ## 🎬 Animations & Transitions
+
+### **Performance Optimization: Preventing Flashing During Navigation**
+
+The application implements CSS optimizations to prevent visual flashing (FOUC - Flash of Unstyled Content) during Livewire navigation, especially in light mode. This ensures smooth page transitions without border, shadow, or background color flashing.
+
+**Problem**: During Livewire navigation, elements with `transition-all` would animate border colors, shadows, and backgrounds, causing a visible flash as styles were applied.
+
+**Solution**: CSS rules disable border and shadow transitions during initial page load and navigation, then re-enable them after the page is fully loaded using the `page-loaded` class.
+
+**Implementation** (in `resources/css/app.css`):
+
+```css
+/* Light Mode: Disable border and shadow transitions during navigation */
+html:not(.dark) .page-card,
+html:not(.dark) .dashboard-card,
+html:not(.dark) .welcome-card {
+    transition-property: transform, opacity !important;
+    /* border-color and box-shadow excluded during load */
+}
+
+/* Re-enable after page is loaded */
+html:not(.dark) .page-loaded .page-card {
+    transition-property: transform, opacity, box-shadow, border-color !important;
+}
+
+/* Dark Mode: Similar pattern but allows border/shadow transitions */
+.dark .page-card {
+    transition-property: transform, opacity, box-shadow, border-color !important;
+}
+```
+
+**JavaScript Integration** (in `resources/views/components/layouts/app/sidebar.blade.php`):
+
+```javascript
+// Add page-loaded class after page loads
+document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(() => document.body.classList.add('page-loaded'), 100);
+});
+
+// Remove during Livewire navigation
+document.addEventListener('livewire:navigating', function() {
+    document.body.classList.remove('page-loaded');
+});
+
+// Re-add after navigation completes
+document.addEventListener('livewire:navigated', function() {
+    setTimeout(() => document.body.classList.add('page-loaded'), 150);
+});
+```
+
+**Affected Elements**:
+- ✅ Cards (`.page-card`, `.dashboard-card`, `.welcome-card`)
+- ✅ Table rows (`table tbody tr`)
+- ✅ Headers (`flux-header`, `[data-flux-header]`)
+- ✅ Sidebars (`flux-sidebar`, `[data-flux-sidebar]`)
+- ✅ Table headers (`table thead tr`, `table thead th`)
+
+**Key Points**:
+- Light mode: Border and shadow transitions are disabled during navigation
+- Dark mode: Border and shadow transitions are allowed (less visible flashing)
+- All transitions re-enable after `page-loaded` class is added
+- Hover effects work normally after page is loaded
+- Works seamlessly with Livewire's `wire:navigate` directive
+
+**When Adding New Components**:
+If creating new components with borders/shadows that flash during navigation, apply the same pattern:
+1. Disable `box-shadow` and `border-color` in transition properties during load
+2. Re-enable them when `.page-loaded` class is present
+3. Use `html:not(.dark)` selector for light mode specific rules
 
 ### **Hover Effects**
 ```blade
@@ -3124,8 +3230,8 @@ For the main landing/welcome page, use a hero section with side-by-side features
 - Submenu items: Descriptive names (Today's Tasks, Shipping Companies, Ports)
 - Consistent with industry best practices
 
-**Version**: 2.13  
-**Last Updated**: January 17, 2026  
+**Version**: 2.15  
+**Last Updated**: January 22, 2026  
 **Project**: Laravel Livewire Dashboard - Senda Snap
 
 ---

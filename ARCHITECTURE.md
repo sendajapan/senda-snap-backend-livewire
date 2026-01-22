@@ -33,10 +33,11 @@ This system supports multiple vendors (companies) using a simple, clean multi-te
 │              VENDOR-SCOPED DATA                                  │
 │                                                                  │
 │  TASKS                    VEHICLES                               │
-│  - vendor_id (FK)         - vendor_id (FK)                       │
-│  - created_by (FK)        - created_by (FK)                      │
-│  - Only visible within    - Only visible within                  │
-│    same vendor             same vendor                           │
+│  - created_by (FK)        - vendor_id (FK)                       │
+│  - Scoped by user's       - created_by (FK)                      │
+│    vendor_id (via         - Only visible within                 │
+│    creator/assigned)       same vendor                           │
+│  - Role-based access                                            │
 └─────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────┐
@@ -60,11 +61,15 @@ This system supports multiple vendors (companies) using a simple, clean multi-te
 
 ### Multi-Vendor Key Points
 
-1. **Vendor Scoping**: Tasks and Vehicles are automatically filtered by the user's vendor
-2. **Admin Access**: Admin users (vendor_id = null) can see all data across vendors
-3. **Global Resources**: Ports and Shipping Companies are shared across all vendors
-4. **Auto-Assignment**: When creating Tasks/Vehicles, vendor_id is auto-assigned from the current user
-5. **Simple Tracking**: Global resources track who created them via `created_by`
+1. **Task Scoping**: Tasks are scoped by user's vendor_id (from users table) via creator or assigned users, using role-based access:
+   - **Admin**: Sees all tasks
+   - **Manager**: Sees all tasks from their vendor (via creator or assigned users)
+   - **Regular users**: See tasks they created OR tasks assigned to them
+2. **Vehicle Scoping**: Vehicles are automatically filtered by the user's vendor_id
+3. **Admin Access**: Admin users (vendor_id = null) can see all data across vendors
+4. **Global Resources**: Ports and Shipping Companies are shared across all vendors
+5. **Auto-Assignment**: When creating Vehicles, vendor_id is auto-assigned from the current user
+6. **Simple Tracking**: Global resources track who created them via `created_by`
 
 ### Default Vendor
 
@@ -74,14 +79,50 @@ The system comes with a default vendor:
 - **Phone**: 03-5826-7885
 - **Website**: https://autocraftjapan.com
 
-### BelongsToVendor Trait
+### Task Scoping (Role-Based)
 
-Models that need vendor scoping use the `BelongsToVendor` trait:
+Tasks use role-based scoping via the `scopeForUserRole()` method:
+
+```php
+class Task extends Model
+{
+    // Tasks don't have vendor_id column
+    // Scoping is based on user's vendor_id from users table
+    
+    public function scopeForUserRole(Builder $query, ?User $user = null): Builder
+    {
+        $user = $user ?? auth()->user();
+        
+        // Admin sees all tasks
+        if ($user->role === 'admin') {
+            return $query;
+        }
+        
+        // Manager sees all tasks from their vendor
+        if ($user->role === 'manager' && $user->vendor_id) {
+            return $query->where(function ($q) use ($user) {
+                $q->whereHas('creator', fn ($subQ) => $subQ->where('vendor_id', $user->vendor_id))
+                    ->orWhereHas('assignedUsers', fn ($subQ) => $subQ->where('vendor_id', $user->vendor_id));
+            });
+        }
+        
+        // Regular users see tasks they created OR assigned to them
+        return $query->where(function ($q) use ($user) {
+            $q->where('created_by', $user->id)
+                ->orWhereHas('assignedUsers', fn ($subQ) => $subQ->where('users.id', $user->id));
+        });
+    }
+}
+```
+
+### BelongsToVendor Trait (For Vehicles)
+
+Vehicles use the `BelongsToVendor` trait for vendor scoping:
 
 ```php
 use App\Models\Concerns\BelongsToVendor;
 
-class Task extends Model
+class Vehicle extends Model
 {
     use BelongsToVendor;
 }
@@ -91,30 +132,64 @@ $query->forCurrentVendor();      // Filter by current user's vendor
 $query->forVendor($vendorId);    // Filter by specific vendor
 ```
 
-### Vendor Scoping in Services
+### Task Scoping in Services
 
-Services use the model scope for vendor filtering:
+TaskService uses role-based scoping:
 
 ```php
-// TaskService - auto-filters by user's vendor
+// TaskService - auto-filters by user role and vendor
 public function list(array $filters = [], int $perPage = 100): LengthAwarePaginator
 {
     $query = Task::with(['assignedUsers', 'creator', 'attachments'])
-        ->forCurrentVendor();  // Uses trait scope
+        ->forUserRole();  // Uses role-based scope
 
     // Apply filters...
     return $query->paginate($perPage);
 }
 
-// Creating records - vendor_id auto-assigned
-public function create(array $data): Task
+// Creating tasks - no vendor_id needed
+public function create(array $data, array $assignedUserIds = []): Task
+{
+    $task = Task::create([
+        'title' => $data['title'],
+        'created_by' => $data['created_by'],
+        // vendor_id is not stored - scoping is via user's vendor_id
+        // ...
+    ]);
+    
+    if (! empty($assignedUserIds)) {
+        $task->assignedUsers()->sync($assignedUserIds);
+    }
+    
+    return $task;
+}
+```
+
+### Vehicle Scoping in Services
+
+VehicleService uses vendor scoping:
+
+```php
+// VehicleService - auto-filters by user's vendor
+public function list(array $filters = [], int $perPage = 100): LengthAwarePaginator
+{
+    $query = Vehicle::with(['creator', 'photos', 'consignee'])
+        ->forCurrentVendor();  // Uses BelongsToVendor trait scope
+
+    // Apply filters...
+    return $query->paginate($perPage);
+}
+
+// Creating vehicles - vendor_id auto-assigned
+public function create(array $data, int $createdBy): Vehicle
 {
     $user = auth()->user();
     $vendorId = $data['vendor_id'] ?? $user?->vendor_id;
 
-    return Task::create([
-        'title' => $data['title'],
-        'vendor_id' => $vendorId,  // Auto-assigned
+    return Vehicle::create([
+        'serial_number' => $data['serial_number'],
+        'vendor_id' => $vendorId,  // Auto-assigned from user
+        'created_by' => $createdBy,
         // ...
     ]);
 }
@@ -127,62 +202,63 @@ public function create(array $data): Task
 3. Fill in vendor details
 4. Assign users to the vendor
 
-### Vendor Scoping Best Practices
+### Task and Vehicle Scoping Best Practices
 
 **⚠️ IMPORTANT: Always use Service methods instead of direct model access**
 
-When working with vendor-scoped models (Tasks, Vehicles), always use Service methods that apply `forCurrentVendor()` scope:
+When working with scoped models (Tasks, Vehicles), always use Service methods:
 
 ✅ **Correct:**
 ```php
 // In Livewire components
-$task = $taskService->getTaskById($taskId);
-$vehicle = $vehicleService->getById($vehicleId);
+$task = $taskService->getTaskById($taskId);  // Uses forUserRole() scope
+$vehicle = $vehicleService->getById($vehicleId);  // Uses forCurrentVendor() scope
 
 // In API Controllers
-$task = $this->taskService->getTaskById($task->id);
+$task = $this->taskService->getTaskById($task->id);  // Role-based scoping
+$vehicle = $this->vehicleService->getById($vehicle->id);  // Vendor scoping
 ```
 
 ❌ **Incorrect:**
 ```php
-// Route model binding bypasses vendor scoping!
-$task = Task::findOrFail($taskId);  // ❌ No vendor filtering
+// Route model binding bypasses scoping!
+$task = Task::findOrFail($taskId);  // ❌ No role-based filtering
 $vehicle = Vehicle::find($vehicleId);  // ❌ No vendor filtering
 ```
 
 **Route Model Binding Considerations:**
 
-When using route model binding with vendor-scoped models, you must verify vendor access:
+When using route model binding with scoped models (Tasks or Vehicles), you must verify access via service methods:
 
 ```php
 // In routes/web.php - Pass ID instead of model
 Route::get('tasks/{task}', fn ($task) => view('livewire.tasks.show', ['task' => $task->id]));
 
-// In Livewire Volt component - Use service to enforce scoping
+// In Livewire Volt component - Use service to enforce role-based scoping for tasks
 public function mount(int $task, TaskService $taskService): void
 {
-    $this->task = $taskService->getTaskById($task);
+    $this->task = $taskService->getTaskById($task);  // Applies forUserRole() scope
+}
+
+// For vehicles - Use service to enforce vendor scoping
+public function mount(int $vehicle, VehicleService $vehicleService): void
+{
+    $this->vehicle = $vehicleService->getById($vehicle);  // Applies forCurrentVendor() scope
 }
 ```
 
-**Backfilling vendor_id for Existing Records:**
+**Task Scoping Rules:**
 
-If you have existing records without `vendor_id` set, run migrations to backfill:
+Tasks are scoped based on user role and vendor_id from the users table:
+- **Admin**: Sees all tasks (no filtering)
+- **Manager**: Sees tasks where creator's vendor_id matches OR assigned users' vendor_id matches
+- **Regular users**: See tasks they created OR tasks assigned to them
 
-```php
-// Migration example
-DB::statement('
-    UPDATE tasks
-    INNER JOIN users ON tasks.created_by = users.id
-    SET tasks.vendor_id = users.vendor_id
-    WHERE tasks.vendor_id IS NULL
-    AND users.vendor_id IS NOT NULL
-');
-```
+**Vehicle Scoping:**
 
-Migrations have been created for:
-- `2026_01_21_113433_backfill_vendor_id_for_tasks` - Backfills vendor_id for tasks
-- `2026_01_21_113610_backfill_vendor_id_for_vehicles` - Backfills vendor_id for vehicles
+Vehicles still use `vendor_id` column and are scoped via `BelongsToVendor` trait:
+- All users (except admin) see vehicles from their vendor only
+- Admin sees all vehicles
 
 **API Controller Pattern:**
 
@@ -220,13 +296,13 @@ public function render(): View
 }
 ```
 
-**Task Statistics with Vendor Scoping:**
+**Task Statistics with Role-Based Scoping:**
 
-When calculating statistics, always apply vendor scoping:
+When calculating statistics, always apply role-based scoping:
 
 ```php
 // ✅ Correct
-$query = Task::forCurrentVendor();
+$query = Task::forUserRole();
 $stats = [
     'pending' => (clone $query)->where('status', 'pending')->count(),
     'running' => (clone $query)->where('status', 'running')->count(),
@@ -234,7 +310,7 @@ $stats = [
 
 // ❌ Incorrect - Counts all tasks globally
 $stats = [
-    'pending' => Task::where('status', 'pending')->count(),  // No vendor filter!
+    'pending' => Task::where('status', 'pending')->count(),  // No role-based filter!
 ];
 ```
 
@@ -1191,6 +1267,7 @@ window.confirmDelete = function (itemId, itemTitle = null, warnings = null) {
 
 **2. Check child records in Blade template before deletion**:
 
+**Example 1: Cascade Delete (Schedule → Stopovers)**:
 ```blade
 @php
     // Check for child records that will be cascade deleted
@@ -1210,6 +1287,53 @@ window.confirmDelete = function (itemId, itemTitle = null, warnings = null) {
 </button>
 ```
 
+**Example 2: Null On Delete (Vendor → Users/Vehicles)**:
+```blade
+@php
+    // Check for child records that will have their foreign key set to null
+    $userCount = $vendor->users()->count();
+    $vehicleCount = $vendor->vehicles()->count();
+    $warnings = [];
+    if ($userCount > 0) {
+        $warnings[] = __(':count user(s) will have their vendor association removed', ['count' => $userCount]);
+    }
+    if ($vehicleCount > 0) {
+        $warnings[] = __(':count vehicle(s) will have their vendor association removed', ['count' => $vehicleCount]);
+    }
+@endphp
+
+<button @click="window.confirmDelete({{ $vendor->id }}, '{{ addslashes($vendor->name) }}', @js($warnings)).then((result) => { 
+    if (result.isConfirmed) { 
+        $wire.$dispatch('delete-vendor', { vendorId: {{ $vendor->id }} }) 
+    } 
+})" type="button">
+    Delete
+</button>
+```
+
+**Example 3: Null On Delete with Multiple References (Shipping Company → Schedules)**:
+```blade
+@php
+    // Check for records that reference this entity in multiple columns
+    $scheduleCount = \App\Models\Schedule::where('carrier_1_id', $shippingCompany->id)
+        ->orWhere('carrier_2_id', $shippingCompany->id)
+        ->orWhere('carrier_3_id', $shippingCompany->id)
+        ->count();
+    $warnings = [];
+    if ($scheduleCount > 0) {
+        $warnings[] = __(':count schedule(s) will have their carrier reference removed', ['count' => $scheduleCount]);
+    }
+@endphp
+
+<button @click="window.confirmDelete({{ $shippingCompany->id }}, '{{ addslashes($shippingCompany->line_name) }}', @js($warnings)).then((result) => { 
+    if (result.isConfirmed) { 
+        $wire.$dispatch('delete-shipping-company', { shippingCompanyId: {{ $shippingCompany->id }} }) 
+    } 
+})" type="button">
+    Delete
+</button>
+```
+
 **3. Cascade Delete Relationships** (from database migrations):
 
 - **Schedule** → **ScheduleStopover** (`cascadeOnDelete`)
@@ -1222,13 +1346,20 @@ window.confirmDelete = function (itemId, itemTitle = null, warnings = null) {
 - **Vehicle** → **VehiclePhoto** (`onDelete('cascade')`)
 - **Vehicle** → **ConsigneeDetail** (`onDelete('cascade')`)
 
+**4. Null On Delete Relationships** (warnings still shown for data integrity):
+
+- **Vendor** → **User** (`nullOnDelete` - vendor_id set to null)
+- **Vendor** → **Vehicle** (`nullOnDelete` - vendor_id set to null)
+- **ShippingCompany** (ShipLine) → **Schedule** (`nullOnDelete` for `carrier_1_id`, `carrier_2_id`, `carrier_3_id`)
+
 **Key Points**:
 - ✅ Check child record counts in Blade templates before rendering delete buttons
 - ✅ Pass warnings array to `confirmDelete()` function using `@js()` helper
 - ✅ Display warnings in an amber-colored alert box within the confirmation dialog
 - ✅ Use translated warning messages with counts
-- ✅ Only show warnings for cascade delete relationships (not `nullOnDelete`)
+- ✅ Show warnings for both cascade delete relationships AND nullOnDelete relationships (for data integrity awareness)
 - ✅ Warnings are informational - deletion still proceeds if user confirms
+- ✅ For nullOnDelete relationships, use descriptive messages like "will have their vendor association removed"
 
 **When to Use**:
 - All delete buttons for parent records with cascade delete relationships
@@ -1236,11 +1367,13 @@ window.confirmDelete = function (itemId, itemTitle = null, warnings = null) {
 - Records that reference other records via foreign keys with cascade delete
 
 **Applied To**:
-- Schedule deletion (warns about stopovers)
-- Port deletion (warns about schedules and stopovers)
-- User deletion (warns about notices, schedules, stopovers)
-- Task deletion (warns about attachments)
-- Vehicle deletion (warns about photos and consignee details)
+- **Schedule deletion** (warns about stopovers)
+- **Port deletion** (warns about schedules and stopovers)
+- **User deletion** (warns about notices, schedules, stopovers)
+- **Task deletion** (warns about attachments)
+- **Vehicle deletion** (warns about photos and consignee details)
+- **Vendor deletion** (warns about users and vehicles that will have vendor_id set to null)
+- **Shipping Company deletion** (warns about schedules that reference the company as a carrier)
 
 ---
 
@@ -2167,13 +2300,35 @@ public function render()
 
 ---
 
-**Version**: 1.6  
-**Last Updated**: January 16, 2026  
+**Version**: 1.9  
+**Last Updated**: January 22, 2026  
 **Project**: Senda Snap Backend - Service-Oriented Architecture  
 
 ---
 
 ## 📝 Changelog
+
+### Version 1.9 (January 22, 2026)
+- Added child record warnings for Vendor deletion (users and vehicles)
+- Added child record warnings for Shipping Company deletion (schedules)
+- Updated Child Record Warning Pattern documentation with nullOnDelete examples
+- Expanded warning system to cover both cascade delete and nullOnDelete relationships
+- All delete features now show appropriate warnings for data integrity awareness
+
+### Version 1.8 (January 22, 2026)
+- Added CSS performance optimizations to prevent flashing during Livewire navigation
+- Documented light mode border and shadow transition fixes
+- Implemented `page-loaded` class pattern for smooth page transitions
+- Fixed visual flashing issues in tables, cards, headers, and sidebars
+- Applied fixes to both light and dark modes with mode-specific rules
+
+### Version 1.7 (January 21, 2026)
+- Updated Task scoping architecture - tasks no longer have vendor_id column
+- Documented role-based task scoping (Admin/Manager/Regular users)
+- Updated TaskService examples to use `forUserRole()` scope instead of `forCurrentVendor()`
+- Clarified that tasks are scoped via user's vendor_id from users table
+- Removed references to task vendor_id backfill migrations
+- Updated architecture diagram to reflect task scoping changes
 
 ### Version 1.6 (January 16, 2026)
 - Added Multi-Vendor Architecture section

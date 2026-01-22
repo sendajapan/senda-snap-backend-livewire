@@ -16,7 +16,7 @@ use Illuminate\Database\Eloquent\Collection;
  */
 class PortService
 {
-    public function list(array $filters = [], int $perPage = 15): LengthAwarePaginator
+    public function list(array $filters = [], int $perPage = 100): LengthAwarePaginator
     {
         $query = Port::with('creator');
 

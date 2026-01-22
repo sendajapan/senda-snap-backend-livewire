@@ -27,11 +27,11 @@ class PortController extends Controller
         $filters = [
             'search' => $request->input('search'),
             'port_type' => $request->input('port_type'),
-            'sort_by' => $request->input('sort_by', 'created_at'),
-            'sort_direction' => $request->input('sort_direction', 'desc'),
+            'sort_by' => $request->input('sort_by', 'port_name'),
+            'sort_direction' => $request->input('sort_direction', 'asc'),
         ];
 
-        $perPage = (int) $request->input('per_page', 15);
+        $perPage = (int) $request->input('per_page', 100);
         $ports = $this->portService->list($filters, $perPage);
 
         return $this->successResponse('Ports retrieved successfully', [

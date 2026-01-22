@@ -7,10 +7,10 @@
     <body class="landing-page min-h-screen bg-white antialiased dark:bg-zinc-800">
         <!-- Mouse Spotlight Effect (Dark Mode Only) -->
         <div id="mouse-spotlight" class="fixed pointer-events-none" style="z-index: 9999;"></div>
-        
+
         <!-- Vintage Dark Corners Overlay (Dark Mode Only) -->
         <div id="vintage-corners" class="fixed inset-0 pointer-events-none z-10 opacity-0 dark:opacity-100 transition-opacity duration-300"></div>
-        
+
         <!-- Top Navigation -->
         <nav class="fixed top-0 left-0 right-0 z-50 border-b border-gray-200/50 bg-white/95 backdrop-blur-md dark:border-zinc-700/50 dark:bg-zinc-900/95 shadow-sm" x-data="{ mobileMenuOpen: false }">
             <div class="mx-auto max-w-[1600px] 2xl:max-w-[1920px] landing-nav-container px-4 sm:px-6 lg:px-8 xl:px-10 2xl:px-12 py-3 sm:py-4">
@@ -105,7 +105,7 @@
                 <!-- Hero Content -->
                 <div class="text-center mb-4 sm:mb-5 lg:mb-6 landing-hero-content mt-8 sm:mt-10 lg:mt-12 xl:mt-16">
                     <h1 class="mb-2 sm:mb-3 landing-title text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white leading-tight">
-                        {{ __('Manage Vehicles & Tasks') }}
+                        {{ __('Manage Vehicles, Shipments & Tasks') }}
                         <span class="block bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">
                             {{ __('Seamlessly') }}
                         </span>
@@ -196,7 +196,7 @@
                         </div>
 
                         <!-- Play Store Download Section -->
-                        <a href="https://play.google.com/store/apps/details?id=com.sendajapan.sendasnap" 
+                        <a href="https://play.google.com/store/apps/details?id=com.sendajapan.sendasnap"
                            target="_blank"
                            rel="noopener noreferrer"
                            class="group block rounded-2xl border border-emerald-200 bg-gradient-to-br from-white via-emerald-50/30 to-teal-50/30 p-5 sm:p-6 lg:p-7 shadow-xl transition-all hover:scale-[1.02] hover:shadow-2xl hover:shadow-emerald-500/20 dark:border-emerald-900/50 dark:from-gray-900 dark:via-emerald-900/20 dark:to-teal-900/20 dark:hover:shadow-emerald-500/10 landing-feature-card">
@@ -205,17 +205,17 @@
                                 <div class="mb-4 sm:mb-5 lg:mb-6 flex h-20 w-20 sm:h-24 sm:w-24 lg:h-28 lg:w-28 items-center justify-center transition-transform group-hover:scale-110 relative">
                                     <!-- Faded white smoke background -->
                                     <div class="absolute inset-0 rounded-3xl bg-gradient-to-br from-white/40 via-white/30 to-white/20 dark:from-white/50 dark:via-white/40 dark:to-white/30 backdrop-blur-sm shadow-lg"></div>
-                                    <img src="https://play-lh.googleusercontent.com/WXLRHhKAqge_MSE5lTZewLN53eVVwQGwS-3mT6eb0rzAeVz2Pp5mrw_3sDk1dxUPZkOopFGW1qEfTz5e5WRT=w480-h960-rw" 
+                                    <img src="https://play-lh.googleusercontent.com/WXLRHhKAqge_MSE5lTZewLN53eVVwQGwS-3mT6eb0rzAeVz2Pp5mrw_3sDk1dxUPZkOopFGW1qEfTz5e5WRT=w480-h960-rw"
                                          alt="{{ __('Senda Snap App Icon') }}"
                                          class="relative h-full w-full rounded-3xl object-cover app-icon-fade dark:brightness-125 dark:contrast-110 z-10">
                                 </div>
-                                
+
                                 <!-- App Information -->
                                 <h3 class="mb-1 sm:mb-2 text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 dark:text-white">{{ __('Senda Snap') }}</h3>
                                 <p class="mb-3 sm:mb-4 text-xs sm:text-sm lg:text-base text-gray-600 dark:text-gray-400 px-2">
                                     {{ __('Your Complete Vehicle Image Management & Team Collaboration Solution') }}
                                 </p>
-                                
+
                                 <!-- App Details -->
                                 <div class="mb-4 sm:mb-5 lg:mb-6 flex flex-wrap items-center justify-center gap-3 sm:gap-4 text-xs sm:text-sm text-gray-500 dark:text-gray-400">
                                     <div class="flex items-center gap-1">
@@ -231,10 +231,10 @@
                                         <span>{{ __('Everyone') }}</span>
                                     </div>
                                 </div>
-                                
+
                                 <!-- Official Google Play Store Badge -->
                                 <div class="flex items-center justify-center">
-                                    <img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" 
+                                    <img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"
                                          alt="{{ __('Get it on Google Play') }}"
                                          class="h-10 sm:h-12 lg:h-14 transition-transform group-hover:scale-105"
                                          onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
@@ -892,7 +892,7 @@
 
                     while (current && depth < maxDepth) {
                         const classes = current.className || '';
-                        
+
                         const colorMatch = classes.match(/border-(blue|emerald|amber|violet|indigo|red|cyan|teal|purple|orange|rose)-\d+/);
                         if (colorMatch) {
                             return colorMatch[1];
@@ -943,10 +943,10 @@
                 // Update spotlight position and color
                 function updateSpotlight(e) {
                     if (!isDarkMode) return;
-                    
+
                     mouseX = e.clientX;
                     mouseY = e.clientY;
-                    
+
                     spotlight.style.left = mouseX + 'px';
                     spotlight.style.top = mouseY + 'px';
 
@@ -976,12 +976,12 @@
 
                 // Initialize
                 checkDarkMode();
-                
+
                 // Listen for mouse movement
                 document.addEventListener('mousemove', updateSpotlight);
                 document.addEventListener('mouseenter', showSpotlight);
                 document.addEventListener('mouseleave', hideSpotlight);
-                
+
                 // Watch for dark mode changes
                 const observer = new MutationObserver(checkDarkMode);
                 observer.observe(document.documentElement, {

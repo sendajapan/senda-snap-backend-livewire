@@ -177,12 +177,10 @@ class ExternalVehicleService
                     'veh_image' => $fileName,
                     'ordering' => 99,
                     'web_show' => 1,
-                    'email_by' => null,
                     'created_by' => $createdBy,
                     'created_on' => $now->format('Y-m-d H:i:s'),
                     'updated_by' => $createdBy,
                     'updated_on' => $now->format('Y-m-d H:i:s'),
-                    'aleado_images' => null,
                 ];
 
                 // Build the SQL query for debugging

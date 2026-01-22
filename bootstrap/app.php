@@ -18,7 +18,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        $middleware->validateCsrfTokens(except: [
+            'deploy/github',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         // Handle authentication exceptions for API

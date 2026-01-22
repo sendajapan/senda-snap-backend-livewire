@@ -1,5 +1,5 @@
 @props([
-    'variant' => 'emerald', // blue, emerald, violet, amber
+    'variant' => 'emerald', // blue, emerald, violet, amber, red
 ])
 
 @php
@@ -39,6 +39,15 @@
             'hoverBorder' => 'hover:border-amber-400/60 dark:hover:border-amber-700',
             'decorTop' => 'bg-gradient-to-br from-amber-400/30 to-orange-400/30',
             'decorBottom' => 'bg-gradient-to-br from-orange-400/30 to-amber-400/30',
+        ],
+        'red' => [
+            'border' => 'border-red-300/50 dark:border-red-800/50',
+            'bg' => 'bg-white/60 backdrop-blur-xl dark:bg-gray-900/50',
+            'shadow' => 'shadow-xl shadow-red-200/40 dark:shadow-red-900/30',
+            'hoverShadow' => 'hover:shadow-2xl hover:shadow-red-300/50 dark:hover:shadow-red-800/40',
+            'hoverBorder' => 'hover:border-red-400/60 dark:hover:border-red-700',
+            'decorTop' => 'bg-gradient-to-br from-red-400/30 to-rose-400/30',
+            'decorBottom' => 'bg-gradient-to-br from-rose-400/30 to-red-400/30',
         ],
     ];
     

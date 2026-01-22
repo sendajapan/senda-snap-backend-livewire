@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Models\VehicleSearchLog;
 use App\Services\VehicleService;
 use Exception;
 use Illuminate\Database\QueryException;
@@ -15,8 +16,7 @@ class VehicleController extends Controller
 {
     public function __construct(
         protected VehicleService $vehicleService
-    ) {
-    }
+    ) {}
 
     public function search(Request $request): JsonResponse
     {
@@ -39,6 +39,25 @@ class VehicleController extends Controller
                 (string) $input['search_type'],
                 (string) $input['search_query']
             );
+
+            // Log the search
+            try {
+                VehicleSearchLog::create([
+                    'user_id' => auth()->id(),
+                    'vendor_id' => $results['vendor_id'] ?? null,
+                    'search_type' => $input['search_type'],
+                    'search_query' => $input['search_query'],
+                    'vehicles_found' => count($results['vehicles'] ?? []),
+                    'vehicle_ids' => array_column($results['vehicles'] ?? [], 'vehicle_id'),
+                    'ip_address' => $request->ip(),
+                    'user_agent' => $request->userAgent(),
+                ]);
+            } catch (\Exception $e) {
+                // Don't fail the request if logging fails
+                \Log::warning('Failed to log vehicle search', [
+                    'error' => $e->getMessage(),
+                ]);
+            }
 
             return $this->successResponse('Search completed', [
                 'vehicles' => $results['vehicles'],

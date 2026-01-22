@@ -1666,7 +1666,7 @@ Content-Type: application/json</code></pre>
         </x-table-card>
 
         <!-- Error Responses -->
-        <x-table-card variant="violet">
+        <x-table-card variant="red">
             <div class="space-y-6">
                 <div class="flex items-center gap-3">
                     <div

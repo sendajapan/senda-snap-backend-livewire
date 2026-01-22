@@ -7,35 +7,167 @@ This document outlines the design patterns, components, and styling guidelines u
 
 ## 🎨 Color Variants
 
-The design system uses 4 primary color variants:
+The design system uses color variants to maintain visual consistency and module identification. **Each module must use the same color throughout, and different modules must not share colors.**
 
-### **Blue** (Users & Authentication)
+### **Module-to-Color Assignment** (Mandatory)
+
+| Module | Color Variant | Usage |
+|--------|--------------|-------|
+| **Users** | `blue` | User management, authentication pages |
+| **Tasks** | `emerald` | All task pages (Today's Tasks, All Tasks, Kanban Board) |
+| **Vehicles** | `amber` | Vehicle inventory, tracking, management |
+| **Ports** | `indigo` | Port management and listings |
+| **Shipment Schedule** | `cyan` | Shipment schedules and stopovers |
+| **Shipping Companies** | `indigo` | Shipping company management |
+| **Vendors** | `violet` | Vendor management (Admin only) |
+| **Notices** | `violet` | System notices and announcements |
+| **API Documentation** | `violet` | API documentation pages |
+| **Error Responses** | `red` | Error response documentation sections |
+
+### **Color Restrictions**
+
+**CRITICAL RULES:**
+1. ✅ **Same module = Same color**: All pages/components within a module must use the same color variant
+2. ❌ **Different modules ≠ Same color**: Each module must have a unique color (except API Documentation which can share with Vendors/Notices as it's documentation)
+3. ✅ **Consistent usage**: Page headers, table cards, and related components within a module must all use the same variant
+4. ❌ **No color conflicts**: If a color is assigned to a module, it cannot be used by another module
+
+### **Available Color Variants**
+
+#### **Blue** (Users & Authentication)
 - Primary: `blue-500` → `cyan-500`
 - Light: `blue-50/30` → `cyan-50/30`
 - Border: `blue-200`
 - Decorative: `blue-400/20` → `cyan-400/20`
-- Use for: User management, authentication pages
+- **Reserved for**: Users module only
 
-### **Emerald** (Tasks)
+#### **Emerald** (Tasks)
 - Primary: `emerald-500` → `teal-500`
 - Light: `emerald-50/30` → `teal-50/30`
 - Border: `emerald-200`
 - Decorative: `emerald-400/20` → `teal-400/20`
-- Use for: Task management, assignments
+- **Reserved for**: Tasks module only
 
-### **Amber** (Vehicles)
+#### **Amber** (Vehicles)
 - Primary: `amber-500` → `orange-500`
 - Light: `amber-50/30` → `orange-50/30`
 - Border: `amber-200`
 - Decorative: `amber-400/20` → `orange-400/20`
-- Use for: Vehicle inventory, tracking
+- **Reserved for**: Vehicles module only
 
-### **Violet** (General & API)
+#### **Violet** (Vendors, Notices & API Documentation)
 - Primary: `violet-500` → `purple-500`
 - Light: `violet-50/30` → `purple-50/30`
 - Border: `violet-200`
 - Decorative: `violet-400/20` → `purple-400/20`
-- Use for: Data tables, analytics, API documentation
+- **Reserved for**: Vendors, Notices, and API Documentation modules
+
+#### **Indigo** (Ports & Shipping Companies)
+- Primary: `indigo-500` → `purple-500`
+- Light: `indigo-50/30` → `purple-50/30`
+- Border: `indigo-200`
+- Decorative: `indigo-400/20` → `purple-400/20`
+- **Reserved for**: Ports and Shipping Companies modules
+
+#### **Cyan** (Shipment Schedule)
+- Primary: `cyan-500` → `blue-500`
+- Light: `cyan-50/30` → `blue-50/30`
+- Border: `cyan-200`
+- Decorative: `cyan-400/20` → `blue-400/20`
+- **Reserved for**: Shipment Schedule module only
+
+#### **Red** (Error Responses & Alerts)
+- Primary: `red-500` → `rose-500`
+- Light: `red-50/30` → `rose-50/30`
+- Border: `red-200`
+- Decorative: `red-400/20` → `rose-400/20`
+- **Reserved for**: Error responses, alerts, and warning sections
+
+### **Module Color Enforcement Rules**
+
+**Rule 1: Same Module = Same Color**
+- All pages, components, and related UI elements within a module must use the same color variant
+- Example: All task pages (Today's Tasks, All Tasks, Kanban Board) must use `emerald`
+- Example: User management pages, user modals, user previews must all use `blue`
+
+**Rule 2: Different Modules ≠ Same Color**
+- Each functional module must have a unique color assignment
+- No two different modules can share the same color variant
+- Exception: API Documentation can share `violet` with Vendors/Notices as it's documentation
+
+**Rule 3: Component Consistency**
+- When using `<x-page-header>` and `<x-table-card>` in the same module, both must use the same `variant` prop
+- Related components (modals, previews, cards) within a module should use the same color theme
+
+**Rule 4: Color Assignment Priority**
+1. Check the module-to-color assignment table above
+2. If module is not listed, assign a color that is not already used by another module
+3. Document the new assignment in this file
+
+### **Current Color Conflicts (To Be Fixed)**
+
+The following modules currently have color conflicts that need to be resolved:
+
+| Module | Current Color | Conflict With | Correct Color |
+|--------|--------------|---------------|---------------|
+| Ports | `blue` | Users | Should be `indigo` |
+| Shipment Schedule | `blue` | Users | Should be `cyan` |
+| Shipping Companies | `indigo` | None (but needs variant support) | `indigo` (needs variant added) |
+| Notices | `violet` | Vendors/API | Can share `violet` (documentation exception) |
+
+**Action Required:**
+- Add `indigo` and `cyan` variants to `page-header` and `table-card` components
+- Update Ports module to use `indigo` instead of `blue`
+- Update Shipment Schedule module to use `cyan` instead of `blue`
+- Ensure Vehicles module uses `amber` (currently missing variant in some views)
+
+### **Correct vs Incorrect Usage Examples**
+
+**✅ CORRECT: Same Module Using Same Color**
+```blade
+<!-- Users Module - All pages use blue -->
+<x-page-header variant="blue" ... />
+<x-table-card variant="blue">...</x-table-card>
+
+<!-- Tasks Module - All pages use emerald -->
+<x-page-header variant="emerald" ... />
+<x-table-card variant="emerald">...</x-table-card>
+```
+
+**❌ INCORRECT: Same Module Using Different Colors**
+```blade
+<!-- WRONG: Users module mixing colors -->
+<x-page-header variant="blue" ... />
+<x-table-card variant="violet">...</x-table-card>  <!-- ❌ Should be blue -->
+```
+
+**❌ INCORRECT: Different Modules Using Same Color**
+```blade
+<!-- WRONG: Ports using blue (conflicts with Users) -->
+<x-page-header variant="blue" ... />  <!-- ❌ Should be indigo -->
+<x-table-card variant="blue">...</x-table-card>  <!-- ❌ Should be indigo -->
+```
+
+**✅ CORRECT: Different Modules Using Different Colors**
+```blade
+<!-- Users Module -->
+<x-page-header variant="blue" ... />
+<x-table-card variant="blue">...</x-table-card>
+
+<!-- Ports Module -->
+<x-page-header variant="indigo" ... />
+<x-table-card variant="indigo">...</x-table-card>
+```
+
+### **Implementation Checklist**
+
+When creating or updating a module page:
+
+- [ ] Check the module-to-color assignment table above
+- [ ] Use the same `variant` prop for both `<x-page-header>` and `<x-table-card>`
+- [ ] Verify no other module is using the same color
+- [ ] Ensure all related components (modals, previews) use consistent color theming
+- [ ] Update this documentation if assigning a new color to a module
 
 ---
 

@@ -77,6 +77,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('vehicles/{vehicle}/edit', fn ($vehicle) => view('livewire.vehicles.edit', ['vehicle' => $vehicle->id]))->name('vehicles.edit');
     Route::get('vehicles/{vehicle}', fn ($vehicle) => view('livewire.vehicles.show', ['vehicle' => $vehicle->id]))->name('vehicles.show');
 
+    // Vehicle Search History
+    Route::get('vehicle-searches', \App\Livewire\VehicleSearches\Index::class)->name('vehicle-searches.index');
+
     // Shipment Schedule
     Route::get('shipment-schedule', ShipmentScheduleIndex::class)->name('shipment-schedule.index');
 

@@ -37,7 +37,7 @@
 
             <flux:navlist.group :heading="__('Management')" class="grid">
                 @if(auth()->user()?->role === 'admin')
-                    <flux:navlist.item icon="building-office" :href="route('vendors.index')"
+                    <flux:navlist.item icon="building-office-2" :href="route('vendors.index')"
                         :current="request()->routeIs('vendors.*')" wire:navigate>{{ __('Vendors') }}</flux:navlist.item>
                 @endif
                 <flux:navlist.item icon="users" :href="route('users.index')" :current="request()->routeIs('users.*')"
@@ -49,16 +49,8 @@
                         class="cursor-pointer">
                         <div class="flex items-center justify-between w-full">
                             <span>{{ __('Tasks') }}</span>
-                            <svg x-show="open" class="h-4 w-4 transition-transform rotate-180" fill="none"
-                                stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M19 9l-7 7-7-7" />
-                            </svg>
-                            <svg x-show="!open" class="h-4 w-4 transition-transform" fill="none" stroke="currentColor"
-                                viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M19 9l-7 7-7-7" />
-                            </svg>
+                            <flux:icon.chevron-down x-show="open" class="h-4 w-4 transition-transform rotate-180" />
+                            <flux:icon.chevron-down x-show="!open" class="h-4 w-4 transition-transform" />
                         </div>
                     </flux:navlist.item>
 
@@ -80,21 +72,13 @@
 
                 <!-- Shipments with Submenu -->
                 <div x-data="{ open: true }">
-                    <flux:navlist.item icon="layout-grid" @click="open = !open"
+                    <flux:navlist.item icon="paper-airplane" @click="open = !open"
                         :current="request()->routeIs('shipping-companies.*') || request()->routeIs('shipment-schedule.*') || request()->routeIs('ports.*')"
                         class="cursor-pointer">
                         <div class="flex items-center justify-between w-full">
                             <span>{{ __('Shipments') }}</span>
-                            <svg x-show="open" class="h-4 w-4 transition-transform rotate-180" fill="none"
-                                stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M19 9l-7 7-7-7" />
-                            </svg>
-                            <svg x-show="!open" class="h-4 w-4 transition-transform" fill="none" stroke="currentColor"
-                                viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M19 9l-7 7-7-7" />
-                            </svg>
+                            <flux:icon.chevron-down x-show="open" class="h-4 w-4 transition-transform rotate-180" />
+                            <flux:icon.chevron-down x-show="!open" class="h-4 w-4 transition-transform" />
                         </div>
                     </flux:navlist.item>
 
@@ -114,8 +98,9 @@
                     </div>
                 </div>
 
-                <flux:navlist.item icon="view-columns" disabled class="opacity-50 cursor-not-allowed">
-                    {{ __('Vehicles') }} <span class="text-xs">({{ __('Coming Soon') }})</span>
+                <flux:navlist.item icon="magnifying-glass" :href="route('vehicle-searches.index')"
+                    :current="request()->routeIs('vehicle-searches.*')" wire:navigate>
+                    {{ __('Vehicle Searches') }}
                 </flux:navlist.item>
             </flux:navlist.group>
 
@@ -237,13 +222,13 @@
     <x-toast-notification />
 
     @fluxScripts
-    
+
     <!-- Prevent table and card flashing in dark mode -->
     <script>
-        (function() {
+        (function () {
             // Add class to body once page is loaded to allow transitions
             function addPageLoadedClass() {
-                setTimeout(function() {
+                setTimeout(function () {
                     document.body.classList.add('page-loaded');
                 }, 100);
             }
@@ -255,19 +240,19 @@
             }
 
             // Handle Livewire navigation - disable transitions during navigation
-            document.addEventListener('livewire:navigating', function() {
+            document.addEventListener('livewire:navigating', function () {
                 document.body.classList.remove('page-loaded');
             });
 
             // Re-enable transitions after Livewire navigation completes
-            document.addEventListener('livewire:navigated', function() {
-                setTimeout(function() {
+            document.addEventListener('livewire:navigated', function () {
+                setTimeout(function () {
                     document.body.classList.add('page-loaded');
                 }, 150);
             });
         })();
     </script>
-    
+
     @if ($showParticles)
         <script>
             (function () {
@@ -417,13 +402,13 @@
             if (warnings && !Array.isArray(warnings)) {
                 warnings = null;
             }
-            
+
             let htmlContent = '';
-            
+
             if (itemTitle) {
                 htmlContent += `<p class="mb-2 font-semibold text-gray-900 dark:text-white">${itemTitle}</p>`;
             }
-            
+
             // Add warnings about child records if provided
             if (warnings && Array.isArray(warnings) && warnings.length > 0) {
                 htmlContent += `<div class="mb-3 rounded-lg border-2 border-amber-300 bg-amber-50/50 p-3 dark:border-amber-700 dark:bg-amber-900/20">`;
@@ -435,14 +420,14 @@
                 htmlContent += `</ul>`;
                 htmlContent += `</div>`;
             }
-            
+
             // Always show the warning message
             if (!htmlContent) {
                 htmlContent = `<p class="text-sm text-gray-600 dark:text-gray-400">{{ __('Are you sure you want to delete this item? This action cannot be undone!') }}</p>`;
             } else {
                 htmlContent += `<p class="text-sm text-gray-600 dark:text-gray-400 mt-3">{{ __('This action cannot be undone!') }}</p>`;
             }
-            
+
             return Swal.fire({
                 title: '{{ __('Are you sure?') }}',
                 html: htmlContent,
@@ -465,7 +450,7 @@
     </script>
     <!-- Mouse Spotlight Script (Dark Mode Only) -->
     <script>
-        (function() {
+        (function () {
             const spotlight = document.getElementById('mouse-spotlight');
             if (!spotlight) return;
 
@@ -549,7 +534,7 @@
 
                 while (current && depth < maxDepth) {
                     const classes = current.className || '';
-                    
+
                     // Check for border color classes (most common indicator)
                     const colorMatch = classes.match(/border-(blue|emerald|amber|violet|indigo|red|cyan|teal|purple|orange|rose)-\d+/);
                     if (colorMatch) {
@@ -604,10 +589,10 @@
             // Update spotlight position and color
             function updateSpotlight(e) {
                 if (!isDarkMode) return;
-                
+
                 mouseX = e.clientX;
                 mouseY = e.clientY;
-                
+
                 spotlight.style.left = mouseX + 'px';
                 spotlight.style.top = mouseY + 'px';
 
@@ -637,12 +622,12 @@
 
             // Initialize
             checkDarkMode();
-            
+
             // Listen for mouse movement
             document.addEventListener('mousemove', updateSpotlight);
             document.addEventListener('mouseenter', showSpotlight);
             document.addEventListener('mouseleave', hideSpotlight);
-            
+
             // Watch for dark mode changes
             const observer = new MutationObserver(checkDarkMode);
             observer.observe(document.documentElement, {

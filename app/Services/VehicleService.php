@@ -138,9 +138,31 @@ class VehicleService
 
     public function search(string $searchType, string $searchQuery): array
     {
-        $externalService = $this->getExternalVehicleService();
+        $user = auth()->user();
 
-        return $externalService->getVehicleDetails($searchType, $searchQuery);
+        if (!$user) {
+            throw new \RuntimeException('User must be authenticated to search vehicles.');
+        }
+
+        // Get vendor for logging purposes
+        $vendor = null;
+        if (!$user->vendor_id) {
+            // For admin users, use default vendor
+            $vendor = Vendor::where('email', 'info@autocraftjapan.com')->first();
+        } else {
+            if (!$user->relationLoaded('vendor')) {
+                $user->load('vendor');
+            }
+            $vendor = $user->vendor;
+        }
+
+        $externalService = $this->getExternalVehicleService();
+        $results = $externalService->getVehicleDetails($searchType, $searchQuery);
+
+        // Add vendor ID to results for logging
+        $results['vendor_id'] = $vendor?->id;
+
+        return $results;
     }
 
     public function uploadImages(int $vehicleId, array $images, ?int $createdBy = null): array

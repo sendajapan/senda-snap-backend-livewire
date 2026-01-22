@@ -4,6 +4,7 @@ use App\Http\Controllers\AdminManualController;
 use App\Http\Controllers\AndroidAppManualController;
 use App\Http\Controllers\ApiDocsController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DeployController;
 use App\Http\Controllers\LandingPageController;
 use App\Http\Controllers\PrivacyPolicyController;
 use App\Livewire\Notices\Index as NoticesIndex;
@@ -32,6 +33,9 @@ Route::get('privacy-policy', [PrivacyPolicyController::class, 'index'])->name('p
 
 // Public Android App Manual (no authentication required)
 Route::get('android-app-manual', [AndroidAppManualController::class, 'index'])->name('android.app.manual');
+
+//Github Webhook
+Route::post('/deploy/github', [DeployController::class, 'github']);
 
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])

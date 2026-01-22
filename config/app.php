@@ -106,6 +106,12 @@ return [
     ],
 
     /*
+     | Github Webhook Secret
+     */
+
+    'github_webhook_secret' => env('GITHUB_WEBHOOK_SECRET'),
+
+    /*
     |--------------------------------------------------------------------------
     | Maintenance Mode Driver
     |--------------------------------------------------------------------------

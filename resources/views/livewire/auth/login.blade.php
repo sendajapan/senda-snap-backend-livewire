@@ -5,12 +5,10 @@
 
     // Password mapping based on seeder (for development/testing only)
     $passwordMap = [
+        'kono@acjl.net' => 'kono2026',
         'sulaiman@sendasnap.com' => 'password',
         'acj.shiroyama@gmail.com' => 'acjl7861',
         'zafar@kar-men.com' => '0898',
-        'acj.document@gmail.com' => 'kasahara',
-        'acjl.information@gmail.com' => 'password',
-        'edo100@gmail.com' => 'password',
     ];
 
     // Default password for users not in the map

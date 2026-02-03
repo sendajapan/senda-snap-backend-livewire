@@ -1,5 +1,5 @@
 @props(['port', 'index'])
-<tr class="group transition-all duration-200 hover:bg-gradient-to-r hover:from-blue-50/50 hover:to-teal-50/50 dark:hover:from-blue-900/10 dark:hover:to-teal-900/10">
+<tr class="group hover:bg-blue-50/30 dark:hover:bg-blue-900/10">
     <td class="whitespace-nowrap px-3 md:px-6 py-3 md:py-5 text-center">
         <span class="text-xs md:text-sm font-semibold text-gray-600 dark:text-gray-400">{{ $index ?? '' }}</span>
     </td>

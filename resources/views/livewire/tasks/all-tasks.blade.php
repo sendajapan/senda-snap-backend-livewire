@@ -100,7 +100,7 @@
         </div>
 
         <!-- Table View (2xl and above) -->
-        <div class="hidden 2xl:block overflow-x-auto border rounded-xl bg-white/50 backdrop-blur-sm dark:border-gray-700/50 dark:bg-gray-900/20"
+        <div class="hidden 2xl:block overflow-x-auto border rounded-xl bg-white/50 dark:border-gray-700/50 dark:bg-gray-900/20"
             wire:key="all-tasks-table-{{ md5(($search ?? '') . '|' . ($statusFilter ?? '') . '|' . ($fromDate ?? '') . '|' . ($toDate ?? '')) }}">
             <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                 <thead>
@@ -140,7 +140,7 @@
                 </thead>
                 <tbody class="divide-y divide-gray-200/50 dark:divide-gray-700/50">
                     @forelse($tasks as $index => $task)
-                        <x-task-table-row :task="$task" :showWorkDate="true" :index="$tasks->firstItem() + $index" wire:key="task-{{ $task->id }}" />
+                        <x-task-table-row :task="$task" :showWorkDate="true" :index="$tasks->firstItem() + $index" wire:key="task-row-{{ $task->id }}" />
                     @empty
                         <tr>
                             <td colspan="8" class="px-3 md:px-6 py-12 text-center">
@@ -168,11 +168,11 @@
         </div>
 
         <!-- Stacked View (below 2xl) -->
-        <div class="2xl:hidden bg-white/50 backdrop-blur-sm dark:bg-gray-900/20"
+        <div class="2xl:hidden bg-white/50 dark:bg-gray-900/20"
             wire:key="all-tasks-stacked-{{ md5(($search ?? '') . '|' . ($statusFilter ?? '') . '|' . ($fromDate ?? '') . '|' . ($toDate ?? '')) }}">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 @forelse($tasks as $task)
-                    <x-task-card :task="$task" :showWorkDate="true" :rounded="true" />
+                    <x-task-card :task="$task" :showWorkDate="true" :rounded="true" wire:key="task-card-{{ $task->id }}" />
                 @empty
                     <div class="col-span-full p-12 text-center">
                         <div class="flex flex-col items-center gap-3">

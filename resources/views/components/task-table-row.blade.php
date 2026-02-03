@@ -1,7 +1,7 @@
 @php use Carbon\Carbon; @endphp
 @props(['task', 'showWorkDate' => false, 'showTimeFirst' => false, 'index' => null])
 
-<tr class="group transition-all duration-200 hover:bg-gradient-to-r hover:from-emerald-50/50 hover:to-teal-50/50 dark:hover:from-emerald-900/10 dark:hover:to-teal-900/10">
+<tr class="group hover:bg-emerald-50/30 dark:hover:bg-emerald-900/10">
     <td class="whitespace-nowrap px-3 md:px-6 py-3 md:py-5 text-center">
         <span class="text-xs md:text-sm font-semibold text-gray-600 dark:text-gray-400">{{ $index ?? '' }}</span>
     </td>

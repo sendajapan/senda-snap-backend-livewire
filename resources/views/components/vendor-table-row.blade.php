@@ -1,5 +1,5 @@
 @props(['vendor', 'index'])
-<tr class="group transition-all duration-200 hover:bg-gradient-to-r hover:from-violet-50/50 hover:to-purple-50/50 dark:hover:from-violet-900/10 dark:hover:to-purple-900/10">
+<tr class="group hover:bg-violet-50/30 dark:hover:bg-violet-900/10">
     <td class="whitespace-nowrap px-3 md:px-6 py-3 md:py-5 text-center">
         <span class="text-xs md:text-sm font-semibold text-gray-600 dark:text-gray-400">{{ $index ?? '' }}</span>
     </td>
@@ -89,19 +89,7 @@
 
             <!-- Delete Button -->
             @if($canDelete)
-                @php
-                    // Check for child records that will be affected
-                    $userCount = $vendor->users()->count();
-                    $vehicleCount = $vendor->vehicles()->count();
-                    $warnings = [];
-                    if ($userCount > 0) {
-                        $warnings[] = __(':count user(s) will have their vendor association removed', ['count' => $userCount]);
-                    }
-                    if ($vehicleCount > 0) {
-                        $warnings[] = __(':count vehicle(s) will have their vendor association removed', ['count' => $vehicleCount]);
-                    }
-                @endphp
-                <button @click="window.confirmDelete({{ $vendor->id }}, '{{ addslashes($vendor->name) }}', @js($warnings)).then((result) => { if (result.isConfirmed) { $wire.$dispatch('delete-vendor', { vendorId: {{ $vendor->id }} }) } })" type="button" class="group relative flex items-center justify-center rounded-lg border-2 border-red-700/60 bg-red-500/10 p-1.5 transition-all duration-200 hover:border-red-700 hover:bg-red-500/20 hover:shadow-lg hover:shadow-red-700/30" title="{{ __('Delete Vendor') }}">
+                <button @click="window.confirmDelete({{ $vendor->id }}, '{{ addslashes($vendor->name) }}', []).then((result) => { if (result.isConfirmed) { $wire.$dispatch('delete-vendor', { vendorId: {{ $vendor->id }} }) } })" type="button" class="group relative flex items-center justify-center rounded-lg border-2 border-red-700/60 bg-red-500/10 p-1.5 transition-all duration-200 hover:border-red-700 hover:bg-red-500/20 hover:shadow-lg hover:shadow-red-700/30" title="{{ __('Delete Vendor') }}">
                     <svg class="h-3.5 w-3.5 md:h-4 md:w-4 text-red-700 transition-all duration-200 group-hover:text-red-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
                     </svg>

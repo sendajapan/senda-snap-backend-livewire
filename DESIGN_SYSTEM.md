@@ -274,7 +274,10 @@ Display statistics with animated bubble particles.
 ### User Card (for grids)
 
 ```blade
-<x-user-card :user="$user" :rounded="true" />
+<!-- ✅ CRITICAL: Always include wire:key in loop -->
+@forelse($users as $user)
+    <x-user-card :user="$user" :rounded="true" wire:key="user-card-{{ $user->id }}" />
+@empty
 ```
 
 **Props**:
@@ -288,6 +291,26 @@ Display statistics with animated bubble particles.
 - Hover effects
 - Action buttons
 
+**Card Component Pattern**:
+
+```blade
+@props(['user', 'rounded' => true])
+
+<!-- ✅ NO backdrop-blur-sm, use transition-shadow -->
+<div class="group relative overflow-hidden {{ $rounded ? 'rounded-xl' : '' }} border border-blue-200 bg-white/50 p-4 transition-shadow duration-200 hover:shadow-lg dark:bg-gray-800/50">
+    <!-- Card content -->
+
+    <!-- Action buttons with transition-shadow -->
+    <button class="transition-shadow duration-200 hover:shadow-lg">...</button>
+</div>
+```
+
+**Performance Notes**:
+- ❌ **Never** use `backdrop-blur-sm` on cards in grid layouts
+- ❌ **Never** run database queries inside card components
+- ✅ Use `transition-shadow` instead of `transition-all`
+- ✅ Parent loop must include `wire:key="item-card-{{ $item->id }}"`
+
 ---
 
 ## 📋 Table Components
@@ -297,56 +320,87 @@ Display statistics with animated bubble particles.
 **Requirements**:
 1. **S/N Column**: Always first column (w-16, centered)
 2. **Actions Column**: Always last column (w-32, centered)
+3. **Performance**: Always use `wire:key` in loops (see [Performance Rules](#-performance))
 
 ```blade
-<!-- Header -->
-<thead>
-    <tr class="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900">
-        <th class="px-6 py-4 text-center text-xs font-bold uppercase w-16">
-            {{ __('S/N') }}
-        </th>
-        <th class="px-6 py-4 text-left text-xs font-bold uppercase">
-            {{ __('Name') }}
-        </th>
-        <th class="px-6 py-4 text-center text-xs font-bold uppercase w-32">
-            {{ __('Actions') }}
-        </th>
-    </tr>
-</thead>
+<!-- Table Wrapper (NO backdrop-blur-sm!) -->
+<div class="overflow-x-auto border rounded-xl bg-white/50 dark:bg-gray-900/20">
+    <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+        <!-- Header -->
+        <thead>
+            <tr class="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900">
+                <th class="px-6 py-4 text-center text-xs font-bold uppercase w-16">
+                    {{ __('S/N') }}
+                </th>
+                <th class="px-6 py-4 text-left text-xs font-bold uppercase">
+                    {{ __('Name') }}
+                </th>
+                <th class="px-6 py-4 text-center text-xs font-bold uppercase w-32">
+                    {{ __('Actions') }}
+                </th>
+            </tr>
+        </thead>
 
-<!-- Body -->
-<tbody class="divide-y divide-gray-200/50 dark:divide-gray-700/50">
-    @forelse($items as $index => $item)
-        <tr class="group hover:bg-gradient-to-r hover:from-blue-50/50 hover:to-teal-50/50">
-            <!-- S/N -->
-            <td class="px-6 py-5 text-center">
-                <span class="text-sm font-semibold text-gray-600">
-                    {{ $items->firstItem() + $index }}
-                </span>
-            </td>
-            <!-- Content columns -->
-            <td class="px-6 py-5">...</td>
-            <!-- Actions -->
-            <td class="px-6 py-5 w-32">
-                <div class="flex justify-center items-center gap-2">
-                    <!-- Action buttons -->
-                </div>
-            </td>
-        </tr>
-    @empty
-        <tr>
-            <td colspan="9" class="px-6 py-12 text-center">
-                <div class="flex flex-col items-center gap-3">
-                    <div class="h-16 w-16 rounded-full bg-gray-100 flex items-center justify-center">
-                        <svg class="h-8 w-8 text-gray-400">...</svg>
-                    </div>
-                    <p class="text-sm font-medium text-gray-900">{{ __('No items found') }}</p>
-                </div>
-            </td>
-        </tr>
-    @endforelse
-</tbody>
+        <!-- Body -->
+        <tbody class="divide-y divide-gray-200/50 dark:divide-gray-700/50">
+            @forelse($items as $index => $item)
+                <!-- ✅ CRITICAL: Always use wire:key to prevent flashing -->
+                <x-item-table-row :item="$item" :index="$items->firstItem() + $index" wire:key="item-row-{{ $item->id }}" />
+            @empty
+                <tr>
+                    <td colspan="9" class="px-6 py-12 text-center">
+                        <div class="flex flex-col items-center gap-3">
+                            <div class="h-16 w-16 rounded-full bg-gray-100 flex items-center justify-center">
+                                <svg class="h-8 w-8 text-gray-400">...</svg>
+                            </div>
+                            <p class="text-sm font-medium text-gray-900">{{ __('No items found') }}</p>
+                        </div>
+                    </td>
+                </tr>
+            @endforelse
+        </tbody>
+    </table>
+</div>
 ```
+
+### Table Row Component Pattern
+
+**File**: `resources/views/components/item-table-row.blade.php`
+
+```blade
+@props(['item', 'index'])
+
+<!-- ✅ Simple solid hover (NO transition-all, NO gradients) -->
+<tr class="group hover:bg-blue-50/30 dark:hover:bg-blue-900/10">
+    <!-- S/N -->
+    <td class="px-6 py-5 text-center">
+        <span class="text-sm font-semibold text-gray-600 dark:text-gray-400">
+            {{ $index }}
+        </span>
+    </td>
+
+    <!-- Content columns -->
+    <td class="px-6 py-5">
+        <div class="text-sm font-bold text-gray-900 dark:text-white">
+            {{ $item->name }}
+        </div>
+    </td>
+
+    <!-- Actions -->
+    <td class="px-6 py-5 w-32">
+        <div class="flex justify-center items-center gap-2">
+            <!-- Action buttons with transition-shadow -->
+            <button class="transition-shadow duration-200 hover:shadow-lg">...</button>
+        </div>
+    </td>
+</tr>
+```
+
+**Important Notes**:
+- ❌ **Never** use `@php` blocks with database queries inside table row components
+- ✅ Use simple solid colors for hover states (e.g., `hover:bg-blue-50/30`)
+- ✅ Use `transition-shadow` on buttons (not `transition-all`)
+- ✅ Parent loop must have `wire:key` for each row
 
 ---
 
@@ -628,10 +682,17 @@ if ($userCount > 0) {
             </flux:select>
         </div>
 
-        <!-- Table -->
-        <div class="overflow-x-auto border rounded-xl bg-white/50 backdrop-blur-sm dark:bg-gray-800/50">
+        <!-- Table (NO backdrop-blur-sm) -->
+        <div class="overflow-x-auto border rounded-xl bg-white/50 dark:bg-gray-800/50">
             <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                <!-- Table content -->
+                <tbody>
+                    @forelse($items as $index => $item)
+                        <!-- ✅ CRITICAL: Always use wire:key -->
+                        <x-item-table-row :item="$item" :index="$index" wire:key="item-row-{{ $item->id }}" />
+                    @empty
+                        <!-- Empty state -->
+                    @endforelse
+                </tbody>
             </table>
         </div>
 
@@ -760,19 +821,41 @@ xl: 1280px (desktops)
 
 **2XL+ (1536px+)**: Full table view
 ```blade
-<div class="hidden 2xl:block">
-    <table>...</table>
+<!-- ✅ NO backdrop-blur-sm on table wrapper -->
+<div class="hidden 2xl:block overflow-x-auto border rounded-xl bg-white/50 dark:bg-gray-900/20">
+    <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+        <tbody>
+            @forelse($items as $index => $item)
+                <!-- ✅ CRITICAL: Always use wire:key to prevent flashing -->
+                <x-item-table-row :item="$item" :index="$index" wire:key="item-row-{{ $item->id }}" />
+            @empty
+            @endforelse
+        </tbody>
+    </table>
 </div>
 ```
 
 **Below 2XL**: Card grid view
 ```blade
-<div class="2xl:hidden">
+<!-- ✅ NO backdrop-blur-sm on card wrapper -->
+<div class="2xl:hidden bg-white/50 dark:bg-gray-900/20">
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <x-item-card :item="$item" />
+        @forelse($items as $item)
+            <!-- ✅ CRITICAL: Always use wire:key to prevent flashing -->
+            <x-item-card :item="$item" wire:key="item-card-{{ $item->id }}" />
+        @empty
+        @endforelse
     </div>
 </div>
 ```
+
+**⚠️ Critical for Tablet Screens (768px - 1536px)**:
+
+Tablet screens show the **card grid view** and are most susceptible to flashing issues. Always:
+- ✅ Use `wire:key` on both table rows AND card components
+- ✅ Remove `backdrop-blur-sm` from both wrapper divs
+- ✅ Test Livewire updates (search, filters, pagination) on tablet viewport
+- ✅ Ensure no database queries run inside card/row components
 
 ---
 
@@ -846,6 +929,110 @@ shadow-{color}-300/50 → dark:shadow-{color}-800/40
 
 ## ⚡ Performance
 
+### Critical Performance Rules ⚠️
+
+**IMPORTANT**: Follow these rules to prevent UI flashing and performance issues:
+
+#### 1. Always Use `wire:key` in Livewire Loops
+
+**Required for all @forelse loops** to prevent full DOM re-renders:
+
+```blade
+<!-- ✅ CORRECT: Table rows -->
+@forelse($items as $index => $item)
+    <x-item-table-row :item="$item" :index="$index" wire:key="item-row-{{ $item->id }}" />
+@empty
+
+<!-- ✅ CORRECT: Card grids -->
+@forelse($items as $item)
+    <x-item-card :item="$item" wire:key="item-card-{{ $item->id }}" />
+@empty
+
+<!-- ❌ INCORRECT: Missing wire:key causes flashing -->
+@forelse($items as $item)
+    <x-item-card :item="$item" />
+@empty
+```
+
+**Why**: Without `wire:key`, Livewire re-renders the entire list on every update (search, filter, pagination), causing visible flashing on tablets/smaller screens.
+
+---
+
+#### 2. Never Use `backdrop-blur-sm` on Dynamic Content
+
+**Avoid backdrop-blur on tables and card grids that update frequently:**
+
+```blade
+<!-- ✅ CORRECT: No backdrop-blur on dynamic content -->
+<div class="overflow-x-auto border rounded-xl bg-white/50 dark:bg-gray-900/20">
+    <table>...</table>
+</div>
+
+<!-- ❌ INCORRECT: backdrop-blur-sm causes expensive repaints -->
+<div class="overflow-x-auto border rounded-xl bg-white/50 backdrop-blur-sm dark:bg-gray-900/20">
+    <table>...</table>
+</div>
+```
+
+**Why**: `backdrop-blur-sm` forces GPU compositing and expensive repaints on every Livewire update. Only use on static elements like modals or headers.
+
+---
+
+#### 3. Use `transition-shadow` Instead of `transition-all`
+
+**Specific transitions are faster than animating everything:**
+
+```blade
+<!-- ✅ CORRECT: Transition only what changes -->
+<button class="transition-shadow duration-200 hover:shadow-lg">
+
+<!-- ❌ INCORRECT: Animates everything including layout -->
+<button class="transition-all duration-200 hover:shadow-lg">
+```
+
+**Why**: `transition-all` tries to animate properties that can't be animated (like gradients), causing janky performance.
+
+---
+
+#### 4. Simplify Hover Effects on Table Rows
+
+**Use solid colors instead of gradients for hover states:**
+
+```blade
+<!-- ✅ CORRECT: Simple solid hover (recommended) -->
+<tr class="group hover:bg-blue-50/30 dark:hover:bg-blue-900/10">
+
+<!-- ❌ INCORRECT: Complex gradient hover causes paint issues -->
+<tr class="group transition-all duration-200 hover:bg-gradient-to-r hover:from-blue-50/50 hover:to-teal-50/50">
+```
+
+**Why**: Gradient hover effects with transitions cause expensive paint operations, especially on touch devices.
+
+---
+
+#### 5. Never Run Database Queries in Component Loops
+
+**Database queries belong in the Livewire component, not in Blade components:**
+
+```blade
+<!-- ❌ INCORRECT: Queries inside component (runs N times!) -->
+@php
+    $relatedCount = \App\Models\Related::where('user_id', $user->id)->count();
+@endphp
+
+<!-- ✅ CORRECT: Pass data from Livewire component -->
+<!-- In UserIndex.php: -->
+public function render()
+{
+    $users = User::with('relatedCounts')->paginate(10);
+    return view('livewire.users.index', compact('users'));
+}
+```
+
+**Why**: Queries in components run on every render for every item (N+1 problem), causing severe performance degradation.
+
+---
+
 ### Image Optimization
 
 ```blade
@@ -874,6 +1061,18 @@ shadow-{color}-300/50 → dark:shadow-{color}-800/40
 </div>
 ```
 
+### Performance Checklist
+
+Before deploying any table or list view:
+
+- [ ] All @forelse loops have unique `wire:key` attributes
+- [ ] No `backdrop-blur-sm` on table wrappers or card grids
+- [ ] Using `transition-shadow` instead of `transition-all`
+- [ ] Table row hover uses solid colors (not gradients)
+- [ ] No database queries in Blade component @php blocks
+- [ ] Tested on tablet screen sizes (768px - 1024px)
+- [ ] No flashing during search, filter, or pagination updates
+
 ---
 
 ## 📚 Additional Resources
@@ -887,6 +1086,18 @@ shadow-{color}-300/50 → dark:shadow-{color}-800/40
 ---
 
 ## 📝 Changelog
+
+### Version 2.1 (February 3, 2026)
+- **CRITICAL**: Added performance rules section to prevent UI flashing
+- **Required**: `wire:key` usage on all @forelse loops (tables & cards)
+- **Removed**: `backdrop-blur-sm` from dynamic table/card wrappers
+- **Updated**: Table row hover from gradients to solid colors
+- **Updated**: Transitions from `transition-all` to `transition-shadow`
+- **Warning**: No database queries allowed in Blade components
+- Added performance checklist for tablet screen testing
+- Updated table component patterns with performance guidelines
+- Updated card component patterns with performance guidelines
+- Enhanced responsive design section with tablet-specific warnings
 
 ### Version 2.0 (February 3, 2026)
 - Complete documentation refactoring

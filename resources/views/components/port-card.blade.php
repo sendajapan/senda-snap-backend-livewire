@@ -1,5 +1,5 @@
 @props(['port', 'rounded' => true])
-<div class="group relative overflow-hidden {{ $rounded ? 'rounded-xl' : '' }} border border-blue-200 bg-white/50 p-4 backdrop-blur-sm transition-all duration-200 hover:border-blue-300 hover:shadow-lg dark:border-blue-900/50 dark:bg-gray-800/50 dark:hover:border-blue-800">
+<div class="group relative overflow-hidden {{ $rounded ? 'rounded-xl' : '' }} border border-blue-200 bg-white/50 p-4 transition-shadow duration-200 hover:border-blue-300 hover:shadow-lg dark:border-blue-900/50 dark:bg-gray-800/50 dark:hover:border-blue-800">
     <div class="flex flex-col gap-4">
         <!-- Header: Main info + Actions -->
         <div class="flex items-start justify-between gap-3">

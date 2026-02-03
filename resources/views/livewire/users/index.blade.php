@@ -76,7 +76,7 @@
                 </thead>
                 <tbody class="divide-y divide-gray-200/50 dark:divide-gray-700/50">
                 @forelse($users as $index => $user)
-                    <x-user-table-row :user="$user" :index="$users->firstItem() + $index"/>
+                    <x-user-table-row :user="$user" :index="$users->firstItem() + $index" wire:key="user-row-{{ $user->id }}"/>
                 @empty
                     <tr>
                         <td colspan="9" class="px-3 md:px-6 py-12 text-center">
@@ -101,7 +101,7 @@
         <div class="2xl:hidden bg-white/50 backdrop-blur-sm dark:bg-gray-900/20">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 @forelse($users as $user)
-                    <x-user-card :user="$user" :rounded="true"/>
+                    <x-user-card :user="$user" :rounded="true" wire:key="user-card-{{ $user->id }}"/>
                 @empty
                     <div class="col-span-full p-12 text-center">
                         <div class="flex flex-col items-center gap-3">

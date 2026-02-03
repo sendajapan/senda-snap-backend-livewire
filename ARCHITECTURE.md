@@ -1,421 +1,191 @@
 # System Architecture Documentation
 ## Laravel Service-Oriented Architecture - Patterns & Guidelines
 
-This document outlines the system architecture, patterns, and conventions used throughout the application to ensure consistency, maintainability, and scalability.
+> **Version**: 2.0
+> **Last Updated**: February 3, 2026
+> **Project**: Senda Snap - Logistics Management System
+
+---
+
+## 📚 Table of Contents
+
+### 🏢 System Overview
+- [Multi-Vendor Architecture](#-multi-vendor-architecture)
+- [Core Modules](#-core-modules)
+- [Architecture Principles](#-architecture-principles)
+
+### 🔧 Core Patterns
+- [Service Layer](#-service-layer-pattern)
+- [API Controllers](#-api-controller-pattern)
+- [Livewire Components](#-livewire-component-pattern)
+- [Form Requests](#-form-request-pattern)
+- [API Resources](#-api-resource-pattern)
+
+### 🔒 Security & Access
+- [Authentication](#-authentication)
+- [Multi-Tenancy](#-multi-tenancy--vendor-scoping)
+- [Authorization](#-authorization--permissions)
+
+### 📋 Feature Guides
+- [CRUD Checklist](#-crud-feature-checklist)
+- [Testing Patterns](#-testing-patterns)
+- [Best Practices](#-best-practices)
 
 ---
 
 ## 🏢 Multi-Vendor Architecture
 
-This system supports multiple vendors (companies) using a simple, clean multi-tenant architecture.
+### Overview
+
+This system supports multiple vendors (companies) using a clean multi-tenant architecture where:
+- Each vendor has isolated data (tasks, vehicles)
+- Global resources are shared (ports, shipping companies)
+- Role-based access controls visibility
 
 ### Architecture Diagram
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                         VENDORS                                  │
-│  (Companies using this system)                                   │
-│  - AUTOCRAFT JAPAN LTD (default)                                 │
-│  - Future vendors...                                             │
-└─────────────────────────────────────────────────────────────────┘
-           │
+┌─────────────────────────────────────────┐
+│              VENDORS                    │
+│  - AUTOCRAFT JAPAN LTD (default)        │
+│  - Additional vendors...                │
+└─────────────────────────────────────────┘
            │ has many
            ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                          USERS                                   │
-│  - Each user belongs to ONE vendor                               │
-│  - Admin users have vendor_id = null (can see all data)          │
-└─────────────────────────────────────────────────────────────────┘
-           │
-           │ creates / owns
+┌─────────────────────────────────────────┐
+│              USERS                      │
+│  - vendor_id (FK, nullable)             │
+│  - role: admin|manager|employee|client  │
+│  - Admin: vendor_id = null              │
+└─────────────────────────────────────────┘
+           │ creates/owns
            ▼
-┌─────────────────────────────────────────────────────────────────┐
-│              VENDOR-SCOPED DATA                                  │
-│                                                                  │
-│  TASKS                    VEHICLES                               │
-│  - created_by (FK)        - vendor_id (FK)                       │
-│  - Scoped by user's       - created_by (FK)                      │
-│    vendor_id (via         - Only visible within                 │
-│    creator/assigned)       same vendor                           │
-│  - Role-based access                                            │
-└─────────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────┐
+│         VENDOR-SCOPED DATA              │
+│  TASKS         VEHICLES                 │
+│  - Scoped by   - vendor_id (FK)         │
+│    user role   - created_by (FK)        │
+│  - Role-based  - Vendor scoped          │
+└─────────────────────────────────────────┘
 
-┌─────────────────────────────────────────────────────────────────┐
-│                    GLOBAL RESOURCES                              │
-│  (Shared across all vendors)                                     │
-│                                                                  │
-│  PORTS                    SHIPPING COMPANIES                     │
-│  - created_by (FK)        - created_by (FK)                      │
-│  - Visible to all users   - Visible to all users                 │
-└─────────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────┐
+│         GLOBAL RESOURCES                │
+│  PORTS            SHIPPING COMPANIES    │
+│  - created_by     - created_by          │
+│  - Shared         - Shared              │
+└─────────────────────────────────────────┘
 ```
 
-### User Roles & Vendor Access
+### User Roles & Access
 
-| Role     | Can See Tasks/Vehicles | Can See Ports/Shipping | Can Manage Vendors |
-|----------|------------------------|------------------------|-------------------|
-| Admin    | All vendors            | All                    | Yes               |
-| Manager  | Own vendor only        | All                    | No                |
-| Employee | Own vendor only        | All                    | No                |
-| Client   | Own vendor only        | All                    | No                |
-
-### Multi-Vendor Key Points
-
-1. **Task Scoping**: Tasks are scoped by user's vendor_id (from users table) via creator or assigned users, using role-based access:
-   - **Admin**: Sees all tasks
-   - **Manager**: Sees all tasks from their vendor (via creator or assigned users)
-   - **Regular users**: See tasks they created OR tasks assigned to them
-2. **Vehicle Scoping**: Vehicles are automatically filtered by the user's vendor_id
-3. **Admin Access**: Admin users (vendor_id = null) can see all data across vendors
-4. **Global Resources**: Ports and Shipping Companies are shared across all vendors
-5. **Auto-Assignment**: When creating Vehicles, vendor_id is auto-assigned from the current user
-6. **Simple Tracking**: Global resources track who created them via `created_by`
+| Role | Tasks Access | Vehicles Access | Global Resources | Vendor Management |
+|------|-------------|-----------------|------------------|-------------------|
+| Admin | All vendors | All vendors | All | Yes |
+| Manager | Own vendor | Own vendor | All | No |
+| Employee | Own/assigned | Own vendor | All | No |
+| Client | Own/assigned | Own vendor | All | No |
 
 ### Default Vendor
 
-The system comes with a default vendor:
-- **Name**: AUTOCRAFT JAPAN LTD
-- **Address**: 〒110-0015 Tokyo, Taito City, Higashiueno, 3 Chome−18−7 上野駅前ビル 8F
-- **Phone**: 03-5826-7885
-- **Website**: https://autocraftjapan.com
-
-### Task Scoping (Role-Based)
-
-Tasks use role-based scoping via the `scopeForUserRole()` method:
-
-```php
-class Task extends Model
-{
-    // Tasks don't have vendor_id column
-    // Scoping is based on user's vendor_id from users table
-    
-    public function scopeForUserRole(Builder $query, ?User $user = null): Builder
-    {
-        $user = $user ?? auth()->user();
-        
-        // Admin sees all tasks
-        if ($user->role === 'admin') {
-            return $query;
-        }
-        
-        // Manager sees all tasks from their vendor
-        if ($user->role === 'manager' && $user->vendor_id) {
-            return $query->where(function ($q) use ($user) {
-                $q->whereHas('creator', fn ($subQ) => $subQ->where('vendor_id', $user->vendor_id))
-                    ->orWhereHas('assignedUsers', fn ($subQ) => $subQ->where('vendor_id', $user->vendor_id));
-            });
-        }
-        
-        // Regular users see tasks they created OR assigned to them
-        return $query->where(function ($q) use ($user) {
-            $q->where('created_by', $user->id)
-                ->orWhereHas('assignedUsers', fn ($subQ) => $subQ->where('users.id', $user->id));
-        });
-    }
-}
-```
-
-### BelongsToVendor Trait (For Vehicles)
-
-Vehicles use the `BelongsToVendor` trait for vendor scoping:
-
-```php
-use App\Models\Concerns\BelongsToVendor;
-
-class Vehicle extends Model
-{
-    use BelongsToVendor;
-}
-
-// Available scopes:
-$query->forCurrentVendor();      // Filter by current user's vendor
-$query->forVendor($vendorId);    // Filter by specific vendor
-```
-
-### Task Scoping in Services
-
-TaskService uses role-based scoping:
-
-```php
-// TaskService - auto-filters by user role and vendor
-public function list(array $filters = [], int $perPage = 100): LengthAwarePaginator
-{
-    $query = Task::with(['assignedUsers', 'creator', 'attachments'])
-        ->forUserRole();  // Uses role-based scope
-
-    // Apply filters...
-    return $query->paginate($perPage);
-}
-
-// Creating tasks - no vendor_id needed
-public function create(array $data, array $assignedUserIds = []): Task
-{
-    $task = Task::create([
-        'title' => $data['title'],
-        'created_by' => $data['created_by'],
-        // vendor_id is not stored - scoping is via user's vendor_id
-        // ...
-    ]);
-    
-    if (! empty($assignedUserIds)) {
-        $task->assignedUsers()->sync($assignedUserIds);
-    }
-    
-    return $task;
-}
-```
-
-### Vehicle Scoping in Services
-
-VehicleService uses vendor scoping:
-
-```php
-// VehicleService - auto-filters by user's vendor
-public function list(array $filters = [], int $perPage = 100): LengthAwarePaginator
-{
-    $query = Vehicle::with(['creator', 'photos', 'consignee'])
-        ->forCurrentVendor();  // Uses BelongsToVendor trait scope
-
-    // Apply filters...
-    return $query->paginate($perPage);
-}
-
-// Creating vehicles - vendor_id auto-assigned
-public function create(array $data, int $createdBy): Vehicle
-{
-    $user = auth()->user();
-    $vendorId = $data['vendor_id'] ?? $user?->vendor_id;
-
-    return Vehicle::create([
-        'serial_number' => $data['serial_number'],
-        'vendor_id' => $vendorId,  // Auto-assigned from user
-        'created_by' => $createdBy,
-        // ...
-    ]);
-}
-```
-
-### Adding a New Vendor
-
-1. Go to Admin > Vendors
-2. Click "Add Vendor"
-3. Fill in vendor details
-4. Assign users to the vendor
-
-### Task and Vehicle Scoping Best Practices
-
-**⚠️ IMPORTANT: Always use Service methods instead of direct model access**
-
-When working with scoped models (Tasks, Vehicles), always use Service methods:
-
-✅ **Correct:**
-```php
-// In Livewire components
-$task = $taskService->getTaskById($taskId);  // Uses forUserRole() scope
-$vehicle = $vehicleService->getById($vehicleId);  // Uses forCurrentVendor() scope
-
-// In API Controllers
-$task = $this->taskService->getTaskById($task->id);  // Role-based scoping
-$vehicle = $this->vehicleService->getById($vehicle->id);  // Vendor scoping
-```
-
-❌ **Incorrect:**
-```php
-// Route model binding bypasses scoping!
-$task = Task::findOrFail($taskId);  // ❌ No role-based filtering
-$vehicle = Vehicle::find($vehicleId);  // ❌ No vendor filtering
-```
-
-**Route Model Binding Considerations:**
-
-When using route model binding with scoped models (Tasks or Vehicles), you must verify access via service methods:
-
-```php
-// In routes/web.php - Pass ID instead of model
-Route::get('tasks/{task}', fn ($task) => view('livewire.tasks.show', ['task' => $task->id]));
-
-// In Livewire Volt component - Use service to enforce role-based scoping for tasks
-public function mount(int $task, TaskService $taskService): void
-{
-    $this->task = $taskService->getTaskById($task);  // Applies forUserRole() scope
-}
-
-// For vehicles - Use service to enforce vendor scoping
-public function mount(int $vehicle, VehicleService $vehicleService): void
-{
-    $this->vehicle = $vehicleService->getById($vehicle);  // Applies forCurrentVendor() scope
-}
-```
-
-**Task Scoping Rules:**
-
-Tasks are scoped based on user role and vendor_id from the users table:
-- **Admin**: Sees all tasks (no filtering)
-- **Manager**: Sees tasks where creator's vendor_id matches OR assigned users' vendor_id matches
-- **Regular users**: See tasks they created OR tasks assigned to them
-
-**Vehicle Scoping:**
-
-Vehicles still use `vendor_id` column and are scoped via `BelongsToVendor` trait:
-- All users (except admin) see vehicles from their vendor only
-- Admin sees all vehicles
-
-**API Controller Pattern:**
-
-All API controllers that use route model binding must verify vendor access:
-
-```php
-public function show(Task $task): JsonResponse
-{
-    // Use service method to ensure vendor scoping
-    $task = $this->taskService->getTaskById($task->id);
-    
-    return $this->successResponse('Task retrieved successfully', [
-        'task' => new TaskResource($task),
-    ]);
-}
-```
-
-**Livewire Component Pattern:**
-
-Always use Service methods in Livewire components:
-
-```php
-// ✅ Correct - Uses service with vendor scoping
-public function render(TaskService $taskService): View
-{
-    $tasks = $taskService->getAllTasksFiltered($filters, 15);
-    return view('livewire.tasks.all-tasks', ['tasks' => $tasks]);
-}
-
-// ❌ Incorrect - Direct model access bypasses vendor scoping
-public function render(): View
-{
-    $tasks = Task::paginate(15);  // No vendor filtering!
-    return view('livewire.tasks.all-tasks', ['tasks' => $tasks]);
-}
-```
-
-**Task Statistics with Role-Based Scoping:**
-
-When calculating statistics, always apply role-based scoping:
-
-```php
-// ✅ Correct
-$query = Task::forUserRole();
-$stats = [
-    'pending' => (clone $query)->where('status', 'pending')->count(),
-    'running' => (clone $query)->where('status', 'running')->count(),
-];
-
-// ❌ Incorrect - Counts all tasks globally
-$stats = [
-    'pending' => Task::where('status', 'pending')->count(),  // No role-based filter!
-];
-```
+**AUTOCRAFT JAPAN LTD**
+- Address: 〒110-0015 Tokyo, Taito City, Higashiueno, 3 Chome−18−7 上野駅前ビル 8F
+- Phone: 03-5826-7885
+- Website: https://autocraftjapan.com
 
 ---
 
-## 🏗️ Architecture Overview
+## 📦 Core Modules
 
-This application follows a **Service-Oriented Architecture (SOA)** where:
+### 1. Tasks Management
+- Multiple views: Today, All, Kanban
+- Status: pending, running, completed, cancelled
+- Priority: low, medium, high, urgent
+- Assignments: many-to-many with users
+- Attachments: file uploads
+- Work scheduling: date + time
 
-1. **Business logic** lives in dedicated Service classes
-2. **Controllers** (Web + API) are thin and only handle:
-   - Request validation
-   - Service method calls
-   - Response formatting
-3. **Livewire components** call Service methods directly
-4. **API Resources** provide consistent JSON responses
-5. **Form Requests** handle validation logic
+### 2. Users Management
+- Roles: admin, manager, employee, client
+- Avatar uploads
+- Vendor assignment
+- Task statistics
+- Profile management
+
+### 3. Vehicles Management
+- Specifications tracking
+- Multiple photos
+- Consignee details
+- Dimensions/weight
+- Auction sheet storage
+- External DB integration (SFTP)
+
+### 4. Vendors Management (Admin only)
+- Multi-tenancy core
+- External DB config
+- SFTP/image configuration
+- Encrypted credentials
+- Company information
+
+### 5. Ports & Shipping
+- **Ports**: Global shared resource
+- **Shipping Companies**: Line info, rates
+- **Schedules**: Vessel, voyage, carriers, ETA
+- **Stopovers**: Port-specific timings
+
+### 6. Notices (Admin)
+- System announcements
+- Time-based visibility (starts_at/ends_at)
+- Active status
+
+---
+
+## 🎯 Architecture Principles
 
 ### Core Principles
 
-✅ **Single Responsibility**: Each layer has one clear purpose  
-✅ **DRY (Don't Repeat Yourself)**: Shared logic lives in services  
-✅ **Separation of Concerns**: UI, business logic, and data are decoupled  
-✅ **Testability**: Services can be tested independently  
-✅ **Consistency**: Web and API share the same business logic  
+✅ **Single Responsibility**: Each layer has one clear purpose
+✅ **DRY**: Shared logic lives in services
+✅ **Separation of Concerns**: UI, business logic, data are decoupled
+✅ **Testability**: Services tested independently
+✅ **Consistency**: Web and API share business logic
+
+### Layer Responsibilities
+
+```
+┌──────────────────┐
+│   Controllers    │ ← HTTP handling, validation, responses
+└──────────────────┘
+         ↓
+┌──────────────────┐
+│    Services      │ ← Business logic, queries, operations
+└──────────────────┘
+         ↓
+┌──────────────────┐
+│     Models       │ ← Data access, relationships, scopes
+└──────────────────┘
+```
+
+**Controllers/Components**: Request → Service → Response
+**Services**: Business logic, database queries, external APIs
+**Models**: Relationships, scopes, accessors/mutators
 
 ---
 
-## 📁 Directory Structure
-
-```
-app/
-├── Console/
-│   └── Commands/           # Artisan commands (auto-registered)
-├── Http/
-│   ├── Controllers/
-│   │   └── Api/
-│   │       └── V1/         # API Controllers (version 1)
-│   │           ├── AuthController.php
-│   │           ├── ProfileController.php
-│   │           ├── TaskController.php
-│   │           ├── UsersController.php
-│   │           └── VehicleController.php
-│   ├── Requests/           # Form Request validation classes
-│   │   ├── StoreTaskRequest.php
-│   │   └── UpdateTaskRequest.php
-│   └── Resources/          # API Resources for JSON transformation
-│       ├── TaskResource.php
-│       ├── UserResource.php
-│       ├── VehicleResource.php
-│       └── TaskAttachmentResource.php
-├── Livewire/               # Livewire components (UI logic)
-│   ├── Settings/
-│   │   ├── Password.php
-│   │   └── Profile.php
-│   ├── Tasks/
-│   │   ├── AllTasks.php
-│   │   ├── TodayTasks.php
-│   │   ├── TaskModal.php
-│   │   └── TaskPreview.php
-│   ├── Users/
-│   │   ├── Index.php
-│   │   ├── UserModal.php
-│   │   └── UserPreview.php
-│   └── Vehicles/
-│       └── Index.php
-├── Models/                 # Eloquent models
-│   ├── Task.php
-│   ├── User.php
-│   ├── Vehicle.php
-│   └── TaskAttachment.php
-└── Services/               # Business logic layer ⭐
-    ├── AuthService.php
-    ├── ExternalVehicleService.php
-    ├── ProfileService.php
-    ├── TaskService.php
-    ├── UserService.php
-    └── VehicleService.php
-```
-
----
-
-## 🎯 Service Layer Pattern
+## 🔧 Service Layer Pattern
 
 ### Purpose
-Services encapsulate all business logic, database queries, and complex operations.
+Encapsulate all business logic, database queries, and complex operations.
 
-### Location
-`app/Services/`
-
-### Naming Convention
-`{Model}Service.php` (e.g., `TaskService.php`, `UserService.php`)
-
-### Structure Example
+### Standard Structure
 
 ```php
 <?php
-
-declare(strict_types=1);
 
 namespace App\Services;
 
 use App\Models\Task;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Database\Eloquent\Collection;
 
 class TaskService
 {
@@ -424,22 +194,11 @@ class TaskService
      */
     public function list(array $filters = [], int $perPage = 15): LengthAwarePaginator
     {
-        $query = Task::with(['assignedUsers', 'creator', 'attachments']);
+        $query = Task::with(['assignedUsers', 'creator', 'attachments'])
+            ->forUserRole(); // Apply role-based scoping
 
-        // Apply filters
-        if (! empty($filters['search'])) {
-            $search = $filters['search'];
-            $query->where(function ($q) use ($search) {
-                $q->where('title', 'like', "%{$search}%")
-                    ->orWhere('description', 'like', "%{$search}%");
-            });
-        }
+        $this->applyFilters($query, $filters);
 
-        if (! empty($filters['status'])) {
-            $query->where('status', $filters['status']);
-        }
-
-        // Sorting
         $sortBy = $filters['sort_by'] ?? 'created_at';
         $sortDirection = $filters['sort_direction'] ?? 'desc';
         $query->orderBy($sortBy, $sortDirection);
@@ -450,7 +209,7 @@ class TaskService
     /**
      * Create a new task
      */
-    public function create(int $creatorId, array $data, array $assignedUserIds = []): Task
+    public function create(array $data, array $assignedUserIds = []): Task
     {
         $task = Task::create([
             'title' => $data['title'],
@@ -458,11 +217,10 @@ class TaskService
             'status' => $data['status'] ?? 'pending',
             'priority' => $data['priority'] ?? 'medium',
             'work_date' => $data['work_date'] ?? now(),
-            'created_by' => $creatorId,
+            'created_by' => $data['created_by'],
         ]);
 
-        // Assign users
-        if (! empty($assignedUserIds)) {
+        if (!empty($assignedUserIds)) {
             $task->assignedUsers()->sync($assignedUserIds);
         }
 
@@ -474,33 +232,14 @@ class TaskService
      */
     public function update(Task $task, array $data, ?array $assignedUserIds = null): Task
     {
-        $updateData = [];
+        $task->update(array_filter([
+            'title' => $data['title'] ?? null,
+            'description' => $data['description'] ?? null,
+            'status' => $data['status'] ?? null,
+            'priority' => $data['priority'] ?? null,
+            'work_date' => $data['work_date'] ?? null,
+        ]));
 
-        if (isset($data['title'])) {
-            $updateData['title'] = $data['title'];
-        }
-
-        if (isset($data['description'])) {
-            $updateData['description'] = $data['description'];
-        }
-
-        if (isset($data['status'])) {
-            $updateData['status'] = $data['status'];
-        }
-
-        if (isset($data['priority'])) {
-            $updateData['priority'] = $data['priority'];
-        }
-
-        if (isset($data['work_date'])) {
-            $updateData['work_date'] = $data['work_date'];
-        }
-
-        if (! empty($updateData)) {
-            $task->update($updateData);
-        }
-
-        // Update assigned users if provided
         if ($assignedUserIds !== null) {
             $task->assignedUsers()->sync($assignedUserIds);
         }
@@ -513,7 +252,7 @@ class TaskService
      */
     public function delete(Task $task): bool
     {
-        // Delete all attachments
+        // Delete attachments
         foreach ($task->attachments as $attachment) {
             Storage::disk('public')->delete($attachment->file_path);
             $attachment->delete();
@@ -521,49 +260,64 @@ class TaskService
 
         return $task->delete();
     }
+
+    /**
+     * Apply filters to query
+     */
+    private function applyFilters($query, array $filters): void
+    {
+        if (!empty($filters['search'])) {
+            $search = $filters['search'];
+            $query->where(function ($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                    ->orWhere('description', 'like', "%{$search}%");
+            });
+        }
+
+        if (!empty($filters['status'])) {
+            $query->where('status', $filters['status']);
+        }
+
+        if (!empty($filters['priority'])) {
+            $query->where('priority', $filters['priority']);
+        }
+
+        if (!empty($filters['assigned_to'])) {
+            $query->whereHas('assignedUsers', fn($q) => $q->where('users.id', $filters['assigned_to']));
+        }
+
+        if (!empty($filters['date_from'])) {
+            $query->whereDate('work_date', '>=', $filters['date_from']);
+        }
+
+        if (!empty($filters['date_to'])) {
+            $query->whereDate('work_date', '<=', $filters['date_to']);
+        }
+    }
 }
 ```
 
-### Service Method Guidelines
+### Service Guidelines
 
-1. **Naming**: Use descriptive method names (`list`, `create`, `update`, `delete`, `search`, `export`)
-2. **Parameters**: Accept all necessary data as parameters (don't access `request()` directly)
-3. **Return Types**: Always specify return types
-4. **Type Hints**: Use type hints for all parameters
-5. **Documentation**: Add PHPDoc blocks for complex methods
-6. **Dependencies**: Inject other services via constructor if needed
-7. **Error Handling**: Throw exceptions for errors (use `\InvalidArgumentException`, `\RuntimeException`)
-
-### When to Create a Service Method
-
-✅ Database queries (Eloquent)  
-✅ Complex business logic  
-✅ File uploads/deletions  
-✅ External API calls  
-✅ Data transformations  
-✅ Calculations or aggregations  
-✅ Multi-step operations  
-
-❌ Simple validation (use Form Requests)  
-❌ View rendering (use Controllers)  
-❌ Route-specific logic (use Controllers)  
+✅ **Naming**: Descriptive methods (`list`, `create`, `update`, `delete`)
+✅ **Parameters**: Accept all data as parameters (no `request()` access)
+✅ **Return Types**: Always specify return types
+✅ **Type Hints**: Use for all parameters
+✅ **Documentation**: PHPDoc for complex methods
+✅ **Dependencies**: Inject via constructor if needed
+✅ **Error Handling**: Throw exceptions (`InvalidArgumentException`, `RuntimeException`)
 
 ---
 
 ## 🎮 API Controller Pattern
 
 ### Purpose
-Handle HTTP requests for API endpoints, validate input, call services, return JSON responses.
+Handle HTTP requests, validate input, call services, return JSON responses.
 
-### Location
-`app/Http/Controllers/Api/V1/`
-
-### Structure Example
+### Standard Structure
 
 ```php
 <?php
-
-declare(strict_types=1);
 
 namespace App\Http\Controllers\Api\V1;
 
@@ -619,7 +373,6 @@ class TaskController extends Controller
     public function store(StoreTaskRequest $request): JsonResponse
     {
         $task = $this->taskService->create(
-            $request->user()->id,
             $request->validated(),
             $request->input('assigned_users', [])
         );
@@ -636,7 +389,8 @@ class TaskController extends Controller
      */
     public function show(Task $task): JsonResponse
     {
-        $task->load(['assignedUsers', 'creator', 'attachments']);
+        // Re-fetch with vendor scoping
+        $task = $this->taskService->getTaskById($task->id);
 
         return response()->json([
             'success' => true,
@@ -649,6 +403,9 @@ class TaskController extends Controller
      */
     public function update(UpdateTaskRequest $request, Task $task): JsonResponse
     {
+        // Re-fetch with vendor scoping
+        $task = $this->taskService->getTaskById($task->id);
+
         $updatedTask = $this->taskService->update(
             $task,
             $request->validated(),
@@ -667,6 +424,7 @@ class TaskController extends Controller
      */
     public function destroy(Task $task): JsonResponse
     {
+        $task = $this->taskService->getTaskById($task->id);
         $this->taskService->delete($task);
 
         return response()->json([
@@ -679,100 +437,163 @@ class TaskController extends Controller
 
 ### API Controller Guidelines
 
-1. **Constructor Injection**: Inject services via constructor with `protected` visibility
-2. **Form Requests**: Use Form Request classes for validation
-3. **Return Format**: Always return consistent JSON structure:
-   ```php
-   [
-       'success' => true|false,
-       'message' => 'Human readable message',
-       'data' => Resource|ResourceCollection|null,
-       'meta' => [...] // pagination, etc
-   ]
-   ```
-4. **Status Codes**: Use appropriate HTTP status codes (200, 201, 204, 400, 401, 403, 404, 422)
-5. **Resources**: Always use API Resources for data transformation
-6. **No Direct Eloquent**: Never call Eloquent directly in controllers
-7. **Thin Controllers**: Keep controllers as thin as possible
+✅ **Constructor Injection**: Inject services with `protected`
+✅ **Form Requests**: Use for validation
+✅ **Return Format**: Consistent JSON structure
+✅ **Status Codes**: 200, 201, 204, 400, 401, 403, 404, 422
+✅ **Resources**: Always use for transformation
+✅ **No Direct Eloquent**: Never call Eloquent in controllers
+✅ **Thin Controllers**: Keep as thin as possible
+
+### JSON Response Format
+
+```json
+{
+    "success": true,
+    "message": "Human readable message",
+    "data": {...},
+    "meta": {
+        "current_page": 1,
+        "last_page": 5,
+        "per_page": 15,
+        "total": 73
+    }
+}
+```
 
 ---
 
 ## 🖥️ Livewire Component Pattern
 
 ### Purpose
-Handle UI interactions, call service methods, manage component state.
+Handle UI interactions, call services, manage component state.
 
-### Location
-`app/Livewire/`
-
-### Structure Example
+### Standard Structure
 
 ```php
 <?php
-
-declare(strict_types=1);
 
 namespace App\Livewire\Tasks;
 
 use App\Services\TaskService;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Livewire\Attributes\On;
 
-class Index extends Component
+class AllTasks extends Component
 {
     use WithPagination;
 
-    public string $search = '';
-    public string $statusFilter = '';
-    public string $priorityFilter = '';
-
-    protected $listeners = ['task-saved' => '$refresh'];
+    public ?string $search = null;
+    public ?string $statusFilter = null;
+    public ?string $priorityFilter = null;
 
     /**
-     * Render the component with method injection
+     * Normalize search input
+     */
+    public function updatedSearch($value): void
+    {
+        $this->search = trim((string) $value) === '' ? null : trim((string) $value);
+        $this->resetPage();
+    }
+
+    /**
+     * Normalize status filter
+     */
+    public function updatedStatusFilter($value): void
+    {
+        $this->statusFilter = ($value === '' || $value === null) ? null : $value;
+        $this->resetPage();
+    }
+
+    /**
+     * Clear all filters
+     */
+    public function clearFilters(): void
+    {
+        $this->search = null;
+        $this->statusFilter = null;
+        $this->priorityFilter = null;
+        $this->resetPage();
+    }
+
+    /**
+     * Delete task event handler
+     */
+    #[On('delete-task')]
+    public function deleteTask($taskId = null, ?TaskService $taskService = null): void
+    {
+        // Handle flexible parameter formats
+        if (is_array($taskId)) {
+            $taskId = $taskId['taskId'] ?? null;
+        } elseif (is_object($taskId)) {
+            $taskId = $taskId->taskId ?? null;
+        }
+
+        if (!$taskId) {
+            return;
+        }
+
+        try {
+            if (!$taskService) {
+                $taskService = app(TaskService::class);
+            }
+
+            $task = $taskService->getTaskById($taskId);
+            $taskService->delete($task);
+
+            $this->dispatch('notify', message: __('Task deleted successfully.'), type: 'success');
+        } catch (\Exception $e) {
+            \Log::error('Task delete error: ' . $e->getMessage());
+            $this->dispatch('notify', message: __('An error occurred.'), type: 'error');
+        }
+    }
+
+    /**
+     * Render component with method injection
      */
     public function render(TaskService $taskService)
     {
-        $filters = [
-            'search' => $this->search,
-            'status' => $this->statusFilter,
-            'priority' => $this->priorityFilter,
-        ];
+        $filters = [];
+
+        if ($this->search !== null && $this->search !== '') {
+            $filters['search'] = $this->search;
+        }
+
+        if ($this->statusFilter !== null && $this->statusFilter !== '') {
+            $filters['status'] = $this->statusFilter;
+        }
+
+        if ($this->priorityFilter !== null && $this->priorityFilter !== '') {
+            $filters['priority'] = $this->priorityFilter;
+        }
 
         $tasks = $taskService->list($filters, 15);
 
-        return view('livewire.tasks.index', [
+        return view('livewire.tasks.all-tasks', [
             'tasks' => $tasks,
-        ]);
-    }
-
-    /**
-     * Reset filters
-     */
-    public function resetFilters(): void
-    {
-        $this->search = '';
-        $this->statusFilter = '';
-        $this->priorityFilter = '';
-        $this->resetPage();
-    }
-
-    /**
-     * Update search query and reset pagination
-     */
-    public function updatedSearch(): void
-    {
-        $this->resetPage();
+        ])->layout('components.layouts.app', ['title' => __('All Tasks')]);
     }
 }
 ```
 
-### Modal Component Example
+### Livewire Guidelines
+
+✅ **Method Injection**: Use for services (NOT constructor)
+✅ **Nullable Properties**: Use `?string` for filters
+✅ **Normalize Inputs**: Convert empty strings to null in `updatedXxx()`
+✅ **Build Filters Explicitly**: Don't pass raw properties
+✅ **State Management**: Public properties for state
+✅ **Validation**: Validate before calling services
+✅ **Events**: Use `dispatch()` for notifications
+✅ **Listeners**: Use `#[On('event')]` attribute
+✅ **Pagination**: Use `WithPagination` trait
+✅ **Delete Pattern**: Flexible parameter handling
+
+### Modal Component Pattern
 
 ```php
 <?php
-
-declare(strict_types=1);
 
 namespace App\Livewire\Tasks;
 
@@ -798,7 +619,7 @@ class TaskModal extends Component
         $this->taskId = $taskId;
 
         if ($taskId) {
-            $task = Task::with(['assignedUsers'])->findOrFail($taskId);
+            $task = $taskService->getTaskById($taskId);
             $this->form = [
                 'title' => $task->title,
                 'description' => $task->description,
@@ -823,11 +644,12 @@ class TaskModal extends Component
         ]);
 
         if ($this->taskId) {
-            $task = Task::findOrFail($this->taskId);
+            $task = $taskService->getTaskById($this->taskId);
             $taskService->update($task, $this->form, $this->selectedUsers);
             $message = 'Task updated successfully';
         } else {
-            $taskService->create(auth()->id(), $this->form, $this->selectedUsers);
+            $this->form['created_by'] = auth()->id();
+            $taskService->create($this->form, $this->selectedUsers);
             $message = 'Task created successfully';
         }
 
@@ -862,605 +684,17 @@ class TaskModal extends Component
 }
 ```
 
-### Preview Component Example
-
-Preview components display read-only information in a center dialog modal. They provide a detailed view of an item without allowing direct editing (editing is done through the main modal).
-
-```php
-<?php
-
-declare(strict_types=1);
-
-namespace App\Livewire\Users;
-
-use App\Models\User;
-use App\Services\UserService;
-use Illuminate\Support\Facades\Auth;
-use Livewire\Attributes\On;
-use Livewire\Component;
-
-class UserPreview extends Component
-{
-    public bool $open = false;
-    public ?User $user = null;
-
-    #[On('open-user-preview')]
-    public function openPreview(?int $userId, UserService $userService): void
-    {
-        if ($userId) {
-            $this->user = $userService->getById($userId);
-        } else {
-            $this->user = null;
-        }
-
-        $this->open = true;
-    }
-
-    public function closePreview(): void
-    {
-        $this->open = false;
-        $this->user = null;
-    }
-
-    public function editUser(): void
-    {
-        if ($this->user) {
-            $this->dispatch('open-user-modal', userId: $this->user->id);
-            $this->closePreview();
-        }
-    }
-
-    public function deleteUser(UserService $userService): void
-    {
-        if ($this->user) {
-            try {
-                $userService->delete($this->user);
-                $this->dispatch('user-saved');
-                $this->dispatch('notify', message: __('User deleted successfully.'), type: 'success');
-                $this->closePreview();
-            } catch (\Exception $e) {
-                \Log::error('User delete error: '.$e->getMessage());
-                $this->dispatch('notify', message: __('An error occurred while deleting the user.'), type: 'error');
-            }
-        }
-    }
-
-    public function canDelete(): bool
-    {
-        $currentUser = Auth::user();
-        if (! $currentUser || ! $this->user) {
-            return false;
-        }
-
-        // Only admin or manager can delete
-        if (! in_array($currentUser->role, ['admin', 'manager'])) {
-            return false;
-        }
-
-        // Manager cannot delete their own account
-        if ($currentUser->role === 'manager' && $currentUser->id === $this->user->id) {
-            return false;
-        }
-
-        // Manager cannot delete admin accounts
-        if ($currentUser->role === 'manager' && $this->user->role === 'admin') {
-            return false;
-        }
-
-        return true;
-    }
-
-    public function render()
-    {
-        return view('livewire.users.user-preview');
-    }
-}
-```
-
-**Key Features**:
-- Center dialog modal (not side panel)
-- Read-only display of item details
-- Edit button redirects to main modal
-- Delete button with permission checks
-- Permission method (`canDelete()`) for UI visibility
-- Event-driven opening via `#[On('open-user-preview')]`
-
-**Opening Preview** (from parent component):
-```blade
-<div x-data="{
-    openPreview(itemId = null) {
-        $wire.$dispatch('open-user-preview', { userId: itemId })
-    }
-}">
-    <button @click="openPreview({{ $user->id }})">View</button>
-</div>
-```
-
-### Permission System Pattern
-
-The application implements role-based permission checks for delete actions. Permission logic is centralized in component methods.
-
-**Permission Rules**:
-- **Delete Users/Tasks**: Only `admin` or `manager` roles can delete
-- **Manager Restrictions**:
-  - Cannot delete their own account
-  - Cannot delete admin accounts
-- **UI Visibility**: Delete buttons are conditionally rendered based on `canDelete()` method
-
-**Implementation Pattern**:
-```php
-public function canDelete(): bool
-{
-    $currentUser = Auth::user();
-    if (! $currentUser || ! $this->item) {
-        return false;
-    }
-
-    // Only admin or manager can delete
-    if (! in_array($currentUser->role, ['admin', 'manager'])) {
-        return false;
-    }
-
-    // Additional restrictions for managers
-    if ($currentUser->role === 'manager') {
-        // Manager-specific restrictions
-        if ($currentUser->id === $this->item->id) {
-            return false; // Cannot delete own account
-        }
-        if ($this->item->role === 'admin') {
-            return false; // Cannot delete admin accounts
-        }
-    }
-
-    return true;
-}
-```
-
-**Usage in Blade**:
-```blade
-@if($this->canDelete())
-    <button wire:click="deleteItem">Delete</button>
-@endif
-```
-
-**In Table Rows and Cards**:
-```blade
-@php
-    $currentUser = auth()->user();
-    $canDelete = $currentUser && in_array($currentUser->role, ['admin', 'manager']) 
-        && !($currentUser->role === 'manager' && ($currentUser->id === $item->id || $item->role === 'admin'));
-@endphp
-@if($canDelete)
-    <button>Delete</button>
-@endif
-```
-
-### Livewire Component Guidelines
-
-1. **Method Injection**: Use method injection for services (NOT constructor injection)
-2. **Service Injection Points**: Inject services in `render()`, `save()`, or any action method
-3. **No Constructor Injection**: Livewire does not support constructor injection for services
-4. **State Management**: Use public properties for component state
-5. **Validation**: Validate in the component before calling service methods
-6. **Events**: Use `$this->dispatch()` for events
-7. **Listeners**: Use `#[On('event-name')]` attribute or `protected $listeners` property
-8. **File Uploads**: Use `WithFileUploads` trait for file handling
-9. **Pagination**: Use `WithPagination` trait for paginated lists
-10. **Preview Components**: Use center dialog modals for read-only previews
-11. **Permission Checks**: Implement `canDelete()` methods for conditional UI rendering
-12. **Filter Refresh Pattern**: When implementing filters that update component state, always increment a `refreshKey` property in `updatedXxx()` methods to force view re-renders
-13. **Delete Event Listeners**: Use flexible parameter handling for `#[On('delete-*')]` event listeners to avoid dependency injection issues
-
-### Filter Refresh Pattern (Critical for Livewire Components)
-
-**Problem**: When filters are applied via `wire:model.live`, Livewire may not always detect the change and refresh the view, especially when the filtered data is displayed in complex layouts (like Kanban boards, tables, or grids).
-
-**Solution**: Use a `refreshKey` pattern to force component re-renders when filters change.
-
-**Implementation**:
-
-```php
-<?php
-
-namespace App\Livewire\Tasks;
-
-use App\Services\TaskService;
-use Livewire\Component;
-
-class KanbanBoard extends Component
-{
-    public ?string $priorityFilter = null;
-    public ?string $assignedToFilter = null;
-    public int $refreshKey = 0; // Force refresh counter
-
-    /**
-     * When priority filter changes, increment refreshKey to force re-render
-     */
-    public function updatedPriorityFilter($value): void
-    {
-        $this->priorityFilter = ($value === '' || $value === null) ? null : trim($value);
-        // CRITICAL: Increment refreshKey to force view refresh
-        $this->refreshKey++;
-    }
-
-    /**
-     * When assigned user filter changes, increment refreshKey
-     */
-    public function updatedAssignedToFilter($value): void
-    {
-        $this->assignedToFilter = ($value === '' || $value === null) ? null : $value;
-        // CRITICAL: Increment refreshKey to force view refresh
-        $this->refreshKey++;
-    }
-
-    public function render(TaskService $taskService): View
-    {
-        $filters = [];
-        
-        if ($this->priorityFilter !== null && $this->priorityFilter !== '') {
-            $filters['priority'] = $this->priorityFilter;
-        }
-        
-        if ($this->assignedToFilter !== null && $this->assignedToFilter !== '') {
-            $filters['assigned_to'] = $this->assignedToFilter;
-        }
-
-        $tasksByStatus = $taskService->getTasksGroupedByStatus($filters);
-
-        return view('livewire.tasks.kanban-board', [
-            'tasksByStatus' => $tasksByStatus,
-        ]);
-    }
-}
-```
-
-**In Blade Template**:
-
-```blade
-<!-- Use refreshKey in wire:key to force re-render when filters change -->
-<div wire:key="kanban-board-{{ $refreshKey }}-{{ md5(($priorityFilter ?? '') . '|' . ($assignedToFilter ?? '')) }}">
-    <!-- Kanban board content -->
-</div>
-```
-
-**Key Points**:
-- ✅ Always add `public int $refreshKey = 0;` property to components with filters
-- ✅ Increment `$this->refreshKey++` in ALL `updatedXxx()` filter methods
-- ✅ Include `refreshKey` in `wire:key` attributes for main content containers
-- ✅ Optionally include filter values in `wire:key` hash for additional specificity
-- ✅ This ensures Livewire detects changes and refreshes the view properly
-- ❌ Without this pattern, filters may work in the backend but the view won't update
-
-**When to Use**:
-- Components with multiple filters (search, status, priority, date ranges, etc.)
-- Complex layouts (Kanban boards, grids, tables with filters)
-- Any component where filter changes must immediately reflect in the UI
-
-### Delete Event Listener Pattern (Critical for Livewire Event Handling)
-
-**Problem**: Livewire event listeners with `#[On('delete-*')]` attribute that receive array payloads cannot use dependency injection in the method signature. Livewire's container tries to resolve all parameters, but the payload comes from the event dispatch, not the container, causing `BindingResolutionException`.
-
-**Solution**: Use flexible parameter handling that accepts the ID in multiple formats and resolves services manually.
-
-**Implementation Pattern**:
-
-```php
-<?php
-
-namespace App\Livewire\ShipmentSchedule;
-
-use App\Services\ScheduleStopoverService;
-use Livewire\Attributes\On;
-use Livewire\Component;
-
-class Index extends Component
-{
-    #[On('delete-stopover')]
-    public function deleteStopover($stopoverId = null, ?ScheduleStopoverService $stopoverService = null): void
-    {
-        // Handle both direct stopoverId parameter and object/array with stopoverId property
-        if (is_array($stopoverId)) {
-            $stopoverId = $stopoverId['stopoverId'] ?? null;
-        } elseif (is_object($stopoverId)) {
-            $stopoverId = $stopoverId->stopoverId ?? null;
-        }
-
-        if (! $stopoverId) {
-            return;
-        }
-
-        try {
-            if (! $stopoverService) {
-                $stopoverService = app(ScheduleStopoverService::class);
-            }
-            $stopover = \App\Models\ScheduleStopover::findOrFail($stopoverId);
-            $stopoverService->delete($stopover);
-            $this->dispatch('notify', message: __('Stopover deleted successfully.'), type: 'success');
-        } catch (\Exception $e) {
-            \Log::error('Stopover delete error: '.$e->getMessage());
-            $this->dispatch('notify', message: __('An error occurred while deleting the stopover.'), type: 'error');
-        }
-    }
-}
-```
-
-**In Blade Template**:
-
-```blade
-<button @click="confirmDeleteStopover({{ $stopover->id }}, '{{ addslashes($stopover->port->port_name ?? 'N/A') }}').then((result) => { 
-    if (result.isConfirmed) { 
-        $wire.$dispatch('delete-stopover', { stopoverId: {{ $stopover->id }} }) 
-    } 
-})" type="button">
-    Delete
-</button>
-```
-
-**Key Points**:
-- ✅ Use flexible first parameter (`$id = null`) that can accept scalar, array, or object
-- ✅ Extract ID from different formats (array, object, or direct value)
-- ✅ Use optional nullable service parameter (`?Service $service = null`)
-- ✅ Resolve service manually using `app()` helper if not provided
-- ✅ Early return if ID is missing
-- ✅ Wrap in try-catch for error handling
-- ✅ Dispatch success/error notifications
-- ❌ Do NOT use strict `array $payload` type hint with dependency injection
-- ❌ Do NOT rely on container to resolve array payloads
-
-**When to Use**:
-- All `#[On('delete-*')]` event listeners in Livewire components
-- Event listeners that receive data from `$wire.$dispatch()` calls
-- Any event listener that needs service injection but receives payload data
-
-**Applied To**:
-- `deleteSchedule()` - ShipmentSchedule\Index
-- `deleteStopover()` - ShipmentSchedule\Index
-- `deletePort()` - Ports\Index
-- `deleteShippingCompany()` - ShippingCompanies\Index
-- `deleteVendor()` - Vendors\Index
-- `deleteUser()` - Users\Index
-- `deleteNotice()` - Notices\Index
-- `deleteTask()` - Tasks\AllTasks, Tasks\TodayTasks, Tasks\KanbanBoard
-- Components using `wire:model.live` for real-time filtering
-
-### Child Record Warning Pattern
-
-**Purpose**: Warn users before deleting parent records that have child records that will be cascade deleted, preventing accidental data loss.
-
-**Problem**: When deleting a parent record with cascade delete relationships, child records are automatically deleted without user awareness, which can lead to unintended data loss.
-
-**Solution**: Check for child records before deletion and display warnings in the delete confirmation dialog.
-
-**Implementation Pattern**:
-
-**1. Update JavaScript `confirmDelete` function** (`resources/views/components/layouts/app/sidebar.blade.php`):
-
-```javascript
-window.confirmDelete = function (itemId, itemTitle = null, warnings = null) {
-    let htmlContent = '';
-    
-    if (itemTitle) {
-        htmlContent += `<p class="mb-2 font-semibold text-gray-900 dark:text-white">${itemTitle}</p>`;
-    }
-    
-    // Add warnings about child records if provided
-    if (warnings && Array.isArray(warnings) && warnings.length > 0) {
-        htmlContent += `<div class="mb-3 rounded-lg border-2 border-amber-300 bg-amber-50/50 p-3 dark:border-amber-700 dark:bg-amber-900/20">`;
-        htmlContent += `<p class="mb-2 text-sm font-semibold text-amber-900 dark:text-amber-200">Warning: This will also delete the following:</p>`;
-        htmlContent += `<ul class="list-disc list-inside space-y-1 text-xs text-amber-800 dark:text-amber-300">`;
-        warnings.forEach(warning => {
-            htmlContent += `<li>${warning}</li>`;
-        });
-        htmlContent += `</ul>`;
-        htmlContent += `</div>`;
-    }
-    
-    htmlContent += `<p class="text-sm text-gray-600 dark:text-gray-400">This action cannot be undone!</p>`;
-    
-    return Swal.fire({
-        title: 'Are you sure?',
-        html: htmlContent,
-        // ... rest of SweetAlert2 configuration
-    });
-};
-```
-
-**2. Check child records in Blade template before deletion**:
-
-**Example 1: Cascade Delete (Schedule → Stopovers)**:
-```blade
-@php
-    // Check for child records that will be cascade deleted
-    $stopoverCount = $schedule->stopovers()->count();
-    $warnings = [];
-    if ($stopoverCount > 0) {
-        $warnings[] = __(':count stopover(s)', ['count' => $stopoverCount]);
-    }
-@endphp
-
-<button @click="confirmDeleteSchedule({{ $schedule->id }}, '{{ addslashes($schedule->vessel_name) }}', @js($warnings)).then((result) => { 
-    if (result.isConfirmed) { 
-        $wire.$dispatch('delete-schedule', { scheduleId: {{ $schedule->id }} }) 
-    } 
-})" type="button">
-    Delete
-</button>
-```
-
-**Example 2: Null On Delete (Vendor → Users/Vehicles)**:
-```blade
-@php
-    // Check for child records that will have their foreign key set to null
-    $userCount = $vendor->users()->count();
-    $vehicleCount = $vendor->vehicles()->count();
-    $warnings = [];
-    if ($userCount > 0) {
-        $warnings[] = __(':count user(s) will have their vendor association removed', ['count' => $userCount]);
-    }
-    if ($vehicleCount > 0) {
-        $warnings[] = __(':count vehicle(s) will have their vendor association removed', ['count' => $vehicleCount]);
-    }
-@endphp
-
-<button @click="window.confirmDelete({{ $vendor->id }}, '{{ addslashes($vendor->name) }}', @js($warnings)).then((result) => { 
-    if (result.isConfirmed) { 
-        $wire.$dispatch('delete-vendor', { vendorId: {{ $vendor->id }} }) 
-    } 
-})" type="button">
-    Delete
-</button>
-```
-
-**Example 3: Null On Delete with Multiple References (Shipping Company → Schedules)**:
-```blade
-@php
-    // Check for records that reference this entity in multiple columns
-    $scheduleCount = \App\Models\Schedule::where('carrier_1_id', $shippingCompany->id)
-        ->orWhere('carrier_2_id', $shippingCompany->id)
-        ->orWhere('carrier_3_id', $shippingCompany->id)
-        ->count();
-    $warnings = [];
-    if ($scheduleCount > 0) {
-        $warnings[] = __(':count schedule(s) will have their carrier reference removed', ['count' => $scheduleCount]);
-    }
-@endphp
-
-<button @click="window.confirmDelete({{ $shippingCompany->id }}, '{{ addslashes($shippingCompany->line_name) }}', @js($warnings)).then((result) => { 
-    if (result.isConfirmed) { 
-        $wire.$dispatch('delete-shipping-company', { shippingCompanyId: {{ $shippingCompany->id }} }) 
-    } 
-})" type="button">
-    Delete
-</button>
-```
-
-**3. Cascade Delete Relationships** (from database migrations):
-
-- **Schedule** → **ScheduleStopover** (`cascadeOnDelete`)
-- **Task** → **TaskAttachment** (`onDelete('cascade')`)
-- **Port** → **Schedule** (`cascadeOnDelete` for `start_port_id` and `end_port_id`)
-- **Port** → **ScheduleStopover** (`cascadeOnDelete`)
-- **User** → **Notice** (`onDelete('cascade')`)
-- **User** → **Schedule** (`cascadeOnDelete` for `added_by`)
-- **User** → **ScheduleStopover** (`cascadeOnDelete` for `added_by`)
-- **Vehicle** → **VehiclePhoto** (`onDelete('cascade')`)
-- **Vehicle** → **ConsigneeDetail** (`onDelete('cascade')`)
-
-**4. Null On Delete Relationships** (warnings still shown for data integrity):
-
-- **Vendor** → **User** (`nullOnDelete` - vendor_id set to null)
-- **Vendor** → **Vehicle** (`nullOnDelete` - vendor_id set to null)
-- **ShippingCompany** (ShipLine) → **Schedule** (`nullOnDelete` for `carrier_1_id`, `carrier_2_id`, `carrier_3_id`)
-
-**Key Points**:
-- ✅ Check child record counts in Blade templates before rendering delete buttons
-- ✅ Pass warnings array to `confirmDelete()` function using `@js()` helper
-- ✅ Display warnings in an amber-colored alert box within the confirmation dialog
-- ✅ Use translated warning messages with counts
-- ✅ Show warnings for both cascade delete relationships AND nullOnDelete relationships (for data integrity awareness)
-- ✅ Warnings are informational - deletion still proceeds if user confirms
-- ✅ For nullOnDelete relationships, use descriptive messages like "will have their vendor association removed"
-
-**When to Use**:
-- All delete buttons for parent records with cascade delete relationships
-- Any entity that has `hasMany` relationships with cascade delete constraints
-- Records that reference other records via foreign keys with cascade delete
-
-**Applied To**:
-- **Schedule deletion** (warns about stopovers)
-- **Port deletion** (warns about schedules and stopovers)
-- **User deletion** (warns about notices, schedules, stopovers)
-- **Task deletion** (warns about attachments)
-- **Vehicle deletion** (warns about photos and consignee details)
-- **Vendor deletion** (warns about users and vehicles that will have vendor_id set to null)
-- **Shipping Company deletion** (warns about schedules that reference the company as a carrier)
-
----
-
-## 📦 API Resource Pattern
-
-### Purpose
-Transform Eloquent models into consistent JSON responses.
-
-### Location
-`app/Http/Resources/`
-
-### Structure Example
-
-```php
-<?php
-
-declare(strict_types=1);
-
-namespace App\Http\Resources;
-
-use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\JsonResource;
-
-class TaskResource extends JsonResource
-{
-    /**
-     * Transform the resource into an array.
-     *
-     * @return array<string, mixed>
-     */
-    public function toArray(Request $request): array
-    {
-        return [
-            'id' => $this->id,
-            'title' => $this->title,
-            'description' => $this->description,
-            'status' => $this->status,
-            'priority' => $this->priority,
-            'work_date' => $this->work_date?->format('Y-m-d'),
-            
-            // Relationships (conditionally loaded)
-            'creator' => $this->whenLoaded('creator', function () {
-                return [
-                    'id' => $this->creator->id,
-                    'name' => $this->creator->name,
-                    'avatar_url' => $this->creator->avatar_url,
-                ];
-            }),
-            
-            'assigned_users' => UserResource::collection($this->whenLoaded('assignedUsers')),
-            'attachments' => TaskAttachmentResource::collection($this->whenLoaded('attachments')),
-            
-            // Timestamps
-            'created_at' => $this->created_at?->toISOString(),
-            'updated_at' => $this->updated_at?->toISOString(),
-        ];
-    }
-}
-```
-
-### API Resource Guidelines
-
-1. **Naming**: `{Model}Resource.php`
-2. **Return Type**: Specify `array<string, mixed>` return type
-3. **Relationships**: Use `whenLoaded()` for relationships
-4. **Nested Resources**: Use other Resources for nested data
-5. **Dates**: Format dates consistently (ISO 8601 or Y-m-d)
-6. **URLs**: Include full URLs for images/files
-7. **Conditional Fields**: Use `when()` for conditional fields
-8. **No Sensitive Data**: Never include passwords, tokens, or sensitive data
-
 ---
 
 ## 📝 Form Request Pattern
 
 ### Purpose
-Handle validation logic for API and Web requests.
+Handle validation logic for API and web requests.
 
-### Location
-`app/Http/Requests/`
-
-### Structure Example
+### Standard Structure
 
 ```php
 <?php
-
-declare(strict_types=1);
 
 namespace App\Http\Requests;
 
@@ -1469,17 +703,15 @@ use Illuminate\Foundation\Http\FormRequest;
 class StoreTaskRequest extends FormRequest
 {
     /**
-     * Determine if the user is authorized to make this request.
+     * Determine if the user is authorized
      */
     public function authorize(): bool
     {
-        return true; // Or implement authorization logic
+        return true;
     }
 
     /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * Get validation rules
      */
     public function rules(): array
     {
@@ -1495,9 +727,7 @@ class StoreTaskRequest extends FormRequest
     }
 
     /**
-     * Get custom error messages for validator errors.
-     *
-     * @return array<string, string>
+     * Get custom error messages
      */
     public function messages(): array
     {
@@ -1514,57 +744,109 @@ class StoreTaskRequest extends FormRequest
 
 ### Form Request Guidelines
 
-1. **Naming**: `{Action}{Model}Request.php` (e.g., `StoreTaskRequest`, `UpdateTaskRequest`)
-2. **Authorization**: Implement `authorize()` method if needed
-3. **Validation**: Use array syntax for rules (not pipe syntax)
-4. **Messages**: Provide custom error messages
-5. **Array Rules**: Use `.*` notation for array validation
-6. **Reusable**: Check if validation can be shared between store/update
+✅ **Naming**: `{Action}{Model}Request` (StoreTaskRequest, UpdateTaskRequest)
+✅ **Authorization**: Implement if needed
+✅ **Array Syntax**: Use for rules (not pipe)
+✅ **Custom Messages**: Provide user-friendly errors
+✅ **Array Validation**: Use `.*` notation
 
 ---
 
-## 🔐 Authentication Pattern
+## 📦 API Resource Pattern
+
+### Purpose
+Transform Eloquent models into consistent JSON responses.
+
+### Standard Structure
+
+```php
+<?php
+
+namespace App\Http\Resources;
+
+use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
+
+class TaskResource extends JsonResource
+{
+    /**
+     * Transform resource into array
+     */
+    public function toArray(Request $request): array
+    {
+        return [
+            'id' => $this->id,
+            'title' => $this->title,
+            'description' => $this->description,
+            'status' => $this->status,
+            'priority' => $this->priority,
+            'work_date' => $this->work_date?->format('Y-m-d'),
+            'work_time' => $this->work_time,
+
+            // Relationships
+            'creator' => $this->whenLoaded('creator', function () {
+                return [
+                    'id' => $this->creator->id,
+                    'name' => $this->creator->name,
+                    'avatar_url' => $this->creator->avatar_url,
+                ];
+            }),
+
+            'assigned_users' => UserResource::collection($this->whenLoaded('assignedUsers')),
+            'attachments' => TaskAttachmentResource::collection($this->whenLoaded('attachments')),
+
+            // Timestamps
+            'created_at' => $this->created_at?->toISOString(),
+            'updated_at' => $this->updated_at?->toISOString(),
+        ];
+    }
+}
+```
+
+### API Resource Guidelines
+
+✅ **Naming**: `{Model}Resource`
+✅ **Return Type**: `array<string, mixed>`
+✅ **Relationships**: Use `whenLoaded()`
+✅ **Nested Resources**: Use other Resources
+✅ **Dates**: ISO 8601 or Y-m-d format
+✅ **URLs**: Full URLs for images/files
+✅ **Conditional Fields**: Use `when()`
+✅ **Security**: Never include sensitive data
+
+---
+
+## 🔐 Authentication
 
 ### Web Authentication (Session-based)
 
 **Middleware**: `auth`
 
-**Usage**:
 ```php
 // routes/web.php
 Route::middleware(['auth'])->group(function () {
     Route::get('tasks', TasksIndex::class)->name('tasks.index');
 });
-```
 
-**In Controllers**:
-```php
+// In controllers/components
 $user = auth()->user();
 $userId = auth()->id();
 ```
 
-**In Livewire**:
-```php
-$user = auth()->user();
-```
-
-### API Authentication (Token-based with Sanctum)
+### API Authentication (Sanctum Token)
 
 **Middleware**: `auth:sanctum`
 
-**Usage**:
 ```php
 // routes/api.php
 Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('tasks', TaskController::class);
 });
-```
 
-**Login Flow**:
-```php
+// Login flow
 public function login(array $credentials): array
 {
-    if (! Auth::attempt($credentials)) {
+    if (!Auth::attempt($credentials)) {
         throw new \InvalidArgumentException('Invalid credentials');
     }
 
@@ -1578,113 +860,283 @@ public function login(array $credentials): array
 }
 ```
 
-**In API Controllers**:
+---
+
+## 🏢 Multi-Tenancy & Vendor Scoping
+
+### Task Scoping (Role-Based)
+
+Tasks are scoped by user role, not vendor_id column:
+
 ```php
-$user = $request->user();
-$userId = $request->user()->id;
+// app/Models/Task.php
+public function scopeForUserRole(Builder $query, ?User $user = null): Builder
+{
+    $user = $user ?? auth()->user();
+
+    // Admin sees all tasks
+    if ($user->role === 'admin') {
+        return $query;
+    }
+
+    // Manager sees tasks from their vendor
+    if ($user->role === 'manager' && $user->vendor_id) {
+        return $query->where(function ($q) use ($user) {
+            $q->whereHas('creator', fn($subQ) => $subQ->where('vendor_id', $user->vendor_id))
+                ->orWhereHas('assignedUsers', fn($subQ) => $subQ->where('vendor_id', $user->vendor_id));
+        });
+    }
+
+    // Regular users see tasks they created OR assigned to them
+    return $query->where(function ($q) use ($user) {
+        $q->where('created_by', $user->id)
+            ->orWhereHas('assignedUsers', fn($subQ) => $subQ->where('users.id', $user->id));
+    });
+}
+```
+
+**Usage in Services**:
+```php
+public function list(array $filters = []): LengthAwarePaginator
+{
+    $query = Task::with(['assignedUsers', 'creator'])
+        ->forUserRole(); // Apply role-based scoping
+
+    // Apply filters...
+
+    return $query->paginate(15);
+}
+```
+
+### Vehicle Scoping (Vendor-Based)
+
+Vehicles use the `BelongsToVendor` trait:
+
+```php
+// app/Models/Vehicle.php
+use App\Models\Concerns\BelongsToVendor;
+
+class Vehicle extends Model
+{
+    use BelongsToVendor;
+}
+
+// Available scopes
+$query->forCurrentVendor();      // Filter by current user's vendor
+$query->forVendor($vendorId);    // Filter by specific vendor
+```
+
+**Usage in Services**:
+```php
+public function list(array $filters = []): LengthAwarePaginator
+{
+    $query = Vehicle::with(['creator', 'photos', 'consignee'])
+        ->forCurrentVendor(); // Apply vendor scoping
+
+    // Apply filters...
+
+    return $query->paginate(15);
+}
+
+public function create(array $data): Vehicle
+{
+    $user = auth()->user();
+    $vendorId = $data['vendor_id'] ?? $user?->vendor_id;
+
+    return Vehicle::create([
+        'serial_number' => $data['serial_number'],
+        'vendor_id' => $vendorId, // Auto-assigned
+        'created_by' => auth()->id(),
+        // ...
+    ]);
+}
+```
+
+### Global Resources
+
+Ports and Shipping Companies are shared across all vendors:
+
+```php
+// No vendor scoping - visible to all users
+$ports = Port::with('creator')->get();
+$companies = ShippingCompany::with('creator')->get();
+```
+
+### Critical Scoping Rules
+
+**⚠️ IMPORTANT**: Always use Service methods, not direct model access
+
+✅ **Correct**:
+```php
+// Livewire component
+$task = $taskService->getTaskById($taskId); // Uses forUserRole()
+$vehicle = $vehicleService->getById($vehicleId); // Uses forCurrentVendor()
+
+// API controller
+$task = $this->taskService->getTaskById($task->id); // Role-based scoping
+```
+
+❌ **Incorrect**:
+```php
+// Route model binding bypasses scoping!
+$task = Task::findOrFail($taskId); // No role-based filtering
+$vehicle = Vehicle::find($vehicleId); // No vendor filtering
 ```
 
 ---
 
-## 🚨 Error Handling Pattern
+## 🔒 Authorization & Permissions
 
-### Exception Handling Configuration
+### Permission Rules
 
-Located in `bootstrap/app.php`:
+**Delete Actions**:
+- Only `admin` or `manager` can delete
+- Manager cannot delete their own account
+- Manager cannot delete admin accounts
 
+**Implementation**:
 ```php
-->withExceptions(function (Exceptions $exceptions): void {
-    // Handle authentication exceptions for API
-    $exceptions->render(function (\Illuminate\Auth\AuthenticationException $e, Request $request) {
-        if ($request->is('api/*')) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Unauthenticated. Please login first.',
-            ], 401);
+// In Livewire component or Blade
+public function canDelete(): bool
+{
+    $currentUser = Auth::user();
+    if (!$currentUser || !$this->item) {
+        return false;
+    }
+
+    // Only admin or manager
+    if (!in_array($currentUser->role, ['admin', 'manager'])) {
+        return false;
+    }
+
+    // Manager restrictions
+    if ($currentUser->role === 'manager') {
+        if ($currentUser->id === $this->item->id) {
+            return false; // Cannot delete own account
         }
-
-        // Let Laravel handle web route authentication (redirect to login)
-    });
-
-    // Handle not found exceptions for API
-    $exceptions->render(function (NotFoundHttpException $e, Request $request) {
-        if ($request->is('api/*')) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Resource not found.',
-            ], 404);
+        if ($this->item->role === 'admin') {
+            return false; // Cannot delete admins
         }
+    }
 
-        // Let Laravel handle web route 404 (show 404 page)
-    });
+    return true;
+}
+```
 
-    // Handle validation exceptions for API
-    $exceptions->render(function (\Illuminate\Validation\ValidationException $e, Request $request) {
-        if ($request->is('api/*')) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Validation failed.',
-                'errors' => $e->errors(),
-            ], 422);
-        }
+**Usage in Blade**:
+```blade
+@if($this->canDelete())
+    <button wire:click="deleteItem">Delete</button>
+@endif
+```
 
-        // Let Laravel handle web route validation (redirect back with errors)
-    });
+---
 
-    // Handle authorization exceptions for API
-    $exceptions->render(function (\Illuminate\Auth\Access\AuthorizationException $e, Request $request) {
-        if ($request->is('api/*')) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Unauthorized. You do not have permission to perform this action.',
-            ], 403);
-        }
+## ✅ CRUD Feature Checklist
 
-        // Let Laravel handle web route authorization (show 403 page)
-    });
+### 1. Create Model & Migration
+```bash
+php artisan make:model Feature -mf
+```
 
-    // Handle model not found exceptions for API
-    $exceptions->render(function (\Illuminate\Database\Eloquent\ModelNotFoundException $e, Request $request) {
-        if ($request->is('api/*')) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Resource not found.',
-            ], 404);
-        }
+- [ ] Define table schema
+- [ ] Add indexes for frequently queried columns
+- [ ] Set up relationships
+- [ ] Add scopes if needed (vendor, role-based)
 
-        // Let Laravel handle web route model not found (show 404 page)
-    });
+### 2. Create Service Class
+```bash
+php artisan make:class Services/FeatureService
+```
+
+- [ ] Implement `create()`
+- [ ] Implement `update()`
+- [ ] Implement `delete()`
+- [ ] Implement `list()` with filters
+- [ ] Implement `getById()`
+- [ ] Add vendor scoping if applicable
+
+### 3. Create API Resource
+```bash
+php artisan make:resource FeatureResource
+```
+
+- [ ] Define exposed fields
+- [ ] Use `whenLoaded()` for relationships
+- [ ] Format dates consistently
+- [ ] Hide sensitive data
+
+### 4. Create Form Requests
+```bash
+php artisan make:request StoreFeatureRequest
+php artisan make:request UpdateFeatureRequest
+```
+
+- [ ] Define validation rules
+- [ ] Add custom messages
+- [ ] Implement authorization if needed
+
+### 5. Create API Controller
+```bash
+php artisan make:controller Api/V1/FeatureController --api
+```
+
+- [ ] Inject service in constructor
+- [ ] Implement all CRUD methods
+- [ ] Use Form Requests
+- [ ] Return Resources
+- [ ] Add vendor scoping verification
+
+### 6. Create Livewire Components
+```bash
+php artisan make:livewire Features/Index
+php artisan make:livewire Features/FeatureModal
+```
+
+- [ ] Use method injection for services
+- [ ] Implement filter logic
+- [ ] Add modal CRUD logic
+- [ ] Dispatch events
+- [ ] Add vendor scoping
+
+### 7. Add Routes
+```php
+// routes/api.php
+Route::middleware('auth:sanctum')->group(function () {
+    Route::apiResource('features', FeatureController::class);
+});
+
+// routes/web.php
+Route::middleware(['auth'])->group(function () {
+    Route::get('features', FeaturesIndex::class)->name('features.index');
 });
 ```
 
-### Service Exception Handling
-
-**In Services**: Throw exceptions for error cases:
-```php
-if (! Hash::check($currentPassword, $user->password)) {
-    throw new \InvalidArgumentException('Current password is incorrect');
-}
+### 8. Write Tests
+```bash
+php artisan make:test Services/FeatureServiceTest --unit
+php artisan make:test Api/FeatureApiTest
 ```
 
-**In Controllers**: Catch and format as needed (or let global handler catch):
-```php
-try {
-    $task = $this->taskService->create($data);
-    return response()->json(['success' => true, 'data' => $task], 201);
-} catch (\InvalidArgumentException $e) {
-    return response()->json(['success' => false, 'message' => $e->getMessage()], 400);
-}
+- [ ] Test service methods
+- [ ] Test API endpoints
+- [ ] Test Livewire components
+- [ ] Test validation rules
+- [ ] Test authorization
+- [ ] Test vendor scoping
+
+### 9. Run Quality Checks
+```bash
+vendor/bin/pint              # Format code
+php artisan test             # Run tests
 ```
 
 ---
 
-## 🧪 Testing Pattern
+## 🧪 Testing Patterns
 
-### Unit Tests (Service Layer)
+### Unit Tests (Services)
 
-**Location**: `tests/Unit/Services/`
-
-**Example**:
 ```php
 <?php
 
@@ -1711,13 +1163,14 @@ class TaskServiceTest extends TestCase
     public function test_can_create_task(): void
     {
         $user = User::factory()->create();
-        
-        $task = $this->taskService->create($user->id, [
+
+        $task = $this->taskService->create([
             'title' => 'Test Task',
             'description' => 'Test Description',
             'status' => 'pending',
             'priority' => 'high',
             'work_date' => now(),
+            'created_by' => $user->id,
         ]);
 
         $this->assertInstanceOf(Task::class, $task);
@@ -1738,11 +1191,8 @@ class TaskServiceTest extends TestCase
 }
 ```
 
-### Feature Tests (API Endpoints)
+### Feature Tests (API)
 
-**Location**: `tests/Feature/Api/`
-
-**Example**:
 ```php
 <?php
 
@@ -1801,147 +1251,6 @@ class TaskApiTest extends TestCase
 }
 ```
 
-### Livewire Component Tests
-
-**Location**: `tests/Feature/Livewire/`
-
-**Example**:
-```php
-<?php
-
-namespace Tests\Feature\Livewire;
-
-use App\Livewire\Tasks\Index;
-use App\Models\Task;
-use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Livewire\Livewire;
-use Tests\TestCase;
-
-class TaskIndexTest extends TestCase
-{
-    use RefreshDatabase;
-
-    public function test_can_render_task_list(): void
-    {
-        $user = User::factory()->create();
-        Task::factory()->count(5)->create();
-
-        Livewire::actingAs($user)
-            ->test(Index::class)
-            ->assertOk()
-            ->assertViewHas('tasks');
-    }
-
-    public function test_can_search_tasks(): void
-    {
-        $user = User::factory()->create();
-        Task::factory()->create(['title' => 'Important Task']);
-        Task::factory()->create(['title' => 'Regular Task']);
-
-        Livewire::actingAs($user)
-            ->test(Index::class)
-            ->set('search', 'Important')
-            ->assertSee('Important Task')
-            ->assertDontSee('Regular Task');
-    }
-}
-```
-
----
-
-## 📋 Checklist for New Features
-
-When implementing a new feature, follow these steps:
-
-### 1. Create Model & Migration
-```bash
-php artisan make:model Feature -mf
-```
-
-### 2. Create Service Class
-```bash
-php artisan make:class Services/FeatureService
-```
-
-- [ ] Implement `list()` method
-- [ ] Implement `create()` method
-- [ ] Implement `update()` method
-- [ ] Implement `delete()` method
-- [ ] Add any custom business logic methods
-
-### 3. Create API Resource
-```bash
-php artisan make:resource FeatureResource
-```
-
-- [ ] Define all exposed fields
-- [ ] Use `whenLoaded()` for relationships
-- [ ] Format dates consistently
-
-### 4. Create Form Requests
-```bash
-php artisan make:request StoreFeatureRequest
-php artisan make:request UpdateFeatureRequest
-```
-
-- [ ] Define validation rules
-- [ ] Add custom error messages
-- [ ] Implement authorization if needed
-
-### 5. Create API Controller
-```bash
-php artisan make:controller Api/V1/FeatureController --api
-```
-
-- [ ] Inject service in constructor
-- [ ] Implement all CRUD methods
-- [ ] Use Form Requests for validation
-- [ ] Return Resources for responses
-
-### 6. Create Livewire Components
-```bash
-php artisan make:livewire Features/Index
-php artisan make:livewire Features/FeatureModal
-```
-
-- [ ] Use method injection for services
-- [ ] Implement filter logic
-- [ ] Add modal open/close logic
-- [ ] Dispatch events for notifications
-
-### 7. Add Routes
-```php
-// routes/api.php
-Route::middleware('auth:sanctum')->group(function () {
-    Route::apiResource('features', FeatureController::class);
-});
-
-// routes/web.php
-Route::middleware(['auth'])->group(function () {
-    Route::get('features', FeaturesIndex::class)->name('features.index');
-});
-```
-
-### 8. Write Tests
-```bash
-php artisan make:test Services/FeatureServiceTest --unit
-php artisan make:test Api/FeatureApiTest
-php artisan make:test Livewire/FeatureIndexTest
-```
-
-- [ ] Test service methods
-- [ ] Test API endpoints
-- [ ] Test Livewire components
-- [ ] Test validation rules
-- [ ] Test authorization
-
-### 9. Run Tests & Format Code
-```bash
-vendor/bin/pint
-php artisan test
-```
-
 ---
 
 ## 🎯 Best Practices
@@ -1950,434 +1259,65 @@ php artisan test
 
 - Use services for all business logic
 - Inject services via constructor in controllers
-- Use method injection for services in Livewire components
+- Use method injection in Livewire
 - Always use Form Requests for validation
 - Always use API Resources for JSON responses
 - Keep controllers thin (< 50 lines per method)
-- Write tests for all new features
+- Write tests for new features
 - Use type hints and return types
-- Use `declare(strict_types=1);` at the top of files
-- Follow PSR-12 coding standards
-- Use descriptive variable and method names
-- Add PHPDoc blocks for complex methods
+- Use `declare(strict_types=1)`
+- Follow PSR-12 standards
 - Handle edge cases in services
-- Use transactions for multi-step operations
+- Use transactions for multi-step ops
+- Apply vendor scoping consistently
 
 ### Don'ts ❌
 
 - Don't put business logic in controllers
-- Don't use constructor injection in Livewire components
-- Don't access `request()` directly in services
+- Don't use constructor injection in Livewire
+- Don't access `request()` in services
 - Don't use Eloquent directly in controllers
-- Don't return models directly from API endpoints
+- Don't return models directly from API
 - Don't skip validation
 - Don't catch exceptions silently
-- Don't use raw SQL queries without reason
-- Don't expose sensitive data in API responses
-- Don't modify database structure without migrations
-- Don't remove existing functionality without approval
-- Don't break existing route names
-- Don't introduce new dependencies without approval
-
----
-
-## 🔄 Common Patterns
-
-### Pagination Pattern
-```php
-// Service
-public function list(array $filters = [], int $perPage = 15): LengthAwarePaginator
-{
-    return Model::query()->paginate($perPage);
-}
-
-// Controller
-public function index(Request $request): JsonResponse
-{
-    $perPage = (int) $request->input('per_page', 15);
-    $items = $this->service->list([], $perPage);
-
-    return response()->json([
-        'success' => true,
-        'data' => ResourceCollection::collection($items),
-        'meta' => [
-            'current_page' => $items->currentPage(),
-            'last_page' => $items->lastPage(),
-            'per_page' => $items->perPage(),
-            'total' => $items->total(),
-        ],
-    ]);
-}
-```
-
-### Search/Filter Pattern
-```php
-// Service
-public function list(array $filters = []): LengthAwarePaginator
-{
-    $query = Model::query();
-
-    if (! empty($filters['search'])) {
-        $query->where('name', 'like', "%{$filters['search']}%");
-    }
-
-    if (! empty($filters['status'])) {
-        $query->where('status', $filters['status']);
-    }
-
-    return $query->paginate(15);
-}
-```
-
-### File Upload Pattern
-```php
-// Service
-public function uploadFile(Model $model, UploadedFile $file): string
-{
-    // Delete old file if exists
-    if ($model->file_path) {
-        Storage::disk('public')->delete($model->file_path);
-    }
-
-    // Store new file
-    $filePath = $file->store('uploads', 'public');
-    
-    $model->update(['file_path' => $filePath]);
-
-    return $filePath;
-}
-
-// Controller
-public function upload(Request $request, Model $model): JsonResponse
-{
-    $request->validate(['file' => 'required|file|max:10240']);
-    
-    $filePath = $this->service->uploadFile($model, $request->file('file'));
-
-    return response()->json([
-        'success' => true,
-        'message' => 'File uploaded successfully',
-        'file_url' => Storage::disk('public')->url($filePath),
-    ]);
-}
-```
-
-### Relationship Sync Pattern
-```php
-// Service
-public function assignUsers(Task $task, array $userIds): Task
-{
-    $task->assignedUsers()->sync($userIds);
-    return $task->fresh(['assignedUsers']);
-}
-```
-
----
-
-## 📊 Performance Considerations
-
-### N+1 Query Prevention
-Always eager load relationships:
-```php
-// Good
-Task::with(['assignedUsers', 'creator', 'attachments'])->get();
-
-// Bad
-Task::all(); // Causes N+1 queries when accessing relationships
-```
-
-### Caching Strategy
-```php
-// Cache expensive queries
-public function getStats(): array
-{
-    return Cache::remember('dashboard.stats', 300, function () {
-        return [
-            'total_tasks' => Task::count(),
-            'completed_tasks' => Task::where('status', 'completed')->count(),
-            // ... more stats
-        ];
-    });
-}
-```
-
-### Database Indexing
-Add indexes for frequently queried columns:
-```php
-$table->index('status');
-$table->index('created_by');
-$table->index(['status', 'priority']);
-```
-
----
-
-## 📊 Dashboard Query Patterns
-
-### Role Counts Query
-For displaying user counts by role in dashboard cards:
-
-```php
-$adminCount = \App\Models\User::where('role', 'admin')->count();
-$managerCount = \App\Models\User::where('role', 'manager')->count();
-$employeeCount = \App\Models\User::where('role', 'employee')->count();
-$clientCount = \App\Models\User::where('role', 'client')->count();
-```
-
-**Usage**: Display role counts above member/user tables in dashboard cards.
-
-### Members Query with Vendor Context
-The dashboard **Members** card and the `/users` listing both rely on vendor-aware user queries to avoid N+1 problems and to keep tenant context visible in the UI.
-
-```php
-// Dashboard members (inline in dashboard view)
-$members = \App\Models\User::with('vendor')
-    ->latest()
-    ->limit(5)
-    ->get();
-
-// UsersService::getPaginated()
-public function getPaginated(array $filters = [], int $perPage = 10)
-{
-    $query = User::query()->with('vendor');
-    $this->scopeByVendor($query);
-
-    // ... search / role filters ...
-
-    return $query
-        ->where('email', 'NOT LIKE', '%test%')
-        ->orderBy('created_at', 'desc')
-        ->paginate($perPage);
-}
-```
-
-**Display conventions**:
-- **Dashboard Members card**:
-  - Member column: avatar, name, and “Member since :date”.
-  - Vendor column: vendor name (or `-` in muted text when missing).
-- **Users `/users` table**:
-  - Vendor column:
-    - Vendor name in bold, smaller text (`text-xs font-bold`).
-    - Vendor address below in lighter text (`text-[10px]/text-xs text-gray-400 dark:text-gray-500`) when available.
-
-These conventions ensure vendor/tenant context is always visible wherever users are listed, while keeping typography compact.
-
-### Upcoming Tasks Query
-For displaying upcoming tasks in dashboard tables:
-
-```php
-$upcomingTasks = \App\Models\Task::whereNotIn('status', ['completed', 'cancelled'])
-    ->whereNotNull('work_date')
-    ->where('work_date', '>=', now()->toDateString())
-    ->with(['assignedUsers', 'creator'])
-    ->orderBy('work_date', 'ASC')
-    ->orderBy('work_time', 'ASC')
-    ->limit(3)
-    ->get();
-```
-
-**Key Points**:
-- Excludes completed and cancelled tasks
-- Only shows tasks with `work_date` set
-- Filters to future dates only (`work_date >= today`)
-- Sorted by work date then work time (both ascending)
-- Eager loads relationships to prevent N+1 queries
-- Limits results for dashboard display (typically 3-5)
-
-**Display**: Shows "Work Date & Time" with date and time displayed separately with icons.
-
-### Today's Tasks Query
-For displaying today's tasks sorted by time:
-
-```php
-// TaskService::getTodayTasksAll()
-$todayTasks = \App\Models\Task::with(['assignedUsers', 'creator', 'attachments'])
-    ->whereDate('work_date', today())
-    ->orderByRaw('CASE WHEN work_time IS NULL THEN 1 ELSE 0 END')
-    ->orderBy('work_time', 'asc')
-    ->get();
-```
-
-**Key Points**:
-- Filters tasks where `work_date` equals today
-- Sorts by `work_time` in ascending order (earliest first)
-- Tasks without time (`work_time IS NULL`) are placed at the end
-- Uses `orderByRaw()` to handle NULL values properly
-- Eager loads relationships to prevent N+1 queries
-- Returns a Collection (not paginated) for full day's tasks
-
-**Sorting Logic**:
-1. First, tasks with `work_time` set are sorted by time (ASC)
-2. Then, tasks without `work_time` (NULL) are placed at the end
-3. This ensures scheduled tasks appear first, followed by unscheduled tasks
-
-**Usage**: Used in `TodayTasks` Livewire component to display all tasks for the current day, sorted chronologically by work time.
-
----
-
-## 🧭 Navigation Menu Naming Conventions
-
-### Menu Item Naming Standard
-
-All navigation menu items in the sidebar follow a consistent naming convention:
-
-**Rule**: Use **plural form** without "Manage" suffix for all menu items.
-
-**Examples**:
-- ✅ `Users` (not "User Manage" or "User Management")
-- ✅ `Tasks` (not "Task Manage" or "Task Management")
-- ✅ `Shipments` (not "Shipment Manage" or "Shipment Management")
-- ✅ `Vehicles` (not "Vehicle Manage" or "Vehicle Management")
-
-**Rationale**:
-- Plural forms are standard for resource lists in modern UIs
-- Shorter, cleaner labels improve readability
-- Consistent with industry best practices (GitHub, GitLab, etc.)
-- Avoids redundancy (the "Management" section heading already implies management)
-
-**Submenu Items**:
-- Submenu items can be more descriptive (e.g., "Today's Tasks", "All Tasks", "Shipping Companies", "Ports")
-- Submenu items use specific names that describe the content or action
-
-**Implementation**:
-```blade
-<!-- Main menu items use plural form -->
-<flux:navlist.item>{{ __('Users') }}</flux:navlist.item>
-<flux:navlist.item>{{ __('Tasks') }}</flux:navlist.item>
-<flux:navlist.item>{{ __('Shipments') }}</flux:navlist.item>
-
-<!-- Submenu items can be more descriptive -->
-<div x-show="open" x-collapse>
-    <flux:navlist.item>{{ __('Shipping Companies') }}</flux:navlist.item>
-    <flux:navlist.item>{{ __('Ports') }}</flux:navlist.item>
-    <flux:navlist.item>{{ __('Shipment Schedule') }}</flux:navlist.item>
-</div>
-```
-
----
-
-## 🔍 Debugging Tips
-
-### Service Layer Debugging
-```php
-// Add logging in services
-Log::info('Creating task', ['data' => $data]);
-
-// Use dump and die
-dd($query->toSql(), $query->getBindings());
-```
-
-### API Debugging
-```php
-// Enable query logging
-DB::enableQueryLog();
-// ... perform operations
-dd(DB::getQueryLog());
-```
-
-### Livewire Debugging
-```php
-// In Livewire component
-public function render()
-{
-    logger()->info('Rendering component', [
-        'search' => $this->search,
-        'filters' => $this->filters,
-    ]);
-
-    return view('livewire.component');
-}
-```
+- Don't use raw SQL without reason
+- Don't expose sensitive data in APIs
+- Don't modify DB without migrations
+- Don't remove functionality without approval
+- Don't introduce dependencies without approval
+- Don't bypass vendor scoping
 
 ---
 
 ## 📚 Additional Resources
 
 - [Laravel Documentation](https://laravel.com/docs)
-- [Livewire Documentation](https://livewire.laravel.com/docs)
-- [Laravel Sanctum Documentation](https://laravel.com/docs/sanctum)
-- [Pest Testing Framework](https://pestphp.com/)
+- [Livewire Documentation](https://livewire.laravel.com)
+- [Laravel Sanctum](https://laravel.com/docs/sanctum)
+- [Pest Testing](https://pestphp.com)
 - [Laravel Pint](https://laravel.com/docs/pint)
-
----
-
-**Version**: 1.9  
-**Last Updated**: January 22, 2026  
-**Project**: Senda Snap Backend - Service-Oriented Architecture  
 
 ---
 
 ## 📝 Changelog
 
+### Version 2.0 (February 3, 2026)
+- Complete architecture refactoring
+- Streamlined service patterns
+- Consolidated multi-vendor documentation
+- Clarified task scoping (role-based)
+- Improved Livewire patterns
+- Enhanced CRUD checklist
+- Removed overlap with DESIGN_SYSTEM.md
+- Added comprehensive examples
+- Improved navigation structure
+
 ### Version 1.9 (January 22, 2026)
-- Added child record warnings for Vendor deletion (users and vehicles)
-- Added child record warnings for Shipping Company deletion (schedules)
-- Updated Child Record Warning Pattern documentation with nullOnDelete examples
-- Expanded warning system to cover both cascade delete and nullOnDelete relationships
-- All delete features now show appropriate warnings for data integrity awareness
-
-### Version 1.8 (January 22, 2026)
-- Added CSS performance optimizations to prevent flashing during Livewire navigation
-- Documented light mode border and shadow transition fixes
-- Implemented `page-loaded` class pattern for smooth page transitions
-- Fixed visual flashing issues in tables, cards, headers, and sidebars
-- Applied fixes to both light and dark modes with mode-specific rules
-
-### Version 1.7 (January 21, 2026)
-- Updated Task scoping architecture - tasks no longer have vendor_id column
-- Documented role-based task scoping (Admin/Manager/Regular users)
-- Updated TaskService examples to use `forUserRole()` scope instead of `forCurrentVendor()`
-- Clarified that tasks are scoped via user's vendor_id from users table
-- Removed references to task vendor_id backfill migrations
-- Updated architecture diagram to reflect task scoping changes
-
-### Version 1.6 (January 16, 2026)
-- Added Multi-Vendor Architecture section
-- Documented vendor scoping with BelongsToVendor trait
-- Documented user roles and vendor access permissions
-- Added vendor-scoped vs global resources explanation
-- Documented default vendor (AUTOCRAFT JAPAN LTD)
-
-### Version 1.5 (January 16, 2026)
-- Added Navigation Menu Naming Conventions section
-- Documented standard for using plural forms without "Manage" suffix
-- Established consistent naming pattern: Users, Tasks, Shipments, Vehicles
-- Clarified submenu item naming guidelines
-
-### Version 1.4 (December 9, 2025)
-- Added Filter Refresh Pattern documentation for Livewire components
-- Documented `refreshKey` pattern to force view updates when filters change
-- Added critical requirement to increment `refreshKey` in all `updatedXxx()` filter methods
-- Documented `wire:key` usage with `refreshKey` for proper component re-rendering
-- Prevents filter issues where backend applies filters but view doesn't update
-
-### Version 1.3 (November 12, 2025)
-- Added Preview Component Pattern documentation
-- Documented center dialog modal pattern for read-only previews
-- Added Permission System Pattern with role-based delete restrictions
-- Documented `canDelete()` method pattern for conditional UI rendering
-- Updated Livewire directory structure to include Preview components
-- Added permission-based UI visibility guidelines
-
-### Version 1.2 (November 12, 2025)
-- Added Today's Tasks Query pattern documentation
-- Documented time-based sorting for today's tasks
-- Clarified NULL time handling in sorting logic
-
-### Version 1.1 (November 12, 2025)
-- Added dashboard query patterns section
-- Documented role counts query pattern
-- Documented upcoming tasks query pattern with future date filtering
-- Added work date and time sorting guidelines
+- Added child record warnings for deletion
+- Updated multi-vendor patterns
+- Enhanced vendor scoping documentation
 
 ### Version 1.0 (November 12, 2025)
 - Initial architecture documentation
-- Service layer pattern defined
-- API controller pattern defined
-- Livewire component pattern defined
-- API Resource pattern defined
-- Form Request pattern defined
-- Authentication patterns documented
-- Error handling patterns documented
-- Testing patterns documented
-- Best practices and guidelines established
-
+- Service layer patterns established
+- Multi-vendor architecture defined

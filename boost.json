@@ -1,12 +1,13 @@
 {
     "agents": [
-        "cursor",
-        "phpstorm"
+        "codex",
+        "cursor"
     ],
-    "editors": [
-        "cursor",
-        "phpstorm",
-        "vscode"
-    ],
-    "guidelines": []
+    "skills": [
+        "fluxui-development",
+        "livewire-development",
+        "volt-development",
+        "pest-testing",
+        "tailwindcss-development"
+    ]
 }

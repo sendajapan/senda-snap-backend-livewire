@@ -54,24 +54,24 @@
     $color = $colors[$status] ?? $colors['pending'];
 @endphp
 
-<div class="group relative w-full overflow-hidden rounded-lg border {{ $color['border'] }} {{ $color['bg'] }} p-3 shadow-md transition-all duration-200 {{ $color['hoverBorder'] }} hover:shadow-lg backdrop-blur-sm">
-    <div class="flex flex-col gap-2">
+<div class="group relative w-full overflow-hidden rounded-lg border {{ $color['border'] }} {{ $color['bg'] }} p-ui-sm shadow-md transition-shadow duration-200 {{ $color['hoverBorder'] }} hover:shadow-lg backdrop-blur-sm">
+    <div class="flex flex-col gap-ui-xs">
         <!-- Header: Title + Priority -->
-        <div class="flex items-start justify-between gap-2">
+        <div class="flex items-start justify-between gap-ui-xs">
             <div class="flex-1 min-w-0">
-                <div class="flex items-center gap-1.5 flex-wrap">
-                    <h3 class="text-sm font-bold text-gray-900 dark:text-white truncate">{{ $task->title }}</h3>
+                <div class="flex items-center gap-ui-2xs flex-wrap">
+                    <h3 class="text-ui-sm font-bold text-gray-900 dark:text-white truncate">{{ $task->title }}</h3>
                     @if($task->attachments && $task->attachments->count() > 0)
-                        <div class="flex items-center gap-0.5 rounded {{ $color['attachmentBg'] }} px-1.5 py-0.5 flex-shrink-0" title="{{ $task->attachments->count() }} {{ __('attachment(s)') }}">
+                        <div class="flex items-center gap-ui-2xs rounded {{ $color['attachmentBg'] }} px-ui-2xs py-0.5 flex-shrink-0" title="{{ $task->attachments->count() }} {{ __('attachment(s)') }}">
                             <svg class="h-3 w-3 {{ $color['attachmentIcon'] }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
                             </svg>
-                            <span class="text-[10px] font-semibold {{ $color['attachmentText'] }}">{{ $task->attachments->count() }}</span>
+                            <span class="text-ui-xs font-semibold {{ $color['attachmentText'] }}">{{ $task->attachments->count() }}</span>
                         </div>
                     @endif
                 </div>
                 @if($task->description)
-                    <p class="mt-1 text-xs text-gray-600 dark:text-gray-400 line-clamp-2">{{ $task->description }}</p>
+                    <p class="mt-ui-2xs text-ui-xs text-gray-600 dark:text-gray-400 line-clamp-2">{{ $task->description }}</p>
                 @endif
             </div>
             <div class="flex-shrink-0">
@@ -80,7 +80,7 @@
                     'high' => 'orange',
                     'medium' => 'yellow',
                     default => 'gray',
-                }" size="sm" class="font-semibold text-[10px]">
+                }" size="sm" class="font-semibold text-ui-xs">
                     {{ ucfirst($task->priority) }}
                 </flux:badge>
             </div>
@@ -88,7 +88,7 @@
 
         <!-- Details: Assigned Users -->
         @if($task->assignedUsers && $task->assignedUsers->count() > 0)
-            <div class="flex items-center gap-1.5">
+            <div class="flex items-center gap-ui-2xs">
                 <div class="flex -space-x-1.5">
                     @foreach($task->assignedUsers->take(2) as $user)
                         <div class="relative h-5 w-5 flex-shrink-0" title="{{ $user->name }}">
@@ -96,28 +96,28 @@
                                 <img src="{{ $user->avatar_url }}" alt="{{ $user->name }}" class="h-5 w-5 rounded-lg object-cover ring-2 ring-white dark:ring-gray-900">
                             @else
                                 <div class="flex h-5 w-5 items-center justify-center rounded-lg {{ $color['avatarBg'] }} ring-2 ring-white dark:ring-gray-900">
-                                    <span class="text-[9px] font-bold {{ $color['avatarText'] }}">{{ $user->initials() }}</span>
+                                    <span class="text-ui-xs font-bold {{ $color['avatarText'] }}">{{ $user->initials() }}</span>
                                 </div>
                             @endif
                         </div>
                     @endforeach
                     @if($task->assignedUsers->count() > 2)
                         <div class="flex h-5 w-5 items-center justify-center rounded-lg {{ $color['avatarPlus'] }} ring-2 ring-white dark:ring-gray-900">
-                            <span class="text-[9px] font-bold text-white">+{{ $task->assignedUsers->count() - 2 }}</span>
+                            <span class="text-ui-xs font-bold text-white">+{{ $task->assignedUsers->count() - 2 }}</span>
                         </div>
                     @endif
                 </div>
-                <span class="truncate text-xs text-gray-600 dark:text-gray-400">
+                <span class="truncate text-ui-xs text-gray-600 dark:text-gray-400">
                     {{ $task->assignedUsers->pluck('name')->take(1)->implode(', ') }}
                     @if($task->assignedUsers->count() > 1)
-                        <span class="text-[10px]">+{{ $task->assignedUsers->count() - 1 }}</span>
+                        <span class="text-ui-xs">+{{ $task->assignedUsers->count() - 1 }}</span>
                     @endif
                 </span>
             </div>
         @endif
 
         <!-- Created At Time -->
-        <div class="flex items-center gap-1 border-t border-gray-200/50 pt-2 dark:border-gray-700/50">
+        <div class="flex items-center gap-1 border-t border-gray-200/50 pt-ui-xs dark:border-gray-700/50">
             <svg class="h-3 w-3 {{ $color['attachmentIcon'] }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>

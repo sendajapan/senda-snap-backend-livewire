@@ -2,50 +2,50 @@
 @props(['task', 'showWorkDate' => false, 'showTimeFirst' => false, 'index' => null])
 
 <tr class="group hover:bg-emerald-50/30 dark:hover:bg-emerald-900/10">
-    <td class="whitespace-nowrap px-3 md:px-6 py-3 md:py-5 text-center">
-        <span class="text-xs md:text-sm font-semibold text-gray-600 dark:text-gray-400">{{ $index ?? '' }}</span>
+    <td class="whitespace-nowrap px-ui-sm py-ui-sm text-center">
+        <span class="text-ui-sm font-semibold text-gray-600 dark:text-gray-400">{{ $index ?? '' }}</span>
     </td>
     @if($showTimeFirst)
-        <td class="whitespace-nowrap px-3 md:px-6 py-3 md:py-5">
+        <td class="whitespace-nowrap px-ui-sm py-ui-sm">
             @if($task->work_time)
-                <div class="inline-flex items-center gap-1 md:gap-2 rounded-sm bg-accent/90 dark:bg-emerald-600/90 px-1.5 md:px-2 py-1 shadow-sm">
+                <div class="inline-flex items-center gap-ui-2xs rounded-sm bg-accent/90 dark:bg-emerald-600/90 px-ui-2xs py-1 shadow-sm">
                     <svg class="h-4 w-4 md:h-5 md:w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
-                    <span class="text-xs md:text-sm font-semibold text-white">{{ Carbon::parse($task->work_time)->format('h:i A') }}</span>
+                    <span class="text-ui-sm font-semibold text-white">{{ Carbon::parse($task->work_time)->format('h:i A') }}</span>
                 </div>
             @else
-                <div class="inline-flex items-center gap-1 md:gap-2 rounded-sm bg-zinc-400 dark:bg-zinc-600 px-1.5 md:px-2 py-1 shadow-sm">
+                <div class="inline-flex items-center gap-ui-2xs rounded-sm bg-zinc-400 dark:bg-zinc-600 px-ui-2xs py-1 shadow-sm">
                     <svg class="h-4 w-4 md:h-5 md:w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
-                    <span class="text-xs md:text-sm font-semibold text-white">{{ __('No Time') }}</span>
+                    <span class="text-ui-sm font-semibold text-white">{{ __('No Time') }}</span>
                 </div>
             @endif
         </td>
     @endif
 
-    <td class="w-1/4 whitespace-normal px-3 md:px-6 py-3 md:py-5">
+    <td class="w-1/4 whitespace-normal px-ui-sm py-ui-sm">
         <div class="flex flex-col">
-            <div class="flex items-center gap-1.5 md:gap-2 flex-wrap">
-                <span class="text-xs font-bold text-gray-900 dark:text-white break-words">{{ $task->title }}</span>
+            <div class="flex items-center gap-ui-2xs flex-wrap">
+                <span class="text-ui-xs font-bold text-gray-900 dark:text-white break-words">{{ $task->title }}</span>
                 @if($task->attachments && $task->attachments->count() > 0)
-                    <div class="flex items-center gap-0.5 md:gap-1 rounded-md bg-emerald-100 px-1.5 md:px-2 py-0.5 dark:bg-emerald-900/30 flex-shrink-0" title="{{ $task->attachments->count() }} {{ __('attachment(s)') }}">
+                    <div class="flex items-center gap-ui-2xs rounded-md bg-emerald-100 px-ui-2xs py-0.5 dark:bg-emerald-900/30 flex-shrink-0" title="{{ $task->attachments->count() }} {{ __('attachment(s)') }}">
                         <svg class="h-3 w-3 md:h-3.5 md:w-3.5 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
                         </svg>
-                        <span class="text-[10px] md:text-xs font-semibold text-emerald-700 dark:text-emerald-300">{{ $task->attachments->count() }}</span>
+                        <span class="text-ui-xs font-semibold text-emerald-700 dark:text-emerald-300">{{ $task->attachments->count() }}</span>
                     </div>
                 @endif
             </div>
             @if($task->description)
-                <span class="mt-1 text-xs text-gray-500 dark:text-gray-400 line-clamp-2 md:line-clamp-3">{{ $task->description }}</span>
+                <span class="mt-ui-2xs text-ui-xs text-gray-500 dark:text-gray-400 line-clamp-2 md:line-clamp-3">{{ $task->description }}</span>
             @endif
         </div>
     </td>
-    <td class="whitespace-nowrap px-3 md:px-6 py-3 md:py-5 hidden lg:table-cell">
+    <td class="whitespace-nowrap px-ui-sm py-ui-sm hidden lg:table-cell">
         @if($task->assignedUsers && $task->assignedUsers->count() > 0)
-            <div class="flex items-center gap-1.5 md:gap-2">
+            <div class="flex items-center gap-ui-2xs">
                 <div class="flex -space-x-1.5 md:-space-x-2">
                     @foreach($task->assignedUsers->take(3) as $user)
                         <div class="relative h-6 w-6 md:h-8 md:w-8 flex-shrink-0" title="{{ $user->name }}">
@@ -56,14 +56,14 @@
                                      onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='flex';">
                                 <div
                                     class="hidden h-6 w-6 md:h-8 md:w-8 items-center justify-center rounded-lg bg-emerald-400/20 ring-2 ring-white dark:ring-gray-900">
-                                    <span class="text-[10px] md:text-xs font-bold text-emerald-900 dark:text-emerald-200">
+                                    <span class="text-ui-xs font-bold text-emerald-900 dark:text-emerald-200">
                                         {{ $user->initials() }}
                                     </span>
                                 </div>
                             @else
                                 <div
                                     class="flex h-6 w-6 md:h-8 md:w-8 items-center justify-center rounded-lg bg-emerald-400/20 ring-2 ring-white dark:ring-gray-900">
-                                    <span class="text-[10px] md:text-xs font-bold text-emerald-900 dark:text-emerald-200">
+                                    <span class="text-ui-xs font-bold text-emerald-900 dark:text-emerald-200">
                                         {{ $user->initials() }}
                                     </span>
                                 </div>
@@ -73,7 +73,7 @@
                     @if($task->assignedUsers->count() > 3)
                         <div
                             class="flex h-6 w-6 md:h-8 md:w-8 items-center justify-center rounded-lg bg-emerald-500 ring-2 ring-white dark:ring-gray-900">
-                            <span class="text-[10px] md:text-xs font-bold text-white">
+                            <span class="text-ui-xs font-bold text-white">
                                 +{{ $task->assignedUsers->count() - 3 }}
                             </span>
                         </div>
@@ -81,7 +81,7 @@
                 </div>
                 <div class="flex flex-col">
                     <span
-                        class="text-xs text-gray-900 dark:text-white">{{ $task->assignedUsers->pluck('name')->take(2)->implode(', ') }}</span>
+                        class="text-ui-xs text-gray-900 dark:text-white">{{ $task->assignedUsers->pluck('name')->take(2)->implode(', ') }}</span>
                     @if($task->assignedUsers->count() > 2)
                         <span
                             class="text-[10px] text-gray-500 dark:text-gray-400">+{{ $task->assignedUsers->count() - 2 }} {{ __('more') }}</span>

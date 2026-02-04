@@ -33,25 +33,25 @@
                     <div class="pointer-events-none absolute -bottom-4 sm:-bottom-8 -left-4 sm:-left-8 h-40 w-40 sm:h-64 sm:w-64 rounded-full bg-gradient-to-br from-cyan-400/20 to-blue-400/20 blur-3xl"></div>
 
                     <!-- Header -->
-                    <div class="relative border-b border-gray-200/50 bg-white/50 px-3 sm:px-6 py-3 sm:py-6 backdrop-blur-sm dark:border-gray-700/50 dark:bg-gray-800/60">
-                        <div class="flex items-center justify-between gap-2 sm:gap-3">
-                            <div class="flex items-center gap-2 sm:gap-3 min-w-0">
-                                <div class="flex h-9 w-9 sm:h-12 sm:w-12 flex-shrink-0 items-center justify-center rounded-lg sm:rounded-xl bg-gradient-to-br from-blue-500 to-cyan-600 shadow-lg [&_svg]:h-4 [&_svg]:w-4 sm:[&_svg]:h-6 sm:[&_svg]:w-6">
+                    <div class="relative border-b border-gray-200/50 bg-white/50 px-ui-md py-ui-md backdrop-blur-sm dark:border-gray-700/50 dark:bg-gray-800/60">
+                        <div class="flex items-center justify-between gap-ui-sm">
+                            <div class="flex items-center gap-ui-sm min-w-0">
+                                <div class="flex h-icon-sm w-icon-sm flex-shrink-0 items-center justify-center rounded-lg sm:rounded-xl bg-gradient-to-br from-blue-500 to-cyan-600 shadow-lg text-ui-lg [&_svg]:size-[1em]">
                                     <svg class="text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                                     </svg>
                                 </div>
                                 <div class="min-w-0">
-                                    <h2 class="text-base sm:text-xl font-bold text-gray-900 dark:text-white truncate">
+                                    <h2 class="text-ui-lg font-bold text-gray-900 dark:text-white truncate">
                                         {{ $isEditing ? __('Edit Stopover') : __('Add New Stopover') }}
                                     </h2>
-                                    <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-400 line-clamp-1">
+                                    <p class="text-ui-sm text-gray-600 dark:text-gray-400 line-clamp-1">
                                         {{ $isEditing ? __('Update stopover information') : __('Add a stopover to the schedule') }}
                                     </p>
                                 </div>
                             </div>
-                            <button wire:click="closeModal" type="button" class="flex-shrink-0 rounded-lg p-1.5 sm:p-2 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-gray-800 dark:hover:text-gray-300 [&_svg]:h-5 [&_svg]:w-5 sm:[&_svg]:h-6 sm:[&_svg]:w-6">
+                            <button wire:click="closeModal" type="button" class="flex-shrink-0 rounded-lg p-ui-xs text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-gray-800 dark:hover:text-gray-300 text-ui-xl [&_svg]:size-[1em]">
                                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                                 </svg>
@@ -61,7 +61,7 @@
 
                     <!-- Form -->
                     <form wire:submit="save" class="relative flex-1 overflow-y-auto">
-                        <div class="space-y-4 sm:space-y-6 p-3 sm:p-6">
+                        <div class="space-y-ui-md p-ui-md">
                             <!-- Port -->
                             <div>
                                 <flux:select wire:model="port_id" label="{{ __('Port') }}" required>
@@ -71,7 +71,7 @@
                                     @endforeach
                                 </flux:select>
                                 @error('port_id')
-                                    <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                                    <p class="mt-1 text-ui-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                                 @enderror
                             </div>
 
@@ -79,7 +79,7 @@
                             <div>
                                 <flux:input type="date" wire:model="stopover_eta" label="{{ __('Arrival (ETA)') }}" />
                                 @error('stopover_eta')
-                                    <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                                    <p class="mt-1 text-ui-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                                 @enderror
                             </div>
 
@@ -87,18 +87,18 @@
                             <div>
                                 <flux:input type="date" wire:model="stopover_etd" label="{{ __('Departure (ETD)') }}" />
                                 @error('stopover_etd')
-                                    <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                                    <p class="mt-1 text-ui-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                                 @enderror
                             </div>
                         </div>
 
                         <!-- Footer Actions -->
-                        <div class="border-t border-gray-200/50 px-3 sm:px-6 py-3 sm:py-4 backdrop-blur-sm dark:border-gray-700/50 dark:bg-gray-800/60">
-                            <div class="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2 sm:gap-3">
-                                <flux:button type="button" wire:click="closeModal" variant="ghost" class="text-xs sm:text-sm px-2 sm:px-3 py-1.5 sm:py-2">
+                        <div class="border-t border-gray-200/50 px-ui-md py-ui-sm backdrop-blur-sm dark:border-gray-700/50 dark:bg-gray-800/60">
+                            <div class="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-ui-xs">
+                                <flux:button type="button" wire:click="closeModal" variant="ghost" class="w-full sm:w-auto">
                                     {{ __('Cancel') }}
                                 </flux:button>
-                                <flux:button type="submit" variant="primary" icon="check" class="text-xs sm:text-sm px-3 sm:px-4 py-1.5 sm:py-2">
+                                <flux:button type="submit" variant="primary" icon="check" class="w-full sm:w-auto">
                                     {{ $isEditing ? __('Update Stopover') : __('Create Stopover') }}
                                 </flux:button>
                             </div>

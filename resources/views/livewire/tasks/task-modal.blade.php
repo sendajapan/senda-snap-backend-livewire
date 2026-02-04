@@ -33,24 +33,24 @@
                     <div class="pointer-events-none absolute -bottom-4 sm:-bottom-8 -left-4 sm:-left-8 h-40 w-40 sm:h-64 sm:w-64 rounded-full bg-gradient-to-br from-teal-400/20 to-emerald-400/20 blur-3xl"></div>
 
                     <!-- Header -->
-                    <div class="relative border-b border-gray-200/50 bg-white/50 px-3 sm:px-6 py-3 sm:py-6 backdrop-blur-sm dark:border-gray-700/50 dark:bg-gray-800/60">
-                        <div class="flex items-center justify-between gap-2 sm:gap-3">
-                            <div class="flex items-center gap-2 sm:gap-3 min-w-0">
-                                <div class="flex h-9 w-9 sm:h-12 sm:w-12 flex-shrink-0 items-center justify-center rounded-lg sm:rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-400 shadow-lg [&_svg]:h-4 [&_svg]:w-4 sm:[&_svg]:h-6 sm:[&_svg]:w-6">
+                    <div class="relative border-b border-gray-200/50 bg-white/50 px-ui-md py-ui-md backdrop-blur-sm dark:border-gray-700/50 dark:bg-gray-800/60">
+                        <div class="flex items-center justify-between gap-ui-sm">
+                            <div class="flex items-center gap-ui-sm min-w-0">
+                                <div class="flex h-icon-sm w-icon-sm flex-shrink-0 items-center justify-center rounded-lg sm:rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-400 shadow-lg text-ui-lg [&_svg]:size-[1em]">
                                     <svg class="text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                                     </svg>
                                 </div>
                                 <div class="min-w-0">
-                                    <h2 class="text-base sm:text-xl font-bold text-gray-900 dark:text-white truncate">
+                                    <h2 class="text-ui-lg font-bold text-gray-900 dark:text-white truncate">
                                         {{ $isEditing ? __('Edit Task') : __('Add New Task') }}
                                     </h2>
-                                    <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-400 line-clamp-1">
+                                    <p class="text-ui-sm text-gray-600 dark:text-gray-400 line-clamp-1">
                                         {{ $isEditing ? __('Update task information') : __('Create a new task') }}
                                     </p>
                                 </div>
                             </div>
-                            <button wire:click="closeModal" type="button" class="flex-shrink-0 rounded-lg p-1.5 sm:p-2 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-gray-800 dark:hover:text-gray-300 [&_svg]:h-5 [&_svg]:w-5 sm:[&_svg]:h-6 sm:[&_svg]:w-6">
+                            <button wire:click="closeModal" type="button" class="flex-shrink-0 rounded-lg p-ui-xs text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-gray-800 dark:hover:text-gray-300 text-ui-xl [&_svg]:size-[1em]">
                                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                                 </svg>
@@ -60,12 +60,12 @@
 
                     <!-- Form -->
                     <form wire:submit="save" class="relative flex-1 overflow-y-auto">
-                        <div class="space-y-4 sm:space-y-6 p-3 sm:p-6">
+                        <div class="space-y-ui-md p-ui-md">
                             <!-- Title -->
                             <div>
                                 <flux:input wire:model="title" label="{{ __('Task Title') }}" placeholder="{{ __('Enter task title') }}" required />
                                 @error('title')
-                                    <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                                    <p class="mt-1 text-ui-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                                 @enderror
                             </div>
 
@@ -73,45 +73,45 @@
                             <div>
                                 <flux:textarea wire:model="description" label="{{ __('Description') }}" placeholder="{{ __('Enter task description') }}" rows="4" />
                                 @error('description')
-                                    <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                                    <p class="mt-1 text-ui-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                                 @enderror
                             </div>
 
                             <!-- Assigned To (Multiple) -->
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                <label class="block text-ui-sm font-medium text-gray-700 dark:text-gray-300 mb-ui-xs">
                                     {{ __('Assign To (Multiple)') }}
                                 </label>
-                                <div class="space-y-2 max-h-48 overflow-y-auto rounded-lg border border-gray-300 bg-white p-3 dark:border-gray-600 dark:bg-gray-800">
+                                <div class="space-y-ui-xs max-h-48 overflow-y-auto rounded-lg border border-gray-300 bg-white p-ui-sm dark:border-gray-600 dark:bg-gray-800">
                                     @foreach($users as $user)
-                                        <label class="flex items-center gap-2 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 rounded transition-colors">
+                                        <label class="flex items-center gap-ui-xs cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 rounded transition-colors">
                                             <input type="checkbox" wire:model="assigned_to" value="{{ $user->id }}" class="rounded border-gray-300 text-emerald-600 focus:ring-emerald-500 dark:border-gray-600 dark:bg-gray-700">
-                                            <div class="flex items-center gap-2 flex-1">
+                                            <div class="flex items-center gap-ui-xs flex-1">
                                                 @if($user->avatar)
                                                     <img src="{{ $user->avatar_url }}" alt="{{ $user->name }}" class="h-5 w-5 rounded-lg object-cover ring-2 ring-emerald-200 dark:ring-emerald-800">
                                                 @else
                                                     <div class="flex h-5 w-5 items-center justify-center rounded-lg bg-emerald-400/20 ring-2 ring-emerald-300 dark:ring-emerald-800">
-                                                        <span class="text-xs font-bold text-emerald-900 dark:text-emerald-200">
+                                                        <span class="text-ui-xs font-bold text-emerald-900 dark:text-emerald-200">
                                                             {{ $user->initials() }}
                                                         </span>
                                                     </div>
                                                 @endif
-                                                <span class="text-sm text-gray-900 dark:text-white">{{ $user->name }}</span>
-                                                <span class="text-xs text-gray-500 dark:text-gray-400">({{ ucfirst($user->role) }})</span>
+                                                <span class="text-ui-sm text-gray-900 dark:text-white">{{ $user->name }}</span>
+                                                <span class="text-ui-xs text-gray-500 dark:text-gray-400">({{ ucfirst($user->role) }})</span>
                                             </div>
                                         </label>
                                     @endforeach
                                 </div>
                                 @error('assigned_to')
-                                    <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                                    <p class="mt-1 text-ui-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                                 @enderror
                                 @error('assigned_to.*')
-                                    <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                                    <p class="mt-1 text-ui-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                                 @enderror
                             </div>
 
                             <!-- Status & Priority -->
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-ui-md">
                                 <div>
                                     <flux:select wire:model="status" label="{{ __('Status') }}" required>
                                         <option value="pending">{{ __('Pending') }}</option>
@@ -120,7 +120,7 @@
                                         <option value="cancelled">{{ __('Cancelled') }}</option>
                                     </flux:select>
                                     @error('status')
-                                        <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                                        <p class="mt-1 text-ui-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                                     @enderror
                                 </div>
                                 <div>
@@ -131,23 +131,23 @@
                                         <option value="urgent">{{ __('Urgent') }}</option>
                                     </flux:select>
                                     @error('priority')
-                                        <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                                        <p class="mt-1 text-ui-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                                     @enderror
                                 </div>
                             </div>
 
                             <!-- Work Date & Time -->
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-ui-md">
                                 <div>
                                     <flux:input type="date" wire:model="work_date" label="{{ __('Work Date') }}" />
                                     @error('work_date')
-                                        <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                                        <p class="mt-1 text-ui-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                                     @enderror
                                 </div>
                                 <div>
                                     <flux:input type="time" wire:model="work_time" label="{{ __('Work Time') }}" step="1" />
                                     @error('work_time')
-                                        <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                                        <p class="mt-1 text-ui-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                                     @enderror
                                 </div>
                             </div>
@@ -156,46 +156,46 @@
                             <div>
                                 <flux:input type="date" wire:model="due_date" label="{{ __('Due Date') }}" />
                                 @error('due_date')
-                                    <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                                    <p class="mt-1 text-ui-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                                 @enderror
                             </div>
 
                             <!-- File Attachments -->
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                <label class="block text-ui-sm font-medium text-gray-700 dark:text-gray-300 mb-ui-xs">
                                     {{ __('Attachments') }}
                                 </label>
 
                                 <!-- Existing Attachments -->
                                 @if(!empty($existingAttachments))
-                                    <div class="space-y-2 mb-3">
-                                        <p class="text-xs text-gray-500 dark:text-gray-400">{{ __('Uploaded Files') }}</p>
+                                    <div class="space-y-ui-xs mb-ui-sm">
+                                        <p class="text-ui-xs text-gray-500 dark:text-gray-400">{{ __('Uploaded Files') }}</p>
                                         @foreach($existingAttachments as $attachment)
-                                            <div class="flex items-center justify-between rounded-lg border border-emerald-200 bg-emerald-50/50 p-3 dark:border-emerald-900/50 dark:bg-emerald-900/20">
-                                                <div class="flex items-center gap-3 flex-1 min-w-0">
+                                            <div class="flex items-center justify-between rounded-lg border border-emerald-200 bg-emerald-50/50 p-ui-sm dark:border-emerald-900/50 dark:bg-emerald-900/20">
+                                                <div class="flex items-center gap-ui-sm flex-1 min-w-0">
                                                     <div class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-emerald-500">
                                                         <svg class="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                                         </svg>
                                                     </div>
                                                     <div class="flex-1 min-w-0">
-                                                        <p class="text-sm font-medium text-gray-900 dark:text-white truncate">{{ $attachment['file_name'] }}</p>
-                                                        <p class="text-xs text-gray-500 dark:text-gray-400">
+                                                        <p class="text-ui-sm font-medium text-gray-900 dark:text-white truncate">{{ $attachment['file_name'] }}</p>
+                                                        <p class="text-ui-xs text-gray-500 dark:text-gray-400">
                                                             {{ __('Uploaded by') }} {{ $attachment['uploader']['name'] ?? 'Unknown' }} • {{ \Carbon\Carbon::parse($attachment['created_at'])->format('M d, Y') }}
                                                         </p>
                                                     </div>
                                                 </div>
-                                                <div class="flex items-center gap-2 flex-shrink-0">
-                                                    <a href="{{ Storage::disk('public')->url($attachment['file_path']) }}" 
-                                                       target="_blank" 
-                                                       class="rounded-lg p-2 text-emerald-600 hover:bg-emerald-100 dark:text-emerald-400 dark:hover:bg-emerald-900/20">
+                                                <div class="flex items-center gap-ui-xs flex-shrink-0">
+                                                    <a href="{{ Storage::disk('public')->url($attachment['file_path']) }}"
+                                                       target="_blank"
+                                                       class="rounded-lg p-ui-xs text-emerald-600 hover:bg-emerald-100 dark:text-emerald-400 dark:hover:bg-emerald-900/20">
                                                         <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                                                         </svg>
                                                     </a>
-                                                    <button type="button" 
+                                                    <button type="button"
                                                             wire:click="deleteAttachment({{ $attachment['id'] }})"
-                                                            class="rounded-lg p-2 text-red-600 hover:bg-red-100 dark:text-red-400 dark:hover:bg-red-900/20">
+                                                            class="rounded-lg p-ui-xs text-red-600 hover:bg-red-100 dark:text-red-400 dark:hover:bg-red-900/20">
                                                         <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                                         </svg>
@@ -207,33 +207,33 @@
                                 @endif
 
                                 <!-- Upload New Files -->
-                                <div class="space-y-2">
-                                    <div class="flex items-center gap-2">
-                                        <input type="file" 
-                                               wire:model="attachments" 
-                                               multiple 
-                                               id="file-upload" 
+                                <div class="space-y-ui-xs">
+                                    <div class="flex items-center gap-ui-xs">
+                                        <input type="file"
+                                               wire:model="attachments"
+                                               multiple
+                                               id="file-upload"
                                                class="hidden">
-                                        <label for="file-upload" 
-                                               class="inline-flex cursor-pointer items-center gap-2 rounded-lg border-2 border-dashed border-emerald-300 bg-emerald-50/50 px-4 py-3 text-sm font-medium text-emerald-700 transition-colors hover:bg-emerald-100 dark:border-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-400 dark:hover:bg-emerald-900/30">
+                                        <label for="file-upload"
+                                               class="inline-flex cursor-pointer items-center gap-ui-xs rounded-lg border-2 border-dashed border-emerald-300 bg-emerald-50/50 px-ui-sm py-ui-sm text-ui-sm font-medium text-emerald-700 transition-colors hover:bg-emerald-100 dark:border-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-400 dark:hover:bg-emerald-900/30">
                                             <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                                             </svg>
                                             {{ __('Choose Files') }}
                                         </label>
-                                        <span class="text-xs text-gray-500 dark:text-gray-400">{{ __('Max 10MB per file') }}</span>
+                                        <span class="text-ui-xs text-gray-500 dark:text-gray-400">{{ __('Max 10MB per file') }}</span>
                                     </div>
 
                                     <!-- New Files Preview -->
                                     @if(!empty($attachments))
-                                        <div class="space-y-2">
+                                        <div class="space-y-ui-xs">
                                             @foreach($attachments as $index => $file)
-                                                <div class="flex items-center justify-between rounded-lg border border-gray-200 bg-gray-50 p-2 dark:border-gray-700 dark:bg-gray-800" wire:key="attachment-{{ $index }}">
-                                                    <div class="flex items-center gap-2 flex-1 min-w-0">
+                                                <div class="flex items-center justify-between rounded-lg border border-gray-200 bg-gray-50 p-ui-xs dark:border-gray-700 dark:bg-gray-800" wire:key="attachment-{{ $index }}">
+                                                    <div class="flex items-center gap-ui-xs flex-1 min-w-0">
                                                         <svg class="h-5 w-5 flex-shrink-0 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                                         </svg>
-                                                        <span class="text-sm text-gray-700 dark:text-gray-300 truncate">
+                                                        <span class="text-ui-sm text-gray-700 dark:text-gray-300 truncate">
                                                             @if(is_object($file) && method_exists($file, 'getClientOriginalName'))
                                                                 {{ $file->getClientOriginalName() }}
                                                             @else
@@ -241,7 +241,7 @@
                                                             @endif
                                                         </span>
                                                     </div>
-                                                    <button type="button" 
+                                                    <button type="button"
                                                             wire:click="removeNewAttachment({{ $index }})"
                                                             class="flex-shrink-0 text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300">
                                                         <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -253,20 +253,20 @@
                                         </div>
                                     @endif
 
-                                    <div wire:loading wire:target="attachments" class="text-sm text-emerald-600 dark:text-emerald-400">
+                                    <div wire:loading wire:target="attachments" class="text-ui-sm text-emerald-600 dark:text-emerald-400">
                                         {{ __('Uploading files...') }}
                                     </div>
 
                                     @error('attachments.*')
-                                        <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                                        <p class="mt-1 text-ui-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                                     @enderror
                                 </div>
                             </div>
                         </div>
 
                         <!-- Footer Actions -->
-                        <div class="border-t border-gray-200/50 px-3 sm:px-6 py-3 sm:py-4 backdrop-blur-sm dark:border-gray-700/50 dark:bg-gray-800/60">
-                            <div class="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2 sm:gap-3">
+                        <div class="border-t border-gray-200/50 px-ui-md py-ui-sm backdrop-blur-sm dark:border-gray-700/50 dark:bg-gray-800/60">
+                            <div class="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-ui-xs">
                                 <flux:button type="button" wire:click="closeModal" variant="ghost" class="w-full sm:w-auto">
                                     {{ __('Cancel') }}
                                 </flux:button>
@@ -281,4 +281,3 @@
         </div>
     </div>
 </div>
-

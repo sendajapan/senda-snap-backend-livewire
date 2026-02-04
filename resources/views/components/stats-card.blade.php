@@ -67,7 +67,7 @@
     $v = $variants[$variant] ?? $variants['blue'];
 @endphp
 
-<div class="dashboard-card group relative overflow-hidden rounded-2xl border {{ $v['border'] }} bg-white/60 p-4 sm:p-5 lg:p-6 {{ $v['shadow'] }} backdrop-blur-xl transition-all duration-300 {{ $v['darkBorder'] }} dark:bg-gray-800/60 {{ $v['darkShadow'] }}">
+<div class="dashboard-card group relative overflow-hidden rounded-2xl border {{ $v['border'] }} bg-white/60 p-ui-md {{ $v['shadow'] }} backdrop-blur-xl transition-shadow duration-300 {{ $v['darkBorder'] }} dark:bg-gray-800/60 {{ $v['darkShadow'] }}">
     <style>
         @keyframes bubble-float {
             0%, 100% { transform: translateY(0) translateX(0) scale(1); opacity: 0.6; }
@@ -75,40 +75,40 @@
             50% { transform: translateY(-25px) translateX(-5px) scale(0.9); opacity: 0.7; }
             75% { transform: translateY(-10px) translateX(15px) scale(1.05); opacity: 0.75; }
         }
-        .bubble-animate-1 { animation: bubble-float 6s ease-in-out infinite; }
-        .bubble-animate-2 { animation: bubble-float 8s ease-in-out infinite 1s; }
-        .bubble-animate-3 { animation: bubble-float 7s ease-in-out infinite 2s; }
-        .bubble-animate-4 { animation: bubble-float 9s ease-in-out infinite 0.5s; }
-        .bubble-animate-5 { animation: bubble-float 6.5s ease-in-out infinite 1.5s; }
+        .bubble-animate-1 { animation: bubble-float 5s ease-in-out infinite; }
+        .bubble-animate-2 { animation: bubble-float 7s ease-in-out infinite 1s; }
+        .bubble-animate-3 { animation: bubble-float 6s ease-in-out infinite 2s; }
+        .bubble-animate-4 { animation: bubble-float 8s ease-in-out infinite 0.5s; }
+        .bubble-animate-5 { animation: bubble-float 4s ease-in-out infinite 1.5s; }
     </style>
-    
+
     <!-- Decorative blur circles (side areas - faded) -->
-    <div class="pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-full {{ $v['blur1'] }} blur-2xl opacity-30"></div>
-    <div class="pointer-events-none absolute -bottom-8 -left-8 h-32 w-32 rounded-full {{ $v['blur2'] }} blur-2xl opacity-30"></div>
-    
+    <div class="pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-full {{ $v['blur1'] }} blur-xl opacity-30"></div>
+    <div class="pointer-events-none absolute -bottom-8 -left-8 h-32 w-32 rounded-full {{ $v['blur2'] }} blur-xl opacity-30"></div>
+
     <!-- Light bubble particles - Middle section (proper bubbles) -->
     <div class="pointer-events-none absolute left-1/2 top-1/3 h-16 w-16 -translate-x-1/2 -translate-y-1/2 rounded-full {{ $v['blur1'] }} blur-xl bubble-animate-1 opacity-60"></div>
     <div class="pointer-events-none absolute left-1/2 top-2/3 h-12 w-12 -translate-x-1/2 -translate-y-1/2 rounded-full {{ $v['blur2'] }} blur-lg bubble-animate-2 opacity-70"></div>
     <div class="pointer-events-none absolute left-1/3 top-1/2 h-14 w-14 -translate-x-1/2 -translate-y-1/2 rounded-full {{ $v['blur1'] }} blur-xl bubble-animate-3 opacity-65"></div>
     <div class="pointer-events-none absolute left-2/3 top-1/2 h-10 w-10 -translate-x-1/2 -translate-y-1/2 rounded-full {{ $v['blur2'] }} blur-lg bubble-animate-4 opacity-68"></div>
-    
+
     <!-- Light bubble particles - Side areas (faded) -->
     <div class="pointer-events-none absolute left-1/4 top-1/4 h-8 w-8 rounded-full {{ $v['blur1'] }} blur-md bubble-animate-5 opacity-20"></div>
     <div class="pointer-events-none absolute right-1/4 top-1/4 h-8 w-8 rounded-full {{ $v['blur2'] }} blur-md bubble-animate-1 opacity-20"></div>
     <div class="pointer-events-none absolute left-1/4 bottom-1/4 h-8 w-8 rounded-full {{ $v['blur1'] }} blur-md bubble-animate-3 opacity-20"></div>
     <div class="pointer-events-none absolute right-1/4 bottom-1/4 h-8 w-8 rounded-full {{ $v['blur2'] }} blur-md bubble-animate-2 opacity-20"></div>
-    
+
     <div class="relative z-10">
         <div class="flex items-center justify-between">
             <div>
-                <p class="dashboard-text-sm text-xs sm:text-sm font-medium {{ $v['subtext'] }}">{{ $title }}</p>
-                <h3 class="stats-count dashboard-heading-xl mt-1.5 sm:mt-2 text-2xl sm:text-3xl lg:text-4xl font-bold {{ $v['text'] }}">{{ $count }}</h3>
+                <p class="text-ui-sm font-medium {{ $v['subtext'] }}">{{ $title }}</p>
+                <h1 class="mt-ui-xs ms-ui-xs xl:text-4xl font-bold text-black">{{ $count }}</h1>
             </div>
-            <div class="rounded-xl bg-gradient-to-br {{ $v['gradient'] }} p-2.5 sm:p-3 shadow-md">
+            <div class="rounded-xl bg-gradient-to-br {{ $v['gradient'] }} p-ui-sm shadow-md">
                 {!! $icon !!}
             </div>
         </div>
-        <div class="dashboard-text-sm mt-3 sm:mt-4 flex items-center text-xs sm:text-sm {{ $v['subtext'] }}">
+        <div class="mt-ui-sm flex items-center text-ui-sm {{ $v['subtext'] }}">
             <svg class="mr-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
             </svg>

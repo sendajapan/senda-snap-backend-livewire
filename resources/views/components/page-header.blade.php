@@ -48,31 +48,31 @@
             'iconBg' => 'bg-gradient-to-br from-amber-500 to-orange-500',
         ],
     ];
-    
+
     $classes = $variants[$variant] ?? $variants['blue'];
 @endphp
 
-<div class="page-card group relative rounded-2xl border {{ $classes['border'] }} {{ $classes['bg'] }} {{ $classes['shadow'] }} p-4 sm:p-5 lg:p-6 ring-1 ring-white/20 transition-all duration-300 dark:ring-white/10 {{ $classes['hoverShadow'] }} {{ $classes['hoverBorder'] }}">
+<div class="page-card group relative rounded-2xl border {{ $classes['border'] }} {{ $classes['bg'] }} {{ $classes['shadow'] }} p-ui-md ring-1 ring-white/20 transition-shadow duration-300 dark:ring-white/10 {{ $classes['hoverShadow'] }} {{ $classes['hoverBorder'] }}">
     <!-- Decorative Elements Container (with overflow-hidden to clip decorative elements) -->
     <div class="absolute inset-0 overflow-hidden rounded-2xl pointer-events-none">
         <div class="absolute -right-8 -top-8 h-32 w-32 rounded-full {{ $classes['decorTop'] }} blur-2xl"></div>
         <div class="absolute -bottom-8 -left-8 h-32 w-32 rounded-full {{ $classes['decorBottom'] }} blur-2xl"></div>
     </div>
-    
-    <div class="relative flex items-center justify-between gap-3 sm:gap-4 z-10">
-        <div class="flex items-center gap-3 sm:gap-4 min-w-0">
+
+    <div class="relative flex items-center justify-between gap-ui-md z-10">
+        <div class="flex items-center gap-ui-md min-w-0">
             @if(isset($icon))
-                <div class="flex h-10 w-10 sm:h-14 sm:w-14 flex-shrink-0 items-center justify-center rounded-xl sm:rounded-2xl {{ $classes['iconBg'] }} shadow-lg [&_svg]:h-5 [&_svg]:w-5 sm:[&_svg]:h-7 sm:[&_svg]:w-7">
+                <div class="flex h-icon-md w-icon-md flex-shrink-0 items-center justify-center rounded-2xl {{ $classes['iconBg'] }} shadow-lg text-ui-xl [&_svg]:size-[1em]">
                     {!! $icon !!}
                 </div>
             @endif
             <div class="min-w-0">
-                <h1 class="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 dark:text-white truncate">{{ $title }}</h1>
-                <p class="mt-0.5 sm:mt-1 text-xs sm:text-sm text-gray-600 dark:text-gray-400 line-clamp-1 sm:line-clamp-none">{{ $description }}</p>
+                <h1 class="text-ui-2xl font-bold text-gray-900 dark:text-white truncate">{{ $title }}</h1>
+                <p class="mt-ui-2xs text-ui-sm text-gray-600 dark:text-gray-400 line-clamp-1 sm:line-clamp-none">{{ $description }}</p>
             </div>
         </div>
         @if(isset($actions))
-            <div class="flex-shrink-0 [&_button]:text-[0px] sm:[&_button]:text-sm">
+            <div class="flex-shrink-0 sm:[&_button]:text-ui-sm">
                 {{ $actions }}
             </div>
         @endif

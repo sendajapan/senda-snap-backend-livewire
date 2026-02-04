@@ -32,6 +32,46 @@
     --breakpoint-2xl: 1920px;
     --breakpoint-3xl: 2560px;
     --breakpoint-4xl: 3840px;
+
+    /* ──────────────────────────────────────────────
+       Fluid Spacing Tokens
+       Range: 375px (iPhone) → 1920px (FHD), capped for 4K
+       Usage: p-ui-md, gap-ui-sm, m-ui-lg, space-y-ui-md
+       ────────────────────────────────────────────── */
+    --spacing-ui-2xs: clamp(0.125rem, 0.1rem + 0.13vw, 0.25rem);
+    --spacing-ui-xs: clamp(0.25rem, 0.19rem + 0.26vw, 0.5rem);
+    --spacing-ui-sm: clamp(0.5rem, 0.44rem + 0.26vw, 0.75rem);
+    --spacing-ui-md: clamp(0.75rem, 0.63rem + 0.52vw, 1.25rem);
+    --spacing-ui-lg: clamp(1rem, 0.82rem + 0.78vw, 1.75rem);
+    --spacing-ui-xl: clamp(1.25rem, 0.95rem + 1.3vw, 2.5rem);
+    --spacing-ui-2xl: clamp(1.5rem, 1.01rem + 2.07vw, 3.5rem);
+
+    /* Icon / Avatar Containers
+       Usage: h-icon-sm w-icon-sm, h-icon-lg w-icon-lg */
+    --spacing-icon-sm: clamp(2.25rem, 2.07rem + 0.78vw, 3rem);
+    --spacing-icon-md: clamp(2.5rem, 2.26rem + 1.04vw, 3.5rem);
+    --spacing-icon-lg: clamp(4rem, 3.52rem + 2.07vw, 6rem);
+
+    /* ──────────────────────────────────────────────
+       Fluid Typography Tokens
+       Usage: text-ui-base, text-ui-lg, text-ui-2xl
+       ────────────────────────────────────────────── */
+    --font-size-ui-xs: clamp(0.6875rem, 0.66rem + 0.13vw, 0.8125rem);
+    --font-size-ui-xs--line-height: 1.5;
+    --font-size-ui-sm: clamp(0.75rem, 0.72rem + 0.13vw, 0.875rem);
+    --font-size-ui-sm--line-height: 1.5;
+    --font-size-ui-base: clamp(0.875rem, 0.845rem + 0.13vw, 1rem);
+    --font-size-ui-base--line-height: 1.6;
+    --font-size-ui-lg: clamp(1rem, 0.94rem + 0.26vw, 1.25rem);
+    --font-size-ui-lg--line-height: 1.4;
+    --font-size-ui-xl: clamp(1.125rem, 1.03rem + 0.39vw, 1.5rem);
+    --font-size-ui-xl--line-height: 1.3;
+    --font-size-ui-2xl: clamp(1.25rem, 1.1rem + 0.65vw, 1.875rem);
+    --font-size-ui-2xl--line-height: 1.2;
+    --font-size-ui-3xl: clamp(1.5rem, 1.26rem + 1.04vw, 2.5rem);
+    --font-size-ui-3xl--line-height: 1.15;
+    --font-size-ui-4xl: clamp(1.875rem, 1.6rem + 1.17vw, 3rem);
+    --font-size-ui-4xl--line-height: 1.1;
 }
 
 @layer theme {
@@ -350,63 +390,6 @@ flux-sidebar button[aria-current="true"]:hover {
     }
 }
 
-/* Page-level responsive sizing for all pages */
-/* Automatically adjust common patterns used across Livewire pages */
-
-@media (min-width: 1920px) and (max-width: 2559px) {
-    /* FHD: Compact page spacing - target common flex-col gap-4 pattern */
-    /* Exclude sidebar from spacing reductions */
-    .flex.flex-col.gap-4:not([data-flux-sidebar]):not(flux-sidebar),
-    .flex.flex-1.flex-col.gap-4:not([data-flux-sidebar]):not(flux-sidebar),
-    .flex.h-full.w-full.flex-1.flex-col.gap-4:not([data-flux-sidebar]):not(flux-sidebar) {
-        gap: 0.75rem !important; /* 12px - compact */
-    }
-
-    /* Smaller card padding for FHD - target table-card and similar */
-    /* Exclude sidebar cards */
-    .rounded-2xl.border.p-6:not([data-flux-sidebar]):not(flux-sidebar):not([data-flux-sidebar] *):not(flux-sidebar *) {
-        padding: 0.875rem !important; /* 14px */
-    }
-
-    /* Smaller table cell padding for FHD */
-    /* Exclude sidebar tables */
-    table:not([data-flux-sidebar] table):not(flux-sidebar table) td,
-    table:not([data-flux-sidebar] table):not(flux-sidebar table) th {
-        padding: 0.5rem 0.75rem !important; /* 8px 12px */
-    }
-
-    /* Smaller mb-4 margins for FHD */
-    /* Exclude sidebar margins */
-    .mb-4:not([data-flux-sidebar] .mb-4):not(flux-sidebar .mb-4):not([data-flux-sidebar] *):not(flux-sidebar *) {
-        margin-bottom: 0.75rem !important; /* 12px */
-    }
-}
-
-/* 2K and 4K: Larger, spacious sizing */
-@media (min-width: 2560px) {
-    /* Larger page spacing for 2K/4K */
-    .flex.flex-col.gap-4,
-    .flex.flex-1.flex-col.gap-4,
-    .flex.h-full.w-full.flex-1.flex-col.gap-4 {
-        gap: 1.5rem !important; /* 24px */
-    }
-
-    /* Larger card padding for 2K/4K */
-    .rounded-2xl.border.p-6 {
-        padding: 1.5rem !important; /* 24px */
-    }
-
-    /* Larger table cell padding for 2K/4K */
-    table td,
-    table th {
-        padding: 0.875rem 1.25rem !important; /* 14px 20px */
-    }
-
-    /* Larger mb-4 margins for 2K/4K */
-    .mb-4 {
-        margin-bottom: 1rem !important; /* 16px */
-    }
-}
 
 /* Prevent table flashing in dark mode - completely disable background transitions on initial load */
 .dark table tbody tr,
@@ -646,310 +629,7 @@ html:not(.dark) .page-loaded table thead th {
     transition-property: transform, opacity, box-shadow, border-color, background-color, background-image !important;
 }
 
-/* Prevent content overflow */
-@media (min-width: 1920px) {
-    body {
-        overflow-x: hidden;
-    }
 
-    /* FHD: Keep max-width constraint */
-    .max-w-7xl {
-        max-width: 1600px;
-    }
-
-    /* 2K/4K: Remove max-width constraint, use more space */
-    @media (min-width: 2560px) {
-        .max-w-7xl {
-            max-width: none;
-        }
-    }
-
-    /* Optimize main content area */
-    flux-main {
-        max-width: 100%;
-        padding-left: 1.5rem;
-        padding-right: 1.5rem;
-    }
-
-    @media (min-width: 2560px) {
-        flux-main {
-            padding-left: 2rem;
-            padding-right: 2rem;
-        }
-    }
-}
-
-/* Landing page responsive optimizations - Scoped to .landing-page only */
-/* FHD: Compact sizing to fit everything on one page - following dashboard pattern */
-@media (min-width: 1920px) and (max-width: 2559px) {
-    /* FHD: Ensure content fits without overflow - reduced padding and margins */
-    .landing-page .landing-hero {
-        min-height: calc(100vh - 80px);
-        max-height: none;
-    }
-
-    .landing-page .landing-container {
-        max-width: 1600px;
-        padding-left: 1rem !important; /* Reduced from 1.5rem */
-        padding-right: 1rem !important; /* Reduced from 1.5rem */
-    }
-
-    .landing-page .landing-nav-container {
-        max-width: 1600px;
-        padding-left: 1rem !important; /* Reduced from 1.5rem */
-        padding-right: 1rem !important; /* Reduced from 1.5rem */
-        padding-top: 0.5rem !important; /* Reduced from py-3/4 */
-        padding-bottom: 0.5rem !important;
-    }
-
-    .landing-page .landing-title {
-        font-size: 2rem !important; /* 32px - smaller */
-        line-height: 1.2;
-        margin-bottom: 0.5rem !important; /* Reduced from mb-2/3 */
-    }
-
-    .landing-page .landing-subtitle {
-        font-size: 0.9375rem !important; /* 15px - compact */
-        max-width: 40rem;
-        margin-bottom: 0.75rem !important; /* Reduced */
-    }
-
-    /* Prevent subtitle wrapping on bigger screens */
-    @media (min-width: 1920px) {
-        .landing-page .landing-subtitle {
-            white-space: nowrap !important;
-            max-width: none !important;
-        }
-    }
-
-    .landing-page .landing-hero-content {
-        margin-top: 2rem !important; /* Increased for more top margin */
-        margin-bottom: 0.5rem !important; /* Reduced from 1rem */
-    }
-
-    /* Features section width - smaller, closer to content, centered */
-    .landing-page .landing-features {
-        max-width: 28rem !important; /* 448px - smaller width */
-        margin-left: auto !important;
-        margin-right: auto !important;
-    }
-
-    /* Gap between features section and mockups - reduced */
-    .landing-page .landing-grid {
-        gap: 1.5rem !important; /* Reduced gap between columns */
-    }
-
-    /* Gap between feature cards - increased (using space-y override) */
-    .landing-page .landing-features > * + * {
-        margin-top: 1rem !important; /* Increased gap between cards */
-    }
-
-    /* Feature card padding - increased */
-    .landing-page .landing-feature-card {
-        padding: 0.875rem !important; /* Increased padding */
-    }
-
-    /* Smaller feature card headings */
-    .landing-page .landing-grid h2 {
-        font-size: 1rem !important; /* 16px */
-        margin-bottom: 0.5rem !important; /* Reduced */
-    }
-
-    /* Feature list text - slightly bigger */
-    .landing-page .landing-grid ul {
-        font-size: 0.875rem !important; /* 14px - bigger */
-        gap: 0.25rem !important; /* Reduced spacing between items */
-    }
-
-    /* Smaller feature icons */
-    .landing-page .landing-grid .flex.h-8 {
-        height: 1.75rem !important; /* 28px */
-        width: 1.75rem !important;
-    }
-
-    .landing-page .landing-grid .flex.h-9 {
-        height: 2rem !important; /* 32px */
-        width: 2rem !important;
-    }
-
-    .landing-page .landing-grid .flex.h-10 {
-        height: 2.25rem !important; /* 36px */
-        width: 2.25rem !important;
-    }
-
-    /* Smaller monitor and phone mockups for FHD */
-    .landing-page .monitor-frame {
-        width: 420px !important; /* Reduced from 450px */
-        padding: 8px !important; /* Reduced from 10px */
-    }
-
-    .landing-page .phone-frame {
-        width: 180px !important; /* Reduced from 200px */
-    }
-
-    /* Smaller app icon in Play Store section */
-    .landing-page .landing-grid .h-20,
-    .landing-page .landing-grid .h-24,
-    .landing-page .landing-grid .h-28 {
-        height: 3.5rem !important; /* Reduced from 4rem to 56px */
-        width: 3.5rem !important;
-        margin-bottom: 0.5rem !important; /* Reduced */
-    }
-
-    /* Smaller Play Store badge */
-    .landing-page .landing-grid img[alt*="Google Play"] {
-        height: 2.25rem !important; /* Reduced from 2.5rem to 36px */
-    }
-
-    /* Smaller Play Store section heading */
-    .landing-page .landing-grid h3 {
-        font-size: 0.9375rem !important; /* Reduced from 1rem to 15px */
-        margin-bottom: 0.25rem !important; /* Reduced */
-    }
-
-    /* Smaller Play Store section text */
-    .landing-page .landing-grid p {
-        font-size: 0.75rem !important; /* 12px */
-        margin-bottom: 0.5rem !important; /* Reduced */
-    }
-
-    /* Gap between feature cards in features section */
-    .landing-page .landing-features > * + * {
-        margin-top: 1rem !important; /* Gap between cards */
-    }
-
-    /* Reduce nav padding */
-    .landing-page nav {
-        padding-top: 0.5rem !important;
-        padding-bottom: 0.5rem !important;
-    }
-}
-
-@media (min-width: 2560px) {
-    /* 2K and 4K: Larger, spacious sizing - following dashboard pattern */
-    .landing-page .landing-hero {
-        min-height: calc(100vh - 100px);
-    }
-
-    .landing-page .landing-container {
-        max-width: 1920px;
-        padding-left: 3rem;
-        padding-right: 3rem;
-    }
-
-    .landing-page .landing-nav-container {
-        max-width: 1920px;
-        padding-left: 3rem;
-        padding-right: 3rem;
-    }
-
-    .landing-page .landing-title {
-        font-size: 3rem !important; /* 48px - smaller */
-        line-height: 1.1;
-    }
-
-    .landing-page .landing-subtitle {
-        font-size: 1.125rem !important; /* 18px */
-        max-width: none !important;
-        white-space: nowrap !important;
-    }
-
-    .landing-page .landing-hero-content {
-        margin-top: 3rem !important; /* Increased top margin */
-        margin-bottom: 2rem;
-    }
-
-    /* Features section width for 2K/4K - centered, wider */
-    .landing-page .landing-features {
-        max-width: 42rem !important; /* 672px - wider for 2K/4K */
-        margin-left: auto !important;
-        margin-right: auto !important;
-    }
-
-    /* Prevent text wrapping in feature list items for 2K/4K */
-    .landing-page .landing-features ul li span {
-        white-space: nowrap !important;
-    }
-
-    /* Feature list text for 2K/4K - slightly bigger */
-    .landing-page .landing-features ul {
-        font-size: 0.875rem !important; /* 14px - bigger */
-    }
-
-    /* Gap between features section and mockups */
-    .landing-page .landing-grid {
-        gap: 2rem !important; /* Reduced from 2.5rem */
-    }
-
-    /* Gap between feature cards for 2K/4K */
-    .landing-page .landing-features > * + * {
-        margin-top: 1.25rem !important;
-    }
-}
-
-@media (min-width: 3840px) {
-    /* 4K: Larger but proportional */
-    .landing-page .landing-hero {
-        min-height: calc(100vh - 120px);
-    }
-
-    .landing-page .landing-container {
-        max-width: 2560px;
-        padding-left: 4rem;
-        padding-right: 4rem;
-    }
-
-    .landing-page .landing-nav-container {
-        max-width: 2560px;
-        padding-left: 4rem;
-        padding-right: 4rem;
-    }
-
-    .landing-page .landing-title {
-        font-size: 3.5rem !important; /* 56px - smaller */
-        line-height: 1.1;
-    }
-
-    .landing-page .landing-subtitle {
-        font-size: 1.25rem !important; /* 20px - smaller */
-        max-width: none !important;
-        white-space: nowrap !important;
-    }
-
-    .landing-page .landing-hero-content {
-        margin-top: 4rem !important; /* Increased top margin */
-        margin-bottom: 2.5rem;
-    }
-
-    /* Features section width for 4K - centered, wider */
-    .landing-page .landing-features {
-        max-width: 52rem !important; /* 832px - even wider for 4K */
-        margin-left: auto !important;
-        margin-right: auto !important;
-    }
-
-    /* Prevent text wrapping in feature list items for 4K */
-    .landing-page .landing-features ul li span {
-        white-space: nowrap !important;
-    }
-
-    /* Feature list text for 4K - slightly bigger */
-    .landing-page .landing-features ul {
-        font-size: 0.875rem !important; /* 14px - bigger */
-    }
-
-    /* Gap between features section and mockups for 4K */
-    .landing-page .landing-grid {
-        gap: 2.5rem !important;
-    }
-
-    /* Gap between feature cards for 4K */
-    .landing-page .landing-features > * + * {
-        margin-top: 1.5rem !important;
-    }
-}
-
-/* Landing page grid responsive spacing - handled in media queries above */
 
 /* Mouse Spotlight Effect (Dark Mode Only) */
 #mouse-spotlight {

@@ -59,20 +59,20 @@
         <div class="absolute -bottom-8 -left-8 h-32 w-32 rounded-full {{ $classes['decorBottom'] }} blur-2xl"></div>
     </div>
     
-    <div class="relative flex items-center justify-between z-10">
-        <div class="flex items-center gap-4">
+    <div class="relative flex items-center justify-between gap-3 sm:gap-4 z-10">
+        <div class="flex items-center gap-3 sm:gap-4 min-w-0">
             @if(isset($icon))
-                <div class="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-2xl {{ $classes['iconBg'] }} shadow-lg">
+                <div class="flex h-10 w-10 sm:h-14 sm:w-14 flex-shrink-0 items-center justify-center rounded-xl sm:rounded-2xl {{ $classes['iconBg'] }} shadow-lg [&_svg]:h-5 [&_svg]:w-5 sm:[&_svg]:h-7 sm:[&_svg]:w-7">
                     {!! $icon !!}
                 </div>
             @endif
-            <div>
-                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{{ $title }}</h1>
-                <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">{{ $description }}</p>
+            <div class="min-w-0">
+                <h1 class="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 dark:text-white truncate">{{ $title }}</h1>
+                <p class="mt-0.5 sm:mt-1 text-xs sm:text-sm text-gray-600 dark:text-gray-400 line-clamp-1 sm:line-clamp-none">{{ $description }}</p>
             </div>
         </div>
         @if(isset($actions))
-            <div>
+            <div class="flex-shrink-0 [&_button]:text-[0px] sm:[&_button]:text-sm">
                 {{ $actions }}
             </div>
         @endif

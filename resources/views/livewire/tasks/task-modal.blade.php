@@ -17,41 +17,41 @@
              class="absolute inset-0 bg-gray-900/50 backdrop-blur-sm"></div>
 
         <!-- Modal Panel -->
-        <div class="fixed inset-y-0 right-0 flex max-w-full pl-0 md:pl-10">
+        <div class="fixed inset-0 sm:inset-y-0 sm:right-0 flex max-w-full pl-0 sm:pl-10">
             <div x-show="open"
                  x-transition:enter="transform transition ease-in-out duration-500"
-                 x-transition:enter-start="translate-x-full"
-                 x-transition:enter-end="translate-x-0"
+                 x-transition:enter-start="translate-y-full sm:translate-x-full"
+                 x-transition:enter-end="translate-y-0 sm:translate-x-0"
                  x-transition:leave="transform transition ease-in-out duration-500"
-                 x-transition:leave-start="translate-x-0"
-                 x-transition:leave-end="translate-x-full"
-                 class="w-screen max-w-full md:max-w-xl bg-white/60 backdrop-blur-xl dark:bg-gray-800/60">
+                 x-transition:leave-start="translate-y-0 sm:translate-x-0"
+                 x-transition:leave-end="translate-y-full sm:translate-x-full"
+                 class="w-full sm:w-screen sm:max-w-xl bg-white/60 backdrop-blur-xl dark:bg-gray-800/60 sm:rounded-none rounded-t-2xl sm:rounded-t-none">
 
-                <div class="flex h-full flex-col overflow-y-auto border-l border-emerald-300/50 bg-white/60 shadow-xl shadow-emerald-200/40 backdrop-blur-xl dark:border-emerald-800/50 dark:bg-gray-800/60 dark:shadow-emerald-900/30">
+                <div class="flex h-full flex-col overflow-y-auto border-t sm:border-t-0 sm:border-l border-emerald-300/50 bg-white/60 shadow-xl shadow-emerald-200/40 backdrop-blur-xl dark:border-emerald-800/50 dark:bg-gray-800/60 dark:shadow-emerald-900/30">
                     <!-- Decorative Elements -->
-                    <div class="pointer-events-none absolute -right-8 -top-8 h-64 w-64 rounded-full bg-gradient-to-br from-emerald-400/20 to-teal-400/20 blur-3xl"></div>
-                    <div class="pointer-events-none absolute -bottom-8 -left-8 h-64 w-64 rounded-full bg-gradient-to-br from-teal-400/20 to-emerald-400/20 blur-3xl"></div>
+                    <div class="pointer-events-none absolute -right-4 sm:-right-8 -top-4 sm:-top-8 h-40 w-40 sm:h-64 sm:w-64 rounded-full bg-gradient-to-br from-emerald-400/20 to-teal-400/20 blur-3xl"></div>
+                    <div class="pointer-events-none absolute -bottom-4 sm:-bottom-8 -left-4 sm:-left-8 h-40 w-40 sm:h-64 sm:w-64 rounded-full bg-gradient-to-br from-teal-400/20 to-emerald-400/20 blur-3xl"></div>
 
                     <!-- Header -->
-                    <div class="relative border-b border-gray-200/50 bg-white/50 px-4 md:px-6 py-4 md:py-6 backdrop-blur-sm dark:border-gray-700/50 dark:bg-gray-800/60">
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center gap-2 md:gap-3">
-                                <div class="flex h-10 w-10 md:h-12 md:w-12 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-400 shadow-lg">
-                                    <svg class="h-5 w-5 md:h-6 md:w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="relative border-b border-gray-200/50 bg-white/50 px-3 sm:px-6 py-3 sm:py-6 backdrop-blur-sm dark:border-gray-700/50 dark:bg-gray-800/60">
+                        <div class="flex items-center justify-between gap-2 sm:gap-3">
+                            <div class="flex items-center gap-2 sm:gap-3 min-w-0">
+                                <div class="flex h-9 w-9 sm:h-12 sm:w-12 flex-shrink-0 items-center justify-center rounded-lg sm:rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-400 shadow-lg [&_svg]:h-4 [&_svg]:w-4 sm:[&_svg]:h-6 sm:[&_svg]:w-6">
+                                    <svg class="text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                                     </svg>
                                 </div>
-                                <div>
-                                    <h2 class="text-lg md:text-xl font-bold text-gray-900 dark:text-white">
+                                <div class="min-w-0">
+                                    <h2 class="text-base sm:text-xl font-bold text-gray-900 dark:text-white truncate">
                                         {{ $isEditing ? __('Edit Task') : __('Add New Task') }}
                                     </h2>
-                                    <p class="text-xs md:text-sm text-gray-600 dark:text-gray-400">
+                                    <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-400 line-clamp-1">
                                         {{ $isEditing ? __('Update task information') : __('Create a new task') }}
                                     </p>
                                 </div>
                             </div>
-                            <button wire:click="closeModal" type="button" class="rounded-lg p-2 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-gray-800 dark:hover:text-gray-300">
-                                <svg class="h-5 w-5 md:h-6 md:w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <button wire:click="closeModal" type="button" class="flex-shrink-0 rounded-lg p-1.5 sm:p-2 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-gray-800 dark:hover:text-gray-300 [&_svg]:h-5 [&_svg]:w-5 sm:[&_svg]:h-6 sm:[&_svg]:w-6">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                                 </svg>
                             </button>
@@ -60,7 +60,7 @@
 
                     <!-- Form -->
                     <form wire:submit="save" class="relative flex-1 overflow-y-auto">
-                        <div class="space-y-4 md:space-y-6 p-4 md:p-6">
+                        <div class="space-y-4 sm:space-y-6 p-3 sm:p-6">
                             <!-- Title -->
                             <div>
                                 <flux:input wire:model="title" label="{{ __('Task Title') }}" placeholder="{{ __('Enter task title') }}" required />
@@ -111,7 +111,7 @@
                             </div>
 
                             <!-- Status & Priority -->
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                                 <div>
                                     <flux:select wire:model="status" label="{{ __('Status') }}" required>
                                         <option value="pending">{{ __('Pending') }}</option>
@@ -137,7 +137,7 @@
                             </div>
 
                             <!-- Work Date & Time -->
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                                 <div>
                                     <flux:input type="date" wire:model="work_date" label="{{ __('Work Date') }}" />
                                     @error('work_date')
@@ -265,8 +265,8 @@
                         </div>
 
                         <!-- Footer Actions -->
-                        <div class="border-t border-gray-200/50 px-4 md:px-6 py-3 md:py-4 backdrop-blur-sm dark:border-gray-700/50 dark:bg-gray-800/60">
-                            <div class="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2 md:gap-3">
+                        <div class="border-t border-gray-200/50 px-3 sm:px-6 py-3 sm:py-4 backdrop-blur-sm dark:border-gray-700/50 dark:bg-gray-800/60">
+                            <div class="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2 sm:gap-3">
                                 <flux:button type="button" wire:click="closeModal" variant="ghost" class="w-full sm:w-auto">
                                     {{ __('Cancel') }}
                                 </flux:button>

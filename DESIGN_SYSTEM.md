@@ -1,43 +1,40 @@
 # Design System Documentation
 ## Laravel Livewire SaaS Application - UI/UX Patterns & Component Library
 
-> **Version**: 2.0
-> **Last Updated**: February 3, 2026
+> **Version**: 2.2
+> **Last Updated**: February 4, 2026
 > **Project**: Senda Snap - Logistics Management System
 
 ---
 
-## 📚 Table of Contents
+## Table of Contents
 
-### 🎨 Design Foundations
-- [Color System](#-color-system)
-- [Typography](#-typography)
-- [Shadows & Depth](#-shadows--depth)
-- [Spacing & Layout](#-spacing--layout)
+### Design Foundations
+- [Color System](#color-system)
+- [Typography](#typography)
+- [Shadows & Depth](#shadows--depth)
 
-### 🧩 Component Library
-- [Page Components](#-page-components)
-- [Table Components](#-table-components)
-- [Card Components](#-card-components)
-- [Form Components](#-form-components)
-- [Modal Components](#-modal-components)
-- [Status & Badges](#-status--badges)
+### Component Library
+- [Page Components](#page-components)
+- [Table Components](#table-components)
+- [Card Components](#card-components)
+- [Modal Components](#modal-components)
+- [Status & Badges](#status--badges)
 
-### 📐 Layout Patterns
-- [Standard Page Layout](#-standard-page-layout)
-- [Dashboard Layout](#-dashboard-layout)
-- [Table Views](#-table-views)
-- [Kanban Board](#-kanban-board)
+### Layout Patterns
+- [Standard Page Layout](#standard-page-layout)
+- [Dashboard Layout](#dashboard-layout)
+- [Kanban Board](#kanban-board)
 
-### 🎯 Best Practices
-- [Responsive Design](#-responsive-design)
-- [Dark Mode](#-dark-mode)
-- [Accessibility](#-accessibility)
-- [Performance](#-performance)
+### Best Practices
+- [Responsive Design](#responsive-design)
+- [Dark Mode](#dark-mode)
+- [Accessibility](#accessibility)
+- [Performance](#performance)
 
 ---
 
-## 🎨 Color System
+## Color System
 
 ### Module Color Assignments
 
@@ -99,14 +96,14 @@ Shadow: cyan-400/20 → blue-400/20
 
 ### Usage Rules
 
-✅ **Correct**: Same module, same color
+**Correct**: Same module, same color
 ```blade
 <!-- Users module -->
 <x-page-header variant="blue" />
 <x-table-card variant="blue" />
 ```
 
-❌ **Incorrect**: Same module, different colors
+**Incorrect**: Same module, different colors
 ```blade
 <!-- WRONG: Mixing colors in Users module -->
 <x-page-header variant="blue" />
@@ -115,7 +112,7 @@ Shadow: cyan-400/20 → blue-400/20
 
 ---
 
-## 🌟 Shadows & Depth
+## Shadows & Depth
 
 ### Standard Shadow Levels
 
@@ -144,7 +141,7 @@ shadow-sm shadow-{color}-500/50
 
 ---
 
-## 📏 Typography
+## Typography
 
 ### Headings
 ```css
@@ -170,7 +167,7 @@ Label:  text-sm font-medium text-gray-700 dark:text-gray-300
 
 ---
 
-## 📦 Page Components
+## Page Components
 
 ### 1. Page Header
 
@@ -201,7 +198,7 @@ Consistent header with icon, title, description, and actions.
 
 ### 2. Table Card
 
-Beautiful card wrapper for tables with gradient effects.
+Card wrapper for tables with gradient effects.
 
 ```blade
 <x-table-card variant="emerald">
@@ -211,7 +208,7 @@ Beautiful card wrapper for tables with gradient effects.
     </div>
 
     <!-- Table -->
-    <div class="overflow-x-auto border rounded-xl bg-white/50 backdrop-blur-sm dark:bg-gray-800/50">
+    <div class="overflow-x-auto border rounded-xl bg-white/50 dark:bg-gray-800/50">
         <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
             <!-- Table content -->
         </table>
@@ -249,7 +246,7 @@ Display statistics with animated bubble particles.
 
 ---
 
-## 🃏 Card Components
+## Card Components
 
 ### Task Card (for Kanban)
 
@@ -274,7 +271,6 @@ Display statistics with animated bubble particles.
 ### User Card (for grids)
 
 ```blade
-<!-- ✅ CRITICAL: Always include wire:key in loop -->
 @forelse($users as $user)
     <x-user-card :user="$user" :rounded="true" wire:key="user-card-{{ $user->id }}" />
 @empty
@@ -296,7 +292,6 @@ Display statistics with animated bubble particles.
 ```blade
 @props(['user', 'rounded' => true])
 
-<!-- ✅ NO backdrop-blur-sm, use transition-shadow -->
 <div class="group relative overflow-hidden {{ $rounded ? 'rounded-xl' : '' }} border border-blue-200 bg-white/50 p-4 transition-shadow duration-200 hover:shadow-lg dark:bg-gray-800/50">
     <!-- Card content -->
 
@@ -305,25 +300,20 @@ Display statistics with animated bubble particles.
 </div>
 ```
 
-**Performance Notes**:
-- ❌ **Never** use `backdrop-blur-sm` on cards in grid layouts
-- ❌ **Never** run database queries inside card components
-- ✅ Use `transition-shadow` instead of `transition-all`
-- ✅ Parent loop must include `wire:key="item-card-{{ $item->id }}"`
+See [Performance Rules](#performance) for all performance-related constraints on cards.
 
 ---
 
-## 📋 Table Components
+## Table Components
 
 ### Standard Table Structure
 
 **Requirements**:
 1. **S/N Column**: Always first column (w-16, centered)
 2. **Actions Column**: Always last column (w-32, centered)
-3. **Performance**: Always use `wire:key` in loops (see [Performance Rules](#-performance))
+3. **Performance**: Always use `wire:key` in loops (see [Performance Rules](#performance))
 
 ```blade
-<!-- Table Wrapper (NO backdrop-blur-sm!) -->
 <div class="overflow-x-auto border rounded-xl bg-white/50 dark:bg-gray-900/20">
     <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
         <!-- Header -->
@@ -344,7 +334,6 @@ Display statistics with animated bubble particles.
         <!-- Body -->
         <tbody class="divide-y divide-gray-200/50 dark:divide-gray-700/50">
             @forelse($items as $index => $item)
-                <!-- ✅ CRITICAL: Always use wire:key to prevent flashing -->
                 <x-item-table-row :item="$item" :index="$items->firstItem() + $index" wire:key="item-row-{{ $item->id }}" />
             @empty
                 <tr>
@@ -370,7 +359,6 @@ Display statistics with animated bubble particles.
 ```blade
 @props(['item', 'index'])
 
-<!-- ✅ Simple solid hover (NO transition-all, NO gradients) -->
 <tr class="group hover:bg-blue-50/30 dark:hover:bg-blue-900/10">
     <!-- S/N -->
     <td class="px-6 py-5 text-center">
@@ -389,22 +377,17 @@ Display statistics with animated bubble particles.
     <!-- Actions -->
     <td class="px-6 py-5 w-32">
         <div class="flex justify-center items-center gap-2">
-            <!-- Action buttons with transition-shadow -->
             <button class="transition-shadow duration-200 hover:shadow-lg">...</button>
         </div>
     </td>
 </tr>
 ```
 
-**Important Notes**:
-- ❌ **Never** use `@php` blocks with database queries inside table row components
-- ✅ Use simple solid colors for hover states (e.g., `hover:bg-blue-50/30`)
-- ✅ Use `transition-shadow` on buttons (not `transition-all`)
-- ✅ Parent loop must have `wire:key` for each row
+See [Performance Rules](#performance) for all performance-related constraints on table rows.
 
 ---
 
-## 🎭 Modal Components
+## Modal Components
 
 ### CRUD Modal (Side Panel)
 
@@ -530,7 +513,7 @@ Center dialog for read-only item preview.
 
 ---
 
-## 🏷️ Status & Badges
+## Status & Badges
 
 ### Design Variants
 
@@ -589,7 +572,7 @@ Center dialog for read-only item preview.
 
 ---
 
-## 🎨 Action Buttons
+## Action Buttons
 
 ### Button Pattern (Table rows & cards)
 
@@ -648,7 +631,7 @@ if ($userCount > 0) {
 
 ---
 
-## 📐 Layout Patterns
+## Layout Patterns
 
 ### Standard Page Layout
 
@@ -682,12 +665,11 @@ if ($userCount > 0) {
             </flux:select>
         </div>
 
-        <!-- Table (NO backdrop-blur-sm) -->
+        <!-- Table -->
         <div class="overflow-x-auto border rounded-xl bg-white/50 dark:bg-gray-800/50">
             <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                 <tbody>
                     @forelse($items as $index => $item)
-                        <!-- ✅ CRITICAL: Always use wire:key -->
                         <x-item-table-row :item="$item" :index="$index" wire:key="item-row-{{ $item->id }}" />
                     @empty
                         <!-- Empty state -->
@@ -794,16 +776,16 @@ Drag-and-drop board with status-based columns.
 ```
 
 **Critical Requirements**:
-- ✅ Fixed 4-column grid (no responsive)
-- ✅ Minimum width 1280px
-- ✅ Column headers: solid colors
-- ✅ Task cards: gradients with 50% opacity
-- ✅ Use `refreshKey` pattern for filter updates
-- ✅ Force refresh after drag-and-drop
+- Fixed 4-column grid (no responsive)
+- Minimum width 1280px
+- Column headers: solid colors
+- Task cards: gradients with 50% opacity
+- Use `refreshKey` pattern for filter updates
+- Force refresh after drag-and-drop
 
 ---
 
-## 📱 Responsive Design
+## Responsive Design
 
 ### Breakpoint Strategy
 
@@ -821,12 +803,10 @@ xl: 1280px (desktops)
 
 **2XL+ (1536px+)**: Full table view
 ```blade
-<!-- ✅ NO backdrop-blur-sm on table wrapper -->
 <div class="hidden 2xl:block overflow-x-auto border rounded-xl bg-white/50 dark:bg-gray-900/20">
     <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
         <tbody>
             @forelse($items as $index => $item)
-                <!-- ✅ CRITICAL: Always use wire:key to prevent flashing -->
                 <x-item-table-row :item="$item" :index="$index" wire:key="item-row-{{ $item->id }}" />
             @empty
             @endforelse
@@ -837,11 +817,9 @@ xl: 1280px (desktops)
 
 **Below 2XL**: Card grid view
 ```blade
-<!-- ✅ NO backdrop-blur-sm on card wrapper -->
 <div class="2xl:hidden bg-white/50 dark:bg-gray-900/20">
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
         @forelse($items as $item)
-            <!-- ✅ CRITICAL: Always use wire:key to prevent flashing -->
             <x-item-card :item="$item" wire:key="item-card-{{ $item->id }}" />
         @empty
         @endforelse
@@ -849,38 +827,30 @@ xl: 1280px (desktops)
 </div>
 ```
 
-**⚠️ Critical for Tablet Screens (768px - 1536px)**:
-
-Tablet screens show the **card grid view** and are most susceptible to flashing issues. Always:
-- ✅ Use `wire:key` on both table rows AND card components
-- ✅ Remove `backdrop-blur-sm` from both wrapper divs
-- ✅ Test Livewire updates (search, filters, pagination) on tablet viewport
-- ✅ Ensure no database queries run inside card/row components
-
 ---
 
-## 🌙 Dark Mode
+## Dark Mode
 
 ### Color Adjustments
 
 ```css
 /* Backgrounds */
-bg-white           → dark:bg-gray-800
-bg-gray-50         → dark:bg-gray-900
-bg-white/60        → dark:bg-gray-800/60
+bg-white           -> dark:bg-gray-800
+bg-gray-50         -> dark:bg-gray-900
+bg-white/60        -> dark:bg-gray-800/60
 
 /* Text */
-text-gray-900      → dark:text-white
-text-gray-600      → dark:text-gray-400
-text-gray-500      → dark:text-gray-400
+text-gray-900      -> dark:text-white
+text-gray-600      -> dark:text-gray-400
+text-gray-500      -> dark:text-gray-400
 
 /* Borders */
-border-gray-200    → dark:border-gray-700
-border-{color}-200 → dark:border-{color}-800
+border-gray-200    -> dark:border-gray-700
+border-{color}-200 -> dark:border-{color}-800
 
 /* Shadows */
-shadow-{color}-200/40 → dark:shadow-{color}-900/30
-shadow-{color}-300/50 → dark:shadow-{color}-800/40
+shadow-{color}-200/40 -> dark:shadow-{color}-900/30
+shadow-{color}-300/50 -> dark:shadow-{color}-800/40
 ```
 
 ### Testing Checklist
@@ -893,7 +863,7 @@ shadow-{color}-300/50 → dark:shadow-{color}-800/40
 
 ---
 
-## ♿ Accessibility
+## Accessibility
 
 ### Required Attributes
 
@@ -927,28 +897,28 @@ shadow-{color}-300/50 → dark:shadow-{color}-800/40
 
 ---
 
-## ⚡ Performance
+## Performance
 
-### Critical Performance Rules ⚠️
+### Critical Performance Rules
 
-**IMPORTANT**: Follow these rules to prevent UI flashing and performance issues:
+**IMPORTANT**: Follow these rules to prevent UI flashing and performance issues.
 
 #### 1. Always Use `wire:key` in Livewire Loops
 
 **Required for all @forelse loops** to prevent full DOM re-renders:
 
 ```blade
-<!-- ✅ CORRECT: Table rows -->
+<!-- CORRECT: Table rows -->
 @forelse($items as $index => $item)
     <x-item-table-row :item="$item" :index="$index" wire:key="item-row-{{ $item->id }}" />
 @empty
 
-<!-- ✅ CORRECT: Card grids -->
+<!-- CORRECT: Card grids -->
 @forelse($items as $item)
     <x-item-card :item="$item" wire:key="item-card-{{ $item->id }}" />
 @empty
 
-<!-- ❌ INCORRECT: Missing wire:key causes flashing -->
+<!-- INCORRECT: Missing wire:key causes flashing -->
 @forelse($items as $item)
     <x-item-card :item="$item" />
 @empty
@@ -963,12 +933,12 @@ shadow-{color}-300/50 → dark:shadow-{color}-800/40
 **Avoid backdrop-blur on tables and card grids that update frequently:**
 
 ```blade
-<!-- ✅ CORRECT: No backdrop-blur on dynamic content -->
+<!-- CORRECT: No backdrop-blur on dynamic content -->
 <div class="overflow-x-auto border rounded-xl bg-white/50 dark:bg-gray-900/20">
     <table>...</table>
 </div>
 
-<!-- ❌ INCORRECT: backdrop-blur-sm causes expensive repaints -->
+<!-- INCORRECT: backdrop-blur-sm causes expensive repaints -->
 <div class="overflow-x-auto border rounded-xl bg-white/50 backdrop-blur-sm dark:bg-gray-900/20">
     <table>...</table>
 </div>
@@ -983,10 +953,10 @@ shadow-{color}-300/50 → dark:shadow-{color}-800/40
 **Specific transitions are faster than animating everything:**
 
 ```blade
-<!-- ✅ CORRECT: Transition only what changes -->
+<!-- CORRECT: Transition only what changes -->
 <button class="transition-shadow duration-200 hover:shadow-lg">
 
-<!-- ❌ INCORRECT: Animates everything including layout -->
+<!-- INCORRECT: Animates everything including layout -->
 <button class="transition-all duration-200 hover:shadow-lg">
 ```
 
@@ -999,10 +969,10 @@ shadow-{color}-300/50 → dark:shadow-{color}-800/40
 **Use solid colors instead of gradients for hover states:**
 
 ```blade
-<!-- ✅ CORRECT: Simple solid hover (recommended) -->
+<!-- CORRECT: Simple solid hover (recommended) -->
 <tr class="group hover:bg-blue-50/30 dark:hover:bg-blue-900/10">
 
-<!-- ❌ INCORRECT: Complex gradient hover causes paint issues -->
+<!-- INCORRECT: Complex gradient hover causes paint issues -->
 <tr class="group transition-all duration-200 hover:bg-gradient-to-r hover:from-blue-50/50 hover:to-teal-50/50">
 ```
 
@@ -1010,17 +980,17 @@ shadow-{color}-300/50 → dark:shadow-{color}-800/40
 
 ---
 
-#### 5. Never Run Database Queries in Component Loops
+#### 5. Never Run Database Queries in Blade Components
 
 **Database queries belong in the Livewire component, not in Blade components:**
 
 ```blade
-<!-- ❌ INCORRECT: Queries inside component (runs N times!) -->
+<!-- INCORRECT: Queries inside component (runs N times!) -->
 @php
     $relatedCount = \App\Models\Related::where('user_id', $user->id)->count();
 @endphp
 
-<!-- ✅ CORRECT: Pass data from Livewire component -->
+<!-- CORRECT: Pass data from Livewire component -->
 <!-- In UserIndex.php: -->
 public function render()
 {
@@ -1030,6 +1000,70 @@ public function render()
 ```
 
 **Why**: Queries in components run on every render for every item (N+1 problem), causing severe performance degradation.
+
+---
+
+#### 6. Use Eager-Loaded Collections, Not Relationship Queries
+
+**When relationships are eager-loaded via `::with()`, access the collection property, not the relationship method:**
+
+```php
+// CORRECT: Uses the already eager-loaded collection (no query)
+$attachmentCount = $task->attachments->count();
+
+// INCORRECT: Calls the relationship method, runs a NEW database query
+$attachmentCount = $task->attachments()->count();
+```
+
+**The difference**: `$model->relationship` (no parentheses) accesses the loaded collection. `$model->relationship()` (with parentheses) creates a new query builder, bypassing the eager-loaded data entirely.
+
+**Common mistake in Blade `@php` blocks**:
+```blade
+<!-- INCORRECT: Runs a query per row even though attachments are eager-loaded -->
+@php
+    $attachmentCount = $task->attachments()->count();
+    $warnings = [];
+    if ($attachmentCount > 0) {
+        $warnings[] = __(':count attachment(s)', ['count' => $attachmentCount]);
+    }
+@endphp
+
+<!-- CORRECT: Uses the already-loaded collection -->
+@php
+    $attachmentCount = $task->attachments->count();
+    $warnings = [];
+    if ($attachmentCount > 0) {
+        $warnings[] = __(':count attachment(s)', ['count' => $attachmentCount]);
+    }
+@endphp
+```
+
+**Why**: If your service uses `Task::with(['attachments'])`, the attachments are already loaded into memory. Using `->attachments()->count()` ignores that and runs a separate `SELECT COUNT(*)` query for every row, causing N+1 performance issues and UI flashing.
+
+---
+
+#### 7. Do Not Put `wire:key` on Wrapper Containers
+
+**Only use `wire:key` on individual loop items, not on their parent wrappers:**
+
+```blade
+<!-- INCORRECT: wire:key on wrapper forces full DOM rebuild on filter change -->
+<div class="overflow-x-auto border rounded-xl bg-white/50"
+     wire:key="table-{{ md5($search . $statusFilter) }}">
+    <table>...</table>
+</div>
+
+<!-- CORRECT: wire:key only on individual items inside the loop -->
+<div class="overflow-x-auto border rounded-xl bg-white/50">
+    <table>
+        @forelse($items as $item)
+            <x-item-row :item="$item" wire:key="item-row-{{ $item->id }}" />
+        @endforelse
+    </table>
+</div>
+```
+
+**Why**: Putting `wire:key` with a filter hash on a wrapper div causes Livewire to destroy and recreate the entire container (and all its children) whenever filters change, producing a visible flash. The `wire:key` on individual items is sufficient for Livewire to diff efficiently.
 
 ---
 
@@ -1069,13 +1103,15 @@ Before deploying any table or list view:
 - [ ] No `backdrop-blur-sm` on table wrappers or card grids
 - [ ] Using `transition-shadow` instead of `transition-all`
 - [ ] Table row hover uses solid colors (not gradients)
-- [ ] No database queries in Blade component @php blocks
+- [ ] No database queries in Blade component `@php` blocks
+- [ ] Using `$model->relationship->count()` not `$model->relationship()->count()`
+- [ ] No `wire:key` with filter hashes on wrapper containers
 - [ ] Tested on tablet screen sizes (768px - 1024px)
 - [ ] No flashing during search, filter, or pagination updates
 
 ---
 
-## 📚 Additional Resources
+## Additional Resources
 
 - [Tailwind CSS Documentation](https://tailwindcss.com/docs)
 - [Livewire Documentation](https://livewire.laravel.com)
@@ -1085,7 +1121,14 @@ Before deploying any table or list view:
 
 ---
 
-## 📝 Changelog
+## Changelog
+
+### Version 2.2 (February 4, 2026)
+- Added performance rule: use eager-loaded collections (`->relationship->count()`) not relationship queries (`->relationship()->count()`)
+- Added performance rule: do not put `wire:key` with filter hashes on wrapper containers
+- Updated performance checklist with new rules
+- Removed redundant performance warnings from Card Components and Table Components sections (consolidated in Performance section)
+- Removed all emojis from documentation
 
 ### Version 2.1 (February 3, 2026)
 - **CRITICAL**: Added performance rules section to prevent UI flashing

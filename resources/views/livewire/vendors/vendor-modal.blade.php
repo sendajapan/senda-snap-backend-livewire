@@ -17,41 +17,41 @@
              class="absolute inset-0 bg-gray-900/50 backdrop-blur-sm"></div>
 
         <!-- Modal Panel -->
-        <div class="fixed inset-y-0 right-0 flex max-w-full pl-10">
+        <div class="fixed inset-0 sm:inset-y-0 sm:right-0 flex max-w-full pl-0 sm:pl-10">
             <div x-show="open"
                  x-transition:enter="transform transition ease-in-out duration-500"
-                 x-transition:enter-start="translate-x-full"
-                 x-transition:enter-end="translate-x-0"
+                 x-transition:enter-start="translate-y-full sm:translate-x-full"
+                 x-transition:enter-end="translate-y-0 sm:translate-x-0"
                  x-transition:leave="transform transition ease-in-out duration-500"
-                 x-transition:leave-start="translate-x-0"
-                 x-transition:leave-end="translate-x-full"
-                 class="w-screen max-w-2xl bg-white/60 backdrop-blur-xl dark:bg-gray-800/60">
+                 x-transition:leave-start="translate-y-0 sm:translate-x-0"
+                 x-transition:leave-end="translate-y-full sm:translate-x-full"
+                 class="w-full sm:w-screen sm:max-w-2xl bg-white/60 backdrop-blur-xl dark:bg-gray-800/60 sm:rounded-none rounded-t-2xl sm:rounded-t-none">
 
-                <div class="flex h-full flex-col overflow-y-auto border-l border-violet-300/50 bg-white/60 shadow-xl shadow-violet-200/40 backdrop-blur-xl dark:border-violet-800/50 dark:bg-gray-800/60 dark:shadow-violet-900/30">
+                <div class="flex h-full flex-col overflow-y-auto border-t sm:border-t-0 sm:border-l border-violet-300/50 bg-white/60 shadow-xl shadow-violet-200/40 backdrop-blur-xl dark:border-violet-800/50 dark:bg-gray-800/60 dark:shadow-violet-900/30">
                     <!-- Decorative Elements -->
-                    <div class="pointer-events-none absolute -right-8 -top-8 h-64 w-64 rounded-full bg-gradient-to-br from-violet-400/20 to-purple-400/20 blur-3xl"></div>
-                    <div class="pointer-events-none absolute -bottom-8 -left-8 h-64 w-64 rounded-full bg-gradient-to-br from-purple-400/20 to-violet-400/20 blur-3xl"></div>
+                    <div class="pointer-events-none absolute -right-4 sm:-right-8 -top-4 sm:-top-8 h-40 w-40 sm:h-64 sm:w-64 rounded-full bg-gradient-to-br from-violet-400/20 to-purple-400/20 blur-3xl"></div>
+                    <div class="pointer-events-none absolute -bottom-4 sm:-bottom-8 -left-4 sm:-left-8 h-40 w-40 sm:h-64 sm:w-64 rounded-full bg-gradient-to-br from-purple-400/20 to-violet-400/20 blur-3xl"></div>
 
                     <!-- Header -->
-                    <div class="relative border-b border-gray-200/50 bg-white/50 px-6 py-6 backdrop-blur-sm dark:border-gray-700/50 dark:bg-gray-800/60">
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center gap-3">
-                                <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 shadow-lg">
-                                    <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="relative border-b border-gray-200/50 bg-white/50 px-3 sm:px-6 py-3 sm:py-6 backdrop-blur-sm dark:border-gray-700/50 dark:bg-gray-800/60">
+                        <div class="flex items-center justify-between gap-2 sm:gap-3">
+                            <div class="flex items-center gap-2 sm:gap-3 min-w-0">
+                                <div class="flex h-9 w-9 sm:h-12 sm:w-12 flex-shrink-0 items-center justify-center rounded-lg sm:rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 shadow-lg [&_svg]:h-4 [&_svg]:w-4 sm:[&_svg]:h-6 sm:[&_svg]:w-6">
+                                    <svg class="text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3.75h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008z" />
                                     </svg>
                                 </div>
-                                <div>
-                                    <h2 class="text-xl font-bold text-gray-900 dark:text-white">
+                                <div class="min-w-0">
+                                    <h2 class="text-base sm:text-xl font-bold text-gray-900 dark:text-white truncate">
                                         {{ $isEditing ? __('Edit Vendor') : __('Add New Vendor') }}
                                     </h2>
-                                    <p class="text-sm text-gray-600 dark:text-gray-400">
+                                    <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-400 line-clamp-1">
                                         {{ $isEditing ? __('Update vendor information') : __('Create a new vendor') }}
                                     </p>
                                 </div>
                             </div>
-                            <button wire:click="closeModal" type="button" class="rounded-lg p-2 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-gray-800 dark:hover:text-gray-300">
-                                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <button wire:click="closeModal" type="button" class="flex-shrink-0 rounded-lg p-1.5 sm:p-2 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-gray-800 dark:hover:text-gray-300 [&_svg]:h-5 [&_svg]:w-5 sm:[&_svg]:h-6 sm:[&_svg]:w-6">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                                 </svg>
                             </button>
@@ -60,7 +60,7 @@
 
                     <!-- Form -->
                     <form wire:submit="save" class="relative flex-1 overflow-y-auto">
-                        <div class="space-y-6 p-6">
+                        <div class="space-y-4 sm:space-y-6 p-3 sm:p-6">
                             <!-- Vendor Name -->
                             <div>
                                 <flux:input wire:model="name" label="{{ __('Vendor Name') }}" placeholder="{{ __('Enter vendor name') }}" required />
@@ -189,12 +189,12 @@
                         </div>
 
                         <!-- Footer Actions -->
-                        <div class="border-t border-gray-200/50 px-6 py-4 backdrop-blur-sm dark:border-gray-700/50 dark:bg-gray-800/60">
-                            <div class="flex items-center justify-end gap-3">
-                                <flux:button type="button" wire:click="closeModal" variant="ghost">
+                        <div class="border-t border-gray-200/50 px-3 sm:px-6 py-3 sm:py-4 backdrop-blur-sm dark:border-gray-700/50 dark:bg-gray-800/60">
+                            <div class="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2 sm:gap-3">
+                                <flux:button type="button" wire:click="closeModal" variant="ghost" class="text-xs sm:text-sm px-2 sm:px-3 py-1.5 sm:py-2">
                                     {{ __('Cancel') }}
                                 </flux:button>
-                                <flux:button type="submit" variant="primary" icon="check">
+                                <flux:button type="submit" variant="primary" icon="check" class="text-xs sm:text-sm px-3 sm:px-4 py-1.5 sm:py-2">
                                     {{ $isEditing ? __('Update Vendor') : __('Create Vendor') }}
                                 </flux:button>
                             </div>

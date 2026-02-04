@@ -1,7 +1,7 @@
 @props(['task', 'showWorkDate' => false, 'showTimeFirst' => false, 'rounded' => true])
 @php use Carbon\Carbon; @endphp
 
-<div class="group relative overflow-hidden {{ $rounded ? 'rounded-xl' : '' }} border border-emerald-200 bg-white/50 p-4 backdrop-blur-sm transition-all duration-200 hover:border-emerald-300 hover:shadow-lg dark:border-emerald-900/50 dark:bg-gray-800/50 dark:hover:border-emerald-800">
+<div class="group relative overflow-hidden {{ $rounded ? 'rounded-xl' : '' }} border border-emerald-200 bg-white/50 p-4 transition-shadow duration-200 hover:shadow-lg dark:border-emerald-900/50 dark:bg-gray-800/50">
     <div class="flex flex-col gap-4">
         <!-- Header: Title + Priority + Status -->
         <div class="flex items-start justify-between gap-3">
@@ -146,8 +146,8 @@
         <!-- Actions -->
         <div class="flex items-center justify-end gap-2 border-t border-gray-200/50 pt-3 dark:border-gray-700/50">
             <!-- View Button -->
-            <button @click="openPreview({{ $task->id }})" type="button" class="group relative flex items-center justify-center rounded-lg border-2 border-emerald-700/60 bg-emerald-500/10 p-2 transition-all duration-200 hover:border-emerald-700 hover:bg-emerald-500/20 hover:shadow-lg hover:shadow-emerald-700/30 opacity-50 group-hover:opacity-100" title="{{ __('View Task') }}">
-                <svg class="h-4 w-4 text-emerald-700 transition-all duration-200 group-hover:text-emerald-600 group-hover:drop-shadow-[0_0_8px_rgba(4,120,87,0.8)]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <button @click="openPreview({{ $task->id }})" type="button" class="group relative flex items-center justify-center rounded-lg border-2 border-emerald-700/60 bg-emerald-500/10 p-2 transition-shadow duration-200 hover:border-emerald-700 hover:bg-emerald-500/20 hover:shadow-lg hover:shadow-emerald-700/30" title="{{ __('View Task') }}">
+                <svg class="h-4 w-4 text-emerald-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>
@@ -155,8 +155,8 @@
             </button>
 
             <!-- Edit Button -->
-            <button @click="openModal({{ $task->id }})" type="button" class="group relative flex items-center justify-center rounded-lg border-2 border-cyan-700/60 bg-cyan-500/10 p-2 transition-all duration-200 hover:border-cyan-700 hover:bg-cyan-500/20 hover:shadow-lg hover:shadow-cyan-700/30 opacity-50 group-hover:opacity-100" title="{{ __('Edit Task') }}">
-                <svg class="h-4 w-4 text-cyan-700 transition-all duration-200 group-hover:text-cyan-600 group-hover:drop-shadow-[0_0_8px_rgba(8,145,178,0.8)]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <button @click="openModal({{ $task->id }})" type="button" class="group relative flex items-center justify-center rounded-lg border-2 border-cyan-700/60 bg-cyan-500/10 p-2 transition-shadow duration-200 hover:border-cyan-700 hover:bg-cyan-500/20 hover:shadow-lg hover:shadow-cyan-700/30" title="{{ __('Edit Task') }}">
+                <svg class="h-4 w-4 text-cyan-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
                 </svg>
                 <span class="ml-1.5 text-xs font-semibold text-cyan-700 whitespace-nowrap">{{ __('Edit') }}</span>
@@ -166,15 +166,15 @@
             @php
                 $currentUser = auth()->user();
                 $canDeleteTask = $currentUser && in_array($currentUser->role, ['admin', 'manager']);
-                $attachmentCount = $task->attachments()->count();
+                $attachmentCount = $task->attachments->count();
                 $warnings = [];
                 if ($attachmentCount > 0) {
                     $warnings[] = __(':count attachment(s)', ['count' => $attachmentCount]);
                 }
             @endphp
             @if($canDeleteTask)
-                <button @click="window.confirmDelete({{ $task->id }}, '{{ addslashes($task->title) }}', @js($warnings)).then((result) => { if (result.isConfirmed) { $wire.$dispatch('delete-task', { taskId: {{ $task->id }} }) } })" type="button" class="group relative flex items-center justify-center rounded-lg border-2 border-red-700/60 bg-red-500/10 p-2 transition-all duration-200 hover:border-red-700 hover:bg-red-500/20 hover:shadow-lg hover:shadow-red-700/30" title="{{ __('Delete Task') }}">
-                    <svg class="h-4 w-4 text-red-700 transition-all duration-200 group-hover:text-red-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <button @click="window.confirmDelete({{ $task->id }}, '{{ addslashes($task->title) }}', @js($warnings)).then((result) => { if (result.isConfirmed) { $wire.$dispatch('delete-task', { taskId: {{ $task->id }} }) } })" type="button" class="group relative flex items-center justify-center rounded-lg border-2 border-red-700/60 bg-red-500/10 p-2 transition-shadow duration-200 hover:border-red-700 hover:bg-red-500/20 hover:shadow-lg hover:shadow-red-700/30" title="{{ __('Delete Task') }}">
+                    <svg class="h-4 w-4 text-red-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
                     </svg>
                 </button>

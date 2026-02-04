@@ -1,16 +1,16 @@
 <div>
     <flux:modal wire:model="open" class="max-w-lg">
-        <div class="space-y-6">
+        <div class="space-y-4 sm:space-y-6">
             <div>
-                <flux:heading size="lg">
+                <flux:heading size="lg" class="text-base sm:text-lg">
                     {{ $isEditing ? __('Edit Notice') : __('Create Notice') }}
                 </flux:heading>
-                <flux:text class="mt-2">
+                <flux:text class="mt-1 sm:mt-2 text-xs sm:text-sm">
                     {{ $isEditing ? __('Update the notice message and settings.') : __('Create a new broadcast notice for all users.') }}
                 </flux:text>
             </div>
 
-            <form wire:submit="save" class="space-y-4">
+            <form wire:submit="save" class="space-y-3 sm:space-y-4">
                 <!-- Message -->
                 <flux:field>
                     <flux:label>{{ __('Message') }} <span class="text-red-500">*</span></flux:label>
@@ -29,7 +29,7 @@
                 </flux:field>
 
                 <!-- Schedule -->
-                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
                     <flux:field>
                         <flux:label>{{ __('Start Date') }}</flux:label>
                         <flux:input type="datetime-local" wire:model="starts_at" />
@@ -44,11 +44,11 @@
                 </div>
 
                 <!-- Actions -->
-                <div class="flex justify-end gap-3 pt-4">
-                    <flux:button variant="ghost" wire:click="closeModal" type="button">
+                <div class="flex flex-col-reverse sm:flex-row justify-end gap-2 sm:gap-3 pt-3 sm:pt-4">
+                    <flux:button variant="ghost" wire:click="closeModal" type="button" class="text-xs sm:text-sm px-2 sm:px-3 py-1.5 sm:py-2">
                         {{ __('Cancel') }}
                     </flux:button>
-                    <flux:button type="submit" variant="primary">
+                    <flux:button type="submit" variant="primary" class="text-xs sm:text-sm px-2 sm:px-3 py-1.5 sm:py-2">
                         {{ $isEditing ? __('Update Notice') : __('Create Notice') }}
                     </flux:button>
                 </div>

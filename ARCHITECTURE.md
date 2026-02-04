@@ -1,39 +1,39 @@
 # System Architecture Documentation
 ## Laravel Service-Oriented Architecture - Patterns & Guidelines
 
-> **Version**: 2.0
-> **Last Updated**: February 3, 2026
+> **Version**: 2.1
+> **Last Updated**: February 4, 2026
 > **Project**: Senda Snap - Logistics Management System
 
 ---
 
-## 📚 Table of Contents
+## Table of Contents
 
-### 🏢 System Overview
-- [Multi-Vendor Architecture](#-multi-vendor-architecture)
-- [Core Modules](#-core-modules)
-- [Architecture Principles](#-architecture-principles)
+### System Overview
+- [Multi-Vendor Architecture](#multi-vendor-architecture)
+- [Core Modules](#core-modules)
+- [Architecture Principles](#architecture-principles)
 
-### 🔧 Core Patterns
-- [Service Layer](#-service-layer-pattern)
-- [API Controllers](#-api-controller-pattern)
-- [Livewire Components](#-livewire-component-pattern)
-- [Form Requests](#-form-request-pattern)
-- [API Resources](#-api-resource-pattern)
+### Core Patterns
+- [Service Layer](#service-layer-pattern)
+- [API Controllers](#api-controller-pattern)
+- [Livewire Components](#livewire-component-pattern)
+- [Form Requests](#form-request-pattern)
+- [API Resources](#api-resource-pattern)
 
-### 🔒 Security & Access
-- [Authentication](#-authentication)
-- [Multi-Tenancy](#-multi-tenancy--vendor-scoping)
-- [Authorization](#-authorization--permissions)
+### Security & Access
+- [Authentication](#authentication)
+- [Multi-Tenancy](#multi-tenancy--vendor-scoping)
+- [Authorization](#authorization--permissions)
 
-### 📋 Feature Guides
-- [CRUD Checklist](#-crud-feature-checklist)
-- [Testing Patterns](#-testing-patterns)
-- [Best Practices](#-best-practices)
+### Feature Guides
+- [CRUD Checklist](#crud-feature-checklist)
+- [Testing Patterns](#testing-patterns)
+- [Best Practices](#best-practices)
 
 ---
 
-## 🏢 Multi-Vendor Architecture
+## Multi-Vendor Architecture
 
 ### Overview
 
@@ -88,13 +88,13 @@ This system supports multiple vendors (companies) using a clean multi-tenant arc
 ### Default Vendor
 
 **AUTOCRAFT JAPAN LTD**
-- Address: 〒110-0015 Tokyo, Taito City, Higashiueno, 3 Chome−18−7 上野駅前ビル 8F
+- Address: 〒110-0015 Tokyo, Taito City, Higashiueno, 3 Chome-18-7 上野駅前ビル 8F
 - Phone: 03-5826-7885
 - Website: https://autocraftjapan.com
 
 ---
 
-## 📦 Core Modules
+## Core Modules
 
 ### 1. Tasks Management
 - Multiple views: Today, All, Kanban
@@ -139,39 +139,39 @@ This system supports multiple vendors (companies) using a clean multi-tenant arc
 
 ---
 
-## 🎯 Architecture Principles
+## Architecture Principles
 
 ### Core Principles
 
-✅ **Single Responsibility**: Each layer has one clear purpose
-✅ **DRY**: Shared logic lives in services
-✅ **Separation of Concerns**: UI, business logic, data are decoupled
-✅ **Testability**: Services tested independently
-✅ **Consistency**: Web and API share business logic
+- **Single Responsibility**: Each layer has one clear purpose
+- **DRY**: Shared logic lives in services
+- **Separation of Concerns**: UI, business logic, data are decoupled
+- **Testability**: Services tested independently
+- **Consistency**: Web and API share business logic
 
 ### Layer Responsibilities
 
 ```
 ┌──────────────────┐
-│   Controllers    │ ← HTTP handling, validation, responses
+│   Controllers    │ <- HTTP handling, validation, responses
 └──────────────────┘
          ↓
 ┌──────────────────┐
-│    Services      │ ← Business logic, queries, operations
+│    Services      │ <- Business logic, queries, operations
 └──────────────────┘
          ↓
 ┌──────────────────┐
-│     Models       │ ← Data access, relationships, scopes
+│     Models       │ <- Data access, relationships, scopes
 └──────────────────┘
 ```
 
-**Controllers/Components**: Request → Service → Response
+**Controllers/Components**: Request -> Service -> Response
 **Services**: Business logic, database queries, external APIs
 **Models**: Relationships, scopes, accessors/mutators
 
 ---
 
-## 🔧 Service Layer Pattern
+## Service Layer Pattern
 
 ### Purpose
 Encapsulate all business logic, database queries, and complex operations.
@@ -299,17 +299,17 @@ class TaskService
 
 ### Service Guidelines
 
-✅ **Naming**: Descriptive methods (`list`, `create`, `update`, `delete`)
-✅ **Parameters**: Accept all data as parameters (no `request()` access)
-✅ **Return Types**: Always specify return types
-✅ **Type Hints**: Use for all parameters
-✅ **Documentation**: PHPDoc for complex methods
-✅ **Dependencies**: Inject via constructor if needed
-✅ **Error Handling**: Throw exceptions (`InvalidArgumentException`, `RuntimeException`)
+- **Naming**: Descriptive methods (`list`, `create`, `update`, `delete`)
+- **Parameters**: Accept all data as parameters (no `request()` access)
+- **Return Types**: Always specify return types
+- **Type Hints**: Use for all parameters
+- **Documentation**: PHPDoc for complex methods
+- **Dependencies**: Inject via constructor if needed
+- **Error Handling**: Throw exceptions (`InvalidArgumentException`, `RuntimeException`)
 
 ---
 
-## 🎮 API Controller Pattern
+## API Controller Pattern
 
 ### Purpose
 Handle HTTP requests, validate input, call services, return JSON responses.
@@ -437,13 +437,13 @@ class TaskController extends Controller
 
 ### API Controller Guidelines
 
-✅ **Constructor Injection**: Inject services with `protected`
-✅ **Form Requests**: Use for validation
-✅ **Return Format**: Consistent JSON structure
-✅ **Status Codes**: 200, 201, 204, 400, 401, 403, 404, 422
-✅ **Resources**: Always use for transformation
-✅ **No Direct Eloquent**: Never call Eloquent in controllers
-✅ **Thin Controllers**: Keep as thin as possible
+- **Constructor Injection**: Inject services with `protected`
+- **Form Requests**: Use for validation
+- **Return Format**: Consistent JSON structure
+- **Status Codes**: 200, 201, 204, 400, 401, 403, 404, 422
+- **Resources**: Always use for transformation
+- **No Direct Eloquent**: Never call Eloquent in controllers
+- **Thin Controllers**: Keep as thin as possible
 
 ### JSON Response Format
 
@@ -463,7 +463,7 @@ class TaskController extends Controller
 
 ---
 
-## 🖥️ Livewire Component Pattern
+## Livewire Component Pattern
 
 ### Purpose
 Handle UI interactions, call services, manage component state.
@@ -579,16 +579,16 @@ class AllTasks extends Component
 
 ### Livewire Guidelines
 
-✅ **Method Injection**: Use for services (NOT constructor)
-✅ **Nullable Properties**: Use `?string` for filters
-✅ **Normalize Inputs**: Convert empty strings to null in `updatedXxx()`
-✅ **Build Filters Explicitly**: Don't pass raw properties
-✅ **State Management**: Public properties for state
-✅ **Validation**: Validate before calling services
-✅ **Events**: Use `dispatch()` for notifications
-✅ **Listeners**: Use `#[On('event')]` attribute
-✅ **Pagination**: Use `WithPagination` trait
-✅ **Delete Pattern**: Flexible parameter handling
+- **Method Injection**: Use for services (NOT constructor)
+- **Nullable Properties**: Use `?string` for filters
+- **Normalize Inputs**: Convert empty strings to null in `updatedXxx()`
+- **Build Filters Explicitly**: Don't pass raw properties
+- **State Management**: Public properties for state
+- **Validation**: Validate before calling services
+- **Events**: Use `dispatch()` for notifications
+- **Listeners**: Use `#[On('event')]` attribute
+- **Pagination**: Use `WithPagination` trait
+- **Delete Pattern**: Flexible parameter handling
 
 ### Modal Component Pattern
 
@@ -686,7 +686,7 @@ class TaskModal extends Component
 
 ---
 
-## 📝 Form Request Pattern
+## Form Request Pattern
 
 ### Purpose
 Handle validation logic for API and web requests.
@@ -744,15 +744,15 @@ class StoreTaskRequest extends FormRequest
 
 ### Form Request Guidelines
 
-✅ **Naming**: `{Action}{Model}Request` (StoreTaskRequest, UpdateTaskRequest)
-✅ **Authorization**: Implement if needed
-✅ **Array Syntax**: Use for rules (not pipe)
-✅ **Custom Messages**: Provide user-friendly errors
-✅ **Array Validation**: Use `.*` notation
+- **Naming**: `{Action}{Model}Request` (StoreTaskRequest, UpdateTaskRequest)
+- **Authorization**: Implement if needed
+- **Array Syntax**: Use for rules (not pipe)
+- **Custom Messages**: Provide user-friendly errors
+- **Array Validation**: Use `.*` notation
 
 ---
 
-## 📦 API Resource Pattern
+## API Resource Pattern
 
 ### Purpose
 Transform Eloquent models into consistent JSON responses.
@@ -805,18 +805,18 @@ class TaskResource extends JsonResource
 
 ### API Resource Guidelines
 
-✅ **Naming**: `{Model}Resource`
-✅ **Return Type**: `array<string, mixed>`
-✅ **Relationships**: Use `whenLoaded()`
-✅ **Nested Resources**: Use other Resources
-✅ **Dates**: ISO 8601 or Y-m-d format
-✅ **URLs**: Full URLs for images/files
-✅ **Conditional Fields**: Use `when()`
-✅ **Security**: Never include sensitive data
+- **Naming**: `{Model}Resource`
+- **Return Type**: `array<string, mixed>`
+- **Relationships**: Use `whenLoaded()`
+- **Nested Resources**: Use other Resources
+- **Dates**: ISO 8601 or Y-m-d format
+- **URLs**: Full URLs for images/files
+- **Conditional Fields**: Use `when()`
+- **Security**: Never include sensitive data
 
 ---
 
-## 🔐 Authentication
+## Authentication
 
 ### Web Authentication (Session-based)
 
@@ -862,7 +862,7 @@ public function login(array $credentials): array
 
 ---
 
-## 🏢 Multi-Tenancy & Vendor Scoping
+## Multi-Tenancy & Vendor Scoping
 
 ### Task Scoping (Role-Based)
 
@@ -964,9 +964,9 @@ $companies = ShippingCompany::with('creator')->get();
 
 ### Critical Scoping Rules
 
-**⚠️ IMPORTANT**: Always use Service methods, not direct model access
+**IMPORTANT**: Always use Service methods, not direct model access.
 
-✅ **Correct**:
+**Correct**:
 ```php
 // Livewire component
 $task = $taskService->getTaskById($taskId); // Uses forUserRole()
@@ -976,7 +976,7 @@ $vehicle = $vehicleService->getById($vehicleId); // Uses forCurrentVendor()
 $task = $this->taskService->getTaskById($task->id); // Role-based scoping
 ```
 
-❌ **Incorrect**:
+**Incorrect**:
 ```php
 // Route model binding bypasses scoping!
 $task = Task::findOrFail($taskId); // No role-based filtering
@@ -985,7 +985,7 @@ $vehicle = Vehicle::find($vehicleId); // No vendor filtering
 
 ---
 
-## 🔒 Authorization & Permissions
+## Authorization & Permissions
 
 ### Permission Rules
 
@@ -1032,7 +1032,7 @@ public function canDelete(): bool
 
 ---
 
-## ✅ CRUD Feature Checklist
+## CRUD Feature Checklist
 
 ### 1. Create Model & Migration
 ```bash
@@ -1133,7 +1133,7 @@ php artisan test             # Run tests
 
 ---
 
-## 🧪 Testing Patterns
+## Testing Patterns
 
 ### Unit Tests (Services)
 
@@ -1253,9 +1253,9 @@ class TaskApiTest extends TestCase
 
 ---
 
-## 🎯 Best Practices
+## Best Practices
 
-### Do's ✅
+### Do's
 
 - Use services for all business logic
 - Inject services via constructor in controllers
@@ -1270,8 +1270,9 @@ class TaskApiTest extends TestCase
 - Handle edge cases in services
 - Use transactions for multi-step ops
 - Apply vendor scoping consistently
+- Use eager-loaded collection properties in Blade (e.g., `$model->relationship->count()`)
 
-### Don'ts ❌
+### Don'ts
 
 - Don't put business logic in controllers
 - Don't use constructor injection in Livewire
@@ -1286,10 +1287,11 @@ class TaskApiTest extends TestCase
 - Don't remove functionality without approval
 - Don't introduce dependencies without approval
 - Don't bypass vendor scoping
+- Don't use `$model->relationship()->count()` in Blade when the relationship is eager-loaded; use `$model->relationship->count()` instead (see DESIGN_SYSTEM.md Performance section)
 
 ---
 
-## 📚 Additional Resources
+## Additional Resources
 
 - [Laravel Documentation](https://laravel.com/docs)
 - [Livewire Documentation](https://livewire.laravel.com)
@@ -1299,7 +1301,11 @@ class TaskApiTest extends TestCase
 
 ---
 
-## 📝 Changelog
+## Changelog
+
+### Version 2.1 (February 4, 2026)
+- Added best practice: use eager-loaded collection properties, not relationship query methods, in Blade templates
+- Removed all emojis from documentation
 
 ### Version 2.0 (February 3, 2026)
 - Complete architecture refactoring

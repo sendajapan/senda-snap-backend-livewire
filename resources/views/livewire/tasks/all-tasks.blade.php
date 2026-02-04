@@ -100,8 +100,7 @@
         </div>
 
         <!-- Table View (2xl and above) -->
-        <div class="hidden 2xl:block overflow-x-auto border rounded-xl bg-white/50 dark:border-gray-700/50 dark:bg-gray-900/20"
-            wire:key="all-tasks-table-{{ md5(($search ?? '') . '|' . ($statusFilter ?? '') . '|' . ($fromDate ?? '') . '|' . ($toDate ?? '')) }}">
+        <div class="hidden 2xl:block overflow-x-auto border rounded-xl bg-white/50 dark:border-gray-700/50 dark:bg-gray-900/20">
             <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                 <thead>
                     <tr class="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900">
@@ -168,8 +167,7 @@
         </div>
 
         <!-- Stacked View (below 2xl) -->
-        <div class="2xl:hidden bg-white/50 dark:bg-gray-900/20"
-            wire:key="all-tasks-stacked-{{ md5(($search ?? '') . '|' . ($statusFilter ?? '') . '|' . ($fromDate ?? '') . '|' . ($toDate ?? '')) }}">
+        <div class="2xl:hidden bg-white/50 dark:bg-gray-900/20">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 @forelse($tasks as $task)
                     <x-task-card :task="$task" :showWorkDate="true" :rounded="true" wire:key="task-card-{{ $task->id }}" />

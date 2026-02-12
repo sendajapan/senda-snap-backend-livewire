@@ -118,7 +118,7 @@
                 <!-- Features and Screenshots Side by Side -->
                 <div class="relative grid gap-6 sm:gap-8 lg:gap-10 landing-grid lg:grid-cols-2 items-start lg:items-center justify-items-center">
                     <!-- Features Section (Left) -->
-                    <div class="relative z-20 max-w-xl lg:max-w-lg landing-features space-y-4 sm:space-y-5 w-full flex flex-col">
+                    <div class="relative z-40 max-w-xl lg:max-w-lg landing-features space-y-4 sm:space-y-5 w-full flex flex-col">
                         <!-- Web Features -->
                         <div class="rounded-2xl border border-violet-200 bg-gradient-to-br from-white via-violet-50/30 to-purple-50/30 p-4 sm:p-5 shadow-xl dark:border-violet-900/50 dark:from-gray-900 dark:via-violet-900/20 dark:to-purple-900/20 landing-feature-card">
                             <div class="mb-3 flex items-center gap-2.5">
@@ -250,7 +250,7 @@
                     </div>
 
                     <!-- Screenshots Section (Right) -->
-                    <div class="relative flex items-center justify-center w-full z-30 mt-4 lg:mt-0">
+                    <div class="relative flex items-center justify-center w-full z-20 mt-4 lg:mt-0">
                         <!-- Monitor Mockup -->
                         <div class="relative z-30 -mr-8 xl:-mr-12 hidden lg:block">
                             <div class="monitor-mockup">

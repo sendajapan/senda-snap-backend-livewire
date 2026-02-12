@@ -53,6 +53,10 @@ class ScheduleService
             $query->where('end_port_id', $filters['end_port_id']);
         }
 
+        // When listing public schedules, show all where is_public = true (no filter by added_by)
+        $isPublic = array_key_exists('is_public', $filters) ? (bool) $filters['is_public'] : false;
+        $query->where('is_public', $isPublic);
+
         return $query->latest('created_at')->paginate($perPage);
     }
 
@@ -69,7 +73,7 @@ class ScheduleService
         ])->findOrFail($id);
     }
 
-    public function create(array $data, int $userId): Schedule
+    public function create(array $data, ?int $userId, ?string $addedByName, bool $isPublic = false): Schedule
     {
         $schedule = Schedule::create([
             'vessel_name' => $data['vessel_name'],
@@ -83,6 +87,8 @@ class ScheduleService
             'status' => $data['status'] ?? 'Waiting',
             'comment' => $data['comment'] ?? null,
             'added_by' => $userId,
+            'added_by_name' => $userId !== null ? null : ($addedByName ?? 'Guest'),
+            'is_public' => $isPublic,
         ]);
 
         $schedule->load([
@@ -98,9 +104,9 @@ class ScheduleService
         return $schedule;
     }
 
-    public function update(Schedule $schedule, array $data): Schedule
+    public function update(Schedule $schedule, array $data, ?int $userId = null, ?string $addedByName = null): Schedule
     {
-        $schedule->update(array_filter([
+        $payload = array_filter([
             'vessel_name' => $data['vessel_name'] ?? null,
             'voyage_no' => $data['voyage_no'] ?? null,
             'carrier_1_id' => $data['carrier_1_id'] ?? null,
@@ -111,7 +117,18 @@ class ScheduleService
             'eta' => $data['eta'] ?? null,
             'status' => $data['status'] ?? null,
             'comment' => $data['comment'] ?? null,
-        ], fn ($value) => $value !== null));
+        ], fn ($value) => $value !== null);
+
+        // When provided (e.g. public schedule last editor), update who is shown as "Created by"
+        if ($userId !== null) {
+            $payload['added_by'] = $userId;
+            $payload['added_by_name'] = null;
+        } elseif ($addedByName !== null) {
+            $payload['added_by'] = null;
+            $payload['added_by_name'] = $addedByName;
+        }
+
+        $schedule->update(array_filter($payload, fn ($value, $key) => in_array($key, ['added_by', 'added_by_name'], true) || $value !== null));
 
         $schedule->load([
             'carrier1',

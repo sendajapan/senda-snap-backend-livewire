@@ -412,18 +412,18 @@
                 }
             })();
         </script>
-        
+
         <script>
             // PDF Download Functionality
             (function () {
                 const downloadBtn = document.getElementById('downloadManualBtn');
-                
+
                 if (!downloadBtn) return;
-                
+
                 downloadBtn.addEventListener('click', async function () {
                     const btn = this;
                     const originalText = btn.innerHTML;
-                    
+
                     // Show loading state
                     btn.disabled = true;
                     btn.innerHTML = `
@@ -432,38 +432,38 @@
                         </svg>
                         <span>{{ __('Generating PDF...') }}</span>
                     `;
-                    
+
                     try {
                         // Get the main content container
                         const content = document.querySelector('.flex.flex-col.gap-4');
-                        
+
                         if (!content) {
                             throw new Error('Content not found');
                         }
-                        
+
                         // Hide the zoom modal if open
                         const modal = document.getElementById('imageZoomModal');
                         if (modal && !modal.classList.contains('hidden')) {
                             modal.classList.add('hidden');
                             modal.classList.remove('flex');
                         }
-                        
+
                         // Create isolated container
                         const pdfContainer = document.createElement('div');
                         pdfContainer.style.cssText = 'position:absolute;left:-9999px;background:#fff;';
                         document.body.appendChild(pdfContainer);
-                        
+
                         // Clone content
                         const clonedContent = content.cloneNode(true);
-                        
+
                         // Convert all oklch colors to RGB using computed styles
                         const tempDiv = document.createElement('div');
                         tempDiv.style.cssText = 'position:absolute;visibility:hidden;';
                         document.body.appendChild(tempDiv);
-                        
+
                         function convertColors(el) {
                             const computed = window.getComputedStyle(el);
-                            ['color', 'backgroundColor', 'borderColor', 'borderTopColor', 
+                            ['color', 'backgroundColor', 'borderColor', 'borderTopColor',
                              'borderRightColor', 'borderBottomColor', 'borderLeftColor'].forEach(prop => {
                                 try {
                                     const val = computed[prop];
@@ -478,11 +478,11 @@
                             });
                             Array.from(el.children).forEach(child => convertColors(child));
                         }
-                        
+
                         convertColors(clonedContent);
                         pdfContainer.appendChild(clonedContent);
                         document.body.removeChild(tempDiv);
-                        
+
                         // Use html2canvas with minimal options
                         const canvas = await html2canvas(pdfContainer, {
                             scale: 2,
@@ -496,64 +496,64 @@
                                 links.forEach(link => link.remove());
                             }
                         });
-                        
+
                         document.body.removeChild(pdfContainer);
-                        
+
                         // Re-enable stylesheets
                         disabledSheets.forEach(link => {
                             link.disabled = false;
                         });
-                        
+
                         // Get canvas dimensions
                         const imgWidth = canvas.width;
                         const imgHeight = canvas.height;
-                        
+
                         // PDF dimensions in mm (A4)
                         const pdfWidth = 210;
                         const pdfHeight = 297;
-                        
+
                         // Calculate dimensions to fit content width
                         const imgAspectRatio = imgWidth / imgHeight;
                         const finalWidth = pdfWidth;
                         const finalHeight = pdfWidth / imgAspectRatio;
-                        
+
                         // Create PDF
                         const { jsPDF } = window.jspdf;
                         const pdf = new jsPDF('p', 'mm', 'a4');
-                        
+
                         // Add image to PDF
                         const imgData = canvas.toDataURL('image/png', 0.95);
-                        
+
                         // Calculate how many pages we need
                         const numPages = Math.ceil(finalHeight / pdfHeight);
-                        
+
                         // Add image across multiple pages
                         for (let i = 0; i < numPages; i++) {
                             if (i > 0) {
                                 pdf.addPage();
                             }
-                            
+
                             // Calculate the y position offset for this page
                             const yOffset = -(i * pdfHeight);
-                            
+
                             // Add the image with proper positioning
                             pdf.addImage(imgData, 'PNG', 0, yOffset, finalWidth, finalHeight);
                         }
-                        
+
                         // Save PDF
                         pdf.save('Admin-Manual.pdf');
-                        
+
                         // Reset button
                         btn.disabled = false;
                         btn.innerHTML = originalText;
                         } catch (error) {
                             console.error('Error generating PDF:', error);
-                            
+
                             // Check if it's an oklch color error
                             if (error.message && error.message.includes('oklch')) {
                                 // Offer to use browser print instead
                                 const usePrint = confirm('{{ __('PDF generation failed due to unsupported color format (oklch). Would you like to use the browser\'s Print to PDF feature instead? Click OK to open the print dialog, or Cancel to dismiss.') }}');
-                                
+
                                 if (usePrint) {
                                     // Trigger browser print
                                     window.print();
@@ -561,7 +561,7 @@
                             } else {
                                 alert('{{ __('Failed to generate PDF. Please try again.') }}');
                             }
-                            
+
                             // Reset button
                             btn.disabled = false;
                             btn.innerHTML = originalText;

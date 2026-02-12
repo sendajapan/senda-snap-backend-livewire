@@ -31,6 +31,7 @@ class ScheduleController extends Controller
             'carrier_id' => $request->input('carrier_id'),
             'start_port_id' => $request->input('start_port_id'),
             'end_port_id' => $request->input('end_port_id'),
+            'is_public' => false,
         ];
 
         $perPage = (int) $request->input('per_page', 15);
@@ -52,7 +53,7 @@ class ScheduleController extends Controller
      */
     public function store(StoreScheduleRequest $request): JsonResponse
     {
-        $schedule = $this->scheduleService->create($request->validated(), auth()->id());
+        $schedule = $this->scheduleService->create($request->validated(), auth()->id(), null, false);
 
         return $this->successResponse('Schedule created successfully', [
             'schedule' => new ScheduleResource($schedule),
@@ -106,5 +107,58 @@ class ScheduleController extends Controller
         $this->scheduleService->delete($schedule);
 
         return $this->successResponse('Schedule deleted successfully', []);
+    }
+
+    /**
+     * List public schedules (no auth required)
+     */
+    public function indexPublic(Request $request): JsonResponse
+    {
+        $filters = [
+            'search' => $request->input('search'),
+            'vessel_name' => $request->input('vessel_name'),
+            'voyage_no' => $request->input('voyage_no'),
+            'carrier_id' => $request->input('carrier_id'),
+            'start_port_id' => $request->input('start_port_id'),
+            'end_port_id' => $request->input('end_port_id'),
+            'is_public' => true,
+        ];
+
+        $perPage = (int) $request->input('per_page', 15);
+        $schedules = $this->scheduleService->list($filters, $perPage);
+
+        return $this->successResponse('Public schedules retrieved successfully', [
+            'schedules' => ScheduleResource::collection($schedules->items()),
+            'pagination' => [
+                'current_page' => $schedules->currentPage(),
+                'last_page' => $schedules->lastPage(),
+                'per_page' => $schedules->perPage(),
+                'total' => $schedules->total(),
+            ],
+        ]);
+    }
+
+    /**
+     * Show a single public schedule (no auth required, 404 if not public)
+     */
+    public function showPublic(Schedule $schedule): JsonResponse
+    {
+        if (! $schedule->is_public) {
+            abort(404);
+        }
+
+        $schedule->load([
+            'carrier1',
+            'carrier2',
+            'carrier3',
+            'startPort',
+            'endPort',
+            'stopovers.port',
+            'addedBy',
+        ]);
+
+        return $this->successResponse('Schedule retrieved successfully', [
+            'schedule' => new ScheduleResource($schedule),
+        ]);
     }
 }

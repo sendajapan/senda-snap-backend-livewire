@@ -17,40 +17,40 @@
              class="absolute inset-0 bg-gray-900/50 backdrop-blur-sm"></div>
 
         <!-- Modal Panel -->
-        <div class="fixed inset-0 sm:inset-y-0 sm:right-0 flex max-w-full pl-0 sm:pl-10">
+        <div class="fixed inset-0 md:inset-y-0 md:right-0 md:left-auto flex max-w-full pl-0 md:pl-10 justify-end">
             <div x-show="open"
                  x-transition:enter="transform transition ease-in-out duration-500"
-                 x-transition:enter-start="translate-y-full sm:translate-x-full"
-                 x-transition:enter-end="translate-y-0 sm:translate-x-0"
+                 x-transition:enter-start="translate-y-full md:translate-y-0 md:translate-x-full"
+                 x-transition:enter-end="translate-y-0 md:translate-x-0"
                  x-transition:leave="transform transition ease-in-out duration-500"
-                 x-transition:leave-start="translate-y-0 sm:translate-x-0"
-                 x-transition:leave-end="translate-y-full sm:translate-x-full"
-                 class="w-full sm:w-screen sm:max-w-xl bg-white/60 backdrop-blur-xl dark:bg-gray-800/60 sm:rounded-none rounded-t-2xl sm:rounded-t-none">
+                 x-transition:leave-start="translate-y-0 md:translate-x-0"
+                 x-transition:leave-end="translate-y-full md:translate-y-0 md:translate-x-full"
+                 class="w-full md:w-screen md:max-w-xl bg-white/60 backdrop-blur-xl dark:bg-gray-800/60 rounded-t-2xl md:rounded-none">
 
-                <div class="flex h-full flex-col overflow-y-auto border-t sm:border-t-0 sm:border-l border-blue-300/50 bg-white/60 shadow-xl shadow-blue-200/40 backdrop-blur-xl dark:border-blue-800/50 dark:bg-gray-800/60 dark:shadow-blue-900/30">
+                <div class="flex h-full flex-col overflow-y-auto border-t md:border-t-0 md:border-l border-blue-300/50 bg-white/60 shadow-xl shadow-blue-200/40 backdrop-blur-xl dark:border-blue-800/50 dark:bg-gray-800/60 dark:shadow-blue-900/30">
                     <!-- Decorative Elements -->
-                    <div class="pointer-events-none absolute -right-4 sm:-right-8 -top-4 sm:-top-8 h-40 w-40 sm:h-64 sm:w-64 rounded-full bg-gradient-to-br from-blue-400/20 to-cyan-400/20 blur-3xl"></div>
-                    <div class="pointer-events-none absolute -bottom-4 sm:-bottom-8 -left-4 sm:-left-8 h-40 w-40 sm:h-64 sm:w-64 rounded-full bg-gradient-to-br from-cyan-400/20 to-blue-400/20 blur-3xl"></div>
+                    <div class="pointer-events-none absolute -right-4 md:-right-8 -top-4 md:-top-8 h-40 w-40 md:h-64 md:w-64 rounded-full bg-gradient-to-br from-blue-400/20 to-cyan-400/20 blur-3xl"></div>
+                    <div class="pointer-events-none absolute -bottom-4 md:-bottom-8 -left-4 md:-left-8 h-40 w-40 md:h-64 md:w-64 rounded-full bg-gradient-to-br from-cyan-400/20 to-blue-400/20 blur-3xl"></div>
 
                     <!-- Header -->
-                    <div class="relative border-b border-gray-200/50 bg-white/50 px-ui-md py-ui-md backdrop-blur-sm dark:border-gray-700/50 dark:bg-gray-800/60">
-                        <div class="flex items-center justify-between gap-ui-sm">
-                            <div class="flex items-center gap-ui-sm min-w-0">
-                                <div class="flex h-icon-sm w-icon-sm flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-cyan-600 shadow-lg text-ui-lg [&_svg]:size-[1em]">
+                    <div class="relative border-b border-gray-200/50 bg-white/50 px-4 py-4 backdrop-blur-sm dark:border-gray-700/50 dark:bg-gray-800/60">
+                        <div class="flex items-center justify-between gap-3">
+                            <div class="flex items-center gap-3 min-w-0">
+                                <div class="flex h-icon-sm w-icon-sm flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-cyan-600 shadow-lg text-lg [&_svg]:size-[1em]">
                                     <svg class="text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                                     </svg>
                                 </div>
                                 <div class="min-w-0">
-                                    <h2 class="text-ui-lg font-bold text-gray-900 dark:text-white truncate">
+                                    <h2 class="text-[0.875rem] md:text-lg font-bold text-gray-900 dark:text-white truncate">
                                         {{ $isEditing ? __('Edit User') : __('Add New User') }}
                                     </h2>
-                                    <p class="text-ui-sm text-gray-600 dark:text-gray-400 line-clamp-1">
+                                    <p class="text-[0.75rem] md:text-sm text-gray-600 dark:text-gray-400 line-clamp-1">
                                         {{ $isEditing ? __('Update user information') : __('Create a new user account') }}
                                     </p>
                                 </div>
                             </div>
-                            <button wire:click="closeModal" type="button" class="flex-shrink-0 rounded-lg p-ui-xs text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-gray-800 dark:hover:text-gray-300 text-ui-xl [&_svg]:size-[1em]">
+                            <button wire:click="closeModal" type="button" class="flex-shrink-0 rounded-lg p-2 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-gray-800 dark:hover:text-gray-300 text-xl [&_svg]:size-[1em]">
                                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                                 </svg>
@@ -60,13 +60,13 @@
 
                     <!-- Form -->
                     <form wire:submit="save" class="relative flex-1 overflow-y-auto">
-                        <div class="space-y-ui-md p-ui-md">
+                        <div class="space-y-4 p-4">
                             <!-- Avatar Upload -->
                             <div>
-                                <label class="block text-ui-sm font-medium text-gray-700 dark:text-gray-300">
+                                <label class="block text-[0.6875rem] md:text-sm font-medium text-gray-700 dark:text-gray-300">
                                     {{ __('Profile Picture') }}
                                 </label>
-                                <div class="mt-ui-xs flex flex-col sm:flex-row items-center gap-ui-sm">
+                                <div class="mt-2 flex flex-col sm:flex-row items-center gap-4">
                                     <div class="relative flex-shrink-0">
                                         @if ($avatar && is_object($avatar))
                                             @php
@@ -79,7 +79,7 @@
                                             @if($avatarUrl)
                                                 <img src="{{ $avatarUrl }}" alt="Avatar preview" class="h-icon-lg w-icon-lg rounded-xl object-cover ring-4 ring-blue-200 dark:ring-blue-800">
                                             @else
-                                                <div class="flex h-icon-lg w-icon-lg items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-cyan-600 ring-4 ring-blue-200 dark:ring-blue-800 text-ui-3xl [&_svg]:size-[1em]">
+                                                <div class="flex h-icon-lg w-icon-lg items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-cyan-600 ring-4 ring-blue-200 dark:ring-blue-800 text-3xl [&_svg]:size-[1em]">
                                                     <svg class="text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                                     </svg>
@@ -88,30 +88,30 @@
                                         @elseif ($existing_avatar)
                                             <img src="{{ Storage::url($existing_avatar) }}" alt="Current avatar" class="h-icon-lg w-icon-lg rounded-xl object-cover ring-4 ring-blue-200 dark:ring-blue-800">
                                         @else
-                                            <div class="flex h-icon-lg w-icon-lg items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-cyan-600 ring-4 ring-blue-200 dark:ring-blue-800 text-ui-3xl [&_svg]:size-[1em]">
+                                            <div class="flex h-icon-lg w-icon-lg items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-cyan-600 ring-4 ring-blue-200 dark:ring-blue-800 text-3xl [&_svg]:size-[1em]">
                                                 <svg class="text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                                                 </svg>
                                             </div>
                                         @endif
                                     </div>
-                                    <div class="flex flex-col gap-ui-xs w-full sm:w-auto">
-                                        <label for="avatar" class="cursor-pointer rounded-lg border-2 border-dashed border-gray-300 bg-white px-ui-sm py-ui-xs text-ui-sm font-medium text-gray-700 transition-colors hover:border-blue-500 hover:bg-blue-50 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:hover:border-blue-500 dark:hover:bg-blue-900/20 text-center">
+                                    <div class="flex flex-col gap-2 w-full sm:w-auto">
+                                        <label for="avatar" class="cursor-pointer rounded-lg border-2 border-dashed border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:border-blue-500 hover:bg-blue-50 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:hover:border-blue-500 dark:hover:bg-blue-900/20 text-center">
                                             {{ __('Choose Image') }}
                                         </label>
                                         <input type="file" id="avatar" wire:model="avatar" accept="image/*" class="hidden">
                                         @if ($avatar || $existing_avatar)
-                                            <button type="button" wire:click="removeAvatar" class="rounded-lg border border-red-300 bg-white px-ui-sm py-ui-xs text-ui-sm font-medium text-red-600 transition-colors hover:bg-red-50 dark:border-red-800 dark:bg-gray-800 dark:text-red-400 dark:hover:bg-red-900/20">
+                                            <button type="button" wire:click="removeAvatar" class="rounded-lg border border-red-300 bg-white px-3 py-2 text-sm font-medium text-red-600 transition-colors hover:bg-red-50 dark:border-red-800 dark:bg-gray-800 dark:text-red-400 dark:hover:bg-red-900/20">
                                                 {{ __('Remove') }}
                                             </button>
                                         @endif
                                     </div>
                                 </div>
-                                <p class="mt-ui-xs text-ui-xs text-gray-500 dark:text-gray-400">{{ __('JPG, PNG or GIF. Max size 2MB.') }}</p>
+                                <p class="mt-2 text-[0.625rem] md:text-xs text-gray-500 dark:text-gray-400">{{ __('JPG, PNG or GIF. Max size 2MB.') }}</p>
                                 @error('avatar')
-                                    <p class="mt-1 text-ui-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                                    <p class="mt-1 text-[0.6875rem] md:text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                                 @enderror
-                                <div wire:loading wire:target="avatar" class="mt-ui-xs text-ui-sm text-blue-600">
+                                <div wire:loading wire:target="avatar" class="mt-2 text-[0.75rem] md:text-sm text-blue-600">
                                     {{ __('Uploading...') }}
                                 </div>
                             </div>
@@ -120,7 +120,7 @@
                             <div>
                                 <flux:input wire:model="name" label="{{ __('Full Name') }}" placeholder="{{ __('Enter full name') }}" required />
                                 @error('name')
-                                    <p class="mt-1 text-ui-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                                    <p class="mt-1 text-[0.6875rem] md:text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                                 @enderror
                             </div>
 
@@ -128,7 +128,7 @@
                             <div>
                                 <flux:input type="email" wire:model="email" label="{{ __('Email Address') }}" placeholder="{{ __('Enter email address') }}" required />
                                 @error('email')
-                                    <p class="mt-1 text-ui-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                                    <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                                 @enderror
                             </div>
 
@@ -136,7 +136,7 @@
                             <div>
                                 <flux:input type="password" wire:model="password" label="{{ $isEditing ? __('New Password (leave empty to keep current)') : __('Password') }}" placeholder="{{ __('Enter password') }}" :required="!$isEditing" />
                                 @error('password')
-                                    <p class="mt-1 text-ui-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                                    <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                                 @enderror
                             </div>
 
@@ -144,7 +144,7 @@
                             <div>
                                 <flux:input type="password" wire:model="password_confirmation" label="{{ __('Confirm Password') }}" placeholder="{{ __('Confirm password') }}" :required="!$isEditing" />
                                 @error('password_confirmation')
-                                    <p class="mt-1 text-ui-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                                    <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                                 @enderror
                             </div>
 
@@ -157,7 +157,7 @@
                                     <option value="admin">{{ __('Admin') }}</option>
                                 </flux:select>
                                 @error('role')
-                                    <p class="mt-1 text-ui-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                                    <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                                 @enderror
                             </div>
 
@@ -165,7 +165,7 @@
                             <div>
                                 <flux:input type="tel" wire:model="phone" label="{{ __('Phone Number') }}" placeholder="{{ __('Enter phone number') }}" />
                                 @error('phone')
-                                    <p class="mt-1 text-ui-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                                    <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                                 @enderror
                             </div>
 
@@ -173,14 +173,14 @@
                             <div>
                                 <flux:input wire:model="avis_id" label="{{ __('Avis ID') }}" placeholder="{{ __('Enter Avis ID (optional)') }}" />
                                 @error('avis_id')
-                                    <p class="mt-1 text-ui-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                                    <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                                 @enderror
                             </div>
                         </div>
 
                         <!-- Footer Actions -->
-                        <div class="border-t border-gray-200/50 px-ui-md py-ui-sm backdrop-blur-sm dark:border-gray-700/50 dark:bg-gray-800/60">
-                            <div class="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-ui-xs">
+                        <div class="border-t border-gray-200/50 px-4 py-3 backdrop-blur-sm dark:border-gray-700/50 dark:bg-gray-800/60">
+                            <div class="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2">
                                 <flux:button type="button" wire:click="closeModal" variant="ghost" class="w-full sm:w-auto">
                                     {{ __('Cancel') }}
                                 </flux:button>

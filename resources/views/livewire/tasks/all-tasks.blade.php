@@ -70,7 +70,7 @@
             <!-- Active Filters Display -->
             @if($search || $statusFilter || $fromDate || $toDate)
                 <div class="mt-3 flex flex-wrap gap-2">
-                    <span class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ __('Active Filters:') }}</span>
+                    <span class="text-xs font-medium text-gray-700 dark:text-gray-300">{{ __('Active Filters:') }}</span>
 
                     @if($search)
                         <flux:badge color="violet" size="sm">
@@ -104,35 +104,34 @@
             <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                 <thead>
                     <tr class="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900">
-                        <th class="px-3 md:px-6 py-3 md:py-4 text-center text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 w-16">
+                        <th class="whitespace-nowrap px-3 2xl:px-4 py-3 2xl:py-4 text-center text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 w-16">
                             {{ __('S/N') }}
                         </th>
-                        <th
-                            class="w-1/4 px-3 md:px-6 py-3 md:py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">
+                        <th class="whitespace-nowrap px-3 2xl:px-4 py-3 2xl:py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 w-1/4">
                             {{ __('Title') }}
                         </th>
                         <th
-                            class="px-3 md:px-6 py-3 md:py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 hidden lg:table-cell">
+                            class="whitespace-nowrap px-3 2xl:px-4 py-3 2xl:py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 hidden lg:table-cell">
                             {{ __('Assigned To') }}
                         </th>
                         <th
-                            class="px-3 md:px-6 py-3 md:py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 hidden xl:table-cell">
+                            class="whitespace-nowrap px-3 2xl:px-4 py-3 2xl:py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 hidden xl:table-cell">
                             {{ __('Assigned By') }}
                         </th>
                         <th
-                            class="px-3 md:px-6 py-3 md:py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">
+                            class="whitespace-nowrap px-3 2xl:px-4 py-3 2xl:py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">
                             {{ __('Priority') }}
                         </th>
                         <th
-                            class="px-3 md:px-6 py-3 md:py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">
+                            class="whitespace-nowrap px-3 2xl:px-4 py-3 2xl:py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">
                             {{ __('Status') }}
                         </th>
                         <th
-                            class="px-3 md:px-6 py-3 md:py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 hidden md:table-cell">
+                            class="whitespace-nowrap px-3 2xl:px-4 py-3 2xl:py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 hidden md:table-cell">
                             {{ __('Work Date') }}
                         </th>
                         <th
-                            class="px-3 md:px-6 py-3 md:py-4 text-center text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 w-32">
+                            class="whitespace-nowrap px-3 2xl:px-4 py-3 2xl:py-4 text-center text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 w-32">
                             {{ __('Actions') }}
                         </th>
                     </tr>
@@ -152,7 +151,7 @@
                                                 d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                                         </svg>
                                     </div>
-                                    <p class="text-sm font-medium text-gray-900 dark:text-white">
+                                    <p class="text-xs font-medium text-gray-900 dark:text-white">
                                         {{ __('No tasks found') }}
                                     </p>
                                     <p class="text-xs text-gray-500 dark:text-gray-400">
@@ -181,7 +180,7 @@
                                         d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                                 </svg>
                             </div>
-                            <p class="text-sm font-medium text-gray-900 dark:text-white">
+                            <p class="text-xs font-medium text-gray-900 dark:text-white">
                                 {{ __('No tasks found') }}
                             </p>
                             <p class="text-xs text-gray-500 dark:text-gray-400">

@@ -13,6 +13,7 @@ use App\Livewire\Settings\Appearance;
 use App\Livewire\Settings\Profile;
 use App\Livewire\Settings\TwoFactor;
 use App\Livewire\ShipmentSchedule\Index as ShipmentScheduleIndex;
+use App\Livewire\ShipmentSchedule\PublicIndex as ShipmentSchedulePublicIndex;
 use App\Livewire\ShippingCompanies\Index as ShippingCompaniesIndex;
 use App\Livewire\Tasks\AllTasks;
 use App\Livewire\Tasks\TodayTasks;
@@ -34,7 +35,10 @@ Route::get('privacy-policy', [PrivacyPolicyController::class, 'index'])->name('p
 // Public Android App Manual (no authentication required)
 Route::get('android-app-manual', [AndroidAppManualController::class, 'index'])->name('android.app.manual');
 
-//Github Webhook
+// Public Shipment Schedule (no authentication required)
+Route::get('shipment-schedule/public', ShipmentSchedulePublicIndex::class)->name('shipment-schedule.public');
+
+// Github Webhook
 Route::post('deploy/github', [DeployController::class, 'github']);
 
 Route::view('dashboard', 'dashboard')

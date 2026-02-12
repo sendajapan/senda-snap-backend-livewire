@@ -6,7 +6,7 @@
             <!-- Profile Picture Section -->
             <div class="space-y-4">
                 <flux:heading size="sm">{{ __('Profile Picture') }}</flux:heading>
-                
+
                 <div class="flex items-start gap-6">
                     <div class="flex-shrink-0">
                         <div class="relative size-24 overflow-hidden rounded-xl ring-2 ring-blue-200 dark:ring-blue-800">
@@ -19,31 +19,31 @@
                             @endif
                         </div>
                     </div>
-                    
+
                     <div class="flex flex-1 flex-col gap-3">
                         <div class="flex items-center gap-3">
                             <label for="avatar-upload" class="cursor-pointer rounded-lg border-2 border-dashed border-blue-300 bg-blue-50/50 px-4 py-2 text-sm font-medium text-blue-700 transition-colors hover:border-blue-500 hover:bg-blue-100 dark:border-blue-700 dark:bg-blue-900/20 dark:text-blue-400 dark:hover:bg-blue-900/30">
                                 {{ __('Choose Image') }}
                             </label>
                             <input type="file" id="avatar-upload" wire:model="avatar" accept="image/*" class="hidden">
-                            
+
                             @if (auth()->user()->avatar || $avatar)
                                 <button type="button" wire:click="removeAvatar" class="rounded-lg border border-red-300 bg-white px-4 py-2 text-sm font-medium text-red-600 transition-colors hover:bg-red-50 dark:border-red-800 dark:bg-gray-800 dark:text-red-400 dark:hover:bg-red-900/20">
                                     {{ __('Remove') }}
                                 </button>
                             @endif
                         </div>
-                        
+
                         <p class="text-xs text-gray-500 dark:text-gray-400">{{ __('JPG, PNG or GIF. Max size 2MB.') }}</p>
-                        
+
                         @error('avatar')
                             <p class="text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                         @enderror
-                        
+
                         <div wire:loading wire:target="avatar" class="text-sm text-blue-600 dark:text-blue-400">
                             {{ __('Uploading...') }}
                         </div>
-                        
+
                         @if ($avatar)
                             <div class="mt-2">
                                 <flux:text class="text-sm text-gray-600 dark:text-gray-400">
@@ -60,7 +60,7 @@
             <!-- Profile Information Form -->
             <form wire:submit="updateProfileInformation" class="space-y-6">
                 <flux:heading size="sm">{{ __('Profile Information') }}</flux:heading>
-                
+
                 <flux:input wire:model="name" :label="__('Name')" type="text" required autofocus autocomplete="name" />
 
                 <div>
@@ -101,7 +101,7 @@
             <!-- Password Update Form -->
             <form wire:submit="updatePassword" class="space-y-6">
                 <flux:heading size="sm">{{ __('Update Password') }}</flux:heading>
-                
+
                 <flux:input
                     wire:model="current_password"
                     :label="__('Current password')"
@@ -109,7 +109,7 @@
                     required
                     autocomplete="current-password"
                 />
-                
+
                 <flux:input
                     wire:model="password"
                     :label="__('New password')"
@@ -117,7 +117,7 @@
                     required
                     autocomplete="new-password"
                 />
-                
+
                 <flux:input
                     wire:model="password_confirmation"
                     :label="__('Confirm Password')"

@@ -9,7 +9,7 @@
                 </svg>
             </x-slot:icon>
             <x-slot:actions>
-                <a href="https://play.google.com/store/apps/details?id=com.sendajapan.sendasnap" 
+                <a href="https://play.google.com/store/apps/details?id=com.sendajapan.sendasnap"
                    target="_blank"
                    rel="noopener noreferrer"
                    class="flex items-center gap-2 rounded-lg bg-white px-4 py-2 text-sm font-semibold text-gray-900 shadow-md transition-all hover:bg-gray-50 hover:shadow-lg dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700">
@@ -59,8 +59,8 @@
                         <div class="flex justify-center lg:justify-end">
                             <div class="w-full max-w-lg">
                                 <div class="relative overflow-hidden rounded-3xl shadow-lg">
-                                    <img src="{{ asset('assets/app-manual/feature.png') }}" 
-                                         alt="{{ __('App Features') }}" 
+                                    <img src="{{ asset('assets/app-manual/feature.png') }}"
+                                         alt="{{ __('App Features') }}"
                                          class="w-full h-auto cursor-pointer hover:opacity-90 transition-opacity manual-image"
                                         style="mask-image: radial-gradient(ellipse 80% 80% at center, black 60%, transparent 100%); -webkit-mask-image: radial-gradient(ellipse 80% 80% at center, black 60%, transparent 100%);"
                                          data-zoom-src="{{ asset('assets/app-manual/feature.png') }}"
@@ -107,7 +107,7 @@
                     <div class="flex flex-col items-center gap-6 lg:flex-row lg:justify-center lg:items-center">
                         <!-- Feature Image -->
                         <div class="flex justify-center">
-                            <x-phone-mockup 
+                            <x-phone-mockup
                                 image="assets/app-manual/vehicle-list.jpg"
                                 :alt="__('Vehicle Search & Management')"
                                 zoomable="true" />
@@ -131,7 +131,7 @@
                         <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{{ __('How It Works') }}</h3>
                         <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
                             <div class="space-y-3 flex flex-col items-center">
-                                <x-phone-mockup 
+                                <x-phone-mockup
                                     image="assets/app-manual/search-vehicle.jpg"
                                     :alt="__('Searching for Vehicles')"
                                     zoomable="true" />
@@ -157,7 +157,7 @@
                                 </div>
                             </div>
                             <div class="space-y-3 flex flex-col items-center">
-                                <x-phone-mockup 
+                                <x-phone-mockup
                                     image="assets/app-manual/vehicle-detail.jpg"
                                     :alt="__('Vehicle Details')"
                                     zoomable="true" />
@@ -183,7 +183,7 @@
                                 </div>
                             </div>
                             <div class="space-y-3 flex flex-col items-center">
-                                <x-phone-mockup 
+                                <x-phone-mockup
                                     image="assets/app-manual/vehicle-image-upload.jpg"
                                     :alt="__('Add Vehicle Photos')"
                                     zoomable="true" />
@@ -234,7 +234,7 @@
                     <div class="flex flex-col items-center gap-6 lg:flex-row lg:justify-center lg:items-center">
                         <!-- Feature Image -->
                         <div class="flex justify-center">
-                            <x-phone-mockup 
+                            <x-phone-mockup
                                 image="assets/app-manual/task-list.jpg"
                                 :alt="__('Task Dashboard')"
                                 zoomable="true" />
@@ -265,7 +265,7 @@
                         <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{{ __('How It Works') }}</h3>
                         <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
                             <div class="space-y-3 flex flex-col items-center">
-                                <x-phone-mockup 
+                                <x-phone-mockup
                                     image="assets/app-manual/task-create.jpg"
                                     :alt="__('Create Schedule')"
                                     zoomable="true" />
@@ -291,7 +291,7 @@
                                 </div>
                             </div>
                             <div class="space-y-3 flex flex-col items-center">
-                                <x-phone-mockup 
+                                <x-phone-mockup
                                     image="assets/app-manual/task-calender.jpg"
                                     :alt="__('Filter Task List')"
                                     zoomable="true" />
@@ -317,7 +317,7 @@
                                 </div>
                             </div>
                             <div class="space-y-3 flex flex-col items-center">
-                                <x-phone-mockup 
+                                <x-phone-mockup
                                     image="assets/app-manual/task-status-update.jpg"
                                     :alt="__('Update Task Status')"
                                     zoomable="true" />
@@ -362,13 +362,13 @@
                     <h2 class="text-xl font-bold text-gray-900 dark:text-white">{{ __('Team Communication (Chat)') }}
                     </h2>
                 </div>
-        
+
                 <div class="space-y-8">
                     <!-- First Div: Feature Image + Keypoints -->
                     <div class="flex flex-col items-center gap-6 lg:flex-row lg:justify-center lg:items-center">
                         <!-- Feature Image -->
                         <div class="flex justify-center">
-                            <x-phone-mockup 
+                            <x-phone-mockup
                                 image="assets/app-manual/chatting.jpg"
                                 :alt="__('Team Communication')"
                                 zoomable="true" />
@@ -396,7 +396,7 @@
                         <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{{ __('How It Works') }}</h3>
                         <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
                             <div class="space-y-3 flex flex-col items-center">
-                                <x-phone-mockup 
+                                <x-phone-mockup
                                     image="assets/app-manual/chat-icon.jpg"
                                     :alt="__('Chat List')"
                                     zoomable="true" />
@@ -422,7 +422,7 @@
                                 </div>
                             </div>
                             <div class="space-y-3 flex flex-col items-center">
-                                <x-phone-mockup 
+                                <x-phone-mockup
                                     image="assets/app-manual/start-chatting.jpg"
                                     :alt="__('Chat Messages')"
                                     zoomable="true" />
@@ -448,7 +448,7 @@
                                 </div>
                             </div>
                             <div class="space-y-3 flex flex-col items-center">
-                                <x-phone-mockup 
+                                <x-phone-mockup
                                     image="assets/app-manual/chatting.jpg"
                                     :alt="__('Share Media & Files')"
                                     zoomable="true" />
@@ -595,7 +595,7 @@
             background: linear-gradient(135deg, #ffffff 0%, #f8f8f8 100%);
             border-radius: 40px;
             border: 2px solid rgba(0, 0, 0, 0.1);
-            box-shadow: 
+            box-shadow:
                 0 10px 30px rgba(0, 0, 0, 0.2),
                 0 0 0 8px rgba(255, 255, 255, 0.1),
                 inset 0 0 20px rgba(0, 0, 0, 0.1);
@@ -608,7 +608,7 @@
 
         .dark .phone-mockup {
             background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
-            box-shadow: 
+            box-shadow:
                 0 10px 30px rgba(0, 0, 0, 0.5),
                 0 0 0 8px rgba(255, 255, 255, 0.05),
                 inset 0 0 20px rgba(0, 0, 0, 0.3);
@@ -744,14 +744,14 @@
             (function () {
                 const canvas = document.getElementById('particle-canvas');
                 if (!canvas) return;
-                
+
                 // Show canvas for this page
                 canvas.style.display = 'block';
-                
+
                 const ctx = canvas.getContext('2d');
                 let particles = [];
                 let animationId;
-                
+
                 // Set canvas size
                 function resizeCanvas() {
                     canvas.width = window.innerWidth;
@@ -759,7 +759,7 @@
                 }
                 resizeCanvas();
                 window.addEventListener('resize', resizeCanvas);
-                
+
                 // Color palette matching design system
                 const colorPalettes = {
                     light: {
@@ -783,7 +783,7 @@
                         orange: '251, 146, 60'
                     }
                 };
-                
+
                 // Particle class
                 class Particle {
                     constructor() {
@@ -793,24 +793,24 @@
                         this.speedX = (Math.random() - 0.5) * 0.5;
                         this.speedY = (Math.random() - 0.5) * 0.5;
                         this.opacity = Math.random() * 0.5 + 0.2;
-                        
+
                         // Randomly assign a color from the palette
                         const isDark = document.documentElement.classList.contains('dark');
                         const palette = isDark ? colorPalettes.dark : colorPalettes.light;
                         const colors = Object.values(palette);
                         this.color = colors[Math.floor(Math.random() * colors.length)];
                     }
-                    
+
                     update() {
                         this.x += this.speedX;
                         this.y += this.speedY;
-                        
+
                         if (this.x > canvas.width) this.x = 0;
                         if (this.x < 0) this.x = canvas.width;
                         if (this.y > canvas.height) this.y = 0;
                         if (this.y < 0) this.y = canvas.height;
                     }
-                    
+
                     draw() {
                         ctx.beginPath();
                         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
@@ -818,7 +818,7 @@
                         ctx.fill();
                     }
                 }
-                
+
                 // Create particles
                 function initParticles() {
                     particles = [];
@@ -827,7 +827,7 @@
                         particles.push(new Particle());
                     }
                 }
-                
+
                 // Draw connections
                 function drawConnections() {
                     for (let i = 0; i < particles.length; i++) {
@@ -835,7 +835,7 @@
                             const dx = particles[i].x - particles[j].x;
                             const dy = particles[i].y - particles[j].y;
                             const distance = Math.sqrt(dx * dx + dy * dy);
-                
+
                             if (distance < 120) {
                                 ctx.beginPath();
                                 // Use gradient between two particle colors - darker opacity
@@ -854,25 +854,25 @@
                         }
                     }
                 }
-                
+
                 // Animation loop
                 function animate() {
                     ctx.clearRect(0, 0, canvas.width, canvas.height);
-                    
+
                     particles.forEach(particle => {
                         particle.update();
                         particle.draw();
                     });
-                    
+
                     drawConnections();
-                    
+
                     animationId = requestAnimationFrame(animate);
                 }
-                
+
                 // Initialize and start
                 initParticles();
                 animate();
-                
+
                 // Cleanup on page unload
                 window.addEventListener('beforeunload', () => {
                     if (animationId) {

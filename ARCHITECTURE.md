@@ -11,6 +11,7 @@
 
 ### System Overview
 - [Multi-Vendor Architecture](#multi-vendor-architecture)
+- [Responsive UI Architecture](#responsive-ui-architecture)
 - [Core Modules](#core-modules)
 - [Architecture Principles](#architecture-principles)
 
@@ -30,6 +31,107 @@
 - [CRUD Checklist](#crud-feature-checklist)
 - [Testing Patterns](#testing-patterns)
 - [Best Practices](#best-practices)
+
+---
+
+## Responsive UI Architecture
+
+### Fluid Design System
+
+The application uses a **fluid responsive system** based on CSS `clamp()` tokens instead of traditional breakpoint-based media queries. This approach ensures the UI scales fluidly across all device sizes while maintaining readable typography and appropriate spacing.
+
+### Design Philosophy
+
+**Problem Solved**: Traditional breakpoint media queries create jarring jumps in layout and typography at specific screen sizes. This system provides:
+- Smooth scaling from mobile (375px) → tablet (768px) → desktop (1920px) → 4K (3840px)
+- No hardcoded breakpoints in components
+- Consistent visual rhythm across all device sizes
+- Capped maximums to prevent excessive whitespace on ultra-wide displays
+
+### Token System
+
+**Spacing Tokens** (`ui-2xs` through `ui-2xl`):
+- Fluid padding, margin, and gap values
+- Primary token: `ui-md` (used for most card and modal padding)
+- Smallest: `ui-2xs` (0.125–0.25rem), Largest: `ui-2xl` (1.5–3.5rem)
+
+**Icon Tokens** (`icon-sm`, `icon-md`, `icon-lg`):
+- Fluid container sizes for avatars and badges
+- Used with `h-icon-md w-icon-md` syntax
+
+**Typography Tokens** (`ui-xs` through `ui-4xl`):
+- Fluid font sizes with proportional line heights
+- Primary tokens: `ui-lg` for headings, `ui-sm` for body text
+- Line heights automatically decrease as font sizes grow (optical adjustment)
+
+### Component Patterns
+
+**DO**:
+```blade
+<!-- ✅ Correct: Use semantic tokens -->
+<div class="p-ui-md gap-ui-md">
+    <h2 class="text-ui-lg">Heading</h2>
+    <p class="text-ui-sm">Body text</p>
+</div>
+
+<!-- ✅ Icon scaling with [&_svg]:size-[1em] pattern -->
+<button class="text-ui-lg [&_svg]:size-[1em]">
+    <svg><!-- scales with parent text size --></svg>
+</button>
+```
+
+**DON'T**:
+```blade
+<!-- ❌ Avoid: Hardcoded sizes -->
+<div class="p-4 md:p-6 lg:p-8">Content</div>
+
+<!-- ❌ Avoid: Breakpoint-only scaling -->
+<h2 class="text-lg sm:text-xl md:text-2xl">Heading</h2>
+
+<!-- ❌ Avoid: Fixed icon sizes -->
+<svg class="h-6 w-6 sm:h-8 sm:w-8"></svg>
+```
+
+### CSS Implementation
+
+All tokens are implemented in `resources/css/app.css` using `clamp()`:
+
+```css
+@theme {
+    /* Interpolates between min and max, capped at 1920px viewport */
+    --spacing-ui-md: clamp(0.75rem, 0.63rem + 0.52vw, 1.25rem);
+    --font-size-ui-lg: clamp(1rem, 0.94rem + 0.26vw, 1.25rem);
+    --spacing-icon-md: clamp(2.5rem, 2.26rem + 1.04vw, 3.5rem);
+}
+```
+
+Formula: `clamp(min, preferred, max)`
+- **min**: Value at 375px viewport (mobile)
+- **preferred**: Fluid growth: base + viewport percentage
+- **max**: Value at 1920px (laptop), frozen at 4K+
+
+### Removed CSS
+
+Old files that have been removed from the codebase:
+- `@media (min-width: 1920px) and (max-width: 2559px)` - FHD-specific overrides
+- `@media (min-width: 2560px)` - 2K/4K-specific overrides
+- Dashboard custom classes (`.dashboard-card`, `.dashboard-heading-*`)
+- Container utilities (`.container-fhd`, `.main-content-padding`)
+
+These were replaced by the centralized fluid token system, eliminating CSS duplication and making the codebase more maintainable.
+
+### Migration Status
+
+**Completed** (11 files):
+- All modal components (8)
+- Core card components (3): `stats-card`, `task-card`, `table-card`
+- Page header component
+- Utility cards (3): `user-card`, `port-card`, `notice-modal`
+- Table row component (`task-table-row`)
+- Kanban card component (`task-card-kanban`)
+
+**Approach for Remaining Files**:
+Use the token mapping guide in [DESIGN_SYSTEM.md → Token Migration Reference](./DESIGN_SYSTEM.md#token-migration-reference) for consistent conversion patterns.
 
 ---
 

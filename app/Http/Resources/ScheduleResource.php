@@ -47,9 +47,12 @@ class ScheduleResource extends JsonResource
             'eta' => $this->eta?->format('Y-m-d'),
             'status' => $this->status,
             'comment' => $this->comment,
+            'is_public' => $this->is_public,
+            'added_by_name' => $this->added_by_name,
+            'creator_display_name' => $this->creatorDisplayName(),
             'stopovers' => ScheduleStopoverResource::collection($this->whenLoaded('stopovers')),
             'added_by' => $this->whenLoaded('addedBy', function () {
-                return new UserResource($this->addedBy);
+                return $this->addedBy ? new UserResource($this->addedBy) : null;
             }),
             'created_at' => $this->created_at?->toISOString(),
             'updated_at' => $this->updated_at?->toISOString(),

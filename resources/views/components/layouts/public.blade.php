@@ -18,8 +18,8 @@
                 </a>
             </div>
 
-            <!-- Main Content -->
-            <div class="flex w-full max-w-7xl 2xl:max-w-none mx-auto flex-col gap-4 px-4 sm:px-6 lg:px-8 xl:px-10 2xl:px-12 main-content-padding">
+            <!-- Main Content: no horizontal padding on mobile so public schedule controls its own inset -->
+            <div class="flex w-full max-w-7xl 2xl:max-w-none mx-auto flex-col gap-4 px-0 lg:px-8 xl:px-10 2xl:px-12 main-content-padding">
                 {{ $slot }}
             </div>
         </div>

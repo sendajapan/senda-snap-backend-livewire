@@ -27,7 +27,7 @@ class ScheduleStopoverController extends Controller
         $data = $request->validated();
         $data['schedule_id'] = $schedule->id;
 
-        $stopover = $this->stopoverService->create($data, auth()->id());
+        $stopover = $this->stopoverService->create($data, auth()->id(), null);
 
         return $this->successResponse('Stopover created successfully', [
             'stopover' => new ScheduleStopoverResource($stopover),

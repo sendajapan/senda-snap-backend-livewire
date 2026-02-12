@@ -103,7 +103,7 @@ class StopoverModal extends Component
                 $stopoverService->update($this->stopover, $data);
                 $message = __('Stopover updated successfully.');
             } else {
-                $stopoverService->create($data, auth()->id());
+                $stopoverService->create($data, auth()->id(), null);
                 $message = __('Stopover created successfully.');
             }
 

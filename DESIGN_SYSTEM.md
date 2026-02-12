@@ -1,8 +1,8 @@
 # Design System Documentation
 ## Laravel Livewire SaaS Application - UI/UX Patterns & Component Library
 
-> **Version**: 2.2
-> **Last Updated**: February 4, 2026
+> **Version**: 2.3
+> **Last Updated**: February 5, 2026
 > **Project**: Senda Snap - Logistics Management System
 
 ---
@@ -10,6 +10,7 @@
 ## Table of Contents
 
 ### Design Foundations
+- [Fluid Responsive System](#fluid-responsive-system)
 - [Color System](#color-system)
 - [Typography](#typography)
 - [Shadows & Depth](#shadows--depth)
@@ -31,6 +32,145 @@
 - [Dark Mode](#dark-mode)
 - [Accessibility](#accessibility)
 - [Performance](#performance)
+
+---
+
+## Fluid Responsive System
+
+### Overview
+
+The design system uses **CSS `clamp()` fluid tokens** instead of breakpoint-based media queries. This approach scales spacing, typography, and icon sizes fluidly across all device sizes (iPhone 375px → iPad 768px → FHD 1920px → 4K 3840px) with capped maximums to prevent excessive bloat on ultra-wide displays.
+
+### Spacing (Tailwind)
+
+Use **standard Tailwind spacing** for padding, margin, and gap. The project no longer uses custom fluid spacing tokens (`p-ui-md`, etc.).
+
+| Use case | Tailwind classes |
+|----------|-------------------|
+| Tiny gaps, icon padding | `gap-1`, `p-1`, `px-1` |
+| Small spacing | `gap-2`, `p-2`, `m-2` |
+| Form field / compact UI | `gap-3`, `p-3`, `px-3 py-3` |
+| **Primary: Card padding, modal padding** | `p-4`, `gap-4`, `space-y-4` |
+| Container / section spacing | `gap-5`, `p-5`, `space-y-5` |
+| Page-level spacing | `gap-6`, `p-6`, `mt-6` |
+
+**Examples**: `p-4`, `gap-3`, `space-y-4`, `m-2`, `pt-4`, `px-3 2xl:px-4` for responsive table cells.
+
+### Icon Container Tokens
+
+Icons scale with fluid containers designed for avatar/badge sizes:
+
+| Token | Mobile (375px) | Tablet (768px) | Desktop (1920px) | Max (3840px) | Usage |
+|-------|---------------|----------------|-----------------|--------------|-------|
+| `icon-sm` | 2.25rem | 2.344rem | 3rem | 3rem | Header badges, small icons |
+| `icon-md` | 2.5rem | 2.734rem | 3.5rem | 3.5rem | Modal header icons |
+| `icon-lg` | 4rem | 4.609rem | 6rem | 6rem | Avatar displays, large icons |
+
+**Usage**: `h-icon-sm w-icon-sm`, `h-icon-lg w-icon-lg`
+
+**SVG Pattern**: Icons scale using `text-lg [&_svg]:size-[1em]` so SVGs inherit sizing from the parent text size.
+
+### Typography Tokens
+
+All font sizes and line heights are fluid tokens:
+
+| Token | Mobile (375px) | Tablet (768px) | Desktop (1920px) | Max (3840px) | Line Height | Usage |
+|-------|---------------|----------------|-----------------|--------------|-------------|-------|
+| `ui-xs` | 0.6875rem | 0.738rem | 0.8125rem | 0.8125rem | 1.5 | Fine print, captions |
+| `ui-sm` | 0.75rem | 0.794rem | 0.875rem | 0.875rem | 1.5 | Body text, form labels |
+| `ui-base` | 0.875rem | 0.922rem | 1rem | 1rem | 1.6 | Default paragraph text |
+| `ui-lg` | 1rem | 1.08rem | 1.25rem | 1.25rem | 1.4 | **Primary: Headings, modal titles** |
+| `ui-xl` | 1.125rem | 1.211rem | 1.5rem | 1.5rem | 1.3 | Section headings |
+| `ui-2xl` | 1.25rem | 1.341rem | 1.875rem | 1.875rem | 1.2 | Page headings |
+| `ui-3xl` | 1.5rem | 1.631rem | 2.5rem | 2.5rem | 1.15 | Hero headings |
+| `ui-4xl` | 1.875rem | 1.965rem | 3rem | 3rem | 1.1 | Banner/display text |
+
+**Usage**: Use standard Tailwind text utilities: `text-xs`, `text-sm`, `text-base`, `text-lg`, `text-xl`, `text-2xl`, etc.
+
+### Semantic Content Text Sizes
+
+**NEW**: All content pages (Users, Vendors, etc.) use semantic text utility classes for consistent sizing across the application. These classes use CSS variables that can be globally adjusted.
+
+| Utility Class | Size | Usage |
+|--------------|------|-------|
+| `text-page-title-mobile` | 16-20px (fluid) | Page header titles (mobile) |
+| `text-page-title` | 20-30px (fluid) | Page header titles (desktop) |
+| `text-page-desc-mobile` | 12px | Page header descriptions (mobile) |
+| `text-page-desc` | 12-14px (fluid) | Page header descriptions (desktop) |
+| `text-table-header-mobile` | 10px | Table column headers (mobile) |
+| `text-table-header` | 11px | Table column headers (desktop) |
+| `text-body-lg` | 14px | **Primary content** (names, main text) |
+| `text-body-md` | 12px | **Secondary content** (emails, phones) |
+| `text-body-sm` | 11px | **Tertiary content** (company names, dates) |
+| `text-body-xs` | 10px | **Small meta info** (S/N, timestamps) |
+| `text-body-2xs` | 10.4px | **Tiny text** (badges, labels) |
+
+**Implementation**: Defined in `resources/css/app.css`:
+
+```css
+@theme {
+    /* Semantic Content Text Sizes */
+    --text-page-title-mobile: clamp(1rem, 0.94rem + 0.26vw, 1.25rem);
+    --text-page-title: clamp(1.25rem, 1.1rem + 0.65vw, 1.875rem);
+    --text-page-desc-mobile: 0.75rem;
+    --text-page-desc: clamp(0.75rem, 0.72rem + 0.13vw, 0.875rem);
+    --text-table-header-mobile: 0.625rem;
+    --text-table-header: 0.6875rem;
+    --text-body-lg: 0.875rem;
+    --text-body-md: 0.75rem;
+    --text-body-sm: 0.6875rem;
+    --text-body-xs: 0.625rem;
+    --text-body-2xs: 0.65rem;
+}
+
+@layer utilities {
+    .text-page-title { font-size: var(--text-page-title); }
+    .text-body-lg { font-size: var(--text-body-lg); }
+    /* ... other utility classes ... */
+}
+```
+
+**Usage Pattern**:
+
+```blade
+<!-- Page Header -->
+<h1 class="text-page-title-mobile md:text-page-title font-bold">{{ $title }}</h1>
+<p class="text-page-desc-mobile md:text-page-desc">{{ $description }}</p>
+
+<!-- Table Headers -->
+<th class="text-table-header-mobile md:text-table-header font-bold uppercase">Name</th>
+
+<!-- Table/Card Content -->
+<div class="text-body-lg font-semibold">{{ $user->name }}</div>
+<span class="text-body-md">{{ $user->email }}</span>
+<span class="text-body-sm">{{ $user->vendor->name }}</span>
+<span class="text-body-xs">{{ $index }}</span>
+<flux:badge class="text-body-2xs">Admin</flux:badge>
+```
+
+**Global Updates**: To change all primary content text sizes across the application, simply update the CSS variable:
+
+```css
+/* Make all primary content larger */
+--text-body-lg: 0.9375rem; /* 15px instead of 14px */
+```
+
+**Note**: Sidebar navigation uses Flux default sizing and is excluded from this system.
+
+### Key Principles
+
+1. **No Hardcoded Spacing**: Never use fixed `p-4`, `gap-3`, `m-2` directly in components
+2. **No Breakpoint-Only Scaling**: Never use `md:p-8 lg:p-16` patterns
+3. **Fluid by Default**: All responsive values use tokens with `clamp()` interpolation
+4. **Capped Maximums**: Prevents excessive whitespace on 4K+ displays
+5. **Mobile-First**: Base token values scale up fluidly; no mobile overrides needed
+
+### Spacing and Typography
+
+- **Spacing**: Use Tailwind utilities (`p-4`, `gap-3`, `space-y-4`, etc.). Use responsive variants when needed (e.g. `px-3 2xl:px-4` for table cells).
+- **Typography**: Use Tailwind text sizes (`text-xs`, `text-sm`, `text-base`, `text-lg`, etc.).
+- **Icon containers**: Fluid icon sizes are still defined in `resources/css/app.css` (`--spacing-icon-sm`, `--spacing-icon-md`, `--spacing-icon-lg`). Use `h-icon-sm w-icon-sm`, `h-icon-md w-icon-md`, or `h-icon-lg w-icon-lg` for modal/header icons and avatars.
+- **SVG icons**: Use `text-lg [&_svg]:size-[1em]` so SVGs inherit the parent text size.
 
 ---
 
@@ -143,26 +283,100 @@ shadow-sm shadow-{color}-500/50
 
 ## Typography
 
-### Headings
+### ⚠️ STRICT RULE: Use Only Standard Tailwind CSS Classes
+
+**CRITICAL**: This project uses ONLY official Tailwind CSS utility classes for typography. Custom font size classes are STRICTLY PROHIBITED.
+
+#### Why Standard Tailwind Only?
+- **Consistency**: Font sizes remain identical across all devices (iPad, desktop, 4K monitors)
+- **Maintainability**: No custom CSS to maintain or debug
+- **Predictability**: Standard Tailwind classes have well-documented behavior
+- **Performance**: Smaller CSS bundle size
+
+#### Approved Tailwind Text Classes
+
+Use ONLY these official Tailwind text size utilities:
+
+| Class | Size | Usage |
+|-------|------|-------|
+| `text-xs` | 12px | Table headers, labels, small text, badges |
+| `text-sm` | 14px | Primary content (names, titles, body text) |
+| `text-base` | 16px | Standard body text, descriptions |
+| `text-lg` | 18px | Section headings |
+| `text-xl` | 20px | Page titles (mobile) |
+| `text-2xl` | 24px | Page titles (desktop) |
+| `text-3xl` | 30px | Large headings |
+| `text-4xl` | 36px | Dashboard stats |
+
+#### Responsive Typography Pattern
+
+For content that should differ between mobile and desktop, use responsive variants:
+
+```blade
+<!-- Page title - larger on desktop -->
+<h1 class="text-lg md:text-xl font-bold text-gray-900 dark:text-white">
+    {{ $title }}
+</h1>
+
+<!-- Most content - same size on all devices -->
+<p class="text-sm text-gray-600 dark:text-gray-400">
+    {{ $description }}
+</p>
+```
+
+### Page Headers (Content Pages)
+
+```blade
+<!-- Page Title -->
+<h1 class="text-lg md:text-xl font-bold text-gray-900 dark:text-white">
+    {{ $title }}
+</h1>
+
+<!-- Page Description -->
+<p class="text-sm text-gray-600 dark:text-gray-400">
+    {{ $description }}
+</p>
+```
+
+### Content Text (Tables & Cards)
+
+```blade
+<!-- Primary content (names, titles) -->
+<div class="text-sm font-semibold text-gray-900 dark:text-white">
+    {{ $item->name }}
+</div>
+
+<!-- Secondary content (emails, phones, descriptions) -->
+<span class="text-xs text-gray-900 dark:text-white">
+    {{ $item->email }}
+</span>
+
+<!-- Small meta info (S/N, timestamps) -->
+<span class="text-xs font-semibold text-gray-600 dark:text-gray-400">
+    {{ $index }}
+</span>
+
+<!-- Badges and labels -->
+<flux:badge class="text-xs font-semibold">
+    {{ $status }}
+</flux:badge>
+```
+
+### Table Headers
+
+```blade
+<th class="text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">
+    {{ __('Column Name') }}
+</th>
+```
+
+### Dashboard Components
+
 ```css
-Page Title:    text-2xl font-bold text-gray-900 dark:text-white
-Section Title: text-xl font-bold text-gray-900 dark:text-white
-Card Title:    text-lg font-semibold text-gray-900 dark:text-white
 Stat Title:    text-sm font-medium text-accent
 Stat Count:    text-4xl font-bold text-accent
-```
-
-### Body Text
-```css
-Primary:   text-sm text-gray-900 dark:text-white
-Secondary: text-sm text-gray-600 dark:text-gray-400
-Muted:     text-xs text-gray-500 dark:text-gray-400
-```
-
-### Table Text
-```css
-Header: text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300
-Label:  text-sm font-medium text-gray-700 dark:text-gray-300
+Section Title: text-xl font-bold text-gray-900 dark:text-white
+Card Title:    text-lg font-semibold text-gray-900 dark:text-white
 ```
 
 ---
@@ -1122,6 +1336,15 @@ Before deploying any table or list view:
 ---
 
 ## Changelog
+
+### Version 2.3 (February 5, 2026)
+- Added Semantic Content Text Sizing system for global typography management
+- Created custom utility classes for consistent text sizing across all content pages
+- Introduced CSS variables for text-body-lg, text-body-md, text-body-sm, text-body-xs, text-body-2xs
+- Added page header and table header specific text size utilities
+- Documented usage patterns for table headers, table content, and card content
+- Updated Typography section with semantic text size reference
+- Applied semantic text sizing to Users and Vendors modules
 
 ### Version 2.2 (February 4, 2026)
 - Added performance rule: use eager-loaded collections (`->relationship->count()`) not relationship queries (`->relationship()->count()`)

@@ -23,6 +23,8 @@ class Schedule extends Model
         'status',
         'comment',
         'added_by',
+        'is_public',
+        'added_by_name',
     ];
 
     protected function casts(): array
@@ -30,7 +32,13 @@ class Schedule extends Model
         return [
             'status' => 'string',
             'eta' => 'date',
+            'is_public' => 'boolean',
         ];
+    }
+
+    public function creatorDisplayName(): string
+    {
+        return $this->added_by_name ?? $this->addedBy?->name ?? 'Guest';
     }
 
     public function carrier1(): BelongsTo

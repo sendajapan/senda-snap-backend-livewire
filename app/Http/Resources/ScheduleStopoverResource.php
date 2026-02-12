@@ -25,8 +25,9 @@ class ScheduleStopoverResource extends JsonResource
             'stopover_eta' => $this->stopover_eta?->toISOString(),
             'stopover_etd' => $this->stopover_etd?->toISOString(),
             'status' => $this->status,
+            'added_by_name' => $this->added_by_name,
             'added_by' => $this->whenLoaded('addedBy', function () {
-                return new UserResource($this->addedBy);
+                return $this->addedBy ? new UserResource($this->addedBy) : null;
             }),
             'created_at' => $this->created_at?->toISOString(),
             'updated_at' => $this->updated_at?->toISOString(),

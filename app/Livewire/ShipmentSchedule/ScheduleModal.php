@@ -53,6 +53,11 @@ class ScheduleModal extends Component
 
     public ?string $newStopoverEtd = null;
 
+    /** When true, create as public schedule with optional creator name (for guests) */
+    public bool $isPublicMode = false;
+
+    public ?string $creatorNameForSave = null;
+
     protected function rules(): array
     {
         return [
@@ -86,9 +91,26 @@ class ScheduleModal extends Component
     }
 
     #[On('open-schedule-modal')]
-    public function openModal(?int $scheduleId = null): void
+    public function openModal($scheduleIdOrPayload = null): void
     {
         $this->resetForm();
+
+        $scheduleId = null;
+        if (is_array($scheduleIdOrPayload)) {
+            $scheduleId = $scheduleIdOrPayload['scheduleId'] ?? null;
+            $this->isPublicMode = (bool) ($scheduleIdOrPayload['isPublic'] ?? false);
+            $this->creatorNameForSave = isset($scheduleIdOrPayload['creatorName']) ? (string) $scheduleIdOrPayload['creatorName'] : null;
+        } else {
+            $scheduleId = $scheduleIdOrPayload;
+        }
+
+        // For public guests: if creator name not in payload, use session (from ?name= in URL)
+        if ($this->isPublicMode && ! auth()->check()) {
+            $name = trim((string) ($this->creatorNameForSave ?? ''));
+            if ($name === '') {
+                $this->creatorNameForSave = trim((string) session('public_schedule_creator_name', 'Guest')) ?: 'Guest';
+            }
+        }
 
         if ($scheduleId) {
             $this->schedule = Schedule::with('stopovers.port')->findOrFail($scheduleId);
@@ -108,11 +130,13 @@ class ScheduleModal extends Component
         }
 
         $this->open = true;
+        $this->dispatch('schedule-modal-opened');
     }
 
     public function closeModal(): void
     {
         $this->open = false;
+        $this->dispatch('schedule-modal-closed');
         $this->resetForm();
     }
 
@@ -135,6 +159,8 @@ class ScheduleModal extends Component
         $this->newStopoverPortId = null;
         $this->newStopoverEta = null;
         $this->newStopoverEtd = null;
+        $this->isPublicMode = false;
+        $this->creatorNameForSave = null;
         $this->resetValidation();
     }
 
@@ -258,10 +284,26 @@ class ScheduleModal extends Component
 
             // Save schedule
             if ($this->isEditing) {
-                $schedule = $scheduleService->update($this->schedule, $data);
+                $userId = null;
+                $addedByName = null;
+                if ($this->isPublicMode) {
+                    $userId = auth()->id();
+                    if (! auth()->check()) {
+                        $name = trim((string) ($this->creatorNameForSave ?? ''));
+                        $addedByName = $name !== '' ? $name : (trim((string) session('public_schedule_creator_name', 'Guest')) ?: 'Guest');
+                    }
+                }
+                $schedule = $scheduleService->update($this->schedule, $data, $userId, $addedByName);
                 $message = __('Schedule updated successfully.');
             } else {
-                $schedule = $scheduleService->create($data, auth()->id());
+                $userId = auth()->id();
+                $addedByName = null;
+                if ($this->isPublicMode && ! auth()->check()) {
+                    $name = trim((string) ($this->creatorNameForSave ?? ''));
+                    $addedByName = $name !== '' ? $name : (trim((string) session('public_schedule_creator_name', 'Guest')) ?: 'Guest');
+                }
+                $isPublic = $this->isPublicMode;
+                $schedule = $scheduleService->create($data, $userId, $addedByName, $isPublic);
                 $message = __('Schedule created successfully.');
             }
 
@@ -295,12 +337,16 @@ class ScheduleModal extends Component
                     }
                 } else {
                     // Create new
+                    $userId = auth()->id();
+                    $addedByName = $this->isPublicMode
+                        ? (auth()->check() ? null : ($this->creatorNameForSave ?? 'Guest'))
+                        : null;
                     $stopoverService->create([
                         'schedule_id' => $schedule->id,
                         'port_id' => $stopoverData['port_id'],
                         'stopover_eta' => $stopoverData['stopover_eta'] ? date('Y-m-d 00:00:00', strtotime($stopoverData['stopover_eta'])) : null,
                         'stopover_etd' => $stopoverData['stopover_etd'] ? date('Y-m-d 00:00:00', strtotime($stopoverData['stopover_etd'])) : null,
-                    ], auth()->id());
+                    ], $userId, $addedByName);
                 }
             }
 

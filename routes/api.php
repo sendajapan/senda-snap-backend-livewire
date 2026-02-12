@@ -20,6 +20,11 @@ Route::prefix('v1')->group(function () {
         Route::post('forgot-password', [AuthController::class, 'forgotPassword']);
         Route::post('reset-password', [AuthController::class, 'resetPassword']);
     });
+
+    Route::prefix('public')->group(function () {
+        Route::get('schedules', [ScheduleController::class, 'indexPublic']);
+        Route::get('schedules/{schedule}', [ScheduleController::class, 'showPublic']);
+    });
 });
 
 // Protected routes

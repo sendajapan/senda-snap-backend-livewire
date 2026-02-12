@@ -95,6 +95,10 @@
                             :current="request()->routeIs('shipment-schedule.index')" wire:navigate class="text-sm">
                             {{ __('Shipment Schedule') }}
                         </flux:navlist.item>
+                        <flux:navlist.item :href="route('shipment-schedule.public')"
+                            :current="request()->routeIs('shipment-schedule.public')" wire:navigate class="text-sm">
+                            {{ __('Public Schedule') }}
+                        </flux:navlist.item>
                     </div>
                 </div>
 

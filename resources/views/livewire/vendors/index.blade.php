@@ -26,14 +26,15 @@
 
     <!-- Table Card -->
     <x-table-card variant="violet">
-        <div class="mb-4 flex flex-wrap gap-4">
+        <div class="mb-4 flex flex-col sm:flex-row gap-4">
             <div class="flex-1 min-w-64">
                 <flux:input
+                    class="text-xs"
                     wire:model.live.debounce.300ms="search"
                     placeholder="{{ __('Search by name, email, or phone...') }}"
                     icon="magnifying-glass" />
             </div>
-            <div class="w-48">
+            <div class="sm:w-48">
                 <flux:select wire:model.live="statusFilter" placeholder="{{ __('All Status') }}">
                     <option value="">{{ __('All Status') }}</option>
                     <option value="active">{{ __('Active') }}</option>
@@ -52,8 +53,8 @@
 
         <!-- Active Filters Display -->
         @if($search || $statusFilter)
-            <div class="mb-3 flex flex-wrap gap-2">
-                <span class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ __('Active Filters:') }}</span>
+            <div class="mb-2 flex flex-wrap gap-2">
+                <span class="text-xs font-medium text-gray-700 dark:text-gray-300">{{ __('Active Filters:') }}</span>
                 @if($search)
                     <flux:badge color="violet" size="sm">{{ __('Search:') }} "{{ $search }}"</flux:badge>
                 @endif
@@ -64,33 +65,32 @@
         @endif
 
         <!-- Table View (2xl and above) -->
-        <div class="hidden 2xl:block overflow-x-auto border rounded-xl bg-white/50 dark:border-gray-700/50 dark:bg-gray-900/20"
-             wire:key="vendors-table-{{ md5(($search ?? '').'|'.($statusFilter ?? '')) }}">
+        <div class="hidden 2xl:block overflow-x-auto border rounded-xl bg-white/50 dark:border-gray-700/50 dark:bg-gray-900/20">
             <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                 <thead>
                     <tr class="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900">
-                        <th class="px-3 md:px-6 py-3 md:py-4 text-center text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 w-16">
+                        <th class="whitespace-nowrap px-3 2xl:px-4 py-3 2xl:py-4 text-center text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 w-16">
                             {{ __('S/N') }}
                         </th>
-                        <th class="px-3 md:px-6 py-3 md:py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">
+                        <th class="whitespace-nowrap px-3 2xl:px-4 py-3 2xl:py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">
                             {{ __('Vendor Name') }}
                         </th>
-                        <th class="px-3 md:px-6 py-3 md:py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">
+                        <th class="whitespace-nowrap px-3 2xl:px-4 py-3 2xl:py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">
                             {{ __('Email') }}
                         </th>
-                        <th class="px-3 md:px-6 py-3 md:py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">
+                        <th class="whitespace-nowrap px-3 2xl:px-4 py-3 2xl:py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">
                             {{ __('Phone') }}
                         </th>
-                        <th class="px-3 md:px-6 py-3 md:py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">
+                        <th class="whitespace-nowrap px-3 2xl:px-4 py-3 2xl:py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">
                             {{ __('Status') }}
                         </th>
-                        <th class="px-3 md:px-6 py-3 md:py-4 text-center text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 hidden xl:table-cell">
+                        <th class="whitespace-nowrap px-3 2xl:px-4 py-3 2xl:py-4 text-center text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 hidden xl:table-cell">
                             {{ __('Vehicle Config') }}
                         </th>
-                        <th class="px-3 md:px-6 py-3 md:py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 hidden lg:table-cell">
+                        <th class="whitespace-nowrap px-3 2xl:px-4 py-3 2xl:py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 hidden lg:table-cell">
                             {{ __('Created At') }}
                         </th>
-                        <th class="px-3 md:px-6 py-3 md:py-4 text-center text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 w-32">
+                        <th class="whitespace-nowrap px-3 2xl:px-4 py-3 2xl:py-4 text-center text-xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300 w-32">
                             {{ __('Actions') }}
                         </th>
                     </tr>
@@ -107,7 +107,7 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3.75h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008z" />
                                         </svg>
                                     </div>
-                                    <p class="text-sm font-medium text-gray-900 dark:text-white">{{ __('No vendors found') }}</p>
+                                    <p class="text-xs font-medium text-gray-900 dark:text-white">{{ __('No vendors found') }}</p>
                                     <p class="text-xs text-gray-500 dark:text-gray-400">{{ __('Try adjusting your search or filters') }}</p>
                                 </div>
                             </td>
@@ -118,9 +118,8 @@
         </div>
 
         <!-- Stacked View (below 2xl) -->
-        <div class="2xl:hidden bg-white/50 dark:bg-gray-900/20"
-             wire:key="vendors-stacked-{{ md5(($search ?? '').'|'.($statusFilter ?? '')) }}">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 p-4">
+        <div class="2xl:hidden bg-white/50 dark:bg-gray-900/20">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-md">
                 @forelse($vendors as $vendor)
                     <x-vendor-card :vendor="$vendor" :rounded="true" wire:key="vendor-card-{{ $vendor->id }}" />
                 @empty
@@ -131,7 +130,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3.75h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008z" />
                                 </svg>
                             </div>
-                            <p class="text-sm font-medium text-gray-900 dark:text-white">{{ __('No vendors found') }}</p>
+                            <p class="text-xs font-medium text-gray-900 dark:text-white">{{ __('No vendors found') }}</p>
                             <p class="text-xs text-gray-500 dark:text-gray-400">{{ __('Try adjusting your search or filters') }}</p>
                         </div>
                     </div>

@@ -7,9 +7,9 @@
 <x-layouts.public>
     <div class="flex h-full w-full flex-1 flex-col gap-4">
         <!-- Main Header -->
-        <x-page-header 
-            :title="__('Privacy Policy & Terms of Service')" 
-            :description="__('SendaSnap Android App - Privacy Policy and Terms of Service. Last updated: :date', ['date' => $appInfo['last_updated'] ?? '2024-12-19'])" 
+        <x-page-header
+            :title="__('Privacy Policy & Terms of Service')"
+            :description="__('SendaSnap Android App - Privacy Policy and Terms of Service. Last updated: :date', ['date' => $appInfo['last_updated'] ?? '2024-12-19'])"
             variant="violet">
             <x-slot:icon>
                 <svg class="h-7 w-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -375,14 +375,14 @@
             (function() {
                 const canvas = document.getElementById('particle-canvas');
                 if (!canvas) return;
-                
+
                 // Show canvas for this page
                 canvas.style.display = 'block';
-                
+
                 const ctx = canvas.getContext('2d');
                 let particles = [];
                 let animationId;
-                
+
                 // Set canvas size
                 function resizeCanvas() {
                     canvas.width = window.innerWidth;
@@ -390,7 +390,7 @@
                 }
                 resizeCanvas();
                 window.addEventListener('resize', resizeCanvas);
-                
+
                 // Color palette matching design system
                 const colorPalettes = {
                     light: {
@@ -414,7 +414,7 @@
                         orange: '251, 146, 60'
                     }
                 };
-                
+
                 // Particle class
                 class Particle {
                     constructor() {
@@ -424,24 +424,24 @@
                         this.speedX = (Math.random() - 0.5) * 0.5;
                         this.speedY = (Math.random() - 0.5) * 0.5;
                         this.opacity = Math.random() * 0.5 + 0.2;
-                        
+
                         // Randomly assign a color from the palette
                         const isDark = document.documentElement.classList.contains('dark');
                         const palette = isDark ? colorPalettes.dark : colorPalettes.light;
                         const colors = Object.values(palette);
                         this.color = colors[Math.floor(Math.random() * colors.length)];
                     }
-                    
+
                     update() {
                         this.x += this.speedX;
                         this.y += this.speedY;
-                        
+
                         if (this.x > canvas.width) this.x = 0;
                         if (this.x < 0) this.x = canvas.width;
                         if (this.y > canvas.height) this.y = 0;
                         if (this.y < 0) this.y = canvas.height;
                     }
-                    
+
                     draw() {
                         ctx.beginPath();
                         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
@@ -449,7 +449,7 @@
                         ctx.fill();
                     }
                 }
-                
+
                 // Create particles
                 function initParticles() {
                     particles = [];
@@ -458,7 +458,7 @@
                         particles.push(new Particle());
                     }
                 }
-                
+
                 // Draw connections
                 function drawConnections() {
                     for (let i = 0; i < particles.length; i++) {
@@ -466,7 +466,7 @@
                             const dx = particles[i].x - particles[j].x;
                             const dy = particles[i].y - particles[j].y;
                             const distance = Math.sqrt(dx * dx + dy * dy);
-                
+
                             if (distance < 120) {
                                 ctx.beginPath();
                                 // Use gradient between two particle colors - darker opacity
@@ -485,25 +485,25 @@
                         }
                     }
                 }
-                
+
                 // Animation loop
                 function animate() {
                     ctx.clearRect(0, 0, canvas.width, canvas.height);
-                    
+
                     particles.forEach(particle => {
                         particle.update();
                         particle.draw();
                     });
-                    
+
                     drawConnections();
-                    
+
                     animationId = requestAnimationFrame(animate);
                 }
-                
+
                 // Initialize and start
                 initParticles();
                 animate();
-                
+
                 // Cleanup on page unload
                 window.addEventListener('beforeunload', () => {
                     if (animationId) {

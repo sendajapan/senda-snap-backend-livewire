@@ -17,6 +17,7 @@ class ScheduleStopover extends Model
         'stopover_etd',
         'status',
         'added_by',
+        'added_by_name',
     ];
 
     protected function casts(): array

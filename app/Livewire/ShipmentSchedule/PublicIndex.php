@@ -8,14 +8,31 @@ use App\Models\Port;
 use App\Models\ScheduleStopover;
 use App\Models\ShipLine;
 use App\Services\ScheduleService;
+use App\Services\ScheduleStopoverService;
 use Illuminate\View\View;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
 
-class Index extends Component
+class PublicIndex extends Component
 {
     use WithPagination;
+
+    /**
+     * Open the schedule modal in public mode (is_public = true when saving).
+     * Called from the frontend so the server forwards to the child ScheduleModal.
+     */
+    public function openScheduleModalForPublic($scheduleId = null, $creatorName = null): void
+    {
+        $payload = [
+            'scheduleId' => $scheduleId,
+            'isPublic' => true,
+            'creatorName' => $creatorName ? (string) $creatorName : null,
+        ];
+        $this->dispatch('open-schedule-modal', $payload)->to(ScheduleModal::class);
+    }
+
+    public ?string $creatorName = null;
 
     public ?string $search = null;
 
@@ -28,6 +45,23 @@ class Index extends Component
     public ?int $startPortFilter = null;
 
     public ?int $endPortFilter = null;
+
+    public function mount(): void
+    {
+        if (auth()->check()) {
+            // Logged in: always use the user's name; ignore ?name= and session
+            $this->creatorName = auth()->user()->name;
+            session()->forget('public_schedule_creator_name');
+        } else {
+            // Guest: if URL has ?name=, store in session; on reload use session; otherwise use "Guest"
+            $queryName = request()->query('name');
+            if ($queryName !== null && trim((string) $queryName) !== '') {
+                session(['public_schedule_creator_name' => trim((string) $queryName)]);
+            }
+            $saved = session('public_schedule_creator_name');
+            $this->creatorName = ($saved !== null && $saved !== '') ? trim((string) $saved) : 'Guest';
+        }
+    }
 
     public function updatedSearch($value): void
     {
@@ -79,19 +113,12 @@ class Index extends Component
     #[On('schedule-saved')]
     public function refreshSchedules(): void
     {
-        // This will trigger a re-render and refresh the schedules list
-    }
-
-    #[On('stopover-saved')]
-    public function refreshStopovers(): void
-    {
-        // This will trigger a re-render and refresh the schedules list
+        // Re-render will refresh the list
     }
 
     #[On('delete-schedule')]
     public function deleteSchedule($scheduleId = null, ?ScheduleService $scheduleService = null): void
     {
-        // Handle both direct scheduleId parameter and object/array with scheduleId property
         if (is_array($scheduleId)) {
             $scheduleId = $scheduleId['scheduleId'] ?? null;
         } elseif (is_object($scheduleId)) {
@@ -108,40 +135,29 @@ class Index extends Component
             }
             $schedule = $scheduleService->getById($scheduleId);
 
-            // Check for child records
-            $stopoverCount = $schedule->stopovers()->count();
-            $warnings = [];
-            if ($stopoverCount > 0) {
-                $warnings[] = __(':count stopover(s)', ['count' => $stopoverCount]);
+            if (! $schedule->is_public) {
+                return;
+            }
+
+            $isCreator = auth()->check() && auth()->id() === $schedule->added_by;
+            $isGuestCreator = ! auth()->check() && $schedule->added_by_name && trim((string) $schedule->added_by_name) === trim((string) session('public_schedule_creator_name', ''));
+            if (! $isCreator && ! $isGuestCreator) {
+                $this->dispatch('notify', message: __('You can only delete schedules you created.'), type: 'error');
+
+                return;
             }
 
             $scheduleService->delete($schedule);
             $this->dispatch('notify', message: __('Schedule deleted successfully.'), type: 'success');
         } catch (\Exception $e) {
-            \Log::error('Schedule delete error: '.$e->getMessage());
+            \Log::error('Public schedule delete error: '.$e->getMessage());
             $this->dispatch('notify', message: __('An error occurred while deleting the schedule.'), type: 'error');
         }
     }
 
-    /**
-     * Get child record warnings for a schedule
-     */
-    public function getScheduleWarnings(int $scheduleId): array
-    {
-        $schedule = \App\Models\Schedule::withCount('stopovers')->findOrFail($scheduleId);
-        $warnings = [];
-
-        if ($schedule->stopovers_count > 0) {
-            $warnings[] = __(':count stopover(s)', ['count' => $schedule->stopovers_count]);
-        }
-
-        return $warnings;
-    }
-
     #[On('delete-stopover')]
-    public function deleteStopover($stopoverId = null, ?\App\Services\ScheduleStopoverService $stopoverService = null): void
+    public function deleteStopover($stopoverId = null, ?ScheduleStopoverService $stopoverService = null): void
     {
-        // Handle both direct stopoverId parameter and object/array with stopoverId property
         if (is_array($stopoverId)) {
             $stopoverId = $stopoverId['stopoverId'] ?? null;
         } elseif (is_object($stopoverId)) {
@@ -153,15 +169,28 @@ class Index extends Component
         }
 
         try {
-            $stopover = ScheduleStopover::findOrFail($stopoverId);
+            $stopover = ScheduleStopover::with('schedule')->findOrFail($stopoverId);
+            $schedule = $stopover->schedule;
+
+            if (! $schedule || ! $schedule->is_public) {
+                return;
+            }
+
+            $isCreator = auth()->check() && auth()->id() === $schedule->added_by;
+            $isGuestCreator = ! auth()->check() && $schedule->added_by_name && trim((string) $schedule->added_by_name) === trim((string) session('public_schedule_creator_name', ''));
+            if (! $isCreator && ! $isGuestCreator) {
+                $this->dispatch('notify', message: __('You can only delete stopovers for schedules you created.'), type: 'error');
+
+                return;
+            }
+
             if (! $stopoverService) {
-                $stopoverService = app(\App\Services\ScheduleStopoverService::class);
+                $stopoverService = app(ScheduleStopoverService::class);
             }
             $stopoverService->delete($stopover);
             $this->dispatch('notify', message: __('Stopover deleted successfully.'), type: 'success');
-            // Refresh will happen automatically via Livewire reactivity
         } catch (\Exception $e) {
-            \Log::error('Stopover delete error: '.$e->getMessage());
+            \Log::error('Public stopover delete error: '.$e->getMessage());
             $this->dispatch('notify', message: __('An error occurred while deleting the stopover.'), type: 'error');
         }
     }
@@ -201,14 +230,15 @@ class Index extends Component
         if ($this->endPortFilter !== null) {
             $filters['end_port_id'] = $this->endPortFilter;
         }
-        $filters['is_public'] = false;
+        // Show all public schedules regardless of creator (logged-in user or guest)
+        $filters['is_public'] = true;
 
         $schedules = $scheduleService->list($filters, 15);
 
-        return view('livewire.shipment-schedule.index', [
+        return view('livewire.shipment-schedule.public-index', [
             'schedules' => $schedules,
             'providers' => $this->providers,
             'localPorts' => $this->localPorts,
-        ])->layout('components.layouts.app', ['title' => __('Shipment Schedule')]);
+        ])->layout('components.layouts.public', ['title' => __('Public Shipment Schedule')]);
     }
 }

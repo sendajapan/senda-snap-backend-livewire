@@ -17,40 +17,45 @@
              class="absolute inset-0 bg-gray-900/50 backdrop-blur-sm"></div>
 
         <!-- Modal Panel -->
-        <div class="fixed inset-0 sm:inset-y-0 sm:right-0 flex max-w-full pl-0 sm:pl-10">
+        <div class="fixed inset-0 sm:inset-y-0 sm:right-0 sm:left-auto flex max-w-full pl-0 sm:pl-10 justify-end">
             <div x-show="open"
                  x-transition:enter="transform transition ease-in-out duration-500"
-                 x-transition:enter-start="translate-y-full sm:translate-x-full"
+                 x-transition:enter-start="translate-y-full sm:translate-y-0 sm:translate-x-full"
                  x-transition:enter-end="translate-y-0 sm:translate-x-0"
                  x-transition:leave="transform transition ease-in-out duration-500"
                  x-transition:leave-start="translate-y-0 sm:translate-x-0"
-                 x-transition:leave-end="translate-y-full sm:translate-x-full"
+                 x-transition:leave-end="translate-y-full sm:translate-y-0 sm:translate-x-full"
                  class="w-full sm:w-screen sm:max-w-4xl bg-white/60 backdrop-blur-xl dark:bg-gray-800/60 sm:rounded-none rounded-t-2xl sm:rounded-t-none">
 
-                <div class="flex h-full flex-col overflow-y-auto border-t sm:border-t-0 sm:border-l border-blue-300/50 bg-white/60 shadow-xl shadow-blue-200/40 backdrop-blur-xl dark:border-blue-800/50 dark:bg-gray-800/60 dark:shadow-blue-900/30">
+                <div class="flex h-full flex-col overflow-y-auto border-t sm:border-t-0 sm:border-l {{ $isPublicMode ? 'border-gray-300/50 shadow-xl shadow-gray-200/40 dark:border-gray-700/50 dark:shadow-gray-900/30' : 'border-blue-300/50 shadow-xl shadow-blue-200/40 dark:border-blue-800/50 dark:shadow-blue-900/30' }} bg-white/60 backdrop-blur-xl dark:bg-gray-800/60">
                     <!-- Decorative Elements -->
-                    <div class="pointer-events-none absolute -right-4 sm:-right-8 -top-4 sm:-top-8 h-40 w-40 sm:h-64 sm:w-64 rounded-full bg-gradient-to-br from-blue-400/20 to-cyan-400/20 blur-3xl"></div>
-                    <div class="pointer-events-none absolute -bottom-4 sm:-bottom-8 -left-4 sm:-left-8 h-40 w-40 sm:h-64 sm:w-64 rounded-full bg-gradient-to-br from-cyan-400/20 to-blue-400/20 blur-3xl"></div>
+                    @if($isPublicMode)
+                        <div class="pointer-events-none absolute -right-4 sm:-right-8 -top-4 sm:-top-8 h-40 w-40 sm:h-64 sm:w-64 rounded-full bg-gradient-to-br from-gray-400/20 to-gray-500/20 blur-3xl"></div>
+                        <div class="pointer-events-none absolute -bottom-4 sm:-bottom-8 -left-4 sm:-left-8 h-40 w-40 sm:h-64 sm:w-64 rounded-full bg-gradient-to-br from-gray-500/20 to-gray-400/20 blur-3xl"></div>
+                    @else
+                        <div class="pointer-events-none absolute -right-4 sm:-right-8 -top-4 sm:-top-8 h-40 w-40 sm:h-64 sm:w-64 rounded-full bg-gradient-to-br from-blue-400/20 to-cyan-400/20 blur-3xl"></div>
+                        <div class="pointer-events-none absolute -bottom-4 sm:-bottom-8 -left-4 sm:-left-8 h-40 w-40 sm:h-64 sm:w-64 rounded-full bg-gradient-to-br from-cyan-400/20 to-blue-400/20 blur-3xl"></div>
+                    @endif
 
                     <!-- Header -->
-                    <div class="relative border-b border-gray-200/50 bg-white/50 px-ui-md py-ui-md backdrop-blur-sm dark:border-gray-700/50 dark:bg-gray-800/60">
-                        <div class="flex items-center justify-between gap-ui-sm">
-                            <div class="flex items-center gap-ui-sm min-w-0">
-                                <div class="flex h-icon-sm w-icon-sm flex-shrink-0 items-center justify-center rounded-lg sm:rounded-xl bg-gradient-to-br from-blue-500 to-cyan-600 shadow-lg text-ui-lg [&_svg]:size-[1em]">
+                    <div class="relative border-b border-gray-200/50 bg-white/50 px-4 py-4 backdrop-blur-sm dark:border-gray-700/50 dark:bg-gray-800/60">
+                        <div class="flex items-center justify-between gap-3">
+                            <div class="flex items-center gap-3 min-w-0">
+                                <div class="flex h-icon-sm w-icon-sm flex-shrink-0 items-center justify-center rounded-lg sm:rounded-xl shadow-lg text-base sm:text-lg [&_svg]:size-[1em] {{ $isPublicMode ? 'bg-gradient-to-br from-gray-600 to-gray-700 dark:from-gray-500 dark:to-gray-600' : 'bg-gradient-to-br from-blue-500 to-cyan-600' }}">
                                     <svg class="text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                     </svg>
                                 </div>
                                 <div class="min-w-0">
-                                    <h2 class="text-ui-lg font-bold text-gray-900 dark:text-white truncate">
+                                    <h2 class="text-base sm:text-lg font-bold text-gray-900 dark:text-white truncate">
                                         {{ $isEditing ? __('Edit Schedule') : __('Add New Schedule') }}
                                     </h2>
-                                    <p class="text-ui-sm text-gray-600 dark:text-gray-400 line-clamp-1">
+                                    <p class="text-sm text-gray-600 dark:text-gray-400 line-clamp-1">
                                         {{ $isEditing ? __('Update schedule information') : __('Create a new shipment schedule') }}
                                     </p>
                                 </div>
                             </div>
-                            <button wire:click="closeModal" type="button" class="flex-shrink-0 rounded-lg p-ui-xs text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-gray-800 dark:hover:text-gray-300 text-ui-xl [&_svg]:size-[1em]">
+                            <button wire:click="closeModal" type="button" class="flex-shrink-0 rounded-lg p-2 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-gray-800 dark:hover:text-gray-300 text-xl [&_svg]:size-[1em]">
                                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                                 </svg>
@@ -59,21 +64,21 @@
                     </div>
 
                     <!-- Form -->
-                    <form wire:submit="save" class="relative flex-1 overflow-y-auto">
-                        <div class="space-y-ui-md p-ui-md">
+                    <form wire:submit="save" class="relative flex-1 overflow-y-auto {{ $isPublicMode ? 'text-sm md:text-base' : '' }}">
+                        <div class="space-y-4 p-4">
                             <!-- Vessel Name and Voyage No (60-40 ratio) -->
-                            <div class="grid grid-cols-1 sm:grid-cols-5 gap-ui-sm">
+                            <div class="grid grid-cols-1 sm:grid-cols-5 gap-3">
                                 <div class="col-span-1 sm:col-span-3">
                                     <flux:input wire:model="vessel_name" label="{{ __('Vessel Name') }}" placeholder="{{ __('Enter vessel name') }}" required />
                                     @error('vessel_name')
-                                        <p class="mt-1 text-ui-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                                        <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                                     @enderror
                                 </div>
 
                                 <div class="col-span-1 sm:col-span-2">
                                     <flux:input wire:model="voyage_no" label="{{ __('Voyage No') }}" placeholder="{{ __('Enter voyage number') }}" required />
                                     @error('voyage_no')
-                                        <p class="mt-1 text-ui-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                                        <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                                     @enderror
                                 </div>
                             </div>
@@ -87,12 +92,12 @@
                                     @endforeach
                                 </flux:select>
                                 @error('carrier_1_id')
-                                    <p class="mt-1 text-ui-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                                    <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                                 @enderror
                             </div>
 
                             <!-- Carrier 2 and 3 (Disabled for now) -->
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-ui-sm opacity-50 pointer-events-none">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 opacity-50 pointer-events-none">
                                 <div>
                                     <flux:select wire:model="carrier_2_id" label="{{ __('Carrier 2') }}" disabled>
                                         <option value="">{{ __('Select Carrier') }}</option>
@@ -113,7 +118,7 @@
                             </div>
 
                             <!-- Ports -->
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-ui-sm">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                 <div>
                                     <flux:select wire:model="start_port_id" label="{{ __('Start Port') }}" required>
                                         <option value="">{{ __('Select Start Port') }}</option>
@@ -122,7 +127,7 @@
                                         @endforeach
                                     </flux:select>
                                     @error('start_port_id')
-                                        <p class="mt-1 text-ui-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                                        <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                                     @enderror
                                 </div>
 
@@ -134,7 +139,7 @@
                                         @endforeach
                                     </flux:select>
                                     @error('end_port_id')
-                                        <p class="mt-1 text-ui-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                                        <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                                     @enderror
                                 </div>
                             </div>
@@ -143,7 +148,7 @@
                             <div>
                                 <flux:input type="date" wire:model="eta" label="{{ __('ETA') }}" required />
                                 @error('eta')
-                                    <p class="mt-1 text-ui-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                                    <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                                 @enderror
                             </div>
 
@@ -151,14 +156,14 @@
                             <div>
                                 <flux:textarea wire:model="comment" label="{{ __('Comment') }}" placeholder="{{ __('Enter comment (optional)') }}" rows="3" />
                                 @error('comment')
-                                    <p class="mt-1 text-ui-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                                    <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                                 @enderror
                             </div>
 
                             <!-- Stopovers Section -->
-                            <div class="border-t border-gray-200/50 pt-ui-md dark:border-gray-700/50">
-                                <div class="flex items-center justify-between mb-ui-sm">
-                                    <h3 class="text-ui-lg font-semibold text-gray-900 dark:text-white">
+                            <div class="border-t border-gray-200/50 pt-4 dark:border-gray-700/50">
+                                <div class="flex items-center justify-between mb-3">
+                                    <h3 class="text-base sm:text-lg font-semibold text-gray-900 dark:text-white">
                                         {{ __('Stopovers') }}
                                     </h3>
                                     @if(!$showingAddStopover && $editingStopoverIndex === null)
@@ -175,10 +180,10 @@
 
                                 <!-- Add/Edit Stopover Form (Inline) -->
                                 @if($showingAddStopover || $editingStopoverIndex !== null)
-                                    <div class="mb-ui-sm p-ui-sm rounded-lg border border-blue-200 bg-blue-50/30 dark:border-blue-800 dark:bg-blue-900/20">
-                                        <div class="space-y-ui-md">
-                                            <div class="flex items-center justify-between mb-ui-xs">
-                                                <h4 class="text-ui-sm font-semibold text-gray-900 dark:text-white">
+                                    <div class="mb-3 p-3 rounded-lg border {{ $isPublicMode ? 'border-gray-200 bg-gray-50/50 dark:border-gray-600 dark:bg-gray-800/50' : 'border-blue-200 bg-blue-50/30 dark:border-blue-800 dark:bg-blue-900/20' }}">
+                                        <div class="space-y-4">
+                                            <div class="flex items-center justify-between mb-2">
+                                                <h4 class="text-sm font-semibold text-gray-900 dark:text-white">
                                                     {{ $editingStopoverIndex !== null ? __('Edit Stopover') : __('Add New Stopover') }}
                                                 </h4>
                                                 <button
@@ -200,7 +205,7 @@
                                                     @endforeach
                                                 </flux:select>
                                                 @error('newStopoverPortId')
-                                                    <p class="mt-1 text-ui-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                                                    <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                                                 @enderror
                                             </div>
 
@@ -208,7 +213,7 @@
                                             <div>
                                                 <flux:input type="date" wire:model="newStopoverEta" label="{{ __('Arrival (ETA)') }}" />
                                                 @error('newStopoverEta')
-                                                    <p class="mt-1 text-ui-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                                                    <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                                                 @enderror
                                             </div>
 
@@ -216,12 +221,12 @@
                                             <div>
                                                 <flux:input type="date" wire:model="newStopoverEtd" label="{{ __('Departure (ETD)') }}" />
                                                 @error('newStopoverEtd')
-                                                    <p class="mt-1 text-ui-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                                                    <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                                                 @enderror
                                             </div>
 
                                             <!-- Form Actions -->
-                                            <div class="flex items-center justify-end gap-ui-xs pt-ui-xs">
+                                            <div class="flex items-center justify-end gap-2 pt-2">
                                                 <flux:button
                                                     type="button"
                                                     wire:click="{{ $editingStopoverIndex !== null ? 'cancelEditStopover' : 'cancelAddStopover' }}"
@@ -248,10 +253,10 @@
                                         <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                                             <thead>
                                                 <tr class="bg-gray-100/50 dark:bg-gray-700/50">
-                                                    <th class="px-3 py-2 text-left text-ui-xs font-semibold uppercase text-gray-700 dark:text-gray-300">{{ __('Port') }}</th>
-                                                    <th class="px-3 py-2 text-left text-ui-xs font-semibold uppercase text-gray-700 dark:text-gray-300">{{ __('Arrival (ETA)') }}</th>
-                                                    <th class="px-3 py-2 text-left text-ui-xs font-semibold uppercase text-gray-700 dark:text-gray-300">{{ __('Departure (ETD)') }}</th>
-                                                    <th class="px-3 py-2 text-center text-ui-xs font-semibold uppercase text-gray-700 dark:text-gray-300">{{ __('Actions') }}</th>
+                                                    <th class="px-3 py-2 text-left text-xs font-semibold uppercase text-gray-700 dark:text-gray-300">{{ __('Port') }}</th>
+                                                    <th class="px-3 py-2 text-left text-xs font-semibold uppercase text-gray-700 dark:text-gray-300">{{ __('Arrival (ETA)') }}</th>
+                                                    <th class="px-3 py-2 text-left text-xs font-semibold uppercase text-gray-700 dark:text-gray-300">{{ __('Departure (ETD)') }}</th>
+                                                    <th class="px-3 py-2 text-center text-xs font-semibold uppercase text-gray-700 dark:text-gray-300">{{ __('Actions') }}</th>
                                                 </tr>
                                             </thead>
                                             <tbody class="divide-y divide-gray-200/50 dark:divide-gray-700/50">
@@ -262,11 +267,11 @@
                                                     <tr class="hover:bg-gray-50/50 dark:hover:bg-gray-700/30">
                                                         <td class="px-3 py-2 whitespace-nowrap">
                                                             <div class="flex items-center gap-2">
-                                                                <svg class="h-4 w-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <svg class="h-4 w-4 {{ $isPublicMode ? 'text-gray-500' : 'text-blue-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                                                                 </svg>
-                                                                <span class="text-ui-sm text-gray-900 dark:text-white">{{ $port->port_name ?? 'N/A' }}</span>
+                                                                <span class="text-sm text-gray-900 dark:text-white">{{ $port->port_name ?? 'N/A' }}</span>
                                                             </div>
                                                         </td>
                                                         <td class="px-3 py-2 whitespace-nowrap">
@@ -275,10 +280,10 @@
                                                                     <svg class="h-4 w-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                                                                     </svg>
-                                                                    <span class="text-ui-sm text-gray-900 dark:text-white">{{ \Carbon\Carbon::parse($stopover['stopover_eta'])->format('M d, Y') }}</span>
+                                                                    <span class="text-sm text-gray-900 dark:text-white">{{ \Carbon\Carbon::parse($stopover['stopover_eta'])->format('M d, Y') }}</span>
                                                                 </div>
                                                             @else
-                                                                <span class="text-ui-xs text-gray-400 dark:text-gray-500">{{ __('Not set') }}</span>
+                                                                <span class="text-xs text-gray-400 dark:text-gray-500">{{ __('Not set') }}</span>
                                                             @endif
                                                         </td>
                                                         <td class="px-3 py-2 whitespace-nowrap">
@@ -287,10 +292,10 @@
                                                                     <svg class="h-4 w-4 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
                                                                     </svg>
-                                                                    <span class="text-ui-sm text-gray-900 dark:text-white">{{ \Carbon\Carbon::parse($stopover['stopover_etd'])->format('M d, Y') }}</span>
+                                                                    <span class="text-sm text-gray-900 dark:text-white">{{ \Carbon\Carbon::parse($stopover['stopover_etd'])->format('M d, Y') }}</span>
                                                                 </div>
                                                             @else
-                                                                <span class="text-ui-xs text-gray-400 dark:text-gray-500">{{ __('Not set') }}</span>
+                                                                <span class="text-xs text-gray-400 dark:text-gray-500">{{ __('Not set') }}</span>
                                                             @endif
                                                         </td>
                                                         <td class="px-3 py-2 whitespace-nowrap">
@@ -298,7 +303,7 @@
                                                                 <button
                                                                     type="button"
                                                                     wire:click="editStopover({{ $index }})"
-                                                                    class="rounded-lg border-2 border-cyan-700/60 bg-cyan-500/10 p-1.5 text-cyan-700 transition-colors hover:bg-cyan-500/20"
+                                                                    class="rounded-lg border-2 p-1.5 transition-colors {{ $isPublicMode ? 'border-gray-600 bg-gray-100 dark:bg-gray-700/50 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600/50' : 'border-cyan-700/60 bg-cyan-500/10 text-cyan-700 hover:bg-cyan-500/20' }}"
                                                                     title="{{ __('Edit Stopover') }}">
                                                                     <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
@@ -322,7 +327,7 @@
                                         </table>
                                     </div>
                                 @else
-                                    <p class="text-ui-sm text-gray-500 dark:text-gray-400 text-center py-4">
+                                    <p class="text-sm text-gray-500 dark:text-gray-400 text-center py-4">
                                         {{ __('No stopovers added yet') }}
                                     </p>
                                 @endif
@@ -330,8 +335,8 @@
                         </div>
 
                         <!-- Footer Actions -->
-                        <div class="border-t border-gray-200/50 px-ui-md py-ui-sm backdrop-blur-sm dark:border-gray-700/50 dark:bg-gray-800/60">
-                            <div class="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-ui-xs">
+                        <div class="border-t border-gray-200/50 px-4 py-3 backdrop-blur-sm dark:border-gray-700/50 dark:bg-gray-800/60">
+                            <div class="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2">
                                 <flux:button type="button" wire:click="closeModal" variant="ghost" class="w-full sm:w-auto">
                                     {{ __('Cancel') }}
                                 </flux:button>

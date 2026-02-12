@@ -4,7 +4,7 @@
         @include('partials.head')
         <title>{{ config('app.name') }} - Vehicle Management & Task Scheduling</title>
     </head>
-    <body class="landing-page min-h-screen bg-white antialiased dark:bg-zinc-800">
+    <body class="landing-page min-h-screen bg-white antialiased dark:bg-zinc-800 pb-[env(safe-area-inset-bottom)]">
         <!-- Mouse Spotlight Effect (Dark Mode Only) -->
         <div id="mouse-spotlight" class="fixed pointer-events-none" style="z-index: 9999;"></div>
 
@@ -13,32 +13,32 @@
 
         <!-- Top Navigation -->
         <nav class="fixed top-0 left-0 right-0 z-50 border-b border-gray-200/50 bg-white/95 backdrop-blur-md dark:border-zinc-700/50 dark:bg-zinc-900/95 shadow-sm" x-data="{ mobileMenuOpen: false }">
-            <div class="mx-auto max-w-[1600px] 2xl:max-w-[1920px] landing-nav-container px-4 sm:px-6 lg:px-8 xl:px-10 2xl:px-12 py-3 sm:py-4">
+            <div class="mx-auto w-full max-w-7xl px-4 py-2.5 sm:px-6 sm:py-3 md:px-8 lg:px-10 pl-[max(1rem,env(safe-area-inset-left))] pr-[max(1rem,env(safe-area-inset-right))]">
                 <div class="flex items-center justify-between">
-                    <div class="flex items-center gap-8">
+                    <div class="flex items-center gap-6">
                         <a href="{{ route('home') }}" class="flex items-center group">
                             <div class="transition-transform group-hover:scale-105">
                                 <x-app-logo />
                             </div>
                         </a>
                         <!-- Desktop Menu -->
-                        <div class="hidden items-center gap-0 md:flex">
-                            <a href="{{ route('admin.manual') }}" class="rounded-lg px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-800 transition-all">
+                        <div class="hidden items-center gap-1 md:flex">
+                            <a href="{{ route('admin.manual') }}" class="rounded-lg px-3 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-800 transition-all min-h-[2.5rem] inline-flex items-center">
                                 {{ __('Admin Manual') }}
                             </a>
-                            <span class="h-4 w-px bg-gray-300/50 dark:bg-gray-700/50"></span>
-                            <a href="{{ route('android.app.manual') }}" class="rounded-lg px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-800 transition-all">
+                            <span class="h-4 w-px bg-gray-300/50 dark:bg-gray-700/50" aria-hidden="true"></span>
+                            <a href="{{ route('android.app.manual') }}" class="rounded-lg px-3 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-800 transition-all min-h-[2.5rem] inline-flex items-center">
                                 {{ __('Android Manual') }}
                             </a>
-                            <span class="h-4 w-px bg-gray-300/50 dark:bg-gray-700/50"></span>
-                            <a href="{{ route('api.docs') }}" class="rounded-lg px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-800 transition-all">
+                            <span class="h-4 w-px bg-gray-300/50 dark:bg-gray-700/50" aria-hidden="true"></span>
+                            <a href="{{ route('api.docs') }}" class="rounded-lg px-3 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-800 transition-all min-h-[2.5rem] inline-flex items-center">
                                 {{ __('API Docs') }}
                             </a>
                         </div>
                     </div>
                     <div class="flex items-center gap-3">
                         <!-- Mobile Menu Button -->
-                        <button @click="mobileMenuOpen = !mobileMenuOpen" class="rounded-lg p-2 text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800 md:hidden" aria-label="Toggle menu">
+                        <button @click="mobileMenuOpen = !mobileMenuOpen" class="rounded-lg p-2 min-h-[2.5rem] min-w-[2.5rem] flex items-center justify-center text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800 md:hidden" aria-label="Toggle menu" aria-expanded="false">
                             <svg x-show="!mobileMenuOpen" class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                             </svg>
@@ -49,11 +49,11 @@
                         <!-- Desktop Auth Buttons -->
                         <div class="hidden md:flex items-center gap-3">
                             @auth
-                                <a href="{{ route('dashboard') }}" class="rounded-lg bg-gradient-to-r from-violet-600 to-purple-600 px-5 py-2.5 text-sm font-semibold text-white transition-all hover:from-violet-700 hover:to-purple-700 hover:shadow-lg hover:shadow-violet-500/50">
+                                <a href="{{ route('dashboard') }}" class="rounded-lg bg-gradient-to-r from-violet-600 to-purple-600 px-4 py-2 text-sm font-semibold text-white transition-all hover:from-violet-700 hover:to-purple-700 hover:shadow-lg hover:shadow-violet-500/50">
                                     {{ __('Dashboard') }}
                                 </a>
                             @else
-                                <a href="{{ route('login') }}" class="rounded-lg border-1 border-gray-500 bg-white px-5 py-2.5 text-sm font-semibold text-gray-900 transition-all hover:bg-gray-50 hover:border-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700 dark:hover:border-gray-600">
+                                <a href="{{ route('login') }}" class="rounded-lg border-1 border-gray-500 bg-white px-4 py-2 text-sm font-semibold text-gray-900 transition-all hover:bg-gray-50 hover:border-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700 dark:hover:border-gray-600">
                                     {{ __('Log in') }}
                                 </a>
                             @endauth
@@ -68,7 +68,7 @@
                      x-transition:leave="transition ease-in duration-150"
                      x-transition:leave-start="opacity-100 translate-y-0"
                      x-transition:leave-end="opacity-0 -translate-y-2"
-                     class="mt-4 space-y-2 border-t border-gray-200/50 pt-4 dark:border-gray-700/50 md:hidden"
+                     class="mt-3 space-y-0.5 border-t border-gray-200/50 pt-3 pb-1.5 dark:border-gray-700/50 md:hidden"
                      style="display: none;">
                     <a href="{{ route('admin.manual') }}" class="block rounded-lg px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800">
                         {{ __('Admin Manual') }}
@@ -81,11 +81,11 @@
                     </a>
                     <div class="pt-2 border-t border-gray-200/50 dark:border-gray-700/50">
                         @auth
-                            <a href="{{ route('dashboard') }}" class="block rounded-lg bg-gradient-to-r from-violet-600 to-purple-600 px-4 py-2.5 text-sm font-semibold text-white text-center transition-all hover:from-violet-700 hover:to-purple-700">
+                            <a href="{{ route('dashboard') }}" class="block rounded-lg bg-gradient-to-r from-violet-600 to-purple-600 px-4 py-2 text-sm font-semibold text-white text-center transition-all hover:from-violet-700 hover:to-purple-700">
                                 {{ __('Dashboard') }}
                             </a>
                         @else
-                            <a href="{{ route('login') }}" class="block rounded-lg border-2 border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-900 text-center transition-all hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700">
+                            <a href="{{ route('login') }}" class="block rounded-lg border-2 border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-900 text-center transition-all hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700">
                                 {{ __('Log in') }}
                             </a>
                         @endauth
@@ -95,60 +95,60 @@
         </nav>
 
         <!-- Hero Section -->
-        <div class="relative min-h-screen w-full landing-hero pt-20 sm:pt-24 pb-8 sm:pb-12 lg:pb-16 overflow-hidden">
+        <div class="relative min-h-screen w-full landing-hero pt-[4.5rem] sm:pt-20 pb-8 sm:pb-10 md:pb-12 lg:pb-16 overflow-hidden">
             <!-- Particle Background -->
             <canvas id="particle-canvas" class="fixed inset-0 -z-10 pointer-events-none"></canvas>
             <!-- Dark smoke particles canvas -->
             <canvas id="smoke-canvas" class="fixed inset-0 -z-5 pointer-events-none"></canvas>
 
-            <div class="mx-auto max-w-[1600px] 2xl:max-w-[1920px] landing-container h-full px-4 sm:px-6 lg:px-8 xl:px-10 2xl:px-12 relative z-20">
+            <div class="mx-auto w-full max-w-7xl h-full px-4 sm:px-6 md:px-8 lg:px-10 relative z-20 pl-[max(1rem,env(safe-area-inset-left))] pr-[max(1rem,env(safe-area-inset-right))]">
                 <!-- Hero Content -->
-                <div class="text-center mb-4 sm:mb-5 lg:mb-6 landing-hero-content mt-8 sm:mt-10 lg:mt-12 xl:mt-16">
-                    <h1 class="mb-2 sm:mb-3 landing-title text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white leading-tight">
+                <div class="text-center landing-hero-content mt-6 sm:mt-8 md:mt-10 lg:mt-12 mb-6 sm:mb-8 md:mb-10">
+                    <h1 class="mb-3 sm:mb-4 landing-title text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white leading-tight tracking-tight">
                         {{ __('Manage Vehicles, Shipments & Tasks') }}
-                        <span class="block bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">
+                        <span class="block mt-0.5 sm:mt-1 bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">
                             {{ __('Seamlessly') }}
                         </span>
                     </h1>
-                    <p class="mx-auto max-w-2xl landing-subtitle text-sm sm:text-base lg:text-lg text-gray-600 dark:text-gray-400 px-4 leading-relaxed">
+                    <p class="mx-auto max-w-2xl landing-subtitle text-sm sm:text-base md:text-lg text-gray-600 dark:text-gray-400 leading-relaxed px-2 sm:px-0">
                         {{ __('Comprehensive web dashboard and Android app for vehicle management, task scheduling, and team collaboration.') }}
                     </p>
                 </div>
 
                 <!-- Features and Screenshots Side by Side -->
-                <div class="relative grid gap-4 sm:gap-5 lg:gap-6 landing-grid lg:grid-cols-2 items-center justify-items-center">
+                <div class="relative grid gap-6 sm:gap-8 lg:gap-10 landing-grid lg:grid-cols-2 items-start lg:items-center justify-items-center">
                     <!-- Features Section (Left) -->
-                    <div class="relative z-20 max-w-lg landing-features space-y-3 sm:space-y-4 lg:space-y-5 w-full flex flex-col">
+                    <div class="relative z-20 max-w-xl lg:max-w-lg landing-features space-y-4 sm:space-y-5 w-full flex flex-col">
                         <!-- Web Features -->
-                        <div class="rounded-2xl border border-violet-200 bg-gradient-to-br from-white via-violet-50/30 to-purple-50/30 p-5 sm:p-6 lg:p-7 shadow-xl dark:border-violet-900/50 dark:from-gray-900 dark:via-violet-900/20 dark:to-purple-900/20 landing-feature-card">
-                            <div class="mb-2 sm:mb-3 flex items-center gap-2">
-                                <div class="flex h-8 w-8 sm:h-9 sm:w-9 lg:h-10 lg:w-10 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 shadow-lg">
-                                    <svg class="h-4 w-4 sm:h-4 sm:w-4 lg:h-5 lg:w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div class="rounded-2xl border border-violet-200 bg-gradient-to-br from-white via-violet-50/30 to-purple-50/30 p-4 sm:p-5 shadow-xl dark:border-violet-900/50 dark:from-gray-900 dark:via-violet-900/20 dark:to-purple-900/20 landing-feature-card">
+                            <div class="mb-3 flex items-center gap-2.5">
+                                <div class="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-lg bg-gradient-to-br from-violet-500 to-purple-600 shadow-lg">
+                                    <svg class="h-3.5 w-3.5 sm:h-4 sm:w-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                                     </svg>
                                 </div>
-                                <h2 class="text-base sm:text-lg lg:text-xl font-bold text-gray-900 dark:text-white">{{ __('Web Dashboard') }}</h2>
+                                <h2 class="text-base sm:text-lg font-bold text-gray-900 dark:text-white">{{ __('Web Dashboard') }}</h2>
                             </div>
-                            <ul class="space-y-1.5 text-xs sm:text-sm lg:text-base text-gray-700 dark:text-gray-300">
-                                <li class="flex items-start gap-1.5">
+                            <ul class="space-y-2 text-xs sm:text-sm text-gray-700 dark:text-gray-300">
+                                <li class="flex items-start gap-1">
                                     <svg class="h-3.5 w-3.5 sm:h-4 sm:w-4 flex-shrink-0 mt-0.5 text-violet-600 dark:text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                                     </svg>
                                     <span class="leading-relaxed">{{ __('Comprehensive dashboard with real-time statistics and charts') }}</span>
                                 </li>
-                                <li class="flex items-start gap-1.5">
+                                <li class="flex items-start gap-1">
                                     <svg class="h-3.5 w-3.5 sm:h-4 sm:w-4 flex-shrink-0 mt-0.5 text-violet-600 dark:text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                                     </svg>
                                     <span class="leading-relaxed">{{ __('User, task, and vehicle management with advanced filtering') }}</span>
                                 </li>
-                                <li class="flex items-start gap-1.5">
+                                <li class="flex items-start gap-1">
                                     <svg class="h-3.5 w-3.5 sm:h-4 sm:w-4 flex-shrink-0 mt-0.5 text-violet-600 dark:text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                                     </svg>
                                     <span class="leading-relaxed">{{ __('Role-based access control and permissions') }}</span>
                                 </li>
-                                <li class="flex items-start gap-1.5">
+                                <li class="flex items-start gap-1">
                                     <svg class="h-3.5 w-3.5 sm:h-4 sm:w-4 flex-shrink-0 mt-0.5 text-violet-600 dark:text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                                     </svg>
@@ -158,35 +158,35 @@
                         </div>
 
                         <!-- Android Features -->
-                        <div class="rounded-2xl border border-emerald-200 bg-gradient-to-br from-white via-emerald-50/30 to-teal-50/30 p-5 sm:p-6 lg:p-7 shadow-xl dark:border-emerald-900/50 dark:from-gray-900 dark:via-emerald-900/20 dark:to-teal-900/20 landing-feature-card">
-                            <div class="mb-2 sm:mb-3 flex items-center gap-2">
-                                <div class="flex h-8 w-8 sm:h-9 sm:w-9 lg:h-10 lg:w-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 shadow-lg">
-                                    <svg class="h-4 w-4 sm:h-4 sm:w-4 lg:h-5 lg:w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div class="rounded-2xl border border-emerald-200 bg-gradient-to-br from-white via-emerald-50/30 to-teal-50/30 p-4 sm:p-5 shadow-xl dark:border-emerald-900/50 dark:from-gray-900 dark:via-emerald-900/20 dark:to-teal-900/20 landing-feature-card">
+                            <div class="mb-3 flex items-center gap-2.5">
+                                <div class="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-500 to-teal-600 shadow-lg">
+                                    <svg class="h-3.5 w-3.5 sm:h-4 sm:w-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
                                     </svg>
                                 </div>
-                                <h2 class="text-base sm:text-lg lg:text-xl font-bold text-gray-900 dark:text-white">{{ __('Android App') }}</h2>
+                                <h2 class="text-base sm:text-lg font-bold text-gray-900 dark:text-white">{{ __('Android App') }}</h2>
                             </div>
-                            <ul class="space-y-1.5 text-xs sm:text-sm lg:text-base text-gray-700 dark:text-gray-300">
-                                <li class="flex items-start gap-1.5">
+                            <ul class="space-y-2 text-xs sm:text-sm text-gray-700 dark:text-gray-300">
+                                <li class="flex items-start gap-1">
                                     <svg class="h-3.5 w-3.5 sm:h-4 sm:w-4 flex-shrink-0 mt-0.5 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                                     </svg>
                                     <span class="leading-relaxed">{{ __('Vehicle search and management on the go') }}</span>
                                 </li>
-                                <li class="flex items-start gap-1.5">
+                                <li class="flex items-start gap-1">
                                     <svg class="h-3.5 w-3.5 sm:h-4 sm:w-4 flex-shrink-0 mt-0.5 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                                     </svg>
                                     <span class="leading-relaxed">{{ __('Task and schedule management with notifications') }}</span>
                                 </li>
-                                <li class="flex items-start gap-1.5">
+                                <li class="flex items-start gap-1">
                                     <svg class="h-3.5 w-3.5 sm:h-4 sm:w-4 flex-shrink-0 mt-0.5 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                                     </svg>
                                     <span class="leading-relaxed">{{ __('Real-time team chat and communication') }}</span>
                                 </li>
-                                <li class="flex items-start gap-1.5">
+                                <li class="flex items-start gap-1">
                                     <svg class="h-3.5 w-3.5 sm:h-4 sm:w-4 flex-shrink-0 mt-0.5 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                                     </svg>
@@ -199,10 +199,10 @@
                         <a href="https://play.google.com/store/apps/details?id=com.sendajapan.sendasnap"
                            target="_blank"
                            rel="noopener noreferrer"
-                           class="group block rounded-2xl border border-emerald-200 bg-gradient-to-br from-white via-emerald-50/30 to-teal-50/30 p-5 sm:p-6 lg:p-7 shadow-xl transition-all hover:scale-[1.02] hover:shadow-2xl hover:shadow-emerald-500/20 dark:border-emerald-900/50 dark:from-gray-900 dark:via-emerald-900/20 dark:to-teal-900/20 dark:hover:shadow-emerald-500/10 landing-feature-card">
+                           class="group block rounded-2xl border border-emerald-200 bg-gradient-to-br from-white via-emerald-50/30 to-teal-50/30 p-4 sm:p-5 shadow-xl transition-all hover:scale-[1.02] hover:shadow-2xl hover:shadow-emerald-500/20 dark:border-emerald-900/50 dark:from-gray-900 dark:via-emerald-900/20 dark:to-teal-900/20 dark:hover:shadow-emerald-500/10 landing-feature-card">
                             <div class="flex flex-col items-center text-center">
                                 <!-- App Icon -->
-                                <div class="mb-4 sm:mb-5 lg:mb-6 flex h-20 w-20 sm:h-24 sm:w-24 lg:h-28 lg:w-28 items-center justify-center transition-transform group-hover:scale-110 relative">
+                                <div class="mb-4 sm:mb-5 flex h-20 w-20 sm:h-24 sm:w-24 lg:h-28 lg:w-28 items-center justify-center transition-transform group-hover:scale-110 relative">
                                     <!-- Faded white smoke background -->
                                     <div class="absolute inset-0 rounded-3xl bg-gradient-to-br from-white/40 via-white/30 to-white/20 dark:from-white/50 dark:via-white/40 dark:to-white/30 backdrop-blur-sm shadow-lg"></div>
                                     <img src="https://play-lh.googleusercontent.com/WXLRHhKAqge_MSE5lTZewLN53eVVwQGwS-3mT6eb0rzAeVz2Pp5mrw_3sDk1dxUPZkOopFGW1qEfTz5e5WRT=w480-h960-rw"
@@ -211,13 +211,13 @@
                                 </div>
 
                                 <!-- App Information -->
-                                <h3 class="mb-1 sm:mb-2 text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 dark:text-white">{{ __('Senda Snap') }}</h3>
-                                <p class="mb-3 sm:mb-4 text-xs sm:text-sm lg:text-base text-gray-600 dark:text-gray-400 px-2">
+                                <h3 class="mb-1.5 sm:mb-2 text-lg sm:text-xl font-bold text-gray-900 dark:text-white">{{ __('Senda Snap') }}</h3>
+                                <p class="mb-3 sm:mb-4 text-xs sm:text-sm text-gray-600 dark:text-gray-400 px-2 max-w-sm mx-auto">
                                     {{ __('Your Complete Vehicle Image Management & Team Collaboration Solution') }}
                                 </p>
 
                                 <!-- App Details -->
-                                <div class="mb-4 sm:mb-5 lg:mb-6 flex flex-wrap items-center justify-center gap-3 sm:gap-4 text-xs sm:text-sm text-gray-500 dark:text-gray-400">
+                                <div class="mb-4 sm:mb-5 flex flex-wrap items-center justify-center gap-3 sm:gap-4 text-xs text-gray-500 dark:text-gray-400">
                                     <div class="flex items-center gap-1">
                                         <svg class="h-4 w-4 sm:h-5 sm:w-5" fill="currentColor" viewBox="0 0 24 24">
                                             <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4M12,6A6,6 0 0,0 6,12A6,6 0 0,0 12,18A6,6 0 0,0 18,12A6,6 0 0,0 12,6M12,8A4,4 0 0,1 16,12A4,4 0 0,1 12,16A4,4 0 0,1 8,12A4,4 0 0,1 12,8Z" />
@@ -236,9 +236,9 @@
                                 <div class="flex items-center justify-center">
                                     <img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"
                                          alt="{{ __('Get it on Google Play') }}"
-                                         class="h-10 sm:h-12 lg:h-14 transition-transform group-hover:scale-105"
+                                         class="h-9 sm:h-10 lg:h-12 transition-transform group-hover:scale-105"
                                          onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                                    <div class="hidden items-center gap-2 rounded-lg bg-gradient-to-r from-emerald-600 to-teal-600 px-4 sm:px-6 py-2 sm:py-3 text-xs sm:text-sm lg:text-base font-semibold text-white shadow-md transition-all group-hover:from-emerald-700 group-hover:to-teal-700 group-hover:shadow-lg">
+                                    <div class="hidden items-center gap-2 rounded-lg bg-gradient-to-r from-emerald-600 to-teal-600 px-3 sm:px-5 py-1.5 sm:py-2 text-xs sm:text-sm font-semibold text-white shadow-md transition-all group-hover:from-emerald-700 group-hover:to-teal-700 group-hover:shadow-lg">
                                         <svg class="h-5 w-5 sm:h-6 sm:w-6" viewBox="0 0 24 24" fill="currentColor">
                                             <path d="M3,20.5V3.5C3,2.91 3.34,2.39 3.84,2.15L13.69,12L3.84,21.85C3.34,21.6 3,21.09 3,20.5M16.81,15.12L6.05,21.34L14.54,12.85L16.81,15.12M20.16,10.81C20.5,11.08 20.75,11.5 20.75,12C20.75,12.5 20.5,12.92 20.16,13.19L17.19,15.53L15.12,13.46L17.47,12L15.12,10.54L17.19,8.47L20.16,10.81M6.05,2.66L16.81,8.88L14.54,11.15L6.05,2.66Z" />
                                         </svg>
@@ -250,9 +250,9 @@
                     </div>
 
                     <!-- Screenshots Section (Right) -->
-                    <div class="relative flex items-center justify-center w-full z-30">
+                    <div class="relative flex items-center justify-center w-full z-30 mt-4 lg:mt-0">
                         <!-- Monitor Mockup -->
-                        <div class="relative z-30 -mr-12 hidden lg:block">
+                        <div class="relative z-30 -mr-8 xl:-mr-12 hidden lg:block">
                             <div class="monitor-mockup">
                                 <div class="monitor-frame">
                                     <div class="monitor-screen">
@@ -291,11 +291,11 @@
             }
 
             .monitor-frame {
-                width: 480px;
+                width: min(420px, 85vw);
                 max-width: 100%;
                 background: #ffffff;
-                border-radius: 12px;
-                padding: 12px;
+                border-radius: 10px;
+                padding: 10px;
                 box-shadow:
                     0 4px 20px rgba(0, 0, 0, 0.1),
                     0 0 0 1px rgba(0, 0, 0, 0.05),
@@ -390,7 +390,7 @@
             /* Phone Mockup (reuse from android manual) */
             .phone-mockup {
                 display: inline-block;
-                padding: 12px;
+                padding: 10px;
                 background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
                 border-radius: 40px;
                 box-shadow:
@@ -408,7 +408,7 @@
             }
 
             .phone-frame {
-                width: 220px;
+                width: min(200px, 50vw);
                 max-width: 100%;
                 background: transparent;
                 border-radius: 32px;
@@ -420,7 +420,7 @@
             /* FHD: Compact sizing */
             @media (min-width: 1920px) and (max-width: 2559px) {
                 .phone-frame {
-                    width: 200px;
+                    width: 190px;
                 }
             }
 
@@ -486,19 +486,19 @@
                     margin: 0 auto;
                 }
                 .phone-frame {
-                    width: 220px;
+                    width: min(200px, 50vw);
                 }
             }
 
             @media (max-width: 768px) {
                 .phone-frame {
-                    width: 200px;
+                    width: min(180px, 48vw);
                 }
             }
 
             @media (max-width: 640px) {
                 .phone-frame {
-                    width: 180px;
+                    width: min(160px, 45vw);
                 }
             }
 

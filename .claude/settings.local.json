@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(php artisan:*)",
+      "Bash(npm run build:*)",
+      "WebFetch(domain:cdn.dribbble.com)",
+      "WebSearch",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nstyle: tighten landing page spacing for a more compact, professional layout\n\nReduce margins, padding, font sizes, gaps, and mockup dimensions across\nnav, hero, feature cards, and Play Store sections for a denser feel.\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git push:*)"
+    ]
+  }
+}

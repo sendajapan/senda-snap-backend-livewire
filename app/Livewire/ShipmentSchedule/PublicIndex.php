@@ -233,7 +233,7 @@ class PublicIndex extends Component
         // Show all public schedules regardless of creator (logged-in user or guest)
         $filters['is_public'] = true;
 
-        $schedules = $scheduleService->list($filters, 15);
+        $schedules = $scheduleService->list($filters, 100);
 
         $exportQuery = [];
         if ($this->search !== null && $this->search !== '') {

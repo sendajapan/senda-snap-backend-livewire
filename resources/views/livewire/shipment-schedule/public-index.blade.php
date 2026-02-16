@@ -352,8 +352,15 @@
             @endforelse
         </div>
 
-        <div class="mt-4 flex justify-center">
-            {{ $schedules->links() }}
+        <div class="mt-4 flex flex-wrap items-center justify-between gap-3">
+            <p class="text-sm text-gray-600 dark:text-gray-400">
+                {{ __('Showing :first to :last of :total results', [
+                    'first' => $schedules->isEmpty() ? 0 : $schedules->firstItem(),
+                    'last' => $schedules->isEmpty() ? 0 : $schedules->lastItem(),
+                    'total' => $schedules->total(),
+                ]) }}
+            </p>
+            <div>{{ $schedules->links() }}</div>
         </div>
     </x-table-card>
 

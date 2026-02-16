@@ -86,6 +86,27 @@
     /* Only standard Tailwind utilities - no custom font sizes */
 }
 
+/* Animated shimmer for upload progress bar */
+@keyframes upload-progress-shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+.upload-progress-shimmer {
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+    background-size: 200% 100%;
+    animation: upload-progress-shimmer 1.5s ease-in-out infinite;
+}
+
+/* SVG flowchart / ER-diagram connector animation */
+@keyframes route-svg-dash {
+    0% { stroke-dashoffset: 20; }
+    100% { stroke-dashoffset: 0; }
+}
+
+.route-svg-line {
+    animation: route-svg-dash 0.8s linear infinite;
+}
+
 [data-flux-field]:not(ui-radio, ui-checkbox) {
     @apply grid gap-2;
 }

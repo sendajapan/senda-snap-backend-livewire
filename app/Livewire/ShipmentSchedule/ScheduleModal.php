@@ -38,6 +38,8 @@ class ScheduleModal extends Component
 
     public ?string $eta = null;
 
+    public ?string $etd = null;
+
     public ?string $comment = null;
 
     // Stopover management
@@ -69,6 +71,7 @@ class ScheduleModal extends Component
             'start_port_id' => ['required', 'exists:ports,id'],
             'end_port_id' => ['required', 'exists:ports,id'],
             'eta' => ['required', 'date'],
+            'etd' => ['nullable', 'date'],
             'comment' => ['nullable', 'string'],
         ];
     }
@@ -84,6 +87,7 @@ class ScheduleModal extends Component
             'end_port_id.exists' => 'Selected end port does not exist.',
             'eta.required' => 'ETA is required.',
             'eta.date' => 'ETA must be a valid date.',
+            'etd.date' => 'ETD must be a valid date.',
             'carrier_1_id.exists' => 'Selected carrier 1 does not exist.',
             'carrier_2_id.exists' => 'Selected carrier 2 does not exist.',
             'carrier_3_id.exists' => 'Selected carrier 3 does not exist.',
@@ -123,6 +127,7 @@ class ScheduleModal extends Component
             $this->start_port_id = $this->schedule->start_port_id;
             $this->end_port_id = $this->schedule->end_port_id;
             $this->eta = $this->schedule->eta ? $this->schedule->eta->format('Y-m-d') : null;
+            $this->etd = $this->schedule->etd ? $this->schedule->etd->format('Y-m-d') : null;
             $this->comment = $this->schedule->comment;
             $this->loadExistingStopovers();
         } else {
@@ -152,6 +157,7 @@ class ScheduleModal extends Component
         $this->start_port_id = null;
         $this->end_port_id = null;
         $this->eta = null;
+        $this->etd = null;
         $this->comment = null;
         $this->stopovers = [];
         $this->showingAddStopover = false;
@@ -279,6 +285,7 @@ class ScheduleModal extends Component
                 'start_port_id' => $this->start_port_id,
                 'end_port_id' => $this->end_port_id,
                 'eta' => $this->eta ? date('Y-m-d', strtotime($this->eta)) : null,
+                'etd' => $this->etd ? date('Y-m-d', strtotime($this->etd)) : null,
                 'comment' => $this->comment,
             ];
 

@@ -41,11 +41,19 @@
             <flux:icon.paper-airplane class="h-7 w-7 text-white" />
         </x-slot:icon>
         <x-slot:actions>
-            <span class="hidden md:inline-block">
-                <flux:button @click="openScheduleModal()" icon="plus" variant="outline" class="cursor-pointer">
-                    {{ __('Add Schedule') }}
+            <div class="flex flex-wrap items-center gap-2">
+                <flux:button href="{{ $exportUrl }}" icon="arrow-down-tray" variant="outline" class="cursor-pointer text-green-600 hover:text-green-700 hover:border-green-500 dark:text-green-400 dark:hover:text-green-300 [&_svg]:text-green-600 dark:[&_svg]:text-green-400">
+                    {{ __('Export Excel') }}
                 </flux:button>
-            </span>
+                <flux:button href="{{ route('shipment-schedule.public.import') }}" icon="arrow-up-tray" variant="outline" class="cursor-pointer text-gray-800 hover:text-gray-900 dark:text-gray-200 dark:hover:text-white [&_svg]:text-gray-700 dark:[&_svg]:text-gray-300" wire:navigate>
+                    {{ __('Import Excel') }}
+                </flux:button>
+                <span class="hidden md:inline-block">
+                    <flux:button @click="openScheduleModal()" icon="plus" variant="outline" class="cursor-pointer">
+                        {{ __('Add Schedule') }}
+                    </flux:button>
+                </span>
+            </div>
         </x-slot:actions>
     </x-page-header>
 

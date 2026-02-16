@@ -20,6 +20,7 @@ class Schedule extends Model
         'start_port_id',
         'end_port_id',
         'eta',
+        'etd',
         'status',
         'comment',
         'added_by',
@@ -32,6 +33,7 @@ class Schedule extends Model
         return [
             'status' => 'string',
             'eta' => 'date',
+            'etd' => 'date',
             'is_public' => 'boolean',
         ];
     }

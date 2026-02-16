@@ -235,10 +235,32 @@ class PublicIndex extends Component
 
         $schedules = $scheduleService->list($filters, 15);
 
+        $exportQuery = [];
+        if ($this->search !== null && $this->search !== '') {
+            $exportQuery['search'] = $this->search;
+        }
+        if ($this->vesselFilter !== null && $this->vesselFilter !== '') {
+            $exportQuery['vessel'] = $this->vesselFilter;
+        }
+        if ($this->voyageFilter !== null && $this->voyageFilter !== '') {
+            $exportQuery['voyage'] = $this->voyageFilter;
+        }
+        if ($this->carrierFilter !== null) {
+            $exportQuery['carrier_id'] = $this->carrierFilter;
+        }
+        if ($this->startPortFilter !== null) {
+            $exportQuery['start_port_id'] = $this->startPortFilter;
+        }
+        if ($this->endPortFilter !== null) {
+            $exportQuery['end_port_id'] = $this->endPortFilter;
+        }
+        $exportUrl = route('shipment-schedule.public.export').(count($exportQuery) > 0 ? '?'.http_build_query($exportQuery) : '');
+
         return view('livewire.shipment-schedule.public-index', [
             'schedules' => $schedules,
             'providers' => $this->providers,
             'localPorts' => $this->localPorts,
+            'exportUrl' => $exportUrl,
         ])->layout('components.layouts.public', ['title' => __('Public Shipment Schedule')]);
     }
 }

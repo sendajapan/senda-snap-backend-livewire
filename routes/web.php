@@ -7,12 +7,14 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DeployController;
 use App\Http\Controllers\LandingPageController;
 use App\Http\Controllers\PrivacyPolicyController;
+use App\Http\Controllers\ShipmentSchedulePublicExportController;
 use App\Livewire\Notices\Index as NoticesIndex;
 use App\Livewire\Ports\Index as PortsIndex;
 use App\Livewire\Settings\Appearance;
 use App\Livewire\Settings\Profile;
 use App\Livewire\Settings\TwoFactor;
 use App\Livewire\ShipmentSchedule\Index as ShipmentScheduleIndex;
+use App\Livewire\ShipmentSchedule\PublicImport as ShipmentSchedulePublicImport;
 use App\Livewire\ShipmentSchedule\PublicIndex as ShipmentSchedulePublicIndex;
 use App\Livewire\ShippingCompanies\Index as ShippingCompaniesIndex;
 use App\Livewire\Tasks\AllTasks;
@@ -37,6 +39,8 @@ Route::get('android-app-manual', [AndroidAppManualController::class, 'index'])->
 
 // Public Shipment Schedule (no authentication required)
 Route::get('shipment-schedule/public', ShipmentSchedulePublicIndex::class)->name('shipment-schedule.public');
+Route::get('shipment-schedule/public/export', ShipmentSchedulePublicExportController::class)->name('shipment-schedule.public.export');
+Route::get('shipment-schedule/public/import', ShipmentSchedulePublicImport::class)->name('shipment-schedule.public.import');
 
 // Github Webhook
 Route::post('deploy/github', [DeployController::class, 'github']);

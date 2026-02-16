@@ -23,3 +23,15 @@ test('public shipment schedule page accepts name query param', function () {
         ->assertStatus(200)
         ->assertSee('John');
 });
+
+test('anyone can visit public shipment schedule export url', function () {
+    $response = $this->get('/shipment-schedule/public/export');
+    $response->assertSuccessful();
+    $response->assertDownload('schedules.xlsx');
+});
+
+test('anyone can visit public shipment schedule import page', function () {
+    $this->get('/shipment-schedule/public/import')
+        ->assertStatus(200)
+        ->assertSee('Import Shipment Schedule');
+});

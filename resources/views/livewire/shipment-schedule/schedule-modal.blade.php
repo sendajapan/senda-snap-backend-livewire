@@ -152,6 +152,14 @@
                                 @enderror
                             </div>
 
+                            <!-- ETD -->
+                            <div>
+                                <flux:input type="date" wire:model="etd" label="{{ __('ETD') }}" />
+                                @error('etd')
+                                    <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                                @enderror
+                            </div>
+
                             <!-- Comment -->
                             <div>
                                 <flux:textarea wire:model="comment" label="{{ __('Comment') }}" placeholder="{{ __('Enter comment (optional)') }}" rows="3" />

@@ -45,7 +45,12 @@
                     .import-table-sharp [data-flux-input],
                     .import-table-sharp [data-flux-input] input,
                     .import-table-sharp [data-flux-input] textarea,
-                    .import-table-sharp textarea {
+                    .import-table-sharp input[data-flux-control],
+                    .import-table-sharp textarea[data-flux-control],
+                    .import-table-sharp div[data-flux-input] > input,
+                    .import-table-sharp td input,
+                    .import-table-sharp td textarea,
+                    .import-table-sharp td [data-flux-input] {
                         border-radius: 0 !important;
                     }
                 </style>

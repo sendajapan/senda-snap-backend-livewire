@@ -43,6 +43,8 @@
                         progressStage: $wire.entangle('progressStage').live,
                         parsingTicker: null,
                         smoothTicker: null,
+                        logs: [],
+                        logTimers: [],
                         init() {
                             this.$watch('isParsing', value => {
                                 if (!value && this.parsingTicker) {
@@ -51,10 +53,44 @@
                                 }
                             });
                         },
+                        timestamp() {
+                            const d = new Date();
+                            return d.toLocaleTimeString('en-GB', { hour12: false }) + '.' + String(d.getMilliseconds()).padStart(3, '0');
+                        },
+                        pushLog(msg, type) {
+                            this.logs.push({ time: this.timestamp(), msg, type: type || 'info' });
+                            this.$nextTick(() => {
+                                const el = this.$refs.logBox;
+                                if (el) el.scrollTop = el.scrollHeight;
+                            });
+                        },
+                        clearLogTimers() {
+                            this.logTimers.forEach(t => clearTimeout(t));
+                            this.logTimers = [];
+                        },
                         startSmoothProgress() {
                             if (this.smoothTicker) clearInterval(this.smoothTicker);
+                            this.clearLogTimers();
                             this.smoothProgress = 0;
                             this.uploading = true;
+                            this.logs = [];
+
+                            this.pushLog('Initializing file upload...', 'info');
+
+                            const steps = [
+                                [300,  'Uploading file to server...', 'upload'],
+                                [700,  'Upload in progress...', 'upload'],
+                                [1200, 'Reading Excel file...', 'read'],
+                                [1600, 'Extracting spreadsheet data...', 'extract'],
+                                [1900, 'Mapping data with database...', 'map'],
+                                [2200, 'Validating row entries...', 'map'],
+                                [2500, 'Generating confirmation page...', 'generate'],
+                                [2800, 'Almost done...', 'generate'],
+                            ];
+                            steps.forEach(([delay, msg, type]) => {
+                                this.logTimers.push(setTimeout(() => this.pushLog(msg, type), delay));
+                            });
+
                             const target = 78;
                             const duration = 2000;
                             const startTime = Date.now();
@@ -82,8 +118,8 @@
                         }
                     }"
                     x-on:livewire-upload-start="startSmoothProgress()"
-                    x-on:livewire-upload-finish="uploading = false"
-                    x-on:livewire-upload-error="uploading = false; smoothProgress = 0; if (smoothTicker) { clearInterval(smoothTicker); smoothTicker = null; }">
+                    x-on:livewire-upload-finish="uploading = false; pushLog('Upload complete. Processing...', 'success')"
+                    x-on:livewire-upload-error="uploading = false; smoothProgress = 0; clearLogTimers(); pushLog('Upload failed.', 'error'); if (smoothTicker) { clearInterval(smoothTicker); smoothTicker = null; }">
                     <flux:field>
                         <flux:label>{{ __('Excel file') }}</flux:label>
                         <label
@@ -124,27 +160,21 @@
                                         <span class="upload-progress-shimmer absolute inset-0 block h-full w-full" aria-hidden="true"></span>
                                     </div>
                                 </div>
-                                <div class="mt-3 text-xs text-gray-600 dark:text-gray-400 space-y-1">
-                                    <div x-show="!isParsing" class="flex items-center gap-2">
-                                        <span class="inline-block h-2 w-2 rounded-full bg-cyan-500"></span>
-                                        {{ __('uploading') }}
-                                    </div>
-                                    <div x-show="isParsing && progressStage === 'reading'" class="flex items-center gap-2">
-                                        <span class="inline-block h-2 w-2 animate-pulse rounded-full bg-cyan-500"></span>
-                                        {{ __('reading excel') }}
-                                    </div>
-                                    <div x-show="isParsing && (progressStage === 'extracting' || progressStage === 'mapping' || progressStage === 'generating')" class="flex items-center gap-2">
-                                        <span class="inline-block h-2 w-2 animate-pulse rounded-full bg-cyan-500"></span>
-                                        {{ __('extracting') }}
-                                    </div>
-                                    <div x-show="isParsing && (progressStage === 'mapping' || progressStage === 'generating')" class="flex items-center gap-2">
-                                        <span class="inline-block h-2 w-2 animate-pulse rounded-full bg-cyan-500"></span>
-                                        {{ __('mapping with database') }}
-                                    </div>
-                                    <div x-show="isParsing && progressStage === 'generating'" class="flex items-center gap-2">
-                                        <span class="inline-block h-2 w-2 animate-pulse rounded-full bg-cyan-500"></span>
-                                        {{ __('generating confirmation page') }}
-                                    </div>
+                                <div x-show="logs.length > 0" x-ref="logBox" class="mt-3 max-h-36 overflow-y-auto rounded border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 font-mono text-xs leading-relaxed">
+                                    <template x-for="(log, i) in logs" :key="i">
+                                        <div class="flex gap-2 px-2.5 py-1 border-b border-gray-100 dark:border-gray-800 last:border-b-0">
+                                            <span class="shrink-0 text-cyan-600 dark:text-cyan-400" x-text="log.time"></span>
+                                            <span :class="{
+                                                'text-blue-600 dark:text-blue-400': log.type === 'upload',
+                                                'text-amber-600 dark:text-amber-400': log.type === 'read',
+                                                'text-violet-600 dark:text-violet-400': log.type === 'extract',
+                                                'text-indigo-600 dark:text-indigo-400': log.type === 'map',
+                                                'text-emerald-600 dark:text-emerald-400': log.type === 'generate' || log.type === 'success',
+                                                'text-red-600 dark:text-red-400': log.type === 'error',
+                                                'text-gray-600 dark:text-gray-400': log.type === 'info',
+                                            }" x-text="log.msg"></span>
+                                        </div>
+                                    </template>
                                 </div>
                             </div>
                         </label>

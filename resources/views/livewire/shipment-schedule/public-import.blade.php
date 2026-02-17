@@ -27,7 +27,7 @@
                                 {{ __('Download and review the sample file to ensure your data matches the required format.') }}
                             </p>
                             <div class="mt-2">
-                                <flux:button href="{{ route('shipment-schedule.public.download-sample') }}" variant="ghost" size="sm" icon="arrow-down-tray" class="text-blue-600 dark:text-blue-400">
+                                <flux:button href="{{ route('shipment-schedule.public.download-sample') }}" size="sm" icon="arrow-down-tray" class="!bg-gray-100 !text-gray-700 hover:!bg-gray-200 dark:!bg-gray-700 dark:!text-gray-300 dark:hover:!bg-gray-600 !border-gray-200 dark:!border-gray-600">
                                     {{ __('Download Sample Excel Format') }}
                                 </flux:button>
                             </div>
@@ -97,20 +97,20 @@
                             this.pushLog('Establishing secure connection to upload service', 'info');
 
                             const steps = [
-                                [500,  'Transmitting Excel file to server — verifying file integrity', 'upload'],
-                                [1200, 'File received — initializing spreadsheet parser engine', 'read'],
-                                [1900, 'Parsing workbook structure and extracting row data', 'extract'],
-                                [2600, 'Cross-referencing entries with shipping database records', 'map'],
-                                [3300, 'Validating schedule fields — checking dates and port codes', 'map'],
-                                [4000, 'Building confirmation table — preparing editable preview', 'generate'],
-                                [4700, 'Finalizing import — rendering confirmation interface', 'generate'],
+                                [100,  'Transmitting Excel file to server — verifying file integrity', 'upload'],
+                                [200, 'File received — initializing spreadsheet parser engine', 'read'],
+                                [350, 'Parsing workbook structure and extracting row data', 'extract'],
+                                [500, 'Cross-referencing entries with shipping database records', 'map'],
+                                [650, 'Validating schedule fields — checking dates and port codes', 'map'],
+                                [800, 'Building confirmation table — preparing editable preview', 'generate'],
+                                [950, 'Finalizing import — rendering confirmation interface', 'generate'],
                             ];
                             steps.forEach(([delay, msg, type]) => {
                                 this.logTimers.push(setTimeout(() => this.pushLog(msg, type), delay));
                             });
 
                             const target = 78;
-                            const duration = 5000;
+                            const duration = 1000;
                             const startTime = Date.now();
                             this.smoothTicker = setInterval(() => {
                                 const elapsed = Date.now() - startTime;

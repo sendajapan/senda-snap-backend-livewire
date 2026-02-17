@@ -141,7 +141,7 @@ class ScheduleService
             'carrier_3_id' => $data['carrier_3_id'] ?? null,
             'start_port_id' => $data['start_port_id'],
             'end_port_id' => $data['end_port_id'],
-            'eta' => $data['eta'],
+            'eta' => $data['eta'] ?? null,
             'etd' => $data['etd'] ?? null,
             'status' => $data['status'] ?? 'Waiting',
             'comment' => $data['comment'] ?? null,
@@ -188,7 +188,7 @@ class ScheduleService
             $payload['added_by_name'] = $addedByName;
         }
 
-        $schedule->update(array_filter($payload, fn ($value, $key) => in_array($key, ['added_by', 'added_by_name'], true) || $value !== null));
+        $schedule->update(array_filter($payload, fn ($value, $key) => in_array($key, ['added_by', 'added_by_name'], true) || $value !== null, ARRAY_FILTER_USE_BOTH));
 
         $schedule->load([
             'carrier1',
@@ -333,27 +333,32 @@ class ScheduleService
         $comment = trim((string) ($first['comment'] ?? '')) ?: null;
 
         $errors = [];
-        $carrier = $shippingLine !== '' ? ShipLine::where('line_name', $shippingLine)->first() : null;
-        if ($shippingLine !== '' && ! $carrier) {
-            $errors['shipping_line'] = [__('Carrier not found: :name', ['name' => $shippingLine])];
-        }
-        $carrier1Id = $carrier?->id;
 
-        $startPort = $pol !== '' ? Port::where('port_name', $pol)->first() : null;
-        if ($pol === '') {
-            $errors['pol'] = [__('Start port (POL) is required.')];
-        } elseif (! $startPort) {
-            $errors['pol'] = [__('Start port not found: :name', ['name' => $pol])];
+        // Case-insensitive carrier lookup; auto-create if not found
+        $carrier1Id = null;
+        if ($shippingLine !== '') {
+            $carrier = ShipLine::whereRaw('LOWER(line_name) = ?', [mb_strtolower($shippingLine)])->first();
+            if (! $carrier) {
+                $carrier = ShipLine::create(['line_name' => $shippingLine, 'status' => 'Active']);
+            }
+            $carrier1Id = $carrier->id;
         }
-        $startPortId = $startPort?->id;
+
+        // Case-insensitive port lookup for POL; auto-create if not found
+        $startPortId = null;
+        if ($pol !== '') {
+            $startPort = Port::whereRaw('LOWER(port_name) = ?', [mb_strtolower($pol)])->first();
+            if (! $startPort) {
+                $startPort = Port::create(['port_name' => mb_strtoupper($pol), 'port_type' => 'Overseas Port', 'port_address' => '']);
+            }
+            $startPortId = $startPort->id;
+        } else {
+            $errors['pol'] = [__('Start port (POL) is required.')];
+        }
 
         if ($vesselName === '') {
             $errors['vessel_name'] = [__('Vessel name is required.')];
         }
-        if ($voyageNo === '') {
-            $errors['voyage_no'] = [__('Voyage number is required.')];
-        }
-
         $etd = null;
         if ($etdRaw !== '') {
             try {
@@ -365,24 +370,27 @@ class ScheduleService
 
         $lastPod = trim((string) ($last['pod'] ?? ''));
         $lastEtaRaw = trim((string) ($last['eta'] ?? ''));
-        $endPort = $lastPod !== '' ? Port::where('port_name', $lastPod)->first() : null;
-        if ($lastPod === '') {
-            $errors['pod'] = [__('End port (POD) is required.')];
-        } elseif (! $endPort) {
-            $errors['pod'] = [__('End port not found: :name', ['name' => $lastPod])];
-        }
-        $endPortId = $endPort?->id;
 
+        // Case-insensitive port lookup for POD; auto-create if not found
+        $endPortId = null;
+        if ($lastPod !== '') {
+            $endPort = Port::whereRaw('LOWER(port_name) = ?', [mb_strtolower($lastPod)])->first();
+            if (! $endPort) {
+                $endPort = Port::create(['port_name' => mb_strtoupper($lastPod), 'port_type' => 'Overseas Port', 'port_address' => '']);
+            }
+            $endPortId = $endPort->id;
+        } else {
+            $errors['pod'] = [__('End port (POD) is required.')];
+        }
+
+        // ETA is optional - parse if provided, null if empty/TBA
         $eta = null;
         if ($lastEtaRaw !== '') {
             try {
                 $eta = Carbon::parse($lastEtaRaw)->format('Y-m-d');
             } catch (\Throwable) {
-                $errors['eta'] = [__('Invalid date format for ETA.')];
+                // Invalid date, keep null
             }
-        }
-        if ($lastEtaRaw === '') {
-            $errors['eta'] = [__('ETA is required.')];
         }
 
         if ($errors !== []) {
@@ -438,9 +446,12 @@ class ScheduleService
                 $r = $rows[$i];
                 $podName = trim((string) ($r['pod'] ?? ''));
                 $etaStr = trim((string) ($r['eta'] ?? ''));
-                $port = $podName !== '' ? Port::where('port_name', $podName)->first() : null;
-                if (! $port) {
+                if ($podName === '') {
                     continue;
+                }
+                $port = Port::whereRaw('LOWER(port_name) = ?', [mb_strtolower($podName)])->first();
+                if (! $port) {
+                    $port = Port::create(['port_name' => mb_strtoupper($podName), 'port_type' => 'Overseas Port', 'port_address' => '']);
                 }
                 $stopoverEta = null;
                 if ($etaStr !== '') {

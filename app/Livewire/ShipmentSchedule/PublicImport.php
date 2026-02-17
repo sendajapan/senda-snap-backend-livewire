@@ -178,9 +178,11 @@ class PublicImport extends Component
             } catch (\Illuminate\Validation\ValidationException $e) {
                 $this->rowErrors[$firstIndex] = $e->errors();
                 $this->failedCount++;
-            } catch (\Throwable) {
-                $this->rowErrors[$firstIndex] = ['_' => [__('An error occurred.')]];
+                \Log::warning('Import validation failed', ['groupKey' => $groupKey, 'errors' => $e->errors(), 'firstRow' => $rows[0] ?? []]);
+            } catch (\Throwable $e) {
+                $this->rowErrors[$firstIndex] = ['_' => [$e->getMessage()]];
                 $this->failedCount++;
+                \Log::error('Import error', ['groupKey' => $groupKey, 'error' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
             }
         }
 

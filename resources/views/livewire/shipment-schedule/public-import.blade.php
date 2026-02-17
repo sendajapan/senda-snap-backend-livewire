@@ -74,17 +74,15 @@
                     }"
                     x-effect="
                         smoothProgress = uploadToDisplay(progress);
+                        if (!isParsing && parsingTicker) {
+                            clearInterval(parsingTicker);
+                            parsingTicker = null;
+                        }
                     "
                     @livewire-upload-start="uploading = true; progress = 0; smoothProgress = 0"
                     @livewire-upload-progress="progress = uploadToDisplay($event.detail.progress); smoothProgress = progress"
                     @livewire-upload-finish="uploading = false; animateToTarget()"
-                    @livewire-upload-error="uploading = false; progress = 0; smoothProgress = 0"
-                    x-effect="
-                        if (!isParsing) {
-                            if (parsingTicker) { clearInterval(parsingTicker); parsingTicker = null; }
-                            return () => {};
-                        }
-                    ">
+                    @livewire-upload-error="uploading = false; progress = 0; smoothProgress = 0">
                     <flux:field>
                         <flux:label>{{ __('Excel file') }}</flux:label>
                         <label

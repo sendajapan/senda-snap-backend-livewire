@@ -82,10 +82,10 @@
                             }, 16);
                         }
                     }"
-                    @livewire-upload-start="uploading = true; progress = 0; smoothProgress = 0"
-                    @livewire-upload-progress="progress = $event.detail.progress"
-                    @livewire-upload-finish="uploading = false; animateToTarget()"
-                    @livewire-upload-error="uploading = false; progress = 0; smoothProgress = 0">
+                    x-on:livewire-upload-start="uploading = true; progress = 0; smoothProgress = 0"
+                    x-on:livewire-upload-progress="progress = $event.detail.progress"
+                    x-on:livewire-upload-finish="uploading = false; animateToTarget()"
+                    x-on:livewire-upload-error="uploading = false; progress = 0; smoothProgress = 0">
                     <flux:field>
                         <flux:label>{{ __('Excel file') }}</flux:label>
                         <label

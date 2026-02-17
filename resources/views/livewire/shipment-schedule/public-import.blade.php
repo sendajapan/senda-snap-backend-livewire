@@ -44,6 +44,17 @@
                         progressStage: $wire.entangle('progressStage').live,
                         parsingTicker: null,
                         smoothTicker: null,
+                        init() {
+                            this.$watch('progress', value => {
+                                this.smoothProgress = this.uploadToDisplay(value);
+                            });
+                            this.$watch('isParsing', value => {
+                                if (!value && this.parsingTicker) {
+                                    clearInterval(this.parsingTicker);
+                                    this.parsingTicker = null;
+                                }
+                            });
+                        },
                         uploadToDisplay(raw) {
                             if (raw <= 0) return 0;
                             return Math.min(78, 78 * Math.pow(raw / 100, 0.55));
@@ -51,14 +62,13 @@
                         animateToTarget() {
                             if (this.smoothTicker) clearInterval(this.smoothTicker);
                             const targetProgress = 78;
-                            const duration = 3000; // 3 seconds
+                            const duration = 3000;
                             const startTime = Date.now();
                             const startProgress = this.smoothProgress;
 
                             this.smoothTicker = setInterval(() => {
                                 const elapsed = Date.now() - startTime;
                                 const progress = Math.min(1, elapsed / duration);
-                                // Easing function for smooth animation
                                 const easeProgress = progress < 0.5
                                     ? 2 * progress * progress
                                     : 1 - Math.pow(-2 * progress + 2, 2) / 2;
@@ -72,15 +82,8 @@
                             }, 16);
                         }
                     }"
-                    x-effect="
-                        smoothProgress = uploadToDisplay(progress);
-                        if (!isParsing && parsingTicker) {
-                            clearInterval(parsingTicker);
-                            parsingTicker = null;
-                        }
-                    "
                     @livewire-upload-start="uploading = true; progress = 0; smoothProgress = 0"
-                    @livewire-upload-progress="progress = uploadToDisplay($event.detail.progress); smoothProgress = progress"
+                    @livewire-upload-progress="progress = $event.detail.progress"
                     @livewire-upload-finish="uploading = false; animateToTarget()"
                     @livewire-upload-error="uploading = false; progress = 0; smoothProgress = 0">
                     <flux:field>

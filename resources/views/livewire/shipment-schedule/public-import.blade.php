@@ -35,6 +35,13 @@
                     </div>
                 </div>
 
+                <style>
+                    @keyframes importLogSlideIn {
+                        from { opacity: 0; transform: translateY(8px); }
+                        to   { opacity: 1; transform: translateY(0); }
+                    }
+                    .import-log-line { animation: importLogSlideIn 0.25s ease-out both; }
+                </style>
                 <form wire:submit="parseFile" class="space-y-4"
                     x-data="{
                         uploading: false,
@@ -45,6 +52,8 @@
                         smoothTicker: null,
                         logs: [],
                         logTimers: [],
+                        logCounter: 0,
+                        get visibleLogs() { return this.logs.slice(-2); },
                         init() {
                             this.$watch('isParsing', value => {
                                 if (!value && this.parsingTicker) {
@@ -58,11 +67,8 @@
                             return d.toLocaleTimeString('en-GB', { hour12: false }) + '.' + String(d.getMilliseconds()).padStart(3, '0');
                         },
                         pushLog(msg, type) {
-                            this.logs.push({ time: this.timestamp(), msg, type: type || 'info' });
-                            this.$nextTick(() => {
-                                const el = this.$refs.logBox;
-                                if (el) el.scrollTop = el.scrollHeight;
-                            });
+                            this.logCounter++;
+                            this.logs.push({ id: this.logCounter, time: this.timestamp(), msg, type: type || 'info' });
                         },
                         clearLogTimers() {
                             this.logTimers.forEach(t => clearTimeout(t));
@@ -74,18 +80,18 @@
                             this.smoothProgress = 0;
                             this.uploading = true;
                             this.logs = [];
+                            this.logCounter = 0;
 
-                            this.pushLog('Initializing file upload...', 'info');
+                            this.pushLog('Establishing secure connection to upload service', 'info');
 
                             const steps = [
-                                [300,  'Uploading file to server...', 'upload'],
-                                [700,  'Upload in progress...', 'upload'],
-                                [1200, 'Reading Excel file...', 'read'],
-                                [1600, 'Extracting spreadsheet data...', 'extract'],
-                                [1900, 'Mapping data with database...', 'map'],
-                                [2200, 'Validating row entries...', 'map'],
-                                [2500, 'Generating confirmation page...', 'generate'],
-                                [2800, 'Almost done...', 'generate'],
+                                [350,  'Transmitting Excel file to server — verifying file integrity', 'upload'],
+                                [800,  'File received — initializing spreadsheet parser engine', 'read'],
+                                [1300, 'Parsing workbook structure and extracting row data', 'extract'],
+                                [1700, 'Cross-referencing entries with shipping database records', 'map'],
+                                [2100, 'Validating schedule fields — checking dates and port codes', 'map'],
+                                [2500, 'Building confirmation table — preparing editable preview', 'generate'],
+                                [2900, 'Finalizing import — rendering confirmation interface', 'generate'],
                             ];
                             steps.forEach(([delay, msg, type]) => {
                                 this.logTimers.push(setTimeout(() => this.pushLog(msg, type), delay));
@@ -118,8 +124,8 @@
                         }
                     }"
                     x-on:livewire-upload-start="startSmoothProgress()"
-                    x-on:livewire-upload-finish="uploading = false; pushLog('Upload complete. Processing...', 'success')"
-                    x-on:livewire-upload-error="uploading = false; smoothProgress = 0; clearLogTimers(); pushLog('Upload failed.', 'error'); if (smoothTicker) { clearInterval(smoothTicker); smoothTicker = null; }">
+                    x-on:livewire-upload-finish="uploading = false; pushLog('Upload complete — processing server response', 'success')"
+                    x-on:livewire-upload-error="uploading = false; smoothProgress = 0; clearLogTimers(); pushLog('Connection interrupted — upload failed', 'error'); if (smoothTicker) { clearInterval(smoothTicker); smoothTicker = null; }">
                     <flux:field>
                         <flux:label>{{ __('Excel file') }}</flux:label>
                         <label
@@ -148,7 +154,7 @@
                             <p class="mt-1 text-xs text-gray-500 dark:text-gray-500">
                                 {{ __('.xlsx or .xls, max 10 MB') }}
                             </p>
-                            <div x-show="uploading || isParsing" x-cloak class="mt-4 w-full max-w-sm" x-transition>
+                            <div x-show="uploading || isParsing" x-cloak class="mt-4 w-full max-w-lg" x-transition>
                                 <div class="flex items-center justify-between gap-2 text-sm text-gray-600 dark:text-gray-400">
                                     <span x-show="!isParsing">{{ __('Uploading…') }}</span>
                                     <span x-show="isParsing">{{ __('Processing…') }}</span>
@@ -160,18 +166,18 @@
                                         <span class="upload-progress-shimmer absolute inset-0 block h-full w-full" aria-hidden="true"></span>
                                     </div>
                                 </div>
-                                <div x-show="logs.length > 0" x-ref="logBox" class="mt-3 max-h-36 overflow-y-auto rounded border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 font-mono text-xs leading-relaxed">
-                                    <template x-for="(log, i) in logs" :key="i">
-                                        <div class="flex gap-2 px-2.5 py-1 border-b border-gray-100 dark:border-gray-800 last:border-b-0">
-                                            <span class="shrink-0 text-cyan-600 dark:text-cyan-400" x-text="log.time"></span>
-                                            <span :class="{
+                                <div x-show="logs.length > 0" class="mt-3 w-full overflow-hidden rounded border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 font-mono text-xs">
+                                    <template x-for="log in visibleLogs" :key="log.id">
+                                        <div class="import-log-line flex items-start gap-2 px-3 py-1.5 border-b border-gray-100 dark:border-gray-800 last:border-b-0">
+                                            <span class="shrink-0 font-semibold text-cyan-600 dark:text-cyan-400" x-text="'[' + log.time + ']'"></span>
+                                            <span class="truncate" :class="{
                                                 'text-blue-600 dark:text-blue-400': log.type === 'upload',
                                                 'text-amber-600 dark:text-amber-400': log.type === 'read',
                                                 'text-violet-600 dark:text-violet-400': log.type === 'extract',
                                                 'text-indigo-600 dark:text-indigo-400': log.type === 'map',
                                                 'text-emerald-600 dark:text-emerald-400': log.type === 'generate' || log.type === 'success',
                                                 'text-red-600 dark:text-red-400': log.type === 'error',
-                                                'text-gray-600 dark:text-gray-400': log.type === 'info',
+                                                'text-gray-500 dark:text-gray-400': log.type === 'info',
                                             }" x-text="log.msg"></span>
                                         </div>
                                     </template>

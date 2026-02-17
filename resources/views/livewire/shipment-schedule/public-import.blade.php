@@ -38,16 +38,12 @@
                 <form wire:submit="parseFile" class="space-y-4"
                     x-data="{
                         uploading: false,
-                        progress: 0,
                         smoothProgress: 0,
                         isParsing: $wire.entangle('isParsing').live,
                         progressStage: $wire.entangle('progressStage').live,
                         parsingTicker: null,
                         smoothTicker: null,
                         init() {
-                            this.$watch('progress', value => {
-                                this.smoothProgress = this.uploadToDisplay(value);
-                            });
                             this.$watch('isParsing', value => {
                                 if (!value && this.parsingTicker) {
                                     clearInterval(this.parsingTicker);
@@ -55,45 +51,47 @@
                                 }
                             });
                         },
-                        uploadToDisplay(raw) {
-                            if (raw <= 0) return 0;
-                            return Math.min(78, 78 * Math.pow(raw / 100, 0.55));
-                        },
-                        animateToTarget() {
+                        startSmoothProgress() {
                             if (this.smoothTicker) clearInterval(this.smoothTicker);
-                            const targetProgress = 78;
-                            const duration = 3000;
+                            this.smoothProgress = 0;
+                            this.uploading = true;
+                            const target = 78;
+                            const duration = 2000;
                             const startTime = Date.now();
-                            const startProgress = this.smoothProgress;
-
                             this.smoothTicker = setInterval(() => {
                                 const elapsed = Date.now() - startTime;
-                                const progress = Math.min(1, elapsed / duration);
-                                const easeProgress = progress < 0.5
-                                    ? 2 * progress * progress
-                                    : 1 - Math.pow(-2 * progress + 2, 2) / 2;
-                                this.smoothProgress = startProgress + (targetProgress - startProgress) * easeProgress;
-
-                                if (progress >= 1) {
-                                    this.smoothProgress = targetProgress;
+                                const t = Math.min(1, elapsed / duration);
+                                const ease = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+                                this.smoothProgress = target * ease;
+                                if (t >= 1) {
+                                    this.smoothProgress = target;
                                     clearInterval(this.smoothTicker);
                                     this.smoothTicker = null;
                                 }
                             }, 16);
+                        },
+                        handleDrop(event) {
+                            const files = event.dataTransfer.files;
+                            if (files.length > 0) {
+                                const input = document.getElementById('excel-upload');
+                                const dt = new DataTransfer();
+                                dt.items.add(files[0]);
+                                input.files = dt.files;
+                                input.dispatchEvent(new Event('change', { bubbles: true }));
+                            }
                         }
                     }"
-                    x-on:livewire-upload-start="uploading = true; progress = 0; smoothProgress = 0"
-                    x-on:livewire-upload-progress="progress = $event.detail.progress"
-                    x-on:livewire-upload-finish="uploading = false; animateToTarget()"
-                    x-on:livewire-upload-error="uploading = false; progress = 0; smoothProgress = 0">
+                    x-on:livewire-upload-start="startSmoothProgress()"
+                    x-on:livewire-upload-finish="uploading = false"
+                    x-on:livewire-upload-error="uploading = false; smoothProgress = 0; if (smoothTicker) { clearInterval(smoothTicker); smoothTicker = null; }">
                     <flux:field>
                         <flux:label>{{ __('Excel file') }}</flux:label>
                         <label
                             for="excel-upload"
                             x-data="{ dragging: false }"
-                            @dragover.prevent="dragging = true"
-                            @dragleave.prevent="dragging = false"
-                            @drop.prevent="dragging = false"
+                            x-on:dragover.prevent="dragging = true"
+                            x-on:dragleave.prevent="dragging = false"
+                            x-on:drop.prevent="dragging = false; handleDrop($event)"
                             class="mt-1 flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-600 px-6 py-10 transition-colors hover:border-gray-400 dark:hover:border-gray-500"
                             :class="dragging ? 'border-cyan-500 bg-cyan-50/50 dark:bg-cyan-900/20' : ''">
                             <input

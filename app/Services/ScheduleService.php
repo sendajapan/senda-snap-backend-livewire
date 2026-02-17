@@ -389,17 +389,48 @@ class ScheduleService
             throw ValidationException::withMessages($errors);
         }
 
-        $schedule = $this->create([
-            'vessel_name' => $vesselName,
-            'voyage_no' => $voyageNo,
-            'carrier_1_id' => $carrier1Id,
-            'start_port_id' => $startPortId,
-            'end_port_id' => $endPortId,
-            'eta' => $eta,
-            'etd' => $etd,
-            'status' => 'Waiting',
-            'comment' => $comment,
-        ], $userId, $addedByName, true);
+        // Update if exists (match by vessel_name + voyage_no + start_port_id + etd), else insert
+        $existingQuery = Schedule::where('vessel_name', $vesselName)
+            ->where('voyage_no', $voyageNo)
+            ->where('start_port_id', $startPortId)
+            ->where('is_public', true);
+
+        if ($etd !== null) {
+            $existingQuery->where('etd', $etd);
+        } else {
+            $existingQuery->whereNull('etd');
+        }
+
+        $existing = $existingQuery->first();
+
+        if ($existing) {
+            $schedule = $this->update($existing, [
+                'vessel_name' => $vesselName,
+                'voyage_no' => $voyageNo,
+                'carrier_1_id' => $carrier1Id,
+                'start_port_id' => $startPortId,
+                'end_port_id' => $endPortId,
+                'eta' => $eta,
+                'etd' => $etd,
+                'status' => $existing->status,
+                'comment' => $comment,
+            ], $userId, $addedByName);
+
+            // Remove old stopovers before re-creating
+            $existing->stopovers()->delete();
+        } else {
+            $schedule = $this->create([
+                'vessel_name' => $vesselName,
+                'voyage_no' => $voyageNo,
+                'carrier_1_id' => $carrier1Id,
+                'start_port_id' => $startPortId,
+                'end_port_id' => $endPortId,
+                'eta' => $eta,
+                'etd' => $etd,
+                'status' => 'Waiting',
+                'comment' => $comment,
+            ], $userId, $addedByName, true);
+        }
 
         if (count($rows) > 1) {
             $stopoverService = app(ScheduleStopoverService::class);

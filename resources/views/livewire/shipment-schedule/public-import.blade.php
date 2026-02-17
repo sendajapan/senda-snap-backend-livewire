@@ -41,6 +41,13 @@
                         to   { opacity: 1; transform: translateY(0); }
                     }
                     .import-log-line { animation: importLogSlideIn 0.25s ease-out both; }
+                    .import-table-sharp [data-flux-control],
+                    .import-table-sharp [data-flux-input],
+                    .import-table-sharp [data-flux-input] input,
+                    .import-table-sharp [data-flux-input] textarea,
+                    .import-table-sharp textarea {
+                        border-radius: 0 !important;
+                    }
                 </style>
                 <form wire:submit="parseFile" class="space-y-4"
                     x-data="{
@@ -85,20 +92,20 @@
                             this.pushLog('Establishing secure connection to upload service', 'info');
 
                             const steps = [
-                                [350,  'Transmitting Excel file to server — verifying file integrity', 'upload'],
-                                [800,  'File received — initializing spreadsheet parser engine', 'read'],
-                                [1300, 'Parsing workbook structure and extracting row data', 'extract'],
-                                [1700, 'Cross-referencing entries with shipping database records', 'map'],
-                                [2100, 'Validating schedule fields — checking dates and port codes', 'map'],
-                                [2500, 'Building confirmation table — preparing editable preview', 'generate'],
-                                [2900, 'Finalizing import — rendering confirmation interface', 'generate'],
+                                [500,  'Transmitting Excel file to server — verifying file integrity', 'upload'],
+                                [1200, 'File received — initializing spreadsheet parser engine', 'read'],
+                                [1900, 'Parsing workbook structure and extracting row data', 'extract'],
+                                [2600, 'Cross-referencing entries with shipping database records', 'map'],
+                                [3300, 'Validating schedule fields — checking dates and port codes', 'map'],
+                                [4000, 'Building confirmation table — preparing editable preview', 'generate'],
+                                [4700, 'Finalizing import — rendering confirmation interface', 'generate'],
                             ];
                             steps.forEach(([delay, msg, type]) => {
                                 this.logTimers.push(setTimeout(() => this.pushLog(msg, type), delay));
                             });
 
                             const target = 78;
-                            const duration = 2000;
+                            const duration = 5000;
                             const startTime = Date.now();
                             this.smoothTicker = setInterval(() => {
                                 const elapsed = Date.now() - startTime;
@@ -202,7 +209,7 @@
                         </flux:button>
                     </div>
                 </div>
-                <div class="w-full overflow-x-auto">
+                <div class="w-full overflow-x-auto import-table-sharp">
                     <table class="w-full min-w-[1200px] table-auto whitespace-nowrap border border-gray-200 dark:border-gray-700 divide-y divide-gray-200 dark:divide-gray-700">
                         <thead class="sticky top-0 z-20 bg-gray-100 dark:bg-gray-800">
                             <tr>

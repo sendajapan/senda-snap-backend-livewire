@@ -5,6 +5,7 @@ use App\Http\Controllers\AndroidAppManualController;
 use App\Http\Controllers\ApiDocsController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DeployController;
+use App\Http\Controllers\DownloadSampleScheduleController;
 use App\Http\Controllers\LandingPageController;
 use App\Http\Controllers\PrivacyPolicyController;
 use App\Http\Controllers\ShipmentSchedulePublicExportController;
@@ -41,6 +42,7 @@ Route::get('android-app-manual', [AndroidAppManualController::class, 'index'])->
 Route::get('shipment-schedule/public', ShipmentSchedulePublicIndex::class)->name('shipment-schedule.public');
 Route::get('shipment-schedule/public/export', ShipmentSchedulePublicExportController::class)->name('shipment-schedule.public.export');
 Route::get('shipment-schedule/public/import', ShipmentSchedulePublicImport::class)->name('shipment-schedule.public.import');
+Route::get('shipment-schedule/public/download-sample', DownloadSampleScheduleController::class)->name('shipment-schedule.public.download-sample');
 
 // Github Webhook
 Route::post('deploy/github', [DeployController::class, 'github']);

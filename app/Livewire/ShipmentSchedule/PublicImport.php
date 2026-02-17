@@ -39,6 +39,8 @@ class PublicImport extends Component
 
     public bool $isParsing = false;
 
+    public string $progressStage = ''; // 'uploading' | 'reading' | 'extracting' | 'mapping' | 'generating' | ''
+
     /** @var array<int, array<string, string>> */
     public array $previewNodes = [];
 
@@ -80,15 +82,21 @@ class PublicImport extends Component
     public function parseFile(): void
     {
         $this->isParsing = true;
+        $this->progressStage = 'reading';
         $this->validate([
             'excelFile' => ['required', 'file', 'mimes:xlsx,xls', 'max:10240'],
         ]);
 
         try {
+            $this->progressStage = 'reading';
             $path = $this->excelFile->getRealPath();
+
+            $this->progressStage = 'extracting';
             $import = new ShipmentScheduleImport;
             $sheets = Excel::toArray($import, $path);
             $rows = $sheets[0] ?? []; // first sheet
+
+            $this->progressStage = 'mapping';
             $this->parsedRows = [];
             foreach ($rows as $rawRow) {
                 $mapped = ShipmentScheduleImport::mapRowToCanonical(is_array($rawRow) ? $rawRow : []);
@@ -98,6 +106,8 @@ class PublicImport extends Component
                 }
                 $this->parsedRows[] = $mapped;
             }
+
+            $this->progressStage = 'generating';
             $this->importedRows = [];
             $this->rowErrors = [];
             $this->step = 'table';
@@ -106,6 +116,7 @@ class PublicImport extends Component
             $this->addError('excelFile', $e->getMessage());
         } finally {
             $this->isParsing = false;
+            $this->progressStage = '';
         }
     }
 
@@ -130,26 +141,6 @@ class PublicImport extends Component
         }
 
         return $groups;
-    }
-
-    public function saveRow(int $index, ScheduleService $scheduleService): void
-    {
-        $this->rowErrors[$index] = [];
-        if (! isset($this->parsedRows[$index])) {
-            return;
-        }
-        $row = $this->parsedRows[$index];
-        $userId = auth()->id();
-        $creatorName = $this->creatorName;
-        try {
-            $scheduleService->createFromImportGroup([$row], $userId, $creatorName);
-            $this->importedRows[$index] = 1;
-            $this->dispatch('notify', message: __('Row :n imported successfully.', ['n' => $index + 1]), type: 'success');
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            $this->rowErrors[$index] = $e->errors();
-        } catch (\Throwable $e) {
-            $this->rowErrors[$index] = ['_' => [$e->getMessage()]];
-        }
     }
 
     public function confirmImportAll(ScheduleService $scheduleService): void

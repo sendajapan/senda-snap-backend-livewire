@@ -16,33 +16,75 @@
 
         @if($step === 'upload')
             <x-table-card variant="gray">
+                <div class="mb-4 rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-900/40 dark:bg-blue-900/20">
+                    <div class="flex items-start gap-3">
+                        <flux:icon.information-circle class="mt-0.5 h-5 w-5 flex-shrink-0 text-blue-600 dark:text-blue-400" />
+                        <div class="flex-1">
+                            <p class="text-sm font-medium text-blue-800 dark:text-blue-300">
+                                {{ __('Please use the sample Excel format for successful import.') }}
+                            </p>
+                            <p class="mt-1 text-sm text-blue-700 dark:text-blue-400">
+                                {{ __('Download and review the sample file to ensure your data matches the required format.') }}
+                            </p>
+                            <div class="mt-2">
+                                <flux:button href="{{ route('shipment-schedule.public.download-sample') }}" variant="ghost" size="sm" icon="arrow-down-tray" class="text-blue-600 dark:text-blue-400">
+                                    {{ __('Download Sample Excel Format') }}
+                                </flux:button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <form wire:submit="parseFile" class="space-y-4"
                     x-data="{
                         uploading: false,
                         progress: 0,
+                        smoothProgress: 0,
                         isParsing: $wire.entangle('isParsing').live,
+                        progressStage: $wire.entangle('progressStage').live,
                         parsingTicker: null,
+                        smoothTicker: null,
                         uploadToDisplay(raw) {
                             if (raw <= 0) return 0;
                             return Math.min(78, 78 * Math.pow(raw / 100, 0.55));
+                        },
+                        animateToTarget() {
+                            if (this.smoothTicker) clearInterval(this.smoothTicker);
+                            const targetProgress = 78;
+                            const duration = 3000; // 3 seconds
+                            const startTime = Date.now();
+                            const startProgress = this.smoothProgress;
+
+                            this.smoothTicker = setInterval(() => {
+                                const elapsed = Date.now() - startTime;
+                                const progress = Math.min(1, elapsed / duration);
+                                // Easing function for smooth animation
+                                const easeProgress = progress < 0.5
+                                    ? 2 * progress * progress
+                                    : 1 - Math.pow(-2 * progress + 2, 2) / 2;
+                                this.smoothProgress = startProgress + (targetProgress - startProgress) * easeProgress;
+
+                                if (progress >= 1) {
+                                    this.smoothProgress = targetProgress;
+                                    clearInterval(this.smoothTicker);
+                                    this.smoothTicker = null;
+                                }
+                            }, 16);
                         }
                     }"
+                    x-effect="
+                        smoothProgress = uploadToDisplay(progress);
+                    "
+                    @livewire-upload-start="uploading = true; progress = 0; smoothProgress = 0"
+                    @livewire-upload-progress="progress = uploadToDisplay($event.detail.progress); smoothProgress = progress"
+                    @livewire-upload-finish="uploading = false; animateToTarget()"
+                    @livewire-upload-error="uploading = false; progress = 0; smoothProgress = 0"
                     x-effect="
                         if (!isParsing) {
                             if (parsingTicker) { clearInterval(parsingTicker); parsingTicker = null; }
                             return () => {};
                         }
-                        if (parsingTicker) clearInterval(parsingTicker);
-                        parsingTicker = setInterval(() => {
-                            progress = Math.min(99, progress + (99 - progress) * 0.12);
-                            if (progress >= 98.5) { progress = 99; clearInterval(parsingTicker); parsingTicker = null; }
-                        }, 120);
-                        return () => { if (parsingTicker) clearInterval(parsingTicker); parsingTicker = null; };
-                    "
-                    @@livewire-upload-start="uploading = true; progress = 0"
-                    @@livewire-upload-progress="progress = uploadToDisplay($event.detail.progress)"
-                    @@livewire-upload-finish="uploading = false"
-                    @@livewire-upload-error="uploading = false; progress = 0">
+                    ">
                     <flux:field>
                         <flux:label>{{ __('Excel file') }}</flux:label>
                         <label
@@ -74,13 +116,35 @@
                             <div x-show="uploading || isParsing" x-cloak class="mt-4 w-full max-w-sm" x-transition>
                                 <div class="flex items-center justify-between gap-2 text-sm text-gray-600 dark:text-gray-400">
                                     <span x-show="!isParsing">{{ __('Uploading…') }}</span>
-                                    <span x-show="isParsing">{{ __('Processing and rendering…') }}</span>
-                                    <span x-text="Math.round(progress) + '%'">0%</span>
+                                    <span x-show="isParsing">{{ __('Processing…') }}</span>
+                                    <span x-text="Math.round(smoothProgress) + '%'">0%</span>
                                 </div>
-                                <div class="mt-1 h-2 w-full overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700" role="progressbar" :aria-valuenow="Math.round(progress)" aria-valuemin="0" aria-valuemax="100">
-                                    <div class="relative h-full overflow-hidden rounded-full bg-cyan-500 dark:bg-cyan-400 transition-[width] duration-200 ease-out"
-                                        :style="'width: ' + progress + '%'">
+                                <div class="mt-1 h-2 w-full overflow-hidden bg-gray-200 dark:bg-gray-700" role="progressbar" :aria-valuenow="Math.round(smoothProgress)" aria-valuemin="0" aria-valuemax="100">
+                                    <div class="relative h-full overflow-hidden bg-cyan-500 dark:bg-cyan-400 transition-[width] duration-200 ease-out"
+                                        :style="'width: ' + smoothProgress + '%'">
                                         <span class="upload-progress-shimmer absolute inset-0 block h-full w-full" aria-hidden="true"></span>
+                                    </div>
+                                </div>
+                                <div class="mt-3 text-xs text-gray-600 dark:text-gray-400 space-y-1">
+                                    <div x-show="!isParsing" class="flex items-center gap-2">
+                                        <span class="inline-block h-2 w-2 rounded-full bg-cyan-500"></span>
+                                        {{ __('uploading') }}
+                                    </div>
+                                    <div x-show="isParsing && progressStage === 'reading'" class="flex items-center gap-2">
+                                        <span class="inline-block h-2 w-2 animate-pulse rounded-full bg-cyan-500"></span>
+                                        {{ __('reading excel') }}
+                                    </div>
+                                    <div x-show="isParsing && (progressStage === 'extracting' || progressStage === 'mapping' || progressStage === 'generating')" class="flex items-center gap-2">
+                                        <span class="inline-block h-2 w-2 animate-pulse rounded-full bg-cyan-500"></span>
+                                        {{ __('extracting') }}
+                                    </div>
+                                    <div x-show="isParsing && (progressStage === 'mapping' || progressStage === 'generating')" class="flex items-center gap-2">
+                                        <span class="inline-block h-2 w-2 animate-pulse rounded-full bg-cyan-500"></span>
+                                        {{ __('mapping with database') }}
+                                    </div>
+                                    <div x-show="isParsing && progressStage === 'generating'" class="flex items-center gap-2">
+                                        <span class="inline-block h-2 w-2 animate-pulse rounded-full bg-cyan-500"></span>
+                                        {{ __('generating confirmation page') }}
                                     </div>
                                 </div>
                             </div>
@@ -165,44 +229,56 @@
                                     <td class="px-3 py-1.5 whitespace-nowrap text-center text-gray-600 dark:text-gray-400 font-medium border-r border-gray-200 dark:border-gray-700">
                                         {{ $index + 1 }}
                                     </td>
+                                    @php
+                                        $displayShippingLine = ($row['shipping_line'] ?? '') === 'TBA' ? '' : ($row['shipping_line'] ?? '');
+                                        $displayVesselName = ($row['vessel_name'] ?? '') === 'TBA' ? '' : ($row['vessel_name'] ?? '');
+                                        $displayVoyageNo = ($row['voyage_no'] ?? '') === 'TBA' ? '' : ($row['voyage_no'] ?? '');
+                                        $displayPol = ($row['pol'] ?? '') === 'TBA' ? '' : ($row['pol'] ?? '');
+                                        $displayPod = ($row['pod'] ?? '') === 'TBA' ? '' : ($row['pod'] ?? '');
+
+                                        $isValidEtd = preg_match('/^\d{4}-\d{2}-\d{2}$/', (string) ($row['etd'] ?? '')) && strtotime((string) ($row['etd'] ?? '')) !== false;
+                                        $isValidEta = preg_match('/^\d{4}-\d{2}-\d{2}$/', (string) ($row['eta'] ?? '')) && strtotime((string) ($row['eta'] ?? '')) !== false;
+                                        $displayEtd = $isValidEtd ? $row['etd'] : '';
+                                        $displayEta = $isValidEta ? $row['eta'] : '';
+                                    @endphp
                                     <td class="px-3 py-1.5 whitespace-nowrap">
-                                        <flux:input wire:model.blur="parsedRows.{{ $index }}.shipping_line" size="sm" class="rounded-sm text-sm {{ isset($rowErrors[$index]['shipping_line']) ? 'border-red-500' : '' }}" />
+                                        <flux:input wire:model.blur="parsedRows.{{ $index }}.shipping_line" size="sm" class="text-sm {{ isset($rowErrors[$index]['shipping_line']) ? 'border-red-500' : '' }}" value="{{ $displayShippingLine }}" />
                                         @if(isset($rowErrors[$index]['shipping_line']))
                                             <flux:error>{{ implode(' ', $rowErrors[$index]['shipping_line']) }}</flux:error>
                                         @endif
                                     </td>
                                     <td class="px-3 py-1.5 whitespace-nowrap">
-                                        <flux:input wire:model.blur="parsedRows.{{ $index }}.vessel_name" size="sm" class="rounded-sm text-sm {{ isset($rowErrors[$index]['vessel_name']) ? 'border-red-500' : '' }}" />
+                                        <flux:input wire:model.blur="parsedRows.{{ $index }}.vessel_name" size="sm" class="text-sm {{ isset($rowErrors[$index]['vessel_name']) ? 'border-red-500' : '' }}" value="{{ $displayVesselName }}" />
                                         @if(isset($rowErrors[$index]['vessel_name']))
                                             <flux:error>{{ implode(' ', $rowErrors[$index]['vessel_name']) }}</flux:error>
                                         @endif
                                     </td>
                                     <td class="px-3 py-1.5 whitespace-nowrap">
-                                        <flux:input wire:model.blur="parsedRows.{{ $index }}.voyage_no" size="sm" class="rounded-sm text-sm {{ isset($rowErrors[$index]['voyage_no']) ? 'border-red-500' : '' }}" />
+                                        <flux:input wire:model.blur="parsedRows.{{ $index }}.voyage_no" size="sm" class="text-sm {{ isset($rowErrors[$index]['voyage_no']) ? 'border-red-500' : '' }}" value="{{ $displayVoyageNo }}" />
                                         @if(isset($rowErrors[$index]['voyage_no']))
                                             <flux:error>{{ implode(' ', $rowErrors[$index]['voyage_no']) }}</flux:error>
                                         @endif
                                     </td>
                                     <td class="px-3 py-1.5 whitespace-nowrap">
-                                        <flux:input wire:model.blur="parsedRows.{{ $index }}.pol" size="sm" class="rounded-sm text-sm {{ isset($rowErrors[$index]['pol']) ? 'border-red-500' : '' }}" />
+                                        <flux:input wire:model.blur="parsedRows.{{ $index }}.pol" size="sm" class="text-sm {{ isset($rowErrors[$index]['pol']) ? 'border-red-500' : '' }}" value="{{ $displayPol }}" />
                                         @if(isset($rowErrors[$index]['pol']))
                                             <flux:error>{{ implode(' ', $rowErrors[$index]['pol']) }}</flux:error>
                                         @endif
                                     </td>
                                     <td class="px-3 py-1.5 whitespace-nowrap text-center">
-                                        <flux:input wire:model.blur="parsedRows.{{ $index }}.etd" size="sm" type="text" placeholder="Y-m-d" class="rounded-sm text-sm text-center {{ isset($rowErrors[$index]['etd']) ? 'border-red-500' : '' }}" />
+                                        <input type="date" wire:model.blur="parsedRows.{{ $index }}.etd" class="text-sm text-center border border-gray-300 dark:border-gray-600 px-2 py-1 w-full {{ isset($rowErrors[$index]['etd']) ? 'border-red-500' : '' }}" value="{{ $displayEtd }}" />
                                         @if(isset($rowErrors[$index]['etd']))
                                             <flux:error>{{ implode(' ', $rowErrors[$index]['etd']) }}</flux:error>
                                         @endif
                                     </td>
                                     <td class="px-3 py-1.5 whitespace-nowrap">
-                                        <flux:input wire:model.blur="parsedRows.{{ $index }}.pod" size="sm" class="rounded-sm text-sm {{ isset($rowErrors[$index]['pod']) ? 'border-red-500' : '' }}" />
+                                        <flux:input wire:model.blur="parsedRows.{{ $index }}.pod" size="sm" class="text-sm {{ isset($rowErrors[$index]['pod']) ? 'border-red-500' : '' }}" value="{{ $displayPod }}" />
                                         @if(isset($rowErrors[$index]['pod']))
                                             <flux:error>{{ implode(' ', $rowErrors[$index]['pod']) }}</flux:error>
                                         @endif
                                     </td>
                                     <td class="px-3 py-1.5 whitespace-nowrap text-center">
-                                        <flux:input wire:model.blur="parsedRows.{{ $index }}.eta" size="sm" type="text" placeholder="Y-m-d" class="rounded-sm text-sm text-center {{ isset($rowErrors[$index]['eta']) ? 'border-red-500' : '' }}" />
+                                        <input type="date" wire:model.blur="parsedRows.{{ $index }}.eta" class="text-sm text-center border border-gray-300 dark:border-gray-600 px-2 py-1 w-full {{ isset($rowErrors[$index]['eta']) ? 'border-red-500' : '' }}" value="{{ $displayEta }}" />
                                         @if(isset($rowErrors[$index]['eta']))
                                             <flux:error>{{ implode(' ', $rowErrors[$index]['eta']) }}</flux:error>
                                         @endif
@@ -224,13 +300,11 @@
                                             @if(isset($importedRows[$index]))
                                                 <flux:badge color="green" size="sm">{{ __('Imported') }}</flux:badge>
                                             @else
-                                                <flux:button wire:click="saveRow({{ $index }})" size="sm" variant="subtle" icon="check" class="cursor-pointer">
-                                                    {{ __('Save') }}
-                                                </flux:button>
+                                                <button wire:click="removeRow({{ $index }})" wire:confirm="{{ __('Remove this row?') }}" class="inline-flex items-center justify-center gap-1.5 px-2 py-1.5 text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-500 hover:text-white dark:hover:bg-red-500 dark:hover:text-white transition-colors rounded">
+                                                    <flux:icon.trash class="h-4 w-4" />
+                                                    <span>{{ __('Delete') }}</span>
+                                                </button>
                                             @endif
-                                            <flux:button wire:click="removeRow({{ $index }})" wire:confirm="{{ __('Remove this row?') }}" size="sm" variant="outline" icon="trash" class="cursor-pointer border-red-500 text-red-600 hover:bg-red-500 hover:text-white hover:border-red-500 dark:border-red-400 dark:text-red-400 dark:hover:bg-red-500 dark:hover:text-white dark:hover:border-red-500">
-                                                {{ __('Delete') }}
-                                            </flux:button>
                                         </div>
                                         @if(isset($rowErrors[$index]['_']))
                                             <flux:error>{{ implode(' ', $rowErrors[$index]['_']) }}</flux:error>

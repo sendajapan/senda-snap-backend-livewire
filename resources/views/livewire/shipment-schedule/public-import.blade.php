@@ -277,50 +277,50 @@
                                         {{ $index + 1 }}
                                     </td>
                                     <td class="px-3 py-1.5 whitespace-nowrap">
-                                        <flux:input wire:model.blur="parsedRows.{{ $index }}.shipping_line" size="sm" class="!rounded-none text-sm {{ isset($rowErrors[$index]['shipping_line']) ? 'border-red-500' : '' }}" />
+                                        <input type="text" wire:model.blur="parsedRows.{{ $index }}.shipping_line" class="text-sm border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 px-2 py-1 w-full {{ isset($rowErrors[$index]['shipping_line']) ? '!border-red-500' : '' }}" />
                                         @if(isset($rowErrors[$index]['shipping_line']))
-                                            <flux:error>{{ implode(' ', $rowErrors[$index]['shipping_line']) }}</flux:error>
+                                            <p class="mt-1 text-xs text-red-600">{{ implode(' ', $rowErrors[$index]['shipping_line']) }}</p>
                                         @endif
                                     </td>
                                     <td class="px-3 py-1.5 whitespace-nowrap">
-                                        <flux:input wire:model.blur="parsedRows.{{ $index }}.vessel_name" size="sm" class="!rounded-none text-sm {{ isset($rowErrors[$index]['vessel_name']) ? 'border-red-500' : '' }}" />
+                                        <input type="text" wire:model.blur="parsedRows.{{ $index }}.vessel_name" class="text-sm border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 px-2 py-1 w-full {{ isset($rowErrors[$index]['vessel_name']) ? '!border-red-500' : '' }}" />
                                         @if(isset($rowErrors[$index]['vessel_name']))
-                                            <flux:error>{{ implode(' ', $rowErrors[$index]['vessel_name']) }}</flux:error>
+                                            <p class="mt-1 text-xs text-red-600">{{ implode(' ', $rowErrors[$index]['vessel_name']) }}</p>
                                         @endif
                                     </td>
                                     <td class="px-3 py-1.5 whitespace-nowrap">
-                                        <flux:input wire:model.blur="parsedRows.{{ $index }}.voyage_no" size="sm" class="!rounded-none text-sm {{ isset($rowErrors[$index]['voyage_no']) ? 'border-red-500' : '' }}" />
+                                        <input type="text" wire:model.blur="parsedRows.{{ $index }}.voyage_no" class="text-sm border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 px-2 py-1 w-full {{ isset($rowErrors[$index]['voyage_no']) ? '!border-red-500' : '' }}" />
                                         @if(isset($rowErrors[$index]['voyage_no']))
-                                            <flux:error>{{ implode(' ', $rowErrors[$index]['voyage_no']) }}</flux:error>
+                                            <p class="mt-1 text-xs text-red-600">{{ implode(' ', $rowErrors[$index]['voyage_no']) }}</p>
                                         @endif
                                     </td>
                                     <td class="px-3 py-1.5 whitespace-nowrap">
-                                        <flux:input wire:model.blur="parsedRows.{{ $index }}.pol" size="sm" class="!rounded-none text-sm {{ isset($rowErrors[$index]['pol']) ? 'border-red-500' : '' }}" />
+                                        <input type="text" wire:model.blur="parsedRows.{{ $index }}.pol" class="text-sm border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 px-2 py-1 w-full {{ isset($rowErrors[$index]['pol']) ? '!border-red-500' : '' }}" />
                                         @if(isset($rowErrors[$index]['pol']))
-                                            <flux:error>{{ implode(' ', $rowErrors[$index]['pol']) }}</flux:error>
+                                            <p class="mt-1 text-xs text-red-600">{{ implode(' ', $rowErrors[$index]['pol']) }}</p>
                                         @endif
                                     </td>
                                     <td class="px-3 py-1.5 whitespace-nowrap text-center">
-                                        <input type="date" wire:model.blur="parsedRows.{{ $index }}.etd" class="text-sm text-center border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 px-2 py-1 w-full {{ isset($rowErrors[$index]['etd']) ? 'border-red-500' : '' }}" />
+                                        <input type="date" wire:model.blur="parsedRows.{{ $index }}.etd" class="text-sm text-center border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 px-2 py-1 w-full {{ isset($rowErrors[$index]['etd']) ? '!border-red-500' : '' }}" />
                                         @if(isset($rowErrors[$index]['etd']))
-                                            <flux:error>{{ implode(' ', $rowErrors[$index]['etd']) }}</flux:error>
+                                            <p class="mt-1 text-xs text-red-600">{{ implode(' ', $rowErrors[$index]['etd']) }}</p>
                                         @endif
                                     </td>
                                     <td class="px-3 py-1.5 whitespace-nowrap">
-                                        <flux:input wire:model.blur="parsedRows.{{ $index }}.pod" size="sm" class="!rounded-none text-sm {{ isset($rowErrors[$index]['pod']) ? 'border-red-500' : '' }}" />
+                                        <input type="text" wire:model.blur="parsedRows.{{ $index }}.pod" class="text-sm border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 px-2 py-1 w-full {{ isset($rowErrors[$index]['pod']) ? '!border-red-500' : '' }}" />
                                         @if(isset($rowErrors[$index]['pod']))
-                                            <flux:error>{{ implode(' ', $rowErrors[$index]['pod']) }}</flux:error>
+                                            <p class="mt-1 text-xs text-red-600">{{ implode(' ', $rowErrors[$index]['pod']) }}</p>
                                         @endif
                                     </td>
                                     <td class="px-3 py-1.5 whitespace-nowrap text-center">
-                                        <input type="date" wire:model.blur="parsedRows.{{ $index }}.eta" class="text-sm text-center border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 px-2 py-1 w-full {{ isset($rowErrors[$index]['eta']) ? 'border-red-500' : '' }}" />
+                                        <input type="date" wire:model.blur="parsedRows.{{ $index }}.eta" class="text-sm text-center border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 px-2 py-1 w-full {{ isset($rowErrors[$index]['eta']) ? '!border-red-500' : '' }}" />
                                         @if(isset($rowErrors[$index]['eta']))
-                                            <flux:error>{{ implode(' ', $rowErrors[$index]['eta']) }}</flux:error>
+                                            <p class="mt-1 text-xs text-red-600">{{ implode(' ', $rowErrors[$index]['eta']) }}</p>
                                         @endif
                                     </td>
                                     @if($isFirstInGroup)
                                         <td class="px-3 py-1.5 align-top border-l border-gray-200 dark:border-gray-700" rowspan="{{ $groupSize }}">
-                                            <flux:textarea wire:model.blur="parsedRows.{{ $index }}.comment" rows="{{ max(2, (int) $groupSize) }}" class="!rounded-none min-w-[120px] w-full resize-y text-sm" placeholder="{{ __('Comment') }}" />
+                                            <textarea wire:model.blur="parsedRows.{{ $index }}.comment" rows="{{ max(2, (int) $groupSize) }}" class="min-w-[120px] w-full resize-y text-sm border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 px-2 py-1" placeholder="{{ __('Comment') }}"></textarea>
                                         </td>
                                     @endif
                                     @if($isFirstInGroup)

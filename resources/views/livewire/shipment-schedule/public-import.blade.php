@@ -197,7 +197,7 @@
                 <div class="mb-4 flex flex-wrap items-center justify-between gap-2">
                     <flux:heading size="lg">{{ __('Review and edit') }}</flux:heading>
                     <div class="flex flex-wrap gap-2">
-                        <flux:button wire:click="confirmImportAll" variant="primary" icon="table-cells" class="cursor-pointer !bg-green-600 hover:!bg-green-700 !border-green-600 hover:!border-green-700">
+                        <flux:button wire:click="confirmImportAll" variant="primary" icon="arrow-down-tray" class="cursor-pointer !bg-emerald-500 hover:!bg-emerald-600 !border-emerald-500 hover:!border-emerald-600">
                             {{ __('Confirm import all') }}
                         </flux:button>
                     </div>

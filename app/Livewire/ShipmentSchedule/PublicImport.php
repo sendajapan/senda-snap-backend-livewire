@@ -104,6 +104,19 @@ class PublicImport extends Component
                 if (trim(implode('', $mapped)) === '') {
                     continue;
                 }
+                // Handle TBA values - convert to empty string
+                foreach (['shipping_line', 'vessel_name', 'voyage_no', 'pol', 'pod'] as $field) {
+                    if (($mapped[$field] ?? '') === 'TBA') {
+                        $mapped[$field] = '';
+                    }
+                }
+                // Handle invalid dates - convert to empty string
+                foreach (['etd', 'eta'] as $dateField) {
+                    $val = $mapped[$dateField] ?? '';
+                    if ($val && (!preg_match('/^\d{4}-\d{2}-\d{2}$/', (string) $val) || strtotime((string) $val) === false)) {
+                        $mapped[$dateField] = '';
+                    }
+                }
                 $this->parsedRows[] = $mapped;
             }
 

@@ -227,56 +227,44 @@
                                     <td class="px-3 py-1.5 whitespace-nowrap text-center text-gray-600 dark:text-gray-400 font-medium border-r border-gray-200 dark:border-gray-700">
                                         {{ $index + 1 }}
                                     </td>
-                                    @php
-                                        $displayShippingLine = ($row['shipping_line'] ?? '') === 'TBA' ? '' : ($row['shipping_line'] ?? '');
-                                        $displayVesselName = ($row['vessel_name'] ?? '') === 'TBA' ? '' : ($row['vessel_name'] ?? '');
-                                        $displayVoyageNo = ($row['voyage_no'] ?? '') === 'TBA' ? '' : ($row['voyage_no'] ?? '');
-                                        $displayPol = ($row['pol'] ?? '') === 'TBA' ? '' : ($row['pol'] ?? '');
-                                        $displayPod = ($row['pod'] ?? '') === 'TBA' ? '' : ($row['pod'] ?? '');
-
-                                        $isValidEtd = preg_match('/^\d{4}-\d{2}-\d{2}$/', (string) ($row['etd'] ?? '')) && strtotime((string) ($row['etd'] ?? '')) !== false;
-                                        $isValidEta = preg_match('/^\d{4}-\d{2}-\d{2}$/', (string) ($row['eta'] ?? '')) && strtotime((string) ($row['eta'] ?? '')) !== false;
-                                        $displayEtd = $isValidEtd ? $row['etd'] : '';
-                                        $displayEta = $isValidEta ? $row['eta'] : '';
-                                    @endphp
                                     <td class="px-3 py-1.5 whitespace-nowrap">
-                                        <flux:input wire:model.blur="parsedRows.{{ $index }}.shipping_line" size="sm" class="text-sm {{ isset($rowErrors[$index]['shipping_line']) ? 'border-red-500' : '' }}" value="{{ $displayShippingLine }}" />
+                                        <flux:input wire:model.blur="parsedRows.{{ $index }}.shipping_line" size="sm" class="text-sm {{ isset($rowErrors[$index]['shipping_line']) ? 'border-red-500' : '' }}" />
                                         @if(isset($rowErrors[$index]['shipping_line']))
                                             <flux:error>{{ implode(' ', $rowErrors[$index]['shipping_line']) }}</flux:error>
                                         @endif
                                     </td>
                                     <td class="px-3 py-1.5 whitespace-nowrap">
-                                        <flux:input wire:model.blur="parsedRows.{{ $index }}.vessel_name" size="sm" class="text-sm {{ isset($rowErrors[$index]['vessel_name']) ? 'border-red-500' : '' }}" value="{{ $displayVesselName }}" />
+                                        <flux:input wire:model.blur="parsedRows.{{ $index }}.vessel_name" size="sm" class="text-sm {{ isset($rowErrors[$index]['vessel_name']) ? 'border-red-500' : '' }}" />
                                         @if(isset($rowErrors[$index]['vessel_name']))
                                             <flux:error>{{ implode(' ', $rowErrors[$index]['vessel_name']) }}</flux:error>
                                         @endif
                                     </td>
                                     <td class="px-3 py-1.5 whitespace-nowrap">
-                                        <flux:input wire:model.blur="parsedRows.{{ $index }}.voyage_no" size="sm" class="text-sm {{ isset($rowErrors[$index]['voyage_no']) ? 'border-red-500' : '' }}" value="{{ $displayVoyageNo }}" />
+                                        <flux:input wire:model.blur="parsedRows.{{ $index }}.voyage_no" size="sm" class="text-sm {{ isset($rowErrors[$index]['voyage_no']) ? 'border-red-500' : '' }}" />
                                         @if(isset($rowErrors[$index]['voyage_no']))
                                             <flux:error>{{ implode(' ', $rowErrors[$index]['voyage_no']) }}</flux:error>
                                         @endif
                                     </td>
                                     <td class="px-3 py-1.5 whitespace-nowrap">
-                                        <flux:input wire:model.blur="parsedRows.{{ $index }}.pol" size="sm" class="text-sm {{ isset($rowErrors[$index]['pol']) ? 'border-red-500' : '' }}" value="{{ $displayPol }}" />
+                                        <flux:input wire:model.blur="parsedRows.{{ $index }}.pol" size="sm" class="text-sm {{ isset($rowErrors[$index]['pol']) ? 'border-red-500' : '' }}" />
                                         @if(isset($rowErrors[$index]['pol']))
                                             <flux:error>{{ implode(' ', $rowErrors[$index]['pol']) }}</flux:error>
                                         @endif
                                     </td>
                                     <td class="px-3 py-1.5 whitespace-nowrap text-center">
-                                        <input type="date" wire:model.blur="parsedRows.{{ $index }}.etd" class="text-sm text-center border border-gray-300 dark:border-gray-600 px-2 py-1 w-full {{ isset($rowErrors[$index]['etd']) ? 'border-red-500' : '' }}" value="{{ $displayEtd }}" />
+                                        <input type="date" wire:model.blur="parsedRows.{{ $index }}.etd" class="text-sm text-center border border-gray-300 dark:border-gray-600 px-2 py-1 w-full {{ isset($rowErrors[$index]['etd']) ? 'border-red-500' : '' }}" />
                                         @if(isset($rowErrors[$index]['etd']))
                                             <flux:error>{{ implode(' ', $rowErrors[$index]['etd']) }}</flux:error>
                                         @endif
                                     </td>
                                     <td class="px-3 py-1.5 whitespace-nowrap">
-                                        <flux:input wire:model.blur="parsedRows.{{ $index }}.pod" size="sm" class="text-sm {{ isset($rowErrors[$index]['pod']) ? 'border-red-500' : '' }}" value="{{ $displayPod }}" />
+                                        <flux:input wire:model.blur="parsedRows.{{ $index }}.pod" size="sm" class="text-sm {{ isset($rowErrors[$index]['pod']) ? 'border-red-500' : '' }}" />
                                         @if(isset($rowErrors[$index]['pod']))
                                             <flux:error>{{ implode(' ', $rowErrors[$index]['pod']) }}</flux:error>
                                         @endif
                                     </td>
                                     <td class="px-3 py-1.5 whitespace-nowrap text-center">
-                                        <input type="date" wire:model.blur="parsedRows.{{ $index }}.eta" class="text-sm text-center border border-gray-300 dark:border-gray-600 px-2 py-1 w-full {{ isset($rowErrors[$index]['eta']) ? 'border-red-500' : '' }}" value="{{ $displayEta }}" />
+                                        <input type="date" wire:model.blur="parsedRows.{{ $index }}.eta" class="text-sm text-center border border-gray-300 dark:border-gray-600 px-2 py-1 w-full {{ isset($rowErrors[$index]['eta']) ? 'border-red-500' : '' }}" />
                                         @if(isset($rowErrors[$index]['eta']))
                                             <flux:error>{{ implode(' ', $rowErrors[$index]['eta']) }}</flux:error>
                                         @endif

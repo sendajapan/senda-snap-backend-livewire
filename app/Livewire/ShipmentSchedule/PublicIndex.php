@@ -46,6 +46,12 @@ class PublicIndex extends Component
 
     public ?int $endPortFilter = null;
 
+    public bool $showPreview = false;
+
+    public array $previewNodes = [];
+
+    public array $previewConnections = [];
+
     public function mount(): void
     {
         if (auth()->check()) {
@@ -108,6 +114,75 @@ class PublicIndex extends Component
         $this->startPortFilter = null;
         $this->endPortFilter = null;
         $this->resetPage();
+    }
+
+    public function previewSchedule($scheduleId): void
+    {
+        $schedule = \App\Models\Schedule::with(['startPort', 'endPort', 'stopovers.port'])->find($scheduleId);
+        if (! $schedule) {
+            return;
+        }
+
+        $this->buildPreviewFlow($schedule);
+        $this->showPreview = true;
+    }
+
+    public function closePreview(): void
+    {
+        $this->showPreview = false;
+    }
+
+    protected function buildPreviewFlow(\App\Models\Schedule $schedule): void
+    {
+        $this->previewNodes = [];
+        $this->previewConnections = [];
+
+        $nodes = [];
+
+        // Start Node
+        $nodes[] = [
+            'port' => $schedule->startPort->port_name ?? __('Start Port'),
+            'event' => 'ETD',
+            'date' => $schedule->etd ? $schedule->etd->format('Y-m-d') : 'N/A',
+            'type' => 'start',
+        ];
+
+        // Stopovers
+        foreach ($schedule->stopovers as $stopover) {
+            $nodes[] = [
+                'port' => $stopover->port->port_name ?? __('Stopover'),
+                'event' => 'ETA',
+                'date' => $stopover->stopover_eta ? $stopover->stopover_eta->format('Y-m-d') : 'N/A',
+                'type' => 'stopover',
+            ];
+        }
+
+        // End Node
+        $nodes[] = [
+            'port' => $schedule->endPort->port_name ?? __('Destination'),
+            'event' => 'ETA',
+            'date' => $schedule->eta ? $schedule->eta->format('Y-m-d') : 'N/A',
+            'type' => 'destination',
+        ];
+
+        $this->previewNodes = $nodes;
+
+        // Connections
+        for ($i = 0; $i < count($nodes) - 1; $i++) {
+            $from = $nodes[$i];
+            $to = $nodes[$i + 1];
+            $this->previewConnections[] = [
+                'label' => sprintf(
+                    '%s (%s: %s) -> %s (%s: %s)',
+                    $from['port'],
+                    $from['event'],
+                    $from['date'],
+                    $to['port'],
+                    $to['event'],
+                    $to['date']
+                ),
+            ];
+        }
     }
 
     #[On('schedule-saved')]

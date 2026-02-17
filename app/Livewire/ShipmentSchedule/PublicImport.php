@@ -113,8 +113,27 @@ class PublicImport extends Component
                 // Handle invalid dates - convert to empty string
                 foreach (['etd', 'eta'] as $dateField) {
                     $val = $mapped[$dateField] ?? '';
-                    if ($val && (!preg_match('/^\d{4}-\d{2}-\d{2}$/', (string) $val) || strtotime((string) $val) === false)) {
-                        $mapped[$dateField] = '';
+                    if ($val) {
+                        // Check if date matches format
+                        if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', (string) $val)) {
+                            $mapped[$dateField] = '';
+                            continue;
+                        }
+                        // Check for invalid placeholder dates like 0000-00-00
+                        if ($val === '0000-00-00' || strpos((string) $val, '0000-') === 0) {
+                            $mapped[$dateField] = '';
+                            continue;
+                        }
+                        // Validate that the date can be parsed and is valid
+                        try {
+                            $parsed = \Carbon\Carbon::parse($val);
+                            // Check if the parsed date is reasonable (not negative year)
+                            if ($parsed->year < 1) {
+                                $mapped[$dateField] = '';
+                            }
+                        } catch (\Throwable) {
+                            $mapped[$dateField] = '';
+                        }
                     }
                 }
                 $this->parsedRows[] = $mapped;

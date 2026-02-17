@@ -387,9 +387,21 @@ class ScheduleService
         $eta = null;
         if ($lastEtaRaw !== '') {
             try {
-                $eta = Carbon::parse($lastEtaRaw)->format('Y-m-d');
-            } catch (\Throwable) {
-                // Invalid date, keep null
+                $parsedEta = Carbon::parse($lastEtaRaw);
+                // Validate the parsed date is reasonable
+                if ($parsedEta->year < 1 || $parsedEta->year > 2100) {
+                    $errors['eta'] = [__('Invalid ETA date: :date', ['date' => $lastEtaRaw])];
+                } else {
+                    $eta = $parsedEta->format('Y-m-d');
+                }
+            } catch (\Throwable $e) {
+                // Invalid date format - log for debugging but don't fail the import
+                \Log::warning('Failed to parse ETA during import', [
+                    'eta_raw' => $lastEtaRaw,
+                    'vessel' => $vesselName,
+                    'error' => $e->getMessage()
+                ]);
+                // Keep eta as null
             }
         }
 
@@ -456,8 +468,24 @@ class ScheduleService
                 $stopoverEta = null;
                 if ($etaStr !== '') {
                     try {
-                        $stopoverEta = Carbon::parse($etaStr)->format('Y-m-d 00:00:00');
-                    } catch (\Throwable) {
+                        $parsedStopoverEta = Carbon::parse($etaStr);
+                        // Validate the parsed date is reasonable
+                        if ($parsedStopoverEta->year >= 1 && $parsedStopoverEta->year <= 2100) {
+                            $stopoverEta = $parsedStopoverEta->format('Y-m-d 00:00:00');
+                        } else {
+                            \Log::warning('Invalid stopover ETA date during import', [
+                                'eta_str' => $etaStr,
+                                'vessel' => $vesselName,
+                                'pod' => $podName
+                            ]);
+                        }
+                    } catch (\Throwable $e) {
+                        \Log::warning('Failed to parse stopover ETA during import', [
+                            'eta_str' => $etaStr,
+                            'vessel' => $vesselName,
+                            'pod' => $podName,
+                            'error' => $e->getMessage()
+                        ]);
                         $stopoverEta = null;
                     }
                 }

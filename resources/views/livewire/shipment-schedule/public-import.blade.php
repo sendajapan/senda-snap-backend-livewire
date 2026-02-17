@@ -325,9 +325,13 @@
                                     @endif
                                     @if($isFirstInGroup)
                                         <td class="px-3 py-1.5 whitespace-nowrap text-center align-top border-l border-gray-200 dark:border-gray-700" rowspan="{{ $groupSize }}">
-                                            <flux:button wire:click="previewRow({{ $index }})" size="sm" variant="primary" icon="share" class="cursor-pointer">
-                                                {{ __('Preview') }}
-                                            </flux:button>
+                                            <button
+                                                type="button"
+                                                wire:click="previewRow({{ $index }})"
+                                                class="inline-flex items-center gap-1.5 cursor-pointer rounded border border-gray-300 bg-white px-2.5 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-1 dark:focus:ring-offset-gray-900">
+                                                <img src="{{ asset('assets/images/icons/route.png') }}" class="h-3.5 w-3.5" alt="Route">
+                                                <span>{{ __('Preview') }}</span>
+                                            </button>
                                         </td>
                                     @endif
                                     <td class="px-3 py-1.5 whitespace-nowrap text-center border-l border-gray-200 dark:border-gray-700">

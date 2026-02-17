@@ -197,7 +197,7 @@
                 <div class="mb-4 flex flex-wrap items-center justify-between gap-2">
                     <flux:heading size="lg">{{ __('Review and edit') }}</flux:heading>
                     <div class="flex flex-wrap gap-2">
-                        <flux:button wire:click="confirmImportAll" variant="primary" icon="check">
+                        <flux:button wire:click="confirmImportAll" variant="primary" icon="table-cells" class="cursor-pointer !bg-green-600 hover:!bg-green-700 !border-green-600 hover:!border-green-700">
                             {{ __('Confirm import all') }}
                         </flux:button>
                     </div>
@@ -313,7 +313,7 @@
                                     @endif
                                     @if($isFirstInGroup)
                                         <td class="px-3 py-1.5 whitespace-nowrap text-center align-top border-l border-gray-200 dark:border-gray-700" rowspan="{{ $groupSize }}">
-                                            <flux:button wire:click="previewRow({{ $index }})" size="sm" variant="primary" icon="eye">
+                                            <flux:button wire:click="previewRow({{ $index }})" size="sm" variant="primary" icon="share" class="cursor-pointer">
                                                 {{ __('Preview') }}
                                             </flux:button>
                                         </td>
@@ -323,7 +323,7 @@
                                             @if(isset($importedRows[$index]))
                                                 <flux:badge color="green" size="sm">{{ __('Imported') }}</flux:badge>
                                             @else
-                                                <button wire:click="removeRow({{ $index }})" wire:confirm="{{ __('Remove this row?') }}" class="inline-flex items-center justify-center gap-1.5 px-2 py-1.5 text-sm font-medium text-red-600 dark:text-red-400 border border-red-400 dark:border-red-500 hover:bg-red-500 hover:text-white dark:hover:bg-red-500 dark:hover:text-white transition-colors">
+                                                <button wire:click="removeRow({{ $index }})" wire:confirm="{{ __('Remove this row?') }}" class="cursor-pointer inline-flex items-center justify-center gap-1.5 px-2.5 py-1.5 text-sm font-medium rounded-md text-red-600 dark:text-red-400 border border-red-400 dark:border-red-500 hover:bg-red-500 hover:text-white dark:hover:bg-red-500 dark:hover:text-white transition-colors">
                                                     <flux:icon.trash class="h-4 w-4" />
                                                     <span>{{ __('Delete') }}</span>
                                                 </button>

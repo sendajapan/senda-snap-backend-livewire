@@ -229,55 +229,55 @@
                                         {{ $index + 1 }}
                                     </td>
                                     <td class="px-3 py-1.5 whitespace-nowrap">
-                                        <flux:input wire:model.blur="parsedRows.{{ $index }}.shipping_line" size="sm" class="text-sm {{ isset($rowErrors[$index]['shipping_line']) ? 'border-red-500' : '' }}" />
+                                        <flux:input wire:model.blur="parsedRows.{{ $index }}.shipping_line" size="sm" class="!rounded-none text-sm {{ isset($rowErrors[$index]['shipping_line']) ? 'border-red-500' : '' }}" />
                                         @if(isset($rowErrors[$index]['shipping_line']))
                                             <flux:error>{{ implode(' ', $rowErrors[$index]['shipping_line']) }}</flux:error>
                                         @endif
                                     </td>
                                     <td class="px-3 py-1.5 whitespace-nowrap">
-                                        <flux:input wire:model.blur="parsedRows.{{ $index }}.vessel_name" size="sm" class="text-sm {{ isset($rowErrors[$index]['vessel_name']) ? 'border-red-500' : '' }}" />
+                                        <flux:input wire:model.blur="parsedRows.{{ $index }}.vessel_name" size="sm" class="!rounded-none text-sm {{ isset($rowErrors[$index]['vessel_name']) ? 'border-red-500' : '' }}" />
                                         @if(isset($rowErrors[$index]['vessel_name']))
                                             <flux:error>{{ implode(' ', $rowErrors[$index]['vessel_name']) }}</flux:error>
                                         @endif
                                     </td>
                                     <td class="px-3 py-1.5 whitespace-nowrap">
-                                        <flux:input wire:model.blur="parsedRows.{{ $index }}.voyage_no" size="sm" class="text-sm {{ isset($rowErrors[$index]['voyage_no']) ? 'border-red-500' : '' }}" />
+                                        <flux:input wire:model.blur="parsedRows.{{ $index }}.voyage_no" size="sm" class="!rounded-none text-sm {{ isset($rowErrors[$index]['voyage_no']) ? 'border-red-500' : '' }}" />
                                         @if(isset($rowErrors[$index]['voyage_no']))
                                             <flux:error>{{ implode(' ', $rowErrors[$index]['voyage_no']) }}</flux:error>
                                         @endif
                                     </td>
                                     <td class="px-3 py-1.5 whitespace-nowrap">
-                                        <flux:input wire:model.blur="parsedRows.{{ $index }}.pol" size="sm" class="text-sm {{ isset($rowErrors[$index]['pol']) ? 'border-red-500' : '' }}" />
+                                        <flux:input wire:model.blur="parsedRows.{{ $index }}.pol" size="sm" class="!rounded-none text-sm {{ isset($rowErrors[$index]['pol']) ? 'border-red-500' : '' }}" />
                                         @if(isset($rowErrors[$index]['pol']))
                                             <flux:error>{{ implode(' ', $rowErrors[$index]['pol']) }}</flux:error>
                                         @endif
                                     </td>
                                     <td class="px-3 py-1.5 whitespace-nowrap text-center">
-                                        <input type="date" wire:model.blur="parsedRows.{{ $index }}.etd" class="text-sm text-center border border-gray-300 dark:border-gray-600 px-2 py-1 w-full {{ isset($rowErrors[$index]['etd']) ? 'border-red-500' : '' }}" />
+                                        <input type="date" wire:model.blur="parsedRows.{{ $index }}.etd" class="text-sm text-center border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 px-2 py-1 w-full {{ isset($rowErrors[$index]['etd']) ? 'border-red-500' : '' }}" />
                                         @if(isset($rowErrors[$index]['etd']))
                                             <flux:error>{{ implode(' ', $rowErrors[$index]['etd']) }}</flux:error>
                                         @endif
                                     </td>
                                     <td class="px-3 py-1.5 whitespace-nowrap">
-                                        <flux:input wire:model.blur="parsedRows.{{ $index }}.pod" size="sm" class="text-sm {{ isset($rowErrors[$index]['pod']) ? 'border-red-500' : '' }}" />
+                                        <flux:input wire:model.blur="parsedRows.{{ $index }}.pod" size="sm" class="!rounded-none text-sm {{ isset($rowErrors[$index]['pod']) ? 'border-red-500' : '' }}" />
                                         @if(isset($rowErrors[$index]['pod']))
                                             <flux:error>{{ implode(' ', $rowErrors[$index]['pod']) }}</flux:error>
                                         @endif
                                     </td>
                                     <td class="px-3 py-1.5 whitespace-nowrap text-center">
-                                        <input type="date" wire:model.blur="parsedRows.{{ $index }}.eta" class="text-sm text-center border border-gray-300 dark:border-gray-600 px-2 py-1 w-full {{ isset($rowErrors[$index]['eta']) ? 'border-red-500' : '' }}" />
+                                        <input type="date" wire:model.blur="parsedRows.{{ $index }}.eta" class="text-sm text-center border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 px-2 py-1 w-full {{ isset($rowErrors[$index]['eta']) ? 'border-red-500' : '' }}" />
                                         @if(isset($rowErrors[$index]['eta']))
                                             <flux:error>{{ implode(' ', $rowErrors[$index]['eta']) }}</flux:error>
                                         @endif
                                     </td>
                                     @if($isFirstInGroup)
                                         <td class="px-3 py-1.5 align-top border-l border-gray-200 dark:border-gray-700" rowspan="{{ $groupSize }}">
-                                            <flux:textarea wire:model.blur="parsedRows.{{ $index }}.comment" rows="{{ max(2, (int) $groupSize) }}" class="rounded-sm min-w-[120px] w-full resize-y text-sm" placeholder="{{ __('Comment') }}" />
+                                            <flux:textarea wire:model.blur="parsedRows.{{ $index }}.comment" rows="{{ max(2, (int) $groupSize) }}" class="!rounded-none min-w-[120px] w-full resize-y text-sm" placeholder="{{ __('Comment') }}" />
                                         </td>
                                     @endif
                                     @if($isFirstInGroup)
                                         <td class="px-3 py-1.5 whitespace-nowrap text-center align-top border-l border-gray-200 dark:border-gray-700" rowspan="{{ $groupSize }}">
-                                            <flux:button wire:click="previewRow({{ $index }})" size="sm" variant="outline" icon="eye">
+                                            <flux:button wire:click="previewRow({{ $index }})" size="sm" variant="primary" icon="eye">
                                                 {{ __('Preview') }}
                                             </flux:button>
                                         </td>
@@ -287,7 +287,7 @@
                                             @if(isset($importedRows[$index]))
                                                 <flux:badge color="green" size="sm">{{ __('Imported') }}</flux:badge>
                                             @else
-                                                <button wire:click="removeRow({{ $index }})" wire:confirm="{{ __('Remove this row?') }}" class="inline-flex items-center justify-center gap-1.5 px-2 py-1.5 text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-500 hover:text-white dark:hover:bg-red-500 dark:hover:text-white transition-colors rounded">
+                                                <button wire:click="removeRow({{ $index }})" wire:confirm="{{ __('Remove this row?') }}" class="inline-flex items-center justify-center gap-1.5 px-2 py-1.5 text-sm font-medium text-red-600 dark:text-red-400 border border-red-400 dark:border-red-500 hover:bg-red-500 hover:text-white dark:hover:bg-red-500 dark:hover:text-white transition-colors">
                                                     <flux:icon.trash class="h-4 w-4" />
                                                     <span>{{ __('Delete') }}</span>
                                                 </button>

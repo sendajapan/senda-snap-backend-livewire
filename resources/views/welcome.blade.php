@@ -281,6 +281,32 @@
             </div>
         </div>
 
+        <footer class="border-t border-gray-200/60 bg-white/95 py-8 text-gray-600 dark:border-zinc-700/60 dark:bg-zinc-900/95 dark:text-gray-400">
+            <div class="mx-auto w-full max-w-7xl px-4 sm:px-6 md:px-8 lg:px-10 pl-[max(1rem,env(safe-area-inset-left))] pr-[max(1rem,env(safe-area-inset-right))]">
+                <div class="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-white shadow-sm ring-1 ring-gray-200/60 dark:bg-zinc-900 dark:ring-zinc-700/60">
+                            <x-app-logo />
+                        </div>
+                        <div>
+                            <p class="text-sm font-semibold text-gray-900 dark:text-white">{{ config('app.name') }}</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400">{{ __('Vehicle Management & Task Scheduling') }}</p>
+                        </div>
+                    </div>
+                    <div class="flex flex-wrap gap-4 text-sm">
+                        <a href="{{ route('admin.manual') }}" class="transition-colors hover:text-gray-900 dark:hover:text-white">{{ __('Admin Manual') }}</a>
+                        <a href="{{ route('android.app.manual') }}" class="transition-colors hover:text-gray-900 dark:hover:text-white">{{ __('Android Manual') }}</a>
+                        <a href="{{ route('api.docs') }}" class="transition-colors hover:text-gray-900 dark:hover:text-white">{{ __('API Docs') }}</a>
+                        <a href="{{ route('privacy.policy') }}" class="transition-colors hover:text-gray-900 dark:hover:text-white">{{ __('Privacy Policy') }}</a>
+                    </div>
+                </div>
+                <div class="mt-6 flex flex-col gap-2 border-t border-gray-200/60 pt-4 text-xs text-gray-500 dark:border-zinc-700/60 dark:text-gray-400 sm:flex-row sm:items-center sm:justify-between">
+                    <span>{{ __('Development partner') }}: <a href="https://sendajapan.com/" target="_blank" rel="noopener noreferrer" class="font-medium text-gray-700 transition-colors hover:text-gray-900 dark:text-gray-200 dark:hover:text-white">Senda Japan</a></span>
+                    <span>&copy; {{ date('Y') }} {{ config('app.name') }}. {{ __('All rights reserved.') }}</span>
+                </div>
+            </div>
+        </footer>
+
         <style>
             /* Microsoft Surface Monitor Mockup Styles */
             .monitor-mockup {

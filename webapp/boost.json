@@ -1,0 +1,13 @@
+{
+    "agents": [
+        "codex",
+        "cursor"
+    ],
+    "skills": [
+        "fluxui-development",
+        "livewire-development",
+        "volt-development",
+        "pest-testing",
+        "tailwindcss-development"
+    ]
+}

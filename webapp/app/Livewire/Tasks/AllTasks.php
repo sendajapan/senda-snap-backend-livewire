@@ -1,0 +1,129 @@
+<?php
+
+namespace App\Livewire\Tasks;
+
+use App\Services\TaskService;
+use Illuminate\View\View;
+use Livewire\Attributes\On;
+use Livewire\Component;
+use Livewire\WithPagination;
+
+class AllTasks extends Component
+{
+    use WithPagination;
+
+    public ?string $search = null;
+
+    public ?string $statusFilter = null;
+
+    public ?string $fromDate = null;
+
+    public ?string $toDate = null;
+
+    #[On('task-saved')]
+    public function refreshTasks(): void
+    {
+        // This will trigger a re-render and refresh the tasks list
+    }
+
+    #[On('delete-task')]
+    public function deleteTask($taskId, TaskService $taskService): void
+    {
+        // Handle both direct taskId parameter and object with taskId property
+        if (is_array($taskId) || is_object($taskId)) {
+            $taskId = is_array($taskId) ? ($taskId['taskId'] ?? null) : ($taskId->taskId ?? null);
+        }
+
+        if ($taskId) {
+            try {
+                $task = $taskService->getTaskById($taskId);
+                $taskService->delete($task);
+                $this->dispatch('notify', message: __('Task deleted successfully.'), type: 'success');
+            } catch (\Exception $e) {
+                \Log::error('Task delete error: '.$e->getMessage());
+                $this->dispatch('notify', message: __('An error occurred while deleting the task.'), type: 'error');
+            }
+        }
+    }
+
+    /**
+     * Get child record warnings for a task
+     */
+    public function getTaskWarnings(int $taskId): array
+    {
+        $task = \App\Models\Task::withCount('attachments')->findOrFail($taskId);
+        $warnings = [];
+
+        if ($task->attachments_count > 0) {
+            $warnings[] = __(':count attachment(s)', ['count' => $task->attachments_count]);
+        }
+
+        return $warnings;
+    }
+
+    public function updatedSearch($value): void
+    {
+        // Trim and reset to null if empty
+        $this->search = trim($value) === '' ? null : trim($value);
+        $this->resetPage();
+    }
+
+    public function updatedStatusFilter($value): void
+    {
+        // Reset to null if empty string is selected, otherwise keep the value
+        $this->statusFilter = ($value === '' || $value === null) ? null : $value;
+        $this->resetPage();
+    }
+
+    public function updatedFromDate($value): void
+    {
+        // Reset to null if empty
+        $this->fromDate = ($value === '' || $value === null) ? null : $value;
+        $this->resetPage();
+    }
+
+    public function updatedToDate($value): void
+    {
+        // Reset to null if empty
+        $this->toDate = ($value === '' || $value === null) ? null : $value;
+        $this->resetPage();
+    }
+
+    public function clearFilters(): void
+    {
+        $this->search = null;
+        $this->statusFilter = null;
+        $this->fromDate = null;
+        $this->toDate = null;
+        $this->resetPage();
+    }
+
+    public function render(TaskService $taskService): View
+    {
+        // Build filters array, only including non-null and non-empty values
+        $filters = [];
+
+        if ($this->search !== null && $this->search !== '') {
+            $filters['search'] = $this->search;
+        }
+
+        if ($this->statusFilter !== null && $this->statusFilter !== '') {
+            $filters['status'] = $this->statusFilter;
+        }
+
+        if ($this->fromDate !== null && $this->fromDate !== '') {
+            $filters['from_date'] = $this->fromDate;
+        }
+
+        if ($this->toDate !== null && $this->toDate !== '') {
+            $filters['to_date'] = $this->toDate;
+        }
+
+        // Get all tasks with filters (paginated)
+        $tasks = $taskService->getAllTasksFiltered($filters, 15);
+
+        return view('livewire.tasks.all-tasks', [
+            'tasks' => $tasks,
+        ])->layout('components.layouts.app', ['title' => __('All Tasks')]);
+    }
+}

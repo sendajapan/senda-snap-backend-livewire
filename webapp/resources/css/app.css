@@ -1,0 +1,485 @@
+@import 'tailwindcss';
+@import '../../vendor/livewire/flux/dist/flux.css';
+
+@source '../views';
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../vendor/livewire/flux-pro/stubs/**/*.blade.php';
+@source '../../vendor/livewire/flux/stubs/**/*.blade.php';
+@source '../../node_modules/flowbite/**/*.js';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+
+    --color-zinc-50: #fafafa;
+    --color-zinc-100: #f5f5f5;
+    --color-zinc-200: #e5e5e5;
+    --color-zinc-300: #d4d4d4;
+    --color-zinc-400: #a3a3a3;
+    --color-zinc-500: #737373;
+    --color-zinc-600: #525252;
+    --color-zinc-700: #404040;
+    --color-zinc-800: #262626;
+    --color-zinc-900: #171717;
+    --color-zinc-950: #0a0a0a;
+
+    --color-accent: var(--color-neutral-800);
+    --color-accent-content: var(--color-neutral-800);
+    --color-accent-foreground: var(--color-white);
+
+    /* Custom breakpoints for 2K and 4K screens */
+    --breakpoint-2xl: 1920px;
+    --breakpoint-3xl: 2560px;
+    --breakpoint-4xl: 3840px;
+
+    /* Icon / Avatar Containers
+       Usage: h-icon-sm w-icon-sm, h-icon-lg w-icon-lg */
+    --spacing-icon-sm: clamp(2.25rem, 2.07rem + 0.78vw, 3rem);
+    --spacing-icon-md: clamp(2.5rem, 2.26rem + 1.04vw, 3.5rem);
+    --spacing-icon-lg: clamp(4rem, 3.52rem + 2.07vw, 6rem);
+
+    /* ──────────────────────────────────────────────
+       REMOVED: Custom Typography Tokens (Now using standard Tailwind)
+       All font sizes now use standard Tailwind classes:
+       text-xs, text-sm, text-base, text-lg, text-xl, text-2xl, etc.
+       ────────────────────────────────────────────── */
+    /* --font-size-ui-xs: clamp(0.6875rem, 0.66rem + 0.13vw, 0.8125rem);
+    --font-size-ui-xs--line-height: 1.5;
+    --font-size-ui-sm: clamp(0.75rem, 0.72rem + 0.13vw, 0.875rem);
+    --font-size-ui-sm--line-height: 1.5;
+    --font-size-ui-base: clamp(0.875rem, 0.845rem + 0.13vw, 1rem);
+    --font-size-ui-base--line-height: 1.6;
+    --font-size-ui-lg: clamp(1rem, 0.94rem + 0.26vw, 1.25rem);
+    --font-size-ui-lg--line-height: 1.4;
+    --font-size-ui-xl: clamp(1.125rem, 1.03rem + 0.39vw, 1.5rem);
+    --font-size-ui-xl--line-height: 1.3;
+    --font-size-ui-2xl: clamp(1.25rem, 1.1rem + 0.65vw, 1.875rem);
+    --font-size-ui-2xl--line-height: 1.2;
+    --font-size-ui-3xl: clamp(1.5rem, 1.26rem + 1.04vw, 2.5rem);
+    --font-size-ui-3xl--line-height: 1.15;
+    --font-size-ui-4xl: clamp(1.875rem, 1.6rem + 1.17vw, 3rem);
+    --font-size-ui-4xl--line-height: 1.1; */
+
+}
+
+@layer theme {
+    .dark {
+        --color-accent: var(--color-white);
+        --color-accent-content: var(--color-white);
+        --color-accent-foreground: var(--color-neutral-800);
+    }
+}
+
+@layer base {
+
+    *,
+    ::after,
+    ::before,
+    ::backdrop,
+    ::file-selector-button {
+        border-color: var(--color-gray-200, currentColor);
+    }
+}
+
+@layer utilities {
+    /* Only standard Tailwind utilities - no custom font sizes */
+}
+
+/* Animated shimmer for upload progress bar */
+@keyframes upload-progress-shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+.upload-progress-shimmer {
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+    background-size: 200% 100%;
+    animation: upload-progress-shimmer 1.5s ease-in-out infinite;
+}
+
+/* SVG flowchart / ER-diagram connector animation */
+@keyframes route-svg-dash {
+    0% { stroke-dashoffset: 20; }
+    100% { stroke-dashoffset: 0; }
+}
+
+.route-svg-line {
+    animation: route-svg-dash 0.8s linear infinite;
+}
+
+[data-flux-field]:not(ui-radio, ui-checkbox) {
+    @apply grid gap-2;
+}
+
+[data-flux-label] {
+    @apply  !mb-0 !leading-tight;
+}
+
+input:focus[data-flux-control],
+textarea:focus[data-flux-control],
+select:focus[data-flux-control] {
+    @apply outline-hidden ring-2 ring-accent ring-offset-2 ring-offset-accent-foreground;
+}
+
+/* \[:where(&)\]:size-4 {
+    @apply size-4;
+} */
+
+/* Custom styling for active/selected navlist items - muted green matte appearance */
+/* High contrast greenish but attractive matt faded look - scoped to sidebar navlist */
+[data-flux-sidebar] a[aria-current="page"],
+[data-flux-sidebar] a[aria-current="true"],
+[data-flux-sidebar] button[aria-current="page"],
+[data-flux-sidebar] button[aria-current="true"],
+flux-sidebar a[aria-current="page"],
+flux-sidebar a[aria-current="true"],
+flux-sidebar button[aria-current="page"],
+flux-sidebar button[aria-current="true"] {
+    background-color: rgba(209, 250, 229, 0.7) !important; /* emerald-50 with 70% opacity - matte faded emerald */
+    color: rgb(4, 120, 87) !important; /* emerald-700 - darker emerald text for contrast */
+    font-weight: 500 !important; /* medium weight for emphasis */
+}
+
+.dark [data-flux-sidebar] a[aria-current="page"],
+.dark [data-flux-sidebar] a[aria-current="true"],
+.dark [data-flux-sidebar] button[aria-current="page"],
+.dark [data-flux-sidebar] button[aria-current="true"],
+.dark flux-sidebar a[aria-current="page"],
+.dark flux-sidebar a[aria-current="true"],
+.dark flux-sidebar button[aria-current="page"],
+.dark flux-sidebar button[aria-current="true"] {
+    background-color: rgba(6, 78, 59, 0.5) !important; /* emerald-950 with 50% opacity - dark matte faded emerald */
+    color: rgb(110, 231, 183) !important; /* emerald-300 - muted emerald text */
+    font-weight: 500 !important;
+}
+
+[data-flux-sidebar] a[aria-current="page"]:hover,
+[data-flux-sidebar] a[aria-current="true"]:hover,
+[data-flux-sidebar] button[aria-current="page"]:hover,
+[data-flux-sidebar] button[aria-current="true"]:hover,
+flux-sidebar a[aria-current="page"]:hover,
+flux-sidebar a[aria-current="true"]:hover,
+flux-sidebar button[aria-current="page"]:hover,
+flux-sidebar button[aria-current="true"]:hover {
+    background-color: rgba(167, 243, 208, 0.8) !important; /* emerald-100 with 80% opacity */
+    color: rgb(5, 150, 105) !important; /* emerald-600 - slightly brighter on hover */
+}
+
+.dark [data-flux-sidebar] a[aria-current="page"]:hover,
+.dark [data-flux-sidebar] a[aria-current="true"]:hover,
+.dark [data-flux-sidebar] button[aria-current="page"]:hover,
+.dark [data-flux-sidebar] button[aria-current="true"]:hover,
+.dark flux-sidebar a[aria-current="page"]:hover,
+.dark flux-sidebar a[aria-current="true"]:hover,
+.dark flux-sidebar button[aria-current="page"]:hover,
+.dark flux-sidebar button[aria-current="true"]:hover {
+    background-color: rgba(20, 83, 45, 0.6) !important; /* emerald-900 with 60% opacity */
+    color: rgb(125, 211, 252) !important; /* slightly brighter emerald on hover */
+}
+
+/* Screen Size Optimizations */
+/* FHD (1920x1080): Compact sizing to fit everything on one page */
+/* 2K (2560x1440) and 4K: Larger, more spacious sizing */
+
+
+
+
+/* Prevent table flashing in dark mode - completely disable background transitions on initial load */
+.dark table tbody tr,
+.dark table tbody tr.group {
+    transition-property: transform, opacity, box-shadow, border-color !important;
+    transition-duration: 200ms !important;
+    transition-timing-function: ease-in-out !important;
+    background-color: transparent !important;
+    background-image: none !important;
+}
+
+/* Only allow background transitions on hover after page load */
+.dark table tbody tr:hover,
+.dark table tbody tr.group:hover {
+    transition-property: background-color, background-image, transform, opacity, box-shadow, border-color !important;
+    transition-duration: 200ms !important;
+    transition-timing-function: ease-in-out !important;
+}
+
+/* Prevent any background transition delays on page load */
+.dark table tbody tr * {
+    transition-property: transform, opacity, box-shadow, border-color, color !important;
+    transition-duration: 200ms !important;
+}
+
+/* Override transition-all for table rows in dark mode */
+.dark table tbody tr.transition-all {
+    transition-property: transform, opacity, box-shadow, border-color !important;
+}
+
+.dark table tbody tr.transition-all:hover {
+    transition-property: background-color, background-image, transform, opacity, box-shadow, border-color !important;
+}
+
+/* Only allow background transitions after page is fully loaded */
+.dark.page-loaded table tbody tr,
+.dark.page-loaded table tbody tr.group {
+    transition-property: transform, opacity, box-shadow, border-color, background-color, background-image !important;
+}
+
+/* Prevent card flashing in dark mode during Livewire navigation */
+.dark .dashboard-card,
+.dark .page-card,
+.dark .welcome-card {
+    transition-property: transform, opacity, box-shadow, border-color !important;
+    transition-duration: 300ms !important;
+    transition-timing-function: ease-in-out !important;
+}
+
+/* Only allow background transitions on hover after page load */
+.dark.page-loaded .dashboard-card:hover,
+.dark.page-loaded .page-card:hover,
+.dark.page-loaded .welcome-card:hover {
+    transition-property: background-color, background-image, transform, opacity, box-shadow, border-color !important;
+}
+
+/* Override transition-all for cards in dark mode */
+.dark .dashboard-card.transition-all,
+.dark .page-card.transition-all,
+.dark .welcome-card.transition-all {
+    transition-property: transform, opacity, box-shadow, border-color !important;
+}
+
+.dark.page-loaded .dashboard-card.transition-all:hover,
+.dark.page-loaded .page-card.transition-all:hover,
+.dark.page-loaded .welcome-card.transition-all:hover {
+    transition-property: background-color, background-image, transform, opacity, box-shadow, border-color !important;
+}
+
+/* Prevent table flashing in light mode - completely disable background, border, and shadow transitions on initial load */
+/* Apply to all tables when html does NOT have .dark class */
+html:not(.dark) table tbody tr,
+html:not(.dark) table tbody tr.group {
+    transition-property: transform, opacity !important;
+    transition-duration: 200ms !important;
+    transition-timing-function: ease-in-out !important;
+    background-color: transparent !important;
+    background-image: none !important;
+}
+
+/* Only allow background, border, and shadow transitions on hover after page load in light mode */
+html:not(.dark) .page-loaded table tbody tr:hover,
+html:not(.dark) .page-loaded table tbody tr.group:hover {
+    transition-property: background-color, background-image, transform, opacity, box-shadow, border-color !important;
+    transition-duration: 200ms !important;
+    transition-timing-function: ease-in-out !important;
+}
+
+/* Prevent any background, border, and shadow transition delays on page load in light mode */
+html:not(.dark) table tbody tr * {
+    transition-property: transform, opacity, color !important;
+    transition-duration: 200ms !important;
+}
+
+/* Allow border and shadow transitions after page is loaded in light mode */
+html:not(.dark) .page-loaded table tbody tr * {
+    transition-property: transform, opacity, box-shadow, border-color, color !important;
+}
+
+/* Override transition-all for table rows in light mode - disable border and shadow during load */
+html:not(.dark) table tbody tr.transition-all {
+    transition-property: transform, opacity !important;
+}
+
+/* Allow all transitions on hover after page is loaded in light mode */
+html:not(.dark) .page-loaded table tbody tr.transition-all:hover {
+    transition-property: background-color, background-image, transform, opacity, box-shadow, border-color !important;
+}
+
+/* Only allow background, border, and shadow transitions after page is fully loaded in light mode */
+html:not(.dark) .page-loaded table tbody tr,
+html:not(.dark) .page-loaded table tbody tr.group {
+    transition-property: transform, opacity, box-shadow, border-color, background-color, background-image !important;
+}
+
+/* Prevent card flashing in light mode during Livewire navigation - disable border and shadow transitions */
+html:not(.dark) .dashboard-card,
+html:not(.dark) .page-card,
+html:not(.dark) .welcome-card {
+    transition-property: transform, opacity !important;
+    transition-duration: 300ms !important;
+    transition-timing-function: ease-in-out !important;
+}
+
+/* Only allow border and shadow transitions after page is fully loaded in light mode */
+html:not(.dark) .page-loaded .dashboard-card,
+html:not(.dark) .page-loaded .page-card,
+html:not(.dark) .page-loaded .welcome-card {
+    transition-property: transform, opacity, box-shadow, border-color !important;
+}
+
+/* Only allow background transitions on hover after page load in light mode */
+html:not(.dark) .page-loaded .dashboard-card:hover,
+html:not(.dark) .page-loaded .page-card:hover,
+html:not(.dark) .page-loaded .welcome-card:hover {
+    transition-property: background-color, background-image, transform, opacity, box-shadow, border-color !important;
+}
+
+/* Override transition-all for cards in light mode - disable border and shadow during load */
+html:not(.dark) .dashboard-card.transition-all,
+html:not(.dark) .page-card.transition-all,
+html:not(.dark) .welcome-card.transition-all {
+    transition-property: transform, opacity !important;
+}
+
+/* Allow all transitions after page is loaded in light mode */
+html:not(.dark) .page-loaded .dashboard-card.transition-all,
+html:not(.dark) .page-loaded .page-card.transition-all,
+html:not(.dark) .page-loaded .welcome-card.transition-all {
+    transition-property: transform, opacity, box-shadow, border-color !important;
+}
+
+html:not(.dark) .page-loaded .dashboard-card.transition-all:hover,
+html:not(.dark) .page-loaded .page-card.transition-all:hover,
+html:not(.dark) .page-loaded .welcome-card.transition-all:hover {
+    transition-property: background-color, background-image, transform, opacity, box-shadow, border-color !important;
+}
+
+/* Prevent header flashing in light mode - disable border and shadow transitions on initial load */
+html:not(.dark) flux-header,
+html:not(.dark) [data-flux-header] {
+    transition-property: transform, opacity !important;
+    transition-duration: 200ms !important;
+    transition-timing-function: ease-in-out !important;
+}
+
+/* Only allow border and shadow transitions after page is fully loaded in light mode */
+html:not(.dark) .page-loaded flux-header,
+html:not(.dark) .page-loaded [data-flux-header] {
+    transition-property: transform, opacity, box-shadow, border-color, background-color, background-image !important;
+}
+
+/* Dark mode header - keep existing behavior */
+.dark flux-header,
+.dark [data-flux-header] {
+    transition-property: transform, opacity, box-shadow, border-color !important;
+    transition-duration: 200ms !important;
+    transition-timing-function: ease-in-out !important;
+}
+
+.dark .page-loaded flux-header,
+.dark .page-loaded [data-flux-header] {
+    transition-property: transform, opacity, box-shadow, border-color, background-color, background-image !important;
+}
+
+/* Prevent sidebar flashing in light mode - disable border and shadow transitions on initial load */
+html:not(.dark) flux-sidebar,
+html:not(.dark) [data-flux-sidebar] {
+    transition-property: transform, opacity !important;
+    transition-duration: 200ms !important;
+    transition-timing-function: ease-in-out !important;
+}
+
+/* Only allow border and shadow transitions after page is fully loaded in light mode */
+html:not(.dark) .page-loaded flux-sidebar,
+html:not(.dark) .page-loaded [data-flux-sidebar] {
+    transition-property: transform, opacity, box-shadow, border-color, background-color, background-image !important;
+}
+
+/* Dark mode sidebar - keep existing behavior */
+.dark flux-sidebar,
+.dark [data-flux-sidebar] {
+    transition-property: transform, opacity, box-shadow, border-color !important;
+    transition-duration: 200ms !important;
+    transition-timing-function: ease-in-out !important;
+}
+
+.dark .page-loaded flux-sidebar,
+.dark .page-loaded [data-flux-sidebar] {
+    transition-property: transform, opacity, box-shadow, border-color, background-color, background-image !important;
+}
+
+/* Prevent table header flashing in light mode - disable border and shadow transitions on initial load */
+html:not(.dark) table thead tr,
+html:not(.dark) table thead th {
+    transition-property: transform, opacity !important;
+    transition-duration: 200ms !important;
+    transition-timing-function: ease-in-out !important;
+}
+
+/* Only allow border and shadow transitions after page is fully loaded in light mode */
+html:not(.dark) .page-loaded table thead tr,
+html:not(.dark) .page-loaded table thead th {
+    transition-property: transform, opacity, box-shadow, border-color, background-color, background-image !important;
+}
+
+/* Dark mode table header - keep existing behavior */
+.dark table thead tr,
+.dark table thead th {
+    transition-property: transform, opacity, box-shadow, border-color !important;
+    transition-duration: 200ms !important;
+    transition-timing-function: ease-in-out !important;
+}
+
+.dark .page-loaded table thead tr,
+.dark .page-loaded table thead th {
+    transition-property: transform, opacity, box-shadow, border-color, background-color, background-image !important;
+}
+
+
+
+/* Mouse Spotlight Effect (Dark Mode Only) */
+#mouse-spotlight {
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 30%, transparent 70%);
+    transform: translate(-50%, -50%);
+    filter: blur(50px);
+    pointer-events: none;
+    will-change: transform, background;
+    transition: opacity 0.3s ease, background 0.4s ease;
+    opacity: 0;
+}
+
+.dark #mouse-spotlight {
+    opacity: 1;
+}
+
+/* Vintage Dark Corners for Landing Page (Dark Mode Only) - Lighter to match dashboard */
+#vintage-corners {
+    background: 
+        /* Top-left corner - very subtle */
+        radial-gradient(ellipse 500px 500px at top left, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) 80%, rgba(0, 0, 0, 0.03) 95%, rgba(0, 0, 0, 0.05) 100%),
+        /* Top-right corner - very subtle */
+        radial-gradient(ellipse 500px 500px at top right, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) 80%, rgba(0, 0, 0, 0.03) 95%, rgba(0, 0, 0, 0.05) 100%),
+        /* Bottom-left corner - very subtle */
+        radial-gradient(ellipse 500px 500px at bottom left, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) 80%, rgba(0, 0, 0, 0.03) 95%, rgba(0, 0, 0, 0.05) 100%),
+        /* Bottom-right corner - very subtle */
+        radial-gradient(ellipse 500px 500px at bottom right, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) 80%, rgba(0, 0, 0, 0.03) 95%, rgba(0, 0, 0, 0.05) 100%);
+}
+
+/* Hero Section Background - Dark Radial Glow Effect */
+.landing-page .landing-hero {
+    background: transparent;
+    position: relative;
+}
+
+.dark .landing-page .landing-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background-image: radial-gradient(circle 500px at 50% 200px, rgba(120, 120, 120, 0.15), transparent);
+    pointer-events: none;
+}
+
+/* Ensure all content in hero section is above the glow */
+.dark .landing-page .landing-hero .landing-container {
+    position: relative !important;
+    z-index: 20 !important;
+}
+
+.dark .landing-page .landing-hero .landing-hero-content,
+.dark .landing-page .landing-hero .landing-grid,
+.dark .landing-page .landing-hero .landing-features,
+.dark .landing-page .landing-hero .landing-container > * {
+    position: relative !important;
+    z-index: 20 !important;
+}

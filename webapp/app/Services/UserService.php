@@ -1,0 +1,207 @@
+<?php
+
+namespace App\Services;
+
+use App\Models\User;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
+
+class UserService
+{
+    /**
+     * Scope query by vendor_id for multi-tenancy (admin can see all)
+     */
+    protected function scopeByVendor($query)
+    {
+        $user = auth()->user();
+        if ($user && $user->role !== 'admin' && $user->vendor_id) {
+            $query->where('vendor_id', $user->vendor_id);
+        }
+
+        return $query;
+    }
+
+    public function list(array $filters = []): Collection
+    {
+        $query = User::query();
+        $this->scopeByVendor($query);
+
+        if (! empty($filters['search'])) {
+            $query->where(function ($q) use ($filters) {
+                $q->where('name', 'like', "%{$filters['search']}%")
+                    ->orWhere('email', 'like', "%{$filters['search']}%");
+            });
+        }
+
+        if (! empty($filters['role'])) {
+            $query->where('role', $filters['role']);
+        }
+
+        if (! empty($filters['select'])) {
+            $query->select($filters['select']);
+        }
+
+        return $query->orderBy($filters['sort_by'] ?? 'name', $filters['sort_direction'] ?? 'asc')->get();
+    }
+
+    public function getPaginated(array $filters = [], int $perPage = 25)
+    {
+        $query = User::query()->with('vendor');
+        $this->scopeByVendor($query);
+
+        if (! empty($filters['search'])) {
+            $query->where(function ($q) use ($filters) {
+                $q->where('name', 'like', "%{$filters['search']}%")
+                    ->orWhere('email', 'like', "%{$filters['search']}%");
+            });
+        }
+
+        if (! empty($filters['role'])) {
+            $query->where('role', $filters['role']);
+        }
+
+        return $query->where('email', 'NOT LIKE', '%test%')->orderBy('created_at', 'desc')->paginate($perPage);
+    }
+
+    public function getById(int $userId): User
+    {
+        $query = User::query();
+        $this->scopeByVendor($query);
+
+        return $query->findOrFail($userId);
+    }
+
+    public function create(array $data): User
+    {
+        // Multi-tenancy: Auto-assign vendor_id from authenticated user (for managers creating employees)
+        $user = auth()->user();
+        if ($user && $user->vendor_id && ! isset($data['vendor_id'])) {
+            $data['vendor_id'] = $user->vendor_id;
+        }
+
+        $userData = [
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => Hash::make($data['password']),
+            'role' => $data['role'] ?? 'client',
+            'phone' => $data['phone'] ?? null,
+            'avis_id' => $data['avis_id'] ?? null,
+            'vendor_id' => $data['vendor_id'] ?? null,
+        ];
+
+        if (! empty($data['avatar']) && $data['avatar'] instanceof UploadedFile) {
+            $userData['avatar'] = $data['avatar']->store('avatars', 'public');
+        }
+
+        return User::create($userData);
+    }
+
+    public function update(User $user, array $data): User
+    {
+        $updateData = [];
+
+        if (isset($data['name'])) {
+            $updateData['name'] = $data['name'];
+        }
+
+        if (isset($data['email'])) {
+            $updateData['email'] = $data['email'];
+        }
+
+        if (isset($data['role'])) {
+            $updateData['role'] = $data['role'];
+        }
+
+        if (isset($data['phone'])) {
+            $updateData['phone'] = $data['phone'];
+        }
+
+        if (isset($data['avis_id'])) {
+            $updateData['avis_id'] = $data['avis_id'];
+        }
+
+        if (! empty($data['password'])) {
+            $updateData['password'] = Hash::make($data['password']);
+        }
+
+        if (! empty($data['avatar']) && $data['avatar'] instanceof UploadedFile) {
+            // Delete old avatar if exists
+            if ($user->avatar) {
+                Storage::disk('public')->delete($user->avatar);
+            }
+            $updateData['avatar'] = $data['avatar']->store('avatars', 'public');
+        }
+
+        if (! empty($updateData)) {
+            $user->update($updateData);
+        }
+
+        return $user->fresh();
+    }
+
+    public function delete(User $user): bool
+    {
+        if ($user->avatar) {
+            Storage::disk('public')->delete($user->avatar);
+        }
+
+        return $user->delete();
+    }
+
+    public function uploadAvatar(User $user, UploadedFile $avatar): User
+    {
+        // Delete old avatar if exists
+        if ($user->avatar) {
+            Storage::disk('public')->delete($user->avatar);
+        }
+
+        $avatarPath = $avatar->store('avatars', 'public');
+        $user->update(['avatar' => $avatarPath]);
+
+        return $user->fresh();
+    }
+
+    public function removeAvatar(User $user): User
+    {
+        if ($user->avatar) {
+            Storage::disk('public')->delete($user->avatar);
+            $user->update(['avatar' => null]);
+        }
+
+        return $user->fresh();
+    }
+
+    public function getTaskStats(User $user): array
+    {
+        $user->load(['assignedTasks', 'createdTasks']);
+
+        // Apply role-based scoping to task queries
+        $assignedTasksQuery = $user->assignedTasks()->forUserRole($user);
+        $createdTasksQuery = $user->createdTasks()->forUserRole($user);
+
+        return [
+            'assigned_tasks' => [
+                'total' => (clone $assignedTasksQuery)->count(),
+                'pending' => (clone $assignedTasksQuery)->where('status', 'pending')->count(),
+                'running' => (clone $assignedTasksQuery)->where('status', 'running')->count(),
+                'completed' => (clone $assignedTasksQuery)->where('status', 'completed')->count(),
+                'cancelled' => (clone $assignedTasksQuery)->where('status', 'cancelled')->count(),
+            ],
+            'created_tasks' => [
+                'total' => (clone $createdTasksQuery)->count(),
+                'pending' => (clone $createdTasksQuery)->where('status', 'pending')->count(),
+                'running' => (clone $createdTasksQuery)->where('status', 'running')->count(),
+                'completed' => (clone $createdTasksQuery)->where('status', 'completed')->count(),
+                'cancelled' => (clone $createdTasksQuery)->where('status', 'cancelled')->count(),
+            ],
+            'priority_breakdown' => [
+                'low' => (clone $assignedTasksQuery)->where('priority', 'low')->count(),
+                'medium' => (clone $assignedTasksQuery)->where('priority', 'medium')->count(),
+                'high' => (clone $assignedTasksQuery)->where('priority', 'high')->count(),
+                'urgent' => (clone $assignedTasksQuery)->where('priority', 'urgent')->count(),
+            ],
+        ];
+    }
+}

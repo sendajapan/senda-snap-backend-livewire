@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Vendor;
 use Illuminate\Database\Connection;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Config;
@@ -27,6 +28,40 @@ class ExternalVehicleService
         private string $imagePath,
         private string $imageBaseUrl
     ) {}
+
+    /**
+     * Create an ExternalVehicleService instance by looking up a vendor's slug.
+     * All connection credentials are read from the vendors table.
+     *
+     * @throws \RuntimeException if no vendor with the given slug exists or its config is incomplete.
+     */
+    public static function fromCompany(string $company): self
+    {
+        $vendor = Vendor::where('slug', strtolower(trim($company)))->first();
+
+        if (! $vendor) {
+            throw new \RuntimeException("No vendor found with slug '{$company}'.");
+        }
+
+        if (
+            ! $vendor->external_db_host ||
+            ! $vendor->external_db_database ||
+            ! $vendor->external_db_username ||
+            ! $vendor->external_db_password
+        ) {
+            throw new \RuntimeException("Vendor '{$vendor->name}' external database configuration is incomplete.");
+        }
+
+        return new self(
+            dbHost:       $vendor->external_db_host,
+            dbPort:       $vendor->external_db_port ?? '3306',
+            dbDatabase:   $vendor->external_db_database,
+            dbUsername:   $vendor->external_db_username,
+            dbPassword:   $vendor->external_db_password,
+            imagePath:    $vendor->external_image_path ?? '',
+            imageBaseUrl: $vendor->external_image_base_url ?? '',
+        );
+    }
 
     /**
      * Get database connection for this vendor's external database.
@@ -145,6 +180,86 @@ class ExternalVehicleService
                 'host' => $this->dbHost,
                 'database' => $this->dbDatabase,
                 'message' => $e->getMessage(),
+            ]);
+            throw $e;
+        }
+    }
+
+    /**
+     * Get all vehicles currently located at a specific yard.
+     *
+     * Filters by tbl_vehicle.current_location = $yardId.
+     * Returns the same fields and image URLs as getVehicleDetails().
+     */
+    public function getVehiclesByYard(int $yardId): array
+    {
+        $sql = "SELECT vehicle.vehicle_id as vehicle_id,
+                make.make_name as make,
+                model.model_name as model,
+                vehicle.veh_chassis_model as chassis_model,
+                vehicle.veh_chassis_number as chassis_number,
+                vehicle.veh_cc,
+                vehicle.veh_year,
+                vehicle.veh_color,
+                vehicle.veh_buy_date,
+                vehicle.veh_auc_ship_number,
+                vehicle.veh_net_weight,
+                vehicle.veh_m3,
+                vehicle.veh_l,
+                vehicle.veh_h,
+                vehicle.veh_w,
+                vehicle.veh_n1,
+                vehicle.veh_n2,
+                vehicle.veh_n3,
+                vehicle.veh_n4,
+                vehicle.veh_buy_price,
+                vehicle.yard_date_in,
+                rikso.rikso_from_place_id,
+                rikso.rikso_to_place_id,
+                rikso.rikso_cost,
+                rikso_company.rikso_company_name as rikso_company
+            FROM tbl_vehicle AS vehicle
+                LEFT JOIN tbl_vehicle_make AS make ON make.make_id = vehicle.make_id
+                LEFT JOIN tbl_vehicle_model AS model ON model.model_id = vehicle.model_id
+                LEFT JOIN tbl_vehicle_purchase AS purchase ON purchase.vehicle_id = vehicle.vehicle_id
+                LEFT JOIN tbl_rikso_details AS rikso ON rikso.vehicle_id = vehicle.vehicle_id
+                LEFT JOIN tbl_rikso_company AS rikso_company ON rikso_company.rikso_company_id = rikso.rikso_company_id
+            WHERE vehicle.current_location = ?";
+
+        try {
+            $connection = $this->getConnection();
+            $rows = $connection->select($sql, [$yardId]);
+
+            // Deduplicate by vehicle_id (multiple rikso rows can cause duplicates)
+            $seen     = [];
+            $vehicles = [];
+            foreach ($rows as $row) {
+                $row = (array) $row;
+                $id  = $row['vehicle_id'];
+                if (! isset($seen[$id])) {
+                    $seen[$id]  = true;
+                    $vehicles[] = $row;
+                }
+            }
+
+            foreach ($vehicles as &$vehicle) {
+                $vehicleId = $vehicle['vehicle_id'] ?? null;
+                if ($vehicleId) {
+                    $images = $connection->select('SELECT veh_image FROM tbl_vehicle_images WHERE vehicle_id = ?', [$vehicleId]);
+                    $vehicle['images'] = array_map(fn ($img) => rtrim($this->imageBaseUrl, '/').'/'.ltrim($img->veh_image, '/'), $images);
+                } else {
+                    $vehicle['images'] = [];
+                }
+            }
+
+            return ['vehicles' => $vehicles];
+
+        } catch (QueryException $e) {
+            Log::error('ExternalVehicleService getVehiclesByYard failed', [
+                'host'     => $this->dbHost,
+                'database' => $this->dbDatabase,
+                'yard_id'  => $yardId,
+                'message'  => $e->getMessage(),
             ]);
             throw $e;
         }

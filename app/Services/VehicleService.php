@@ -165,6 +165,13 @@ class VehicleService
         return $results;
     }
 
+    public function getYardVehicles(int $yardId, string $company): array
+    {
+        $externalService = ExternalVehicleService::fromCompany($company);
+
+        return $externalService->getVehiclesByYard($yardId);
+    }
+
     public function uploadImages(int $vehicleId, array $images, ?int $createdBy = null): array
     {
         $externalService = $this->getExternalVehicleService();

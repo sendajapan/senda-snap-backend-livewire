@@ -70,6 +70,7 @@ Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
     // Vehicle routes
     Route::prefix('vehicles')->group(function () {
         Route::get('/search', [VehicleController::class, 'search']);
+        Route::post('/yard', [VehicleController::class, 'yardVehicles']);
         Route::post('/upload-images', [VehicleController::class, 'uploadImages']);
     });
 

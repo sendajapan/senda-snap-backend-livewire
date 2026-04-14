@@ -79,6 +79,43 @@ class VehicleController extends Controller
         }
     }
 
+    public function yardVehicles(Request $request): JsonResponse
+    {
+        $validator = Validator::make($request->all(), [
+            'yard_id' => 'required|integer|min:1',
+            'company' => 'required|string|in:acjl,karmen',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->errorResponse('Validation failed', $validator->errors()->toArray(), 422);
+        }
+
+        try {
+            $results = $this->vehicleService->getYardVehicles(
+                (int) $request->input('yard_id'),
+                (string) $request->input('company')
+            );
+
+            return $this->successResponse('Yard vehicles retrieved', [
+                'vehicles' => $results['vehicles'],
+                'count'    => count($results['vehicles']),
+            ]);
+
+        } catch (QueryException $e) {
+            return $this->errorResponse('External database query failed', [
+                'sql'      => method_exists($e, 'getSql') ? $e->getSql() : null,
+                'bindings' => method_exists($e, 'getBindings') ? $e->getBindings() : [],
+                'error'    => $e->getMessage(),
+            ], 502);
+
+        } catch (\Throwable $e) {
+            return $this->errorResponse('External database error', [
+                'error'     => $e->getMessage(),
+                'exception' => get_class($e),
+            ], 502);
+        }
+    }
+
     public function uploadImages(Request $request): JsonResponse
     {
         $user = auth()->user();

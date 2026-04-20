@@ -161,9 +161,12 @@ class VehicleService
         return $externalService->getVehiclesByYard($yardId);
     }
 
-    public function uploadImages(int $vehicleId, array $images, ?int $createdBy = null): array
+    public function uploadImages(int $vehicleId, array $images, ?int $createdBy = null, string $company = ''): array
     {
-        $externalService = $this->getExternalVehicleService();
+        $externalService = $company
+            ? ExternalVehicleService::fromCompany($company)
+            : $this->getExternalVehicleService();
+
         $results = $externalService->getVehicleDetails('vehicle_id', (string) $vehicleId);
 
         if (empty($results['vehicles']) || !isset($results['vehicles'][0])) {

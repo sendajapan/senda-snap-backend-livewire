@@ -132,6 +132,7 @@ class VehicleController extends Controller
 
         $validator = Validator::make($request->all(), [
             'vehicle_id' => 'required|integer',
+            'company' => 'required|string|in:acjl,karmen',
             'images' => 'required|array|min:1',
             'images.*' => 'required|file|image|max:2048',
         ]);
@@ -145,7 +146,8 @@ class VehicleController extends Controller
             $vehicle = $this->vehicleService->uploadImages(
                 $request->vehicle_id,
                 $request->file('images', []),
-                $createdBy
+                $createdBy,
+                (string) $request->input('company')
             );
 
             return $this->successResponse('Images uploaded successfully', [

@@ -296,12 +296,47 @@
                         <code class="text-gray-800 dark:text-gray-200 font-mono text-sm">/vehicles/upload-images</code>
                         <span class="ml-auto text-xs text-gray-500 dark:text-gray-400">Protected</span>
                     </div>
-                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">Upload vehicle images to remote SFTP server (multipart/form-data)</p>
-                    <div class="bg-gray-100 dark:bg-gray-900 p-3 rounded border border-gray-200 dark:border-gray-800 text-xs">
-                        <p class="font-semibold text-gray-700 dark:text-gray-300 mb-2">Request (form-data)</p>
-                        <pre class="overflow-auto"><code>vehicle_id: 12345
-images: [file1.jpg, file2.jpg]
-Max 2MB per image</code></pre>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">Upload vehicle images to remote SFTP server. Images are stored in vendor SFTP path and indexed in database</p>
+                    <div class="grid grid-cols-2 gap-3 text-xs">
+                        <div>
+                            <p class="font-semibold text-gray-700 dark:text-gray-300 mb-2">Request (multipart/form-data)</p>
+                            <pre class="bg-gray-100 dark:bg-gray-900 p-3 rounded border border-gray-200 dark:border-gray-800 overflow-auto text-xs"><code>Content-Type: multipart/form-data
+
+vehicle_id: 12345
+images: (binary file 1)
+images: (binary file 2)
+
+Constraints:
+- vehicle_id: required, integer
+- images: required array, min 1
+- Max 2MB per image
+- Formats: jpg, jpeg, png, gif
+</code></pre>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-gray-700 dark:text-gray-300 mb-2">Response (200)</p>
+                            <pre class="bg-green-50 dark:bg-green-900/20 p-3 rounded border border-green-200 dark:border-green-800 overflow-auto text-xs"><code>{
+  "success": true,
+  "message": "Images uploaded successfully",
+  "data": {
+    "vehicle_id": 12345,
+    "make": "Toyota",
+    "model": "Land Cruiser",
+    "images": [
+      "https://sftp-path.com/vehicles/2026/04/img_001.jpg",
+      "https://sftp-path.com/vehicles/2026/04/img_002.jpg"
+    ]
+  }
+}</code></pre>
+                        </div>
+                    </div>
+                    <div class="mt-3 p-2 bg-blue-50 dark:bg-blue-900/20 rounded border border-blue-200 dark:border-blue-800">
+                        <p class="text-xs font-semibold text-blue-900 dark:text-blue-100 mb-1">Example (cURL)</p>
+                        <pre class="bg-white dark:bg-gray-900 p-2 rounded text-xs overflow-auto"><code>curl -X POST https://snap.senda.fit/api/v1/vehicles/upload-images \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -F "vehicle_id=12345" \
+  -F "images=@/path/to/image1.jpg" \
+  -F "images=@/path/to/image2.jpg"</code></pre>
                     </div>
                 </div>
 

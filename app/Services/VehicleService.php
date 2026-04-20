@@ -136,7 +136,7 @@ class VehicleService
         return $vehicle->delete();
     }
 
-    public function search(string $searchType, string $searchQuery): array
+    public function search(string $searchType, string $searchQuery, string $company): array
     {
         $user = auth()->user();
 
@@ -144,22 +144,11 @@ class VehicleService
             throw new \RuntimeException('User must be authenticated to search vehicles.');
         }
 
-        // Get vendor for logging purposes
-        $vendor = null;
-        if (!$user->vendor_id) {
-            // For admin users, use default vendor
-            $vendor = Vendor::where('email', 'info@autocraftjapan.com')->first();
-        } else {
-            if (!$user->relationLoaded('vendor')) {
-                $user->load('vendor');
-            }
-            $vendor = $user->vendor;
-        }
-
-        $externalService = $this->getExternalVehicleService();
+        $externalService = ExternalVehicleService::fromCompany($company);
         $results = $externalService->getVehicleDetails($searchType, $searchQuery);
 
-        // Add vendor ID to results for logging
+        // Get vendor for logging purposes
+        $vendor = Vendor::where('slug', strtolower(trim($company)))->first();
         $results['vendor_id'] = $vendor?->id;
 
         return $results;

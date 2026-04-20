@@ -23,11 +23,13 @@ class VehicleController extends Controller
         $input = [
             'search_type' => $request->query('search_type'),
             'search_query' => $request->query('search_query'),
+            'company' => $request->query('company'),
         ];
 
         $validator = Validator::make($input, [
             'search_type' => 'required|string|in:vehicle_id,veh_chassis_number',
             'search_query' => 'required|string',
+            'company' => 'required|string|in:acjl,karmen',
         ]);
 
         if ($validator->fails()) {
@@ -37,7 +39,8 @@ class VehicleController extends Controller
         try {
             $results = $this->vehicleService->search(
                 (string) $input['search_type'],
-                (string) $input['search_query']
+                (string) $input['search_query'],
+                (string) $input['company']
             );
 
             // Log the search
@@ -61,6 +64,7 @@ class VehicleController extends Controller
 
             return $this->successResponse('Search completed', [
                 'vehicles' => $results['vehicles'],
+                'company' => $input['company'],
             ]);
         } catch (QueryException $e) {
 
